@@ -23,8 +23,57 @@ type Message =
 // Views
 // ---------------------------------
 
+
 module Views =
     open GiraffeViewEngine
+
+    let defaultRenderer = rawText """var renderer = new DashRenderer();"""
+    
+    let createRendererScript renderer =
+        script [ _id "_dash-renderer"; _type "application/javascript"] [renderer]
+
+    let createFaviconLink path =
+        link [
+            _rel "icon"
+            _type "image/x-icon"
+            _href path
+        ]
+
+    let defaultAppEntry = 
+        div [_id "react-entry-point"] [
+            div [_class "_dash-loading"] [
+                encodedText "Loading..."
+            ]
+        ]
+
+    let createIndex metas appTitle faviconPath css appEntry config scripts renderer = 
+        html [] [
+            head [] [
+                yield! metas
+                title [] [encodedText appTitle]
+                createFaviconLink faviconPath
+                yield! css
+            ]
+            body [] [
+                appEntry
+                footer [] [
+                    yield! config
+                    yield! scripts
+                    createRendererScript defaultRenderer
+                ]
+            ]
+        ]
+
+    let defaultIndex = 
+        createIndex
+            []
+            "Dash.NET"
+            "_favicon.ico"
+            []
+            defaultAppEntry
+            []
+            []
+            defaultRenderer
 
     let layout (content: XmlNode list) =
         html [] [
@@ -54,7 +103,7 @@ let indexHandler (name : string) =
     let greetings = sprintf "Hello %s, from Giraffe!" name
     let model     = { Text = greetings }
     let view      = Views.index model
-    htmlView view
+    htmlView Views.defaultIndex
 
 let webApp =
     choose [
