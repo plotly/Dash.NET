@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="GraphComponent.fs" />
+    <Compile Include="CoreComnponents.fs" />
+    <Compile Include="HTMLComponents.fs" />
     <Compile Include="Dash.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

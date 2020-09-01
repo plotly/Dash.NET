@@ -136,6 +136,23 @@ testHeader?("type") <- "H1"
 testHeader?("namespace") <- "dash_html_components"
 testHeader?props <- testText
 
+
+let testGraph =
+    DCC.Graph.ofGenericChart(
+        Chart.Point([1,2])
+        |> Chart.withX_AxisStyle "xAxis"
+        |> Chart.withY_AxisStyle "yAxis"
+    )
+
+let testLayout =
+
+    HTMLComponents.Div.withChildren [
+        box testHeader
+        box (testGraph |> DCC.Graph.toComponentJson)
+    ]
+
+
+
 //{
 //    "props": {
 //        "children": [
@@ -157,7 +174,7 @@ let webApp =
         GET >=>
             choose [
                 route "/" >=> indexHandler "world"
-                route "/_dash-layout" >=> json testHeader
+                route "/_dash-layout" >=> json testLayout
                 route "/_dash-dependencies" >=> json []
                 routef "/hello/%s" indexHandler
             ]
