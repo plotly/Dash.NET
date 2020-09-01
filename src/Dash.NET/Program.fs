@@ -26,6 +26,11 @@ type Message =
 
 module Views =
     open GiraffeViewEngine
+    open Dash
+
+    let createConfigScript (config:DashConfig) =
+        let innerJson = Newtonsoft.Json.JsonConvert.SerializeObject config
+        script [ _id "_dash-config"; _type "application/javascript"] [rawText innerJson]
 
     let defaultRenderer = rawText """var renderer = new DashRenderer();"""
     
@@ -46,6 +51,19 @@ module Views =
             ]
         ]
 
+    let dashCDNScripts = [
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/react@16.13.0/umd/react.development.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/react-dom@16.13.0/umd/react-dom.development.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/@babel/polyfill@7.8.7/dist/polyfill.min.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/prop-types@15.7.2/prop-types.js"] []
+                                               
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/dash-renderer@1.7.0/dash_renderer/dash_renderer.min.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/dash-core-components@1.11.0/dash_core_components/dash_core_components.min.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.jsdelivr.net/npm/dash-html-components@1.1.0/dash_html_components/dash_html_components.min.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.plot.ly/plotly-latest.min.js"] []
+       
+    ]
+
     let createIndex metas appTitle faviconPath css appEntry config scripts renderer = 
         html [] [
             head [] [
@@ -57,7 +75,7 @@ module Views =
             body [] [
                 appEntry
                 footer [] [
-                    yield! config
+                    createConfigScript config
                     yield! scripts
                     createRendererScript defaultRenderer
                 ]
@@ -71,8 +89,8 @@ module Views =
             "_favicon.ico"
             []
             defaultAppEntry
-            []
-            []
+            Defaults.defaultConfig
+            dashCDNScripts
             defaultRenderer
 
     let layout (content: XmlNode list) =
@@ -105,11 +123,42 @@ let indexHandler (name : string) =
     let view      = Views.index model
     htmlView Views.defaultIndex
 
+open FSharp.Plotly
+open DynObj
+
+let testHeader = DynamicObj()
+
+let testText = DynamicObj()
+
+testText?children <- "Hello Dash from F#"
+
+testHeader?("type") <- "H1"
+testHeader?("namespace") <- "dash_html_components"
+testHeader?props <- testText
+
+//{
+//    "props": {
+//        "children": [
+//        {
+//          "props": {"children": "Hello Dash"}, 
+//          "type": "H1", 
+//          "namespace": "dash_html_components"
+//        }
+//        ]
+//    }, 
+//    "type": "Div", 
+//    "namespace": "dash_html_components"
+//}
+
+//Parameter[Name]
+
 let webApp =
     choose [
         GET >=>
             choose [
                 route "/" >=> indexHandler "world"
+                route "/_dash-layout" >=> json testHeader
+                route "/_dash-dependencies" >=> json []
                 routef "/hello/%s" indexHandler
             ]
         setStatusCode 404 >=> text "Not Found" ]

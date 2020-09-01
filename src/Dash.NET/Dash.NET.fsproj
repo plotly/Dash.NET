@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,11 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FSharp.Plotly" Version="2.0.0-alpha" />
     <PackageReference Include="Giraffe" Version="4.1.*" />
     <PackageReference Include="TaskBuilder.fs" Version="2.1.*" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="GraphComponent.fs" />
+    <Compile Include="Dash.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -20,5 +23,9 @@
     <Content Include="WebRoot\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WebRoot\NewFolder\" />
   </ItemGroup>
 </Project>
