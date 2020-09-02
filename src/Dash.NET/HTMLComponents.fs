@@ -1,24 +1,25 @@
 ﻿namespace Dash.NET
 
+[<RequireQualifiedAccess>]
 module HTMLComponents =
 
     open FSharp.Plotly
 
-    type Div () = 
-        inherit DynamicObj()
+    type Div () = inherit DynamicObj()
 
-        static member withChildren (children) =
-            let d = Div()
+    let div (id:string) (children:seq<obj>) = 
 
-            let props = DynamicObj()
+        let d = Div()
 
-            props?id <- System.Guid.NewGuid().ToString()
-            props?children <- children
-            d?("namespace")<-"dash_html_components"
-            d?props <- props
-            d?("type") <- "Div"
+        let props = DynamicObj()
 
-            d
+        props?id <- id
+        props?children <- children
+        d?("namespace")<-"dash_html_components"
+        d?props <- props
+        d?("type") <- "Div"
+
+        d
 
         
 

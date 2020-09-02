@@ -1,5 +1,6 @@
 ﻿namespace Dash.NET
 
+[<RequireQualifiedAccess>]
 module DCC = 
     
     open FSharp.Plotly
@@ -21,8 +22,6 @@ module DCC =
                 layout  = layout
                 frames  = []
             }
-
-
 
     type Graph = {
         id      : string
@@ -46,4 +45,23 @@ module DCC =
 
             root
 
+    let graph id figure = {id = id; figure=figure}
 
+
+    type Input () = inherit DynamicObj()
+
+    let input (id:string) value (_type:string) = 
+
+        let i = Input()
+
+        let props = DynamicObj()
+
+        props?id <- id
+        props?value <- value
+        props?("type") <- _type
+
+        i?("namespace")<-"dash_core_components"
+        i?props <- props
+        i?("type") <- "Input"
+
+        i

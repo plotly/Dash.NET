@@ -144,30 +144,16 @@ let testGraph =
         |> Chart.withY_AxisStyle "yAxis"
     )
 
+
+
 let testLayout =
 
-    HTMLComponents.Div.withChildren [
+    HTMLComponents.div "testDiv" [
         box testHeader
+        box (DCC.input "input1" "soos" "text")
         box (testGraph |> DCC.Graph.toComponentJson)
     ]
 
-
-
-//{
-//    "props": {
-//        "children": [
-//        {
-//          "props": {"children": "Hello Dash"}, 
-//          "type": "H1", 
-//          "namespace": "dash_html_components"
-//        }
-//        ]
-//    }, 
-//    "type": "Div", 
-//    "namespace": "dash_html_components"
-//}
-
-//Parameter[Name]
 
 let webApp =
     choose [
