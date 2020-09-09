@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
@@ -10,12 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Dash.NET/Dash.NET.fsproj" />
+    <Compile Include="Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="Tests.fs" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\src\Dash.NET.POC\Dash.NET.POC.fsproj" />
   </ItemGroup>
 </Project>

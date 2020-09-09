@@ -17,8 +17,8 @@ open Microsoft.Extensions.DependencyInjection
 let createHost() =
     WebHostBuilder()
         .UseContentRoot(Directory.GetCurrentDirectory())
-        .Configure(Action<IApplicationBuilder> Dash.NET.App.configureApp)
-        .ConfigureServices(Action<IServiceCollection> Dash.NET.App.configureServices)
+        .Configure(Action<IApplicationBuilder> Dash.NET.POC.App.configureApp)
+        .ConfigureServices(Action<IServiceCollection> Dash.NET.POC.App.configureServices)
 
 let runTask task =
     task

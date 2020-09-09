@@ -1,4 +1,4 @@
-module Dash.NET.App
+module Dash.NET.POC.App
 
 open System
 open System.IO
@@ -10,7 +10,7 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
 open Giraffe.ModelBinding
-
+open Dash.NET
 // ---------------------------------
 // Models
 // ---------------------------------
