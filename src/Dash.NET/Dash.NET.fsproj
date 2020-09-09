@@ -5,7 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Callback.fs" />
+    <Compile Include="Dash.fs" />
+    <Compile Include="DynamicInvoke.fs" />
+    <Compile Include="HTMLComponents.fs" />
+    <Compile Include="CoreComponents.fs" />
     <Compile Include="Library.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Plotly" Version="2.0.0-alpha" />
   </ItemGroup>
 
 </Project>

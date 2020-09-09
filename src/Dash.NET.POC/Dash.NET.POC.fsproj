@@ -13,11 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="CoreComnponents.fs" />
-    <Compile Include="HTMLComponents.fs" />
-    <Compile Include="DynamicInvoke.fs" />
-    <Compile Include="Callback.fs" />
-    <Compile Include="Dash.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -30,5 +25,9 @@
 
   <ItemGroup>
     <Folder Include="WebRoot\NewFolder\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dash.NET\Dash.NET.fsproj" />
   </ItemGroup>
 </Project>
