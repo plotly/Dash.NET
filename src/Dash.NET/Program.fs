@@ -189,7 +189,7 @@ let testCallbackHandler =
 
 let callbackMap = DynamicObj ()
 
-callbackMap?("test-output.children") <- testCallbackHandler
+callbackMap?("test-output.children") <- (testCallbackHandler |> Callbacks.CallbackHandler.pack)
 
 let webApp =
     choose [
@@ -240,16 +240,18 @@ let webApp =
                         //let handler:Callbacks.CallbackHandler<_,_> = callbackMap?cbRequest.output
                         
                         let changedProps = cbRequest.changedPropIds //To-Do ordering of these tuples is important
-                        
+
                         let inputs = cbRequest.inputs |> Array.map (fun x -> box x.value) // To-Do: tuple generation from array?
 
-                        let result = Callbacks.CallbackHandler.getResponseObject testCallbackHandler inputs
+                        let handler = callbackMap?(cbRequest.output)
+
+                        let result = 
+                            Callbacks.CallbackHandler.getResponseObject (unbox handler) inputs
 
                         json result
                     )
                 
             ]
-
         setStatusCode 404 >=> text "Not Found" 
     ]
 

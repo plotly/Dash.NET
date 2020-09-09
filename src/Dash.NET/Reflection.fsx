@@ -33,5 +33,18 @@ let f2 (p1:int) (p2:(string*int)) = sprintf "%s:%i" (fst p2) p1
 invokeDynamic<string> f2 [box "1"; box ("aa",1)]
 
 
+type Test<'G> = {
+    Field1 : 'G
+}
+
+let t = {Field1 = "A"}
+
+let tObj = new System.Collections.Generic.Dictionary<'obj,obj>()
+
+tObj.Add(box "A", box t)
+
+let a : Test<string> = tObj.Item "A" |> unbox
+
+
 
 //http://www.fssnip.net/2V/title/Dynamic-operator-using-Reflection

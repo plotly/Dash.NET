@@ -55,26 +55,36 @@ module Callbacks =
     open FSharp
     open FSharp.Reflection
 
-    type CallbackHandler<'Inputs,'InnerSignature> = {
+    type CallbackHandler<'Function> = {
         Inputs          : Input []
         Output          : Output
-        HandlerFunction : 'Inputs -> 'InnerSignature
+        HandlerFunction : 'Function
     } with
-        static member create inputs output (handler:'Inputs -> 'InnerSignature) =
+        static member create inputs output (handler:'Function) =
             {
                 Inputs          = inputs
                 Output          = output
                 HandlerFunction = handler
             }
 
-        static member eval (handler:CallbackHandler<'Inputs,'InnerSignature>) (args:seq<obj>) =
+        static member pack (handler:CallbackHandler<'Function>) : CallbackHandler<obj> =
+            CallbackHandler.create 
+                handler.Inputs
+                handler.Output
+                (box handler.HandlerFunction)
+
+        static member eval (args:seq<obj>) (handler:CallbackHandler<'Function>)  =
             invokeDynamic<obj> handler.HandlerFunction args
 
-        static member evalAs<'OutputType> (handler:CallbackHandler<'Inputs,'InnerSignature>) (args:seq<obj>) =
+        static member evalAs<'OutputType> (args:seq<obj>) (handler:CallbackHandler<'Function>) =
             invokeDynamic<'OutputType> handler.HandlerFunction args
 
-        static member getResponseObject (handler:CallbackHandler<'Inputs,'InnerSignature>) (args:seq<obj>) =
-            let evalResult = CallbackHandler.eval handler args
+        static member getResponseObject (args:seq<obj>) (handler:CallbackHandler<'Function>) =
+            
+            let evalResult = 
+                handler
+                |> CallbackHandler.pack
+                |> CallbackHandler.eval args
 
             match evalResult with
             | Ok r ->
@@ -91,3 +101,41 @@ module Callbacks =
                 root
                 
             | Error e -> failwith e.Message
+
+
+    //type CallbackHandler = {
+    //    Inputs          : Input []
+    //    Output          : Output
+    //    HandlerFunction : obj
+    //} with
+    //    static member create inputs output (handler:obj) =
+    //        {
+    //            Inputs          = inputs
+    //            Output          = output
+    //            HandlerFunction = handler
+    //        }
+
+    //    static member eval (handler:CallbackHandler) (args:seq<obj>) =
+    //        invokeDynamic<obj> handler.HandlerFunction args
+
+    //    static member evalAs<'OutputType> (handler:CallbackHandler) (args:seq<obj>) =
+    //        invokeDynamic<'OutputType> handler.HandlerFunction args
+
+    //    static member getResponseObject (handler:CallbackHandler) (args:seq<obj>) =
+    //        let evalResult = CallbackHandler.eval handler args
+
+    //        match evalResult with
+    //        | Ok r ->
+    //            let root        = DynamicObj()
+    //            let response    = DynamicObj()
+    //            let result      = DynamicObj()
+
+    //            result?(handler.Output.property) <- r
+    //            response?(handler.Output.id) <- result
+
+    //            root?multi      <- true
+    //            root?response   <- response
+
+    //            root
+                
+    //        | Error e -> failwith e.Message
