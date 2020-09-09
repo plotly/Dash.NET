@@ -9,6 +9,7 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
+open Giraffe.ModelBinding
 
 // ---------------------------------
 // Models
@@ -22,7 +23,6 @@ type Message =
 // ---------------------------------
 // Views
 // ---------------------------------
-
 
 module Views =
     open GiraffeViewEngine
@@ -61,7 +61,6 @@ module Views =
         script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/dash-core-components@1.11.0/dash_core_components/dash_core_components.min.js"] []
         script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.jsdelivr.net/npm/dash-html-components@1.1.0/dash_html_components/dash_html_components.min.js"] []
         script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.plot.ly/plotly-latest.min.js"] []
-       
     ]
 
     let createIndex metas appTitle faviconPath css appEntry config scripts renderer = 
@@ -137,34 +136,122 @@ testHeader?("namespace") <- "dash_html_components"
 testHeader?props <- testText
 
 
+//render an example chart from the FSharp.Plotly GenericChart type :
+
+let presetAxis title = Axis.LinearAxis.init(Title=title,Mirror=StyleParam.Mirror.All,Ticks=StyleParam.TickOptions.Inside,Showgrid=false,Showline=true,Zeroline=true)
+
+let applyPresetStyle xName yName chart = chart |> Chart.withX_Axis (presetAxis xName) |> Chart.withY_Axis (presetAxis yName)
+
+let rndData = 
+    let rnd = System.Random()
+    [for i in [0 .. 100] do yield (rnd.NextDouble(),rnd.NextDouble())]
+
 let testGraph =
     DCC.Graph.ofGenericChart(
-        Chart.Point([1,2])
-        |> Chart.withX_AxisStyle "xAxis"
-        |> Chart.withY_AxisStyle "yAxis"
+        Chart.Point(rndData)
+        |> applyPresetStyle "xAxis" "yAxis"
+        |> Chart.withSize (1000.,1000.)
     )
-
 
 
 let testLayout =
 
     HTMLComponents.div "testDiv" [
         box testHeader
-        box (DCC.input "input1" "soos" "text")
+        box (DCC.input "input-x" 1 "number")
+        box (DCC.input "input-y" 1 "number")
+        box (HTMLComponents.div "test-output" [box "Sum will be here"])
         box (testGraph |> DCC.Graph.toComponentJson)
     ]
 
+let testCallbacks = [
+    Callbacks.Callback.create 
+        true 
+        None
+        [|
+            Callbacks.Input.create ("input-x","value")
+            Callbacks.Input.create ("input-y","value")
+        |]
+        "test-output.children"
+        [||]
+    ]
+     
+//this callback should add the values from the "input-x" and "input-x" components
+
+let testCallbackHandler =
+    Callbacks.CallbackHandler.create
+        [|
+            Callbacks.Input.create ("input-x","value")
+            Callbacks.Input.create ("input-y","value")
+        |]
+        (Callbacks.Output.create ("test-output","children"))
+        (fun (x:float) (y:float) -> sprintf "F# says:%f" (x+y))
+
+let callbackMap = DynamicObj ()
+
+callbackMap?("test-output.children") <- testCallbackHandler
 
 let webApp =
     choose [
         GET >=>
             choose [
                 route "/" >=> indexHandler "world"
-                route "/_dash-layout" >=> json testLayout
-                route "/_dash-dependencies" >=> json []
+
+                //Dash enpoints
+                route "/_dash-layout"       >=> json testLayout //Calls from Dash renderer for what components to render (must return serialized dash components)
+                
+                //example response: 
+                //{
+                //    "clientside_function": null, 
+                //    "inputs": [
+                //      {
+                //        "id": "my-input1", 
+                //        "property": "value"
+                //      }
+                //    ], 
+                //    "output": "my-output1.children", 
+                //    "prevent_initial_call": false, 
+                //    "state": []
+                //  }
+                route "/_dash-dependencies" >=> json testCallbacks        //Serves callback bindings as json on app start.
+
+                //Example response: 
+                //{
+                //  "files": [], 
+                //  "hard": false, 
+                //  "packages": [
+                //    "dash_renderer", 
+                //    "dash_html_components", 
+                //    "dash_core_components"
+                //  ], 
+                //  "reloadHash": "4b31131566a240aa8f794e75e2fcb319"
+                //}
+                route "/_reload-hash"       >=> json obj        //This call is done when using hot reload.
+
                 routef "/hello/%s" indexHandler
             ]
-        setStatusCode 404 >=> text "Not Found" ]
+
+        POST >=> 
+            choose [
+                //calls from callbacks come in here.
+                route "/_dash-update-component" 
+                    >=> bindJson ( fun (cbRequest:Callbacks.CallbackRequest) -> 
+                        //doing this statically typed will not be so easy
+                        //let handler:Callbacks.CallbackHandler<_,_> = callbackMap?cbRequest.output
+                        
+                        let changedProps = cbRequest.changedPropIds //To-Do ordering of these tuples is important
+                        
+                        let inputs = cbRequest.inputs |> Array.map (fun x -> box x.value) // To-Do: tuple generation from array?
+
+                        let result = Callbacks.CallbackHandler.getResponseObject testCallbackHandler inputs
+
+                        json result
+                    )
+                
+            ]
+
+        setStatusCode 404 >=> text "Not Found" 
+    ]
 
 // ---------------------------------
 // Error handler
@@ -199,7 +286,7 @@ let configureServices (services : IServiceCollection) =
     services.AddGiraffe() |> ignore
 
 let configureLogging (builder : ILoggingBuilder) =
-    builder.AddFilter(fun l -> l.Equals LogLevel.Error)
+    builder.AddFilter(fun l -> l.Equals LogLevel.Debug)
            .AddConsole()
            .AddDebug() |> ignore
 
