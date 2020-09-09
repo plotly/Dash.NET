@@ -5,6 +5,8 @@ module HTMLComponents =
 
     open FSharp.Plotly
 
+    //These are placeholders and will be replaced by proper generated components
+
     type HTMLComponent () = 
         inherit DynamicObj()
 

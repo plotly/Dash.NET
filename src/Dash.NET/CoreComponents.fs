@@ -3,6 +3,8 @@
 [<RequireQualifiedAccess>]
 module DCC = 
     
+    //These are placeholders and will be replaced by proper generated components
+
     open FSharp.Plotly
     open Newtonsoft.Json
 

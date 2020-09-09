@@ -5,12 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Callback.fs" />
-    <Compile Include="Dash.fs" />
-    <Compile Include="DynamicInvoke.fs" />
     <Compile Include="HTMLComponents.fs" />
     <Compile Include="CoreComponents.fs" />
-    <Compile Include="Library.fs" />
+    <Compile Include="DynamicInvoke.fs" />
+    <Compile Include="Callback.fs" />
+    <Compile Include="Dash.fs" />
   </ItemGroup>
 
   <ItemGroup>
