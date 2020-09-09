@@ -7,16 +7,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E6D01694
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Tests", "tests\Dash.NET.Tests\Dash.NET.Tests.fsproj", "{DB284F96-3FC7-49A0-8667-18732B962F3E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_root", "_root", "{625E3CAC-600B-450D-BF54-E3059450591A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_project", "_project", "{625E3CAC-600B-450D-BF54-E3059450591A}"
 	ProjectSection(SolutionItems) = preProject
 		build.bat = build.bat
 		build.sh = build.sh
+		.config\dotnet-tools.json = .config\dotnet-tools.json
+		global.json = global.json
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dash.NET.POC", "src\Dash.NET.POC\Dash.NET.POC.fsproj", "{62ACEC42-F7B5-4BFB-AF7D-035E26F15672}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.POC", "src\Dash.NET.POC\Dash.NET.POC.fsproj", "{62ACEC42-F7B5-4BFB-AF7D-035E26F15672}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dash.NET", "src\Dash.NET\Dash.NET.fsproj", "{DC0359E0-7CC2-42B7-88DE-60C6ACAB0451}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET", "src\Dash.NET\Dash.NET.fsproj", "{DC0359E0-7CC2-42B7-88DE-60C6ACAB0451}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
