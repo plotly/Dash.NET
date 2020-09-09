@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Dash.NET": {
+    "Dash.NET.POC": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

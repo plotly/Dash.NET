@@ -32,4 +32,4 @@ After a successful build you can start the web application by executing the foll
 dotnet run -p src/Dash.NET.POC
 ```
 
-After the application has started visit [https://localhost:5001/](https://localhost:5001/) in your preferred browser.
+After the application has started visit [https://localhost:5001/](https://localhost:5001/) or [http://localhost:5000/](http://localhost:5000/) in your preferred browser.
