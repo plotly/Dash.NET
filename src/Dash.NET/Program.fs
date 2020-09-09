@@ -246,7 +246,7 @@ let webApp =
                         let handler = callbackMap?(cbRequest.output)
 
                         let result = 
-                            Callbacks.CallbackHandler.getResponseObject (unbox handler) inputs
+                            Callbacks.CallbackHandler.getResponseObject inputs (unbox handler)
 
                         json result
                     )
