@@ -29,6 +29,11 @@ module Views =
     open GiraffeViewEngine
     open Dash
 
+    // ---------------------------------
+    // HTML backbone of the Dash application
+    // should be refactored into a core library
+    // ---------------------------------
+
     let createConfigScript (config:DashConfig) =
         let innerJson = Newtonsoft.Json.JsonConvert.SerializeObject config
         script [ _id "_dash-config"; _type "application/javascript"] [rawText innerJson]
@@ -93,59 +98,26 @@ module Views =
             dashCDNScripts
             defaultRenderer
 
-    let layout (content: XmlNode list) =
-        html [] [
-            head [] [
-                title []  [ encodedText "Dash.NET" ]
-                link [ _rel  "stylesheet"
-                       _type "text/css"
-                       _href "/main.css" ]
-            ]
-            body [] content
-        ]
 
-    let partial () =
-        h1 [] [ encodedText "Dash.NET" ]
 
-    let index (model : Message) =
-        [
-            partial()
-            p [] [ encodedText model.Text ]
-        ] |> layout
+// --------------------
+// Set up the dash app components
+// --------------------
 
-// ---------------------------------
-// Web app
-// ---------------------------------
 
-let indexHandler (name : string) =
-    let greetings = sprintf "Hello %s, from Giraffe!" name
-    let model     = { Text = greetings }
-    let view      = Views.index model
-    htmlView Views.defaultIndex
-
+//Create a plotly graph component from a FSharp.Plotly chart object
 open FSharp.Plotly
-open DynObj
 
-let testHeader = DynamicObj()
-
-let testText = DynamicObj()
-
-testText?children <- "Hello Dash from F#"
-
-testHeader?("type") <- "H1"
-testHeader?("namespace") <- "dash_html_components"
-testHeader?props <- testText
-
-
-//render an example chart from the FSharp.Plotly GenericChart type :
+//set up and style the chart
 
 let presetAxis title = Axis.LinearAxis.init(Title=title,Mirror=StyleParam.Mirror.All,Ticks=StyleParam.TickOptions.Inside,Showgrid=false,Showline=true,Zeroline=true)
-
 let applyPresetStyle xName yName chart = chart |> Chart.withX_Axis (presetAxis xName) |> Chart.withY_Axis (presetAxis yName)
 
 let rndData = 
     let rnd = System.Random()
     [for i in [0 .. 100] do yield (rnd.NextDouble(),rnd.NextDouble())]
+
+//Generate the graph component
 
 let testGraph =
     DCC.Graph.ofGenericChart(
@@ -155,16 +127,20 @@ let testGraph =
     )
 
 
+//define the layout of the dash app.
+//All components could be generated to match the Giraffe.ViewEngine DSL for html elements.
 let testLayout =
 
     HTMLComponents.div "testDiv" [
-        box testHeader
+        box (HTMLComponents.title "test-title" [box "Hello Dash From F#!"])
         box (DCC.input "input-x" 1 "number")
         box (DCC.input "input-y" 1 "number")
         box (HTMLComponents.div "test-output" [box "Sum will be here"])
         box (testGraph |> DCC.Graph.toComponentJson)
     ]
 
+
+//define the callbacks to serve on app load via _dash-dependencies
 let testCallbacks = [
     Callbacks.Callback.create 
         true 
@@ -178,7 +154,7 @@ let testCallbacks = [
     ]
      
 //this callback should add the values from the "input-x" and "input-x" components
-
+//The callback definition here resembles the @app.callback decorator
 let testCallbackHandler =
     Callbacks.CallbackHandler.create
         [|
@@ -188,68 +164,52 @@ let testCallbackHandler =
         (Callbacks.Output.create ("test-output","children"))
         (fun (x:float) (y:float) -> sprintf "F# says:%f" (x+y))
 
+
+//Set upc a callback map to store all callbacks
+//This should be a proper type.
 let callbackMap = DynamicObj ()
 
 callbackMap?("test-output.children") <- (testCallbackHandler |> Callbacks.CallbackHandler.pack)
+
+
+// ---------------------------------
+// Web app
+// ---------------------------------
+
+let indexHandler (name : string) =
+    let greetings = sprintf "Hello %s, from Giraffe!" name
+    htmlView Views.defaultIndex
 
 let webApp =
     choose [
         GET >=>
             choose [
+                //serve the index
                 route "/" >=> indexHandler "world"
 
-                //Dash enpoints
-                route "/_dash-layout"       >=> json testLayout //Calls from Dash renderer for what components to render (must return serialized dash components)
-                
-                //example response: 
-                //{
-                //    "clientside_function": null, 
-                //    "inputs": [
-                //      {
-                //        "id": "my-input1", 
-                //        "property": "value"
-                //      }
-                //    ], 
-                //    "output": "my-output1.children", 
-                //    "prevent_initial_call": false, 
-                //    "state": []
-                //  }
-                route "/_dash-dependencies" >=> json testCallbacks        //Serves callback bindings as json on app start.
-
-                //Example response: 
-                //{
-                //  "files": [], 
-                //  "hard": false, 
-                //  "packages": [
-                //    "dash_renderer", 
-                //    "dash_html_components", 
-                //    "dash_core_components"
-                //  ], 
-                //  "reloadHash": "4b31131566a240aa8f794e75e2fcb319"
-                //}
-                route "/_reload-hash"       >=> json obj        //This call is done when using hot reload.
+                //Dash GET enpoints
+                route "/_dash-layout"       >=> json testLayout     //Calls from Dash renderer for what components to render (must return serialized dash components)
+                route "/_dash-dependencies" >=> json testCallbacks  //Serves callback bindings as json on app start.
+                route "/_reload-hash"       >=> json obj            //This call is done when using hot reload.
 
                 routef "/hello/%s" indexHandler
             ]
 
         POST >=> 
             choose [
-                //calls from callbacks come in here.
-                route "/_dash-update-component" 
+                //Dash POST endpoints
+                route "/_dash-update-component" //calls from callbacks come in here.
                     >=> bindJson ( fun (cbRequest:Callbacks.CallbackRequest) -> 
-                        //doing this statically typed will not be so easy
-                        //let handler:Callbacks.CallbackHandler<_,_> = callbackMap?cbRequest.output
-                        
-                        let changedProps = cbRequest.changedPropIds //To-Do ordering of these tuples is important
 
-                        let inputs = cbRequest.inputs |> Array.map (fun x -> box x.value) // To-Do: tuple generation from array?
+                        let changedProps = cbRequest.changedPropIds //To-Do ordering of the arguments in the list is important and should be validated via property names.
 
-                        let handler = callbackMap?(cbRequest.output)
+                        let inputs = cbRequest.inputs |> Array.map (fun x -> box x.value) //generate argument list for the callback
 
-                        let result = 
-                            Callbacks.CallbackHandler.getResponseObject inputs (unbox handler)
+                        let handler = callbackMap?(cbRequest.output) //get the callback from then callback map
 
-                        json result
+                        let result =  Callbacks.CallbackHandler.getResponseObject inputs (unbox handler) //evaluate the handler function and get the response to send to the client
+
+                        json result //return serialized result of the handler function
                     )
                 
             ]
