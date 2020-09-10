@@ -142,12 +142,12 @@ let testLayout =
 
 //define the callbacks to serve on app load via _dash-dependencies
 let testCallbacks = [
-    Callbacks.Callback.create 
+    DashDependency.create 
         true 
         None
         [|
-            Callbacks.Input.create ("input-x","value")
-            Callbacks.Input.create ("input-y","value")
+            Input.create ("input-x","value")
+            Input.create ("input-y","value")
         |]
         "test-output.children"
         [||]
@@ -156,20 +156,24 @@ let testCallbacks = [
 //this callback should add the values from the "input-x" and "input-x" components
 //The callback definition here resembles the @app.callback decorator
 let testCallbackHandler =
-    Callbacks.CallbackHandler.create
+    Callback.create
         [|
-            Callbacks.Input.create ("input-x","value")
-            Callbacks.Input.create ("input-y","value")
+            Input.create ("input-x","value")
+            Input.create ("input-y","value")
         |]
-        (Callbacks.Output.create ("test-output","children"))
+        (Output.create ("test-output","children"))
         (fun (x:float) (y:float) -> sprintf "F# says:%f" (x+y))
+
+let app =
+    DashApp.initDefault()
+    |> DashApp.withCallbackHandler("test-output.children",testCallbackHandler)
 
 
 //Set upc a callback map to store all callbacks
 //This should be a proper type.
 let callbackMap = 
-    Callbacks.CallbackMap ()
-    |> Callbacks.CallbackMap.registerCallbackHandler "test-output.children" testCallbackHandler
+    CallbackMap ()
+    |> CallbackMap.registerCallback "test-output.children" testCallbackHandler
 
 
 // ---------------------------------
@@ -186,7 +190,7 @@ let webApp =
 
                 //Dash GET enpoints
                 route "/_dash-layout"       >=> json testLayout     //Calls from Dash renderer for what components to render (must return serialized dash components)
-                route "/_dash-dependencies" >=> json testCallbacks  //Serves callback bindings as json on app start.
+                route "/_dash-dependencies" >=> json app.Dependencies  //Serves callback bindings as json on app start.
                 route "/_reload-hash"       >=> json obj            //This call is done when using hot reload.
             ]
 
@@ -194,14 +198,14 @@ let webApp =
             choose [
                 //Dash POST endpoints
                 route "/_dash-update-component" //calls from callbacks come in here.
-                    >=> bindJson ( fun (cbRequest:Callbacks.CallbackRequest) -> 
+                    >=> bindJson ( fun (cbRequest:CallbackRequest) -> 
 
                         let inputs = cbRequest.Inputs |> Array.map (fun reqInput -> box reqInput.Value) //generate argument list for the callback
 
                         let result = 
-                            callbackMap
-                            |> Callbacks.CallbackMap.getPackedCallbackHandlerById (cbRequest.Output) //get the callback from then callback map
-                            |> Callbacks.CallbackHandler.getResponseObject inputs //evaluate the handler function and get the response to send to the client
+                            app.Callbacks
+                            |> CallbackMap.getPackedCallbackById (cbRequest.Output) //get the callback from then callback map
+                            |> Callback.getResponseObject inputs //evaluate the handler function and get the response to send to the client
 
                         json result //return serialized result of the handler function
                     )

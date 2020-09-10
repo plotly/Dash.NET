@@ -9,7 +9,8 @@
     <Compile Include="CoreComponents.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Callback.fs" />
-    <Compile Include="Dash.fs" />
+    <Compile Include="DashConfig.fs" />
+    <Compile Include="DashApp.fs" />
   </ItemGroup>
 
   <ItemGroup>
