@@ -176,23 +176,18 @@ let callbackMap =
 // Web app
 // ---------------------------------
 
-let indexHandler (name : string) =
-    let greetings = sprintf "Hello %s, from Giraffe!" name
-    htmlView Views.defaultIndex
 
 let webApp =
     choose [
         GET >=>
             choose [
                 //serve the index
-                route "/" >=> indexHandler "world"
+                route "/" >=> htmlView Views.defaultIndex
 
                 //Dash GET enpoints
                 route "/_dash-layout"       >=> json testLayout     //Calls from Dash renderer for what components to render (must return serialized dash components)
                 route "/_dash-dependencies" >=> json testCallbacks  //Serves callback bindings as json on app start.
                 route "/_reload-hash"       >=> json obj            //This call is done when using hot reload.
-
-                routef "/hello/%s" indexHandler
             ]
 
         POST >=> 
@@ -201,13 +196,11 @@ let webApp =
                 route "/_dash-update-component" //calls from callbacks come in here.
                     >=> bindJson ( fun (cbRequest:Callbacks.CallbackRequest) -> 
 
-                        let changedProps = cbRequest.changedPropIds //To-Do ordering of the arguments in the list is important and should be validated via property names.
-
-                        let inputs = cbRequest.inputs |> Array.map (fun x -> box x.value) //generate argument list for the callback
+                        let inputs = cbRequest.Inputs |> Array.map (fun reqInput -> box reqInput.Value) //generate argument list for the callback
 
                         let result = 
                             callbackMap
-                            |> Callbacks.CallbackMap.getPackedCallbackHandlerById (cbRequest.output) //get the callback from then callback map
+                            |> Callbacks.CallbackMap.getPackedCallbackHandlerById (cbRequest.Output) //get the callback from then callback map
                             |> Callbacks.CallbackHandler.getResponseObject inputs //evaluate the handler function and get the response to send to the client
 
                         json result //return serialized result of the handler function
