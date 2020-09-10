@@ -167,9 +167,9 @@ let testCallbackHandler =
 
 //Set upc a callback map to store all callbacks
 //This should be a proper type.
-let callbackMap = DynamicObj ()
-
-callbackMap?("test-output.children") <- (testCallbackHandler |> Callbacks.CallbackHandler.pack)
+let callbackMap = 
+    Callbacks.CallbackMap ()
+    |> Callbacks.CallbackMap.registerCallbackHandler "test-output.children" testCallbackHandler
 
 
 // ---------------------------------
@@ -205,9 +205,10 @@ let webApp =
 
                         let inputs = cbRequest.inputs |> Array.map (fun x -> box x.value) //generate argument list for the callback
 
-                        let handler = callbackMap?(cbRequest.output) //get the callback from then callback map
-
-                        let result =  Callbacks.CallbackHandler.getResponseObject inputs (unbox handler) //evaluate the handler function and get the response to send to the client
+                        let result = 
+                            callbackMap
+                            |> Callbacks.CallbackMap.getPackedCallbackHandlerById (cbRequest.output) //get the callback from then callback map
+                            |> Callbacks.CallbackHandler.getResponseObject inputs //evaluate the handler function and get the response to send to the client
 
                         json result //return serialized result of the handler function
                     )

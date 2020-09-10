@@ -109,3 +109,22 @@ module Callbacks =
                 root
                 
             | Error e -> failwith e.Message
+
+    type CallbackMap () =
+        inherit DynamicObj()
+
+        static member registerCallbackHandler (callbackId:string) (callbackHandler:CallbackHandler<'Function>) (callbackMap:CallbackMap) = 
+            callbackMap?(callbackId) <- (CallbackHandler.pack callbackHandler)
+            callbackMap
+
+        static member unregisterCallbackHandler (callbackId:string) (callbackMap:CallbackMap) =
+            match (callbackMap.TryGetTypedValue<CallbackHandler<obj>> callbackId) with
+            |Some _ -> 
+                callbackMap.Remove(callbackId) |> ignore
+                callbackMap
+            |None -> callbackMap
+
+        static member getPackedCallbackHandlerById (callbackId:string) (callbackMap:CallbackMap) : CallbackHandler<obj> =
+            match (callbackMap.TryGetTypedValue<CallbackHandler<obj>> callbackId) with
+            |Some cHandler -> cHandler
+            |None -> failwithf "No callback handler registered for id %s" callbackId
