@@ -1,7 +1,10 @@
 ﻿namespace Dash.NET
 
+open Views
+
 type DashApp =
     {
+        Index: IndexView
         Config: DashConfig
         Callbacks: CallbackMap
         Dependencies: DashDependency list
@@ -9,14 +12,24 @@ type DashApp =
 
     static member initDefault() =
         {
-            Config = Defaults.defaultConfig
+            Config = DashConfig.initDefault()
             Callbacks = CallbackMap()
             Dependencies = []
+            Index = IndexView.initDefault()
         }
 
     static member initDefaultWith (initializer: DashApp -> DashApp) = DashApp.initDefault () |> initializer
 
-    static member withConfig (config: DashConfig) (app: DashApp) = { app with Config = config }
+    static member withConfig (config: DashConfig) (app: DashApp) = 
+        { app with 
+            Config = config 
+            Index = app.Index |> IndexView.withConfig config
+        }
+
+    static member withIndex (index:IndexView) (app:DashApp) =
+        { app with 
+            Index = index |> IndexView.withConfig app.Config
+        }
 
     static member withCallbackHandler (callbackId: string, callback: Callback<'Function>) (app: DashApp) =
         
@@ -40,3 +53,6 @@ type DashApp =
                     cMap
                     |> CallbackMap.registerCallback cId cHandler) app.Callbacks
         }
+
+    static member getIndexHTML (app:DashApp) =
+        app.Index |> IndexView.toHTMLComponent

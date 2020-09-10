@@ -10,11 +10,13 @@
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Callback.fs" />
     <Compile Include="DashConfig.fs" />
+    <Compile Include="Views.fs" />
     <Compile Include="DashApp.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FSharp.Plotly" Version="2.0.0-alpha" />
+    <PackageReference Include="Giraffe" Version="4.1.0" />
   </ItemGroup>
 
 </Project>
