@@ -1,10 +1,11 @@
 ﻿namespace Dash.NET
 
-[<RequireQualifiedAccess>]
+
 module DCC = 
     
-    //These are placeholders and will be replaced by proper generated components
+    open Giraffe.GiraffeViewEngine
 
+    //These are placeholders and will be replaced by proper generated components
     open FSharp.Plotly
     open Newtonsoft.Json
 
@@ -13,7 +14,7 @@ module DCC =
         layout      : Layout
         frames      : seq<obj>
     }
-    with 
+    with
         static member ofGenericChart (gChart:GenericChart.GenericChart) =
             
             let traces = GenericChart.getTraces gChart 
@@ -30,10 +31,10 @@ module DCC =
         figure  : PlotlyFigure
     }
     with 
-        static member ofGenericChart (gChart:GenericChart.GenericChart) =
+        static member ofGenericChart id (gChart:GenericChart.GenericChart) =
             
             {
-                id          = System.Guid.NewGuid().ToString()
+                id          = id
                 figure      = PlotlyFigure.ofGenericChart gChart
             }
 
@@ -49,8 +50,23 @@ module DCC =
 
     let graph id figure = {id = id; figure=figure}
 
+    //[<RequireQualifiedAccess>]
+    //module Input =
 
     type Input () = inherit DynamicObj()
+        
+    //    type Option =
+    //        | Id of string
+    //        | Value of obj
+
+    //        static member convertToField (option:Option) =
+    //            match option with
+    //            | Id i -> "id", box i
+    //            | Value v -> "value",v
+                
+    //    let input (options: seq<Option>) (children:seq<obj>) =
+            
+
 
     let input (id:string) value (_type:string) = 
 
@@ -67,3 +83,4 @@ module DCC =
         i?("type") <- "Input"
 
         i
+

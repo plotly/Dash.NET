@@ -12,35 +12,11 @@ open Giraffe
 open Giraffe.ModelBinding
 open Dash.NET
 
-// ---------------------------------
-// Models
-// ---------------------------------
-
-type Message =
-    {
-        Text : string
-    }
-
-// ---------------------------------
-// Views
-// ---------------------------------
-
-module Views =
-    open GiraffeViewEngine
-    open Dash
-
-    // ---------------------------------
-    // HTML backbone of the Dash application
-    // should be refactored into a core library
-    // ---------------------------------
-
-
 // --------------------
 // Set up the dash app components
 // --------------------
-
-
 //Create a plotly graph component from a FSharp.Plotly chart object
+
 open FSharp.Plotly
 
 //set up and style the chart
@@ -48,15 +24,15 @@ open FSharp.Plotly
 let presetAxis title = Axis.LinearAxis.init(Title=title,Mirror=StyleParam.Mirror.All,Ticks=StyleParam.TickOptions.Inside,Showgrid=false,Showline=true,Zeroline=true)
 let applyPresetStyle xName yName chart = chart |> Chart.withX_Axis (presetAxis xName) |> Chart.withY_Axis (presetAxis yName)
 
-let rndData = 
+let rndData amnt = 
     let rnd = System.Random()
-    [for i in [0 .. 100] do yield (rnd.NextDouble(),rnd.NextDouble())]
+    [for i in [1 .. amnt] do yield (rnd.NextDouble(),rnd.NextDouble())]
 
 //Generate the graph component
 
 let testGraph =
-    DCC.Graph.ofGenericChart(
-        Chart.Point(rndData)
+    DCC.Graph.ofGenericChart "testGraph" (
+        Chart.Point(rndData 1)
         |> applyPresetStyle "xAxis" "yAxis"
         |> Chart.withSize (1000.,1000.)
     )
@@ -67,24 +43,9 @@ let testLayout =
 
     HTMLComponents.div "testDiv" [
         box (HTMLComponents.title "test-title" [box "Hello Dash From F#!"])
-        box (DCC.input "input-x" 1 "number")
-        box (DCC.input "input-y" 1 "number")
-        box (HTMLComponents.div "test-output" [box "Sum will be here"])
+        box (HTMLComponents.div "test-title2" [box "How many random points to render?"])
+        box (DCC.input "test-input" 1 "number")
         box (testGraph |> DCC.Graph.toComponentJson)
-    ]
-
-
-//define the callbacks to serve on app load via _dash-dependencies
-let testCallbacks = [
-    DashDependency.create 
-        true 
-        None
-        [|
-            Input.create ("input-x","value")
-            Input.create ("input-y","value")
-        |]
-        "test-output.children"
-        [||]
     ]
 
 //this callback should add the values from the "input-x" and "input-x" components
@@ -92,15 +53,21 @@ let testCallbacks = [
 let testCallbackHandler =
     Callback.create
         [|
-            Input.create ("input-x","value")
-            Input.create ("input-y","value")
+            Input.create ("test-input","value")
         |]
-        (Output.create ("test-output","children"))
-        (fun (x:float) (y:float) -> sprintf "F# says:%f" (x+y))
+        (Output.create ("testGraph","figure"))
+        (fun (amnt:int64) -> 
+            let amnt' = if (int amnt < 0) then 0 else (int amnt)
+            let data = rndData amnt'
+            Chart.Point(data)
+            |> applyPresetStyle "xAxis" "yAxis"
+            |> Chart.withSize (1000.,1000.)
+            |> DCC.PlotlyFigure.ofGenericChart
+        )
 
 let app =
     DashApp.initDefault()
-    |> DashApp.withCallbackHandler("test-output.children",testCallbackHandler)
+    |> DashApp.withCallbackHandler("testGraph.figure",testCallbackHandler)
 
 // ---------------------------------
 // Web app
