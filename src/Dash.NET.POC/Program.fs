@@ -65,47 +65,10 @@ let testCallbackHandler =
             |> DCC.PlotlyFigure.ofGenericChart
         )
 
-let app =
+let myDashApp =
     DashApp.initDefault()
+    |> DashApp.withLayout testLayout
     |> DashApp.withCallbackHandler("testGraph.figure",testCallbackHandler)
-
-// ---------------------------------
-// Web app
-// ---------------------------------
-
-
-let webApp =
-    choose [
-        GET >=>
-            choose [
-                //serve the index
-                route "/" >=> htmlView (app |> DashApp.getIndexHTML)
-
-                //Dash GET enpoints
-                route "/_dash-layout"       >=> json testLayout     //Calls from Dash renderer for what components to render (must return serialized dash components)
-                route "/_dash-dependencies" >=> json app.Dependencies  //Serves callback bindings as json on app start.
-                route "/_reload-hash"       >=> json obj            //This call is done when using hot reload.
-            ]
-
-        POST >=> 
-            choose [
-                //Dash POST endpoints
-                route "/_dash-update-component" //calls from callbacks come in here.
-                    >=> bindJson ( fun (cbRequest:CallbackRequest) -> 
-
-                        let inputs = cbRequest.Inputs |> Array.map (fun reqInput -> box reqInput.Value) //generate argument list for the callback
-
-                        let result = 
-                            app.Callbacks
-                            |> CallbackMap.getPackedCallbackById (cbRequest.Output) //get the callback from then callback map
-                            |> Callback.getResponseObject inputs //evaluate the handler function and get the response to send to the client
-
-                        json result //return serialized result of the handler function
-                    )
-                
-            ]
-        setStatusCode 404 >=> text "Not Found" 
-    ]
 
 // ---------------------------------
 // Error handler
@@ -133,7 +96,7 @@ let configureApp (app : IApplicationBuilder) =
         .UseHttpsRedirection()
         .UseCors(configureCors)
         .UseStaticFiles()
-        .UseGiraffe(webApp)
+        .UseGiraffe(DashApp.toWebApp myDashApp)
 
 let configureServices (services : IServiceCollection) =
     services.AddCors()    |> ignore
