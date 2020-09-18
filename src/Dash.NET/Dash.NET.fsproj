@@ -7,6 +7,9 @@
   <ItemGroup>
     <Compile Include="HTMLComponents.fs" />
     <Compile Include="CoreComponents.fs" />
+    <Compile Include="DashComponents\ComponentBase.fs" />
+    <Compile Include="DashComponents\HTMLComponents\Div.fs" />
+    <Compile Include="DashComponents\CoreComponents\Input.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Callback.fs" />
     <Compile Include="DashConfig.fs" />
@@ -15,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FSharp.Plotly" Version="2.0.0-alpha" />
     <PackageReference Include="Giraffe" Version="4.1.0" />
+    <PackageReference Include="Plotly.NET" Version="2.0.0-alpha2" />
   </ItemGroup>
 
 </Project>

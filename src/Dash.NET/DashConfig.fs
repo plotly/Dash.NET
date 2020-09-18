@@ -1,7 +1,7 @@
 ﻿namespace Dash.NET
 
-open FSharp.Plotly
 open Newtonsoft.Json
+open Plotly.NET
 
 type HotReloadSettings =
     {

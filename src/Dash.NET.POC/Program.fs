@@ -15,9 +15,10 @@ open Dash.NET
 // --------------------
 // Set up the dash app components
 // --------------------
-//Create a plotly graph component from a FSharp.Plotly chart object
+//Create a plotly graph component from a Plotly.NET chart object
 
-open FSharp.Plotly
+open Plotly.NET
+open Dash.NET
 
 //set up and style the chart
 
@@ -48,14 +49,15 @@ let testLayout =
         box (testGraph |> DCC.Graph.toComponentJson)
     ]
 
+
 //this callback should add the values from the "input-x" and "input-x" components
 //The callback definition here resembles the @app.callback decorator
 let testCallbackHandler =
     Callback.create
         [|
-            Input.create ("test-input","value")
+            CallbackInput.create ("test-input","value")
         |]
-        (Output.create ("testGraph","figure"))
+        (CallbackOutput.create ("testGraph","figure"))
         (fun (amnt:int64) -> 
             let amnt' = if (int amnt < 0) then 0 else (int amnt)
             let data = rndData amnt'
@@ -65,10 +67,36 @@ let testCallbackHandler =
             |> DCC.PlotlyFigure.ofGenericChart
         )
 
+open Dash.NET.DCC_DSL
+open Dash.NET.HTML_DSL
+open HTMLPropTypes
+open ComponentPropTypes
+
+let dslLayout =
+    Div.div "myDiv-1" [ClassName "I am A Div"] [
+        Input.input "myInput-1" [
+            Input.ClassName "Hi"
+            Input.Name "My Name Is"
+            Input.Type InputType.Text
+        ] []
+        Div.div "myDiv-2" [ClassName "I am A Div"] [
+        ]
+    ]
+    
+let dslCallback =
+    Callback.create
+        [|
+            CallbackInput.create ("myInput-1","value")
+        |]
+        (CallbackOutput.create ("myDiv-2","children"))
+        (fun (i:string) -> 
+            sprintf "You Typed:%s" i
+        )
+
 let myDashApp =
     DashApp.initDefault()
-    |> DashApp.withLayout testLayout
-    |> DashApp.withCallbackHandler("testGraph.figure",testCallbackHandler)
+    |> DashApp.withLayout dslLayout
+    |> DashApp.withCallbackHandler("myDiv-2.children",dslCallback)
 
 // ---------------------------------
 // Error handler

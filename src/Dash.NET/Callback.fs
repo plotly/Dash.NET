@@ -1,6 +1,6 @@
 ﻿namespace Dash.NET
 
-open FSharp.Plotly
+open Plotly.NET
 open Newtonsoft.Json
 open DynamicInvoke
 
@@ -14,9 +14,9 @@ type Dependency =
     static member create(id, property) = { Id = id; Property = property }
     static member toCompositeId (d:Dependency) = sprintf "%s.%s" d.Id d.Property
 
-type Input = Dependency
-type Output = Dependency
-type State = Dependency
+type CallbackInput = Dependency
+type CallbackOutput = Dependency
+type CallbackState = Dependency
 
 type ClientSideFunction =
     {
@@ -35,11 +35,11 @@ type DashDependency =
         [<JsonProperty("clientside_function")>]
         ClientsideFunction: ClientSideFunction option
         [<JsonProperty("inputs")>]
-        Inputs: Input []
+        Inputs: CallbackInput []
         [<JsonProperty("output")>]
         Output: string
         [<JsonProperty("state")>]
-        State: State []
+        State: CallbackState []
     }
     static member create preventInitialCall clientsideFunction inputs output state =
         {
@@ -67,7 +67,7 @@ type CallbackRequest =
         [<JsonProperty("output")>]
         Output: string
         [<JsonProperty("outputs")>]
-        Outputs: Output
+        Outputs: CallbackOutput
         [<JsonProperty("changedPropIds")>]
         ChangedPropIds: string []
         [<JsonProperty("inputs")>]
@@ -77,8 +77,8 @@ type CallbackRequest =
 //Central type for Callbacks. Creating an instance of this type and registering it on the callback map is the equivalent of the @app.callback decorator in python.
 type Callback<'Function> =
     {
-        Inputs: Input []
-        Output: Output
+        Inputs: CallbackInput []
+        Output: CallbackOutput
         HandlerFunction: 'Function
     }
     static member create inputs output (handler: 'Function) =
@@ -103,7 +103,7 @@ type Callback<'Function> =
 
     //returns the dash dependency to serve the client on app start via _dash-dependencies´from the given Callback
     static member toDashDependency (handler: Callback<'Function>) : DashDependency = 
-        DashDependency.createWithDefaults handler.Inputs (Output.toCompositeId handler.Output) 
+        DashDependency.createWithDefaults handler.Inputs (CallbackOutput.toCompositeId handler.Output) 
 
     //returns the response object to send as response to a request to _dash-update-component that triggered this callback
     static member getResponseObject (args: seq<obj>) (handler: Callback<'Function>) =

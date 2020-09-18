@@ -2,6 +2,10 @@
 
 open Giraffe
 open Views
+open Plotly.NET
+open System 
+open System.Collections.Generic
+open System.Runtime.InteropServices
 
 type DashApp =
     {

@@ -6,7 +6,7 @@ module DCC =
     open Giraffe.GiraffeViewEngine
 
     //These are placeholders and will be replaced by proper generated components
-    open FSharp.Plotly
+    open Plotly.NET
     open Newtonsoft.Json
 
     type PlotlyFigure = {
@@ -50,23 +50,10 @@ module DCC =
 
     let graph id figure = {id = id; figure=figure}
 
-    //[<RequireQualifiedAccess>]
-    //module Input =
+    open System
+    open System.Runtime.InteropServices
 
-    type Input () = inherit DynamicObj()
-        
-    //    type Option =
-    //        | Id of string
-    //        | Value of obj
-
-    //        static member convertToField (option:Option) =
-    //            match option with
-    //            | Id i -> "id", box i
-    //            | Value v -> "value",v
-                
-    //    let input (options: seq<Option>) (children:seq<obj>) =
-            
-
+    type Input() = inherit DynamicObj()
 
     let input (id:string) value (_type:string) = 
 
