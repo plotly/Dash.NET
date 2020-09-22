@@ -1,10 +1,10 @@
 # plotly/plotly.net:ci
 
-#### This Dockerfile is currently used to support integration and unit tests in the [Dash.NET](https://github.com/plotly/Dash.NET) repository.
+#### This Dockerfile is currently used to support integration and unit tests in the [Dash.NET](https://github.com/plotly/Dash.NET) and [Plotly.NET](https://github.com/plotly/Plotly.NET) repositories.
 
 ## Usage
 
-This image is pulled from within Dash.NET's [config.yml](https://github.com/plotly/Dash.NET/blob/dev/.circleci/config.yml):
+This image is pulled from within the respective project's [config.yml](https://github.com/plotly/Plotly.NET/blob/dev/.circleci/config.yml) as follows:
 
 ```yaml
     docker:
