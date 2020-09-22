@@ -118,7 +118,7 @@ module Input =
                 ?NSubmitTimestamp    : IConvertible,
                 ?NBlur               : IConvertible,
                 ?NBlurTimestamp      : IConvertible,
-                ?SetPtops            : obj,
+                ?SetProps            : obj,
                 ?LoadingState        : LoadingState,
                 ?Persistence         : IConvertible,
                 ?PersistedProps      : string [],
@@ -161,7 +161,7 @@ module Input =
                     NSubmitTimestamp    |> DynObj.setValueOpt props "n_submit_timestamp"
                     NBlur               |> DynObj.setValueOpt props "n_blur"
                     NBlurTimestamp      |> DynObj.setValueOpt props "n_blur_timestamp"
-                    SetPtops            |> DynObj.setValueOpt props "setProps"
+                    SetProps            |> DynObj.setValueOpt props "setProps"
                     LoadingState        |> DynObj.setValueOpt props "loading_state"
                     Persistence         |> DynObj.setValueOpt props "persistence"
                     PersistedProps      |> DynObj.setValueOpt props "persisted_props"
@@ -249,7 +249,7 @@ module Input =
                         ?NSubmitTimestamp    = NSubmitTimestamp  ,
                         ?NBlur               = NBlur             ,
                         ?NBlurTimestamp      = NBlurTimestamp    ,
-                        ?SetPtops            = SetPtops          ,
+                        ?SetProps            = SetPtops          ,
                         ?LoadingState        = LoadingState      ,
                         ?Persistence         = Persistence       ,
                         ?PersistedProps      = PersistedProps    ,

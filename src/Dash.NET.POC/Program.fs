@@ -31,41 +31,11 @@ let rndData amnt =
 
 //Generate the graph component
 
-let testGraph =
-    DCC.Graph.ofGenericChart "testGraph" (
-        Chart.Point(rndData 1)
-        |> applyPresetStyle "xAxis" "yAxis"
-        |> Chart.withSize (1000.,1000.)
-    )
+let testChart = 
+    Chart.Point(rndData 1)
+    |> applyPresetStyle "xAxis" "yAxis"
+    |> Chart.withSize (1000.,1000.)
 
-//define the layout of the dash app.
-//All components could be generated to match the Giraffe.ViewEngine DSL for html elements.
-let testLayout =
-
-    HTMLComponents.div "testDiv" [
-        box (HTMLComponents.title "test-title" [box "Hello Dash From F#!"])
-        box (HTMLComponents.div "test-title2" [box "How many random points to render?"])
-        box (DCC.input "test-input" 1 "number")
-        box (testGraph |> DCC.Graph.toComponentJson)
-    ]
-
-
-//this callback should add the values from the "input-x" and "input-x" components
-//The callback definition here resembles the @app.callback decorator
-let testCallbackHandler =
-    Callback.create
-        [|
-            CallbackInput.create ("test-input","value")
-        |]
-        (CallbackOutput.create ("testGraph","figure"))
-        (fun (amnt:int64) -> 
-            let amnt' = if (int amnt < 0) then 0 else (int amnt)
-            let data = rndData amnt'
-            Chart.Point(data)
-            |> applyPresetStyle "xAxis" "yAxis"
-            |> Chart.withSize (1000.,1000.)
-            |> DCC.PlotlyFigure.ofGenericChart
-        )
 
 open Dash.NET.DCC_DSL
 open Dash.NET.HTML_DSL
@@ -75,15 +45,27 @@ open ComponentPropTypes
 let dslLayout =
     Div.div "myDiv-1" [ClassName "I am A Div"] [
         Input.input "myInput-1" [
+            Input.Type InputType.Text
             Input.ClassName "Hi"
             Input.Name "My Name Is"
-            Input.Type InputType.Text
+            Input.Value "Slim Shady"
         ] []
         Div.div "myDiv-2" [ClassName "I am A Div"] [
         ]
+        Input.input "graphChanger" [
+            Input.Type InputType.Number
+        ] []
+
+        Div.div "GrapContainer" [] [
+            Graph.graph "testGraph" [
+                Graph.Figure (GenericChart.toFigure testChart)
+                Graph.Config (GenericChart.getConfig testChart)
+                Graph.Animate true
+            ] []
+        ]
     ]
-    
-let dslCallback =
+
+let dslCallback1 =
     Callback.create
         [|
             CallbackInput.create ("myInput-1","value")
@@ -91,12 +73,29 @@ let dslCallback =
         (CallbackOutput.create ("myDiv-2","children"))
         (fun (i:string) -> 
             sprintf "You Typed:%s" i
+        )    
+
+let dslCallback2 =
+    Callback.create
+        [|
+            CallbackInput.create ("graphChanger","value")
+        |]
+        (CallbackOutput.create ("testGraph","figure"))
+        (fun (amnt:int64) -> 
+            let amnt' = if (int amnt < 0) then 0 else (int amnt)
+            let data = rndData amnt'
+            Chart.Point(data)
+            |> applyPresetStyle "xAxis" "yAxis"
+            |> Chart.withSize (1000.,1000.)
+            |> GenericChart.toFigure
         )
 
 let myDashApp =
     DashApp.initDefault()
     |> DashApp.withLayout dslLayout
-    |> DashApp.withCallbackHandler("myDiv-2.children",dslCallback)
+    |> DashApp.withCallbackHandler("myDiv-2.children",dslCallback1)
+    |> DashApp.withCallbackHandler("testGraph.figure",dslCallback2)
+
 
 // ---------------------------------
 // Error handler
