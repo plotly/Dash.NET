@@ -1,4 +1,12 @@
-﻿namespace Dash.NET.DCC_DSL
+﻿//---
+//ComponentName: Input
+//camelCaseComponentName: input
+//ComponentChar: i
+//ComponentNamespace: dash_core_components
+//ComponentType}: Input
+//---
+
+namespace Dash.NET.DCC_DSL
 
 open Dash.NET
 open System

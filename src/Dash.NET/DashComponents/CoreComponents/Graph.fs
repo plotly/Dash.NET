@@ -1,4 +1,13 @@
-﻿namespace Dash.NET.DCC_DSL
+﻿//---
+//ComponentName: Graph
+//camelCaseComponentName: graph
+//ComponentChar: g
+//ComponentNamespace: dash_core_components
+//ComponentType: Graph
+//---
+
+
+namespace Dash.NET.DCC_DSL
 
 open Dash.NET
 open System
