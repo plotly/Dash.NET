@@ -9,6 +9,7 @@
     <Compile Include="CoreComponents.fs" />
     <Compile Include="DashComponents\ComponentBase.fs" />
     <Compile Include="DashComponents\HTMLComponents\Div.fs" />
+    <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DashComponents\CoreComponents\Graph.fs" />
     <Compile Include="DashComponents\CoreComponents\Input.fs" />
     <Compile Include="DynamicInvoke.fs" />
@@ -16,7 +17,10 @@
     <Compile Include="DashConfig.fs" />
     <Compile Include="Views.fs" />
     <Compile Include="DashApp.fs" />
+    <None Include="DashComponents\CoreComponents\Readme.md" />
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Giraffe" Version="4.1.0" />

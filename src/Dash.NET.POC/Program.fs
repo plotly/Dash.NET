@@ -48,10 +48,14 @@ let dslLayout =
             Input.Type InputType.Text
             Input.ClassName "Hi"
             Input.Name "My Name Is"
-            Input.Value "Slim Shady"
+            Input.Value "Hi From F# type something else to see a callback in action"
         ] []
         Div.div "myDiv-2" [ClassName "I am A Div"] [
         ]
+        Upload.upload "dataUpload" [
+            Upload.Accept "txt"
+            Upload.Filename (UploadFileName.SingleFile "Pls Upload A File")
+        ] []
         Input.input "graphChanger" [
             Input.Type InputType.Number
         ] []
