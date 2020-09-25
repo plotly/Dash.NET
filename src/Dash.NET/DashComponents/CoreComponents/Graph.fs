@@ -31,7 +31,7 @@ module Graph =
         | ExtendData of obj
         | PrependData of obj
         | RestyleData of obj
-        | Style of obj
+        | Style of DashComponentStyle
         | ClassName of string
         | Animate of bool
         | AnimationOptions of obj

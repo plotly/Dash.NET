@@ -2,15 +2,59 @@
 
 open Newtonsoft.Json
 open Plotly.NET
+open System.Runtime.InteropServices
+type DashComponent
+    (
+        [<Optional;DefaultParameterValue(false)>]IsRawString:bool
+    ) = 
+    inherit DynamicObj()
+    new() = DashComponent(false)
+    [<JsonIgnore()>] member internal _.IsRawString = IsRawString
+    
+    static member internal transformChildren (children:seq<DashComponent>) =
 
-type DashComponent() = inherit DynamicObj()
+        let getInnerHTML (c:DashComponent) = 
+            match c.TryGetTypedValue<string>("innerHTML") with
+            | Some s -> s
+            | None -> ""
+        
+        let components = 
+            children
+            |> List.ofSeq 
+            |> List.filter (fun x -> not x.IsRawString)
+
+        let rawStrings = 
+            children
+            |> List.ofSeq 
+            |> List.filter (fun x -> x.IsRawString)
+
+        let hasComponents,isSingleRawString =
+            components.Length > 0,
+            rawStrings.Length = 1
+
+        if hasComponents then
+            components |> box
+        elif isSingleRawString then
+            rawStrings 
+            |> List.exactlyOne 
+            |> getInnerHTML
+            |> box
+        else
+            rawStrings
+            |> List.map getInnerHTML
+            |> String.concat "\r\n"
+            |> box
+
+
+
+
 
 type DashComponentStyle() = inherit DynamicObj()
 
 type DashComponentProps() = inherit DynamicObj()
 
 module ComponentPropTypes = 
-    
+
     type InputType =
         | Text
         | Number
@@ -89,7 +133,11 @@ module HTMLPropTypes =
 
     type HTMLProps =
         | ClassName of string
+        | Style of DashComponentStyle
+        | Custom of (string*obj)
     
         static member toDynamicMemberDef (prop:HTMLProps) =
             match prop with
             | ClassName p -> "className", box p
+            | Style p -> "style", box p
+            | Custom p -> p

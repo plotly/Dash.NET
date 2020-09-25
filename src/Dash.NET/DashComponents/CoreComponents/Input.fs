@@ -3,7 +3,7 @@
 //camelCaseComponentName: input
 //ComponentChar: i
 //ComponentNamespace: dash_core_components
-//ComponentType}: Input
+//ComponentType: Input
 //---
 
 namespace Dash.NET.DCC_DSL

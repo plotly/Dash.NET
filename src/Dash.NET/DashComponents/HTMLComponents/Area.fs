@@ -1,9 +1,9 @@
 //---
-//ComponentName: Div
-//camelCaseComponentName: div
-//ComponentChar: d
+//ComponentName: Area
+//camelCaseComponentName: area
+//ComponentChar: a
 //ComponentNamespace: dash_html_components
-//ComponentType: Div
+//ComponentType: Area
 //LibraryNamespace: Dash.NET.HTML_DSL
 //---
 
@@ -15,9 +15,9 @@ open Plotly.NET
 open HTMLPropTypes
 
 [<RequireQualifiedAccess>]
-module Div =
+module Area =
 
-    type Div() =
+    type Area() =
         inherit DashComponent()
         static member applyMembers
             (
@@ -27,7 +27,7 @@ module Div =
                 ?Style : DashComponentStyle
             ) =
             (
-                fun (d:Div) -> 
+                fun (a:Area) -> 
 
                     let props = DashComponentProps()
 
@@ -39,11 +39,11 @@ module Div =
                     ClassName |> DynObj.setValueOpt props "className"
                     Style |> DynObj.setValueOpt props "style"
 
-                    DynObj.setValue d "namespace" "dash_html_components"
-                    DynObj.setValue d "props" props
-                    DynObj.setValue d "type" "Div"
+                    DynObj.setValue a "namespace" "dash_html_components"
+                    DynObj.setValue a "props" props
+                    DynObj.setValue a "type" "Area"
 
-                    d
+                    a
 
             )
         static member init 
@@ -53,8 +53,8 @@ module Div =
                 ?ClassName,
                 ?Style
             ) = 
-                Div()
-                |> Div.applyMembers 
+                Area()
+                |> Area.applyMembers 
                     (
                         children,
                         ?Id = Id,
@@ -62,10 +62,10 @@ module Div =
                         ?Style = Style
                     )
 
-    let div (props:seq<HTMLProps>) (children:seq<DashComponent>) =
-        let d = Div.init(children)
+    let area (props:seq<HTMLProps>) (children:seq<DashComponent>) =
+        let a = Area.init(children)
         let componentProps = 
-            match (d.TryGetTypedValue<DashComponentProps>("props")) with
+            match (a.TryGetTypedValue<DashComponentProps>("props")) with
             | Some p -> p
             | None -> DashComponentProps()
         props
@@ -73,5 +73,5 @@ module Div =
             let fieldName,boxedProp = prop |> HTMLProps.toDynamicMemberDef
             boxedProp |> DynObj.setValue componentProps fieldName
         )
-        componentProps |> DynObj.setValue d "props" 
-        d :> DashComponent
+        componentProps |> DynObj.setValue a "props" 
+        a :> DashComponent

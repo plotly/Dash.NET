@@ -1,24 +1,13 @@
-﻿# Dash component DSL design notes
-
-### Common for all dash components:
-
-Backbone with placeholders:
- - `{ComponentName}` : Name of the components
- - `{camelCaseComponentName}` : camelCase Name of the components
- - `{ComponentChar}` : lowercase first character of the component name
- - `{ComponentNamespace}` : namespace of the dash component (e.g. `dash_core_components`)
- - `{ComponentType}` : type of the component (e.g. `Input`)
-
-```F#
-//---
+﻿//---
 //ComponentName: {ComponentName}
 //camelCaseComponentName: {camelCaseComponentName}
 //ComponentChar: {ComponentChar}
 //ComponentNamespace: {ComponentNamespace}
 //ComponentType: {ComponentType}
+//LibraryNamespace: {LibraryNamespace}
 //---
 
-namespace Dash.NET.DCC_DSL
+namespace {LibraryNamespace}
 
 open Dash.NET
 open System
@@ -40,17 +29,19 @@ module {ComponentName} =
             (
                 id : string,
                 children : seq<DashComponent>,
-                ?ClassName           : string
+                ?ClassName : string,
+                ?Style : DashComponentStyle
             ) =
             (
                 fun ({ComponentChar}:{ComponentName}) -> 
 
                     let props = DashComponentProps()
 
-                    id                  |> DynObj.setValue props "id"
-                    children            |> DynObj.setValue props "children"
-                    ClassName           |> DynObj.setValueOpt props "className"
-                    
+                    id |> DynObj.setValue props "id"
+                    children |> DynObj.setValue props "children"
+                    ClassName |> DynObj.setValueOpt props "className"
+                    Style |> DynObj.setValueOpt props "style"
+
                     DynObj.setValue {ComponentChar} "namespace" "{ComponentNamespace}"
                     DynObj.setValue {ComponentChar} "props" props
                     DynObj.setValue {ComponentChar} "type" "{ComponentType}"
@@ -62,14 +53,16 @@ module {ComponentName} =
             (
                 id,
                 children,
-                ?ClassName
+                ?ClassName,
+                ?Style
             ) = 
                 {ComponentName}()
                 |> {ComponentName}.applyMembers 
                     (
                         id,
                         children,
-                        ?ClassName = ClassName
+                        ?ClassName = ClassName,
+                        ?Style = Style
                     )
 
     let {camelCaseComponentName} (id:string) (props:seq<{ComponentName}Props>) (children:seq<DashComponent>) =
@@ -85,5 +78,3 @@ module {ComponentName} =
         )
         componentProps |> DynObj.setValue {ComponentChar} "props" 
         {ComponentChar} :> DashComponent
-```
-    

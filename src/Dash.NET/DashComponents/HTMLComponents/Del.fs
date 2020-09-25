@@ -1,9 +1,9 @@
 //---
-//ComponentName: Div
-//camelCaseComponentName: div
+//ComponentName: Del
+//camelCaseComponentName: del
 //ComponentChar: d
 //ComponentNamespace: dash_html_components
-//ComponentType: Div
+//ComponentType: Del
 //LibraryNamespace: Dash.NET.HTML_DSL
 //---
 
@@ -15,9 +15,9 @@ open Plotly.NET
 open HTMLPropTypes
 
 [<RequireQualifiedAccess>]
-module Div =
+module Del =
 
-    type Div() =
+    type Del() =
         inherit DashComponent()
         static member applyMembers
             (
@@ -27,7 +27,7 @@ module Div =
                 ?Style : DashComponentStyle
             ) =
             (
-                fun (d:Div) -> 
+                fun (d:Del) -> 
 
                     let props = DashComponentProps()
 
@@ -41,7 +41,7 @@ module Div =
 
                     DynObj.setValue d "namespace" "dash_html_components"
                     DynObj.setValue d "props" props
-                    DynObj.setValue d "type" "Div"
+                    DynObj.setValue d "type" "Del"
 
                     d
 
@@ -53,8 +53,8 @@ module Div =
                 ?ClassName,
                 ?Style
             ) = 
-                Div()
-                |> Div.applyMembers 
+                Del()
+                |> Del.applyMembers 
                     (
                         children,
                         ?Id = Id,
@@ -62,8 +62,8 @@ module Div =
                         ?Style = Style
                     )
 
-    let div (props:seq<HTMLProps>) (children:seq<DashComponent>) =
-        let d = Div.init(children)
+    let del (props:seq<HTMLProps>) (children:seq<DashComponent>) =
+        let d = Del.init(children)
         let componentProps = 
             match (d.TryGetTypedValue<DashComponentProps>("props")) with
             | Some p -> p

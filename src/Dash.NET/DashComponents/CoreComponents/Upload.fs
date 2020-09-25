@@ -52,7 +52,7 @@ module Upload =
        | ClassNameActive of string
        | ClassNameReject of string
        | ClassNameDisabled of string
-       | Style of obj
+       | Style of DashComponentStyle
        | StyleActive of obj
        | StyleReject of obj
        | StyleDisabled of obj
