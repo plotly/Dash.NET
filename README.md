@@ -1,35 +1,34 @@
 # Dash.NET
 
-F# interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps
+Dash.NET is a interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps - written in F# for .NET.
 
-Core libraries for Dash.NET are contained in the Dash.NET project. 
+This library is in an early development stage, but we showed that it works in principle: the [POC app]() is hosted on heroku [here]().
 
-A POC web app is located under Dash.NET.POC. It is a [Giraffe](https://github.com/giraffe-fsharp/Giraffe) web application, that uses the core library and giraffe to host a dash test application.
+#### Beta roadmap
 
-## Build and test the POC application
+please have a look at #4 for a summary of the state of the project and the roadmap for a beta release.
 
-### Windows
+#### Development
 
-Run the `build.bat` script in order to restore, build and test the application:
+To build the project and dev server application, run the `fake.cmd` script in order to restore and build 
 
+##### Windows
 ```
-> ./build.bat
-```
-
-### Linux/macOS
-
-Run the `build.sh` script in order to restore, build and test the application:
-
-```
-$ ./build.sh
+> ./fake.cmd build
 ```
 
-## Run the application
+##### Linux/MacOS
+```
+$ ./fake.sh build
+```
 
-After a successful build you can start the web application by executing the following command in your terminal:
+## Run the dev server application
+
+The dev server is useful to test new components/code. After a successful build 
+you can start the dev server application by executing the following command in your terminal:
 
 ```
-dotnet run -p src/Dash.NET.POC
+dotnet run -p ./dev/Dash.NET.Dev.fsproj
 ```
 
 After the application has started visit [https://localhost:5001/](https://localhost:5001/) or [http://localhost:5000/](http://localhost:5000/) in your preferred browser.

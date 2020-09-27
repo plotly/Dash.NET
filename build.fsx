@@ -75,6 +75,7 @@ let clean = BuildTask.create "Clean" [] {
 
 let build = BuildTask.create "Build" [clean.IfNeeded] {
     !! "src/**/*.*proj"
+    ++ "dev/*.*.proj"
     |> Seq.iter (Fake.DotNet.DotNet.build id)
 }
 
