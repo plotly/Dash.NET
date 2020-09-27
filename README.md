@@ -6,7 +6,7 @@ This library is in an early development stage, but we showed that it works in pr
 
 #### Beta roadmap
 
-please have a look at #4 for a summary of the state of the project and the roadmap for a beta release.
+please have a look at [#4](https://github.com/plotly/Dash.NET/issues/4) for a summary of the state of the project and the roadmap for a beta release.
 
 #### Development
 
