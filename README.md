@@ -2,7 +2,7 @@
 
 Dash.NET is a interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps - written in F# for .NET.
 
-This library is in an early development stage, but we showed that it works in principle: the [POC app]() is hosted on heroku [here]().
+This library is in an early development stage, but we showed that it works in principle: the [POC app](https://github.com/plotly/Dash.NET-POC-app) is hosted on heroku [here](http://dash-net-test.herokuapp.com/).
 
 #### Beta roadmap
 
