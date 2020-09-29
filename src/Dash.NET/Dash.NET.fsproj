@@ -5,8 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="HTMLComponents.fs" />
-    <Compile Include="CoreComponents.fs" />
     <None Include="DashComponents\htmlComponentBackbone.template" />
     <None Include="DashComponents\componentBackbone.template" />
     <None Include="DashComponents\Readme.md" />

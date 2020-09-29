@@ -4,10 +4,10 @@
 //ComponentChar: h
 //ComponentNamespace: dash_html_components
 //ComponentType: H2
-//LibraryNamespace: Dash.NET.HTML_DSL
+//LibraryNamespace: Dash.NET.HTML
 //---
 
-namespace Dash.NET.HTML_DSL
+namespace Dash.NET.HTML
 
 open Dash.NET
 open System

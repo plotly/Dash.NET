@@ -6,7 +6,7 @@
 //ComponentType: Upload
 //---
 
-namespace Dash.NET.DCC_DSL
+namespace Dash.NET.DCC
 
 open Dash.NET
 open System
