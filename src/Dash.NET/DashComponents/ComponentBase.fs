@@ -18,36 +18,14 @@ type DashComponent
             | Some s -> s
             | None -> ""
         
-        let components = 
-            children
-            |> List.ofSeq 
-            |> List.filter (fun x -> not x.IsRawString)
-
-        let rawStrings = 
-            children
-            |> List.ofSeq 
-            |> List.filter (fun x -> x.IsRawString)
-
-        let hasComponents,isSingleRawString =
-            components.Length > 0,
-            rawStrings.Length = 1
-
-        if hasComponents then
-            components |> box
-        elif isSingleRawString then
-            rawStrings 
-            |> List.exactlyOne 
-            |> getInnerHTML
-            |> box
-        else
-            rawStrings
-            |> List.map getInnerHTML
-            |> String.concat "\r\n"
-            |> box
-
-
-
-
+        children
+        |> List.ofSeq 
+        |> List.map (fun comp ->
+            if comp.IsRawString then
+                getInnerHTML comp |> box
+            else
+                box comp 
+        )
 
 type DashComponentStyle() = inherit DynamicObj()
 
