@@ -1,4 +1,4 @@
-﻿namespace Dash.NET.HTML_DSL
+﻿namespace Dash.NET.HTML
 
 open Dash.NET
 open System
