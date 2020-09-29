@@ -92,6 +92,42 @@ module Views =
 
         static member initDefaultWith (initializer:IndexView -> IndexView) = IndexView.initDefault() |> initializer
 
+        ///returns an IndexView with the given meta tags in place of the old.
+        static member withMetas (metas:seq<XmlNode>) (indexView:IndexView) =
+            {indexView with
+                Metas = metas
+            }
+
+        ///returns an IndexView with the given meta tag appended to the ones already in place.
+        static member addMetas (meta:seq<XmlNode>) (indexView:IndexView) =
+            {indexView with
+                Metas = Seq.append indexView.Metas  meta
+            }
+
+        ///returns an IndexView with the given css link tags in place of the old.
+        static member withCSSLinks (css:seq<XmlNode>) (indexView:IndexView) =
+            {indexView with
+                CSS = css
+            }
+
+        ///returns an IndexView with the given css link tag appended to the ones already in place.
+        static member addCSSLinks (css:seq<XmlNode>) (indexView:IndexView) =
+            {indexView with
+                CSS = Seq.append indexView.CSS css
+            }
+
+        ///returns an IndexView with the given script tags in place of the old.
+        static member withScripts (scripts:seq<XmlNode>) (indexView:IndexView) =
+            {indexView with
+                Scripts = scripts
+            }
+
+        ///returns an IndexView with the given script tag appended to the ones already in place.
+        static member addScripts (script:seq<XmlNode>) (indexView:IndexView) =
+            {indexView with
+                Scripts = Seq.append indexView.Scripts script
+            }
+
         static member withConfig (dashConfig:DashConfig) (indexView:IndexView) =
             {indexView with
                 Config = dashConfig

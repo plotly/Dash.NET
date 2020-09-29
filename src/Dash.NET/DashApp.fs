@@ -1,6 +1,7 @@
 ﻿namespace Dash.NET
 
 open Giraffe
+open GiraffeViewEngine
 open Views
 open Plotly.NET
 open System 
@@ -38,6 +39,29 @@ type DashApp =
         { app with 
             Index = index |> IndexView.withConfig app.Config
         }
+
+    static member mapIndex (f: IndexView -> IndexView) (app:DashApp) =
+        { app with 
+            Index = f app.Index 
+        }
+
+    static member addCSSLinks (hrefs:seq<string>) (app:DashApp) =
+        let tags = 
+            hrefs
+            |> Seq.map (fun href ->
+                link [_rel "stylesheet"; _href href ; _crossorigin " "]
+            )
+        app
+        |> DashApp.mapIndex (IndexView.addCSSLinks tags)
+
+    static member addScripts (sources:seq<string>) (app:DashApp) =
+        let tags = 
+            sources
+            |> Seq.map (fun source ->
+                script [_type "application/javascript"; _crossorigin " "; _src source] []
+            )
+        app
+        |> DashApp.mapIndex (IndexView.addScripts tags)
 
     static member withLayout (layout:obj) (app:DashApp) =
         { app with 

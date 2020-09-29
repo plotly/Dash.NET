@@ -9,12 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_project", "_project", "{62
 		build.sh = build.sh
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 		global.json = global.json
+		dev\Properties\launchSettings.json = dev\Properties\launchSettings.json
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET", "src\Dash.NET\Dash.NET.fsproj", "{DC0359E0-7CC2-42B7-88DE-60C6ACAB0451}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dash.NET.Dev", "dev\Dash.NET.Dev.fsproj", "{F0897969-9701-4EAB-AEFF-5F5291D32014}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Dev", "dev\Dash.NET.Dev.fsproj", "{F0897969-9701-4EAB-AEFF-5F5291D32014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
