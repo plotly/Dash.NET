@@ -4,6 +4,121 @@ open System.IO
 let htmlBackbone = File.ReadAllText (__SOURCE_DIRECTORY__ + "/htmlComponentBackbone.template")
 let componentBackbone = File.ReadAllText (__SOURCE_DIRECTORY__ + "/componentBackbone.template")
 
+[<AutoOpen>]
+module Keywords =
+    ///https://docs.microsoft.com/de-de/dotnet/fsharp/language-reference/keyword-reference
+    let keywordsAndReserved = 
+        set [
+            "abstract"
+            "and"
+            "let"
+            "as"
+            "assert"
+            "base"
+            "begin"
+            "class"
+            "default"
+            "delegate"
+            "do"
+            "done"
+            "downcast"
+            "downto"
+            "elif"
+            "else"
+            "end"
+            "exception"
+            "extern"
+            "false"
+            "finally"
+            "fixed"
+            "for"
+            "fun"
+            "function"
+            "global"
+            "if"
+            "in"
+            "inherit"
+            "inline"
+            "interface"
+            "internal"
+            "lazy"
+            "let"
+            "let!"
+            "match"
+            "match!"
+            "member"
+            "module"
+            "mutable"
+            "namespace"
+            "new"
+            "null"
+            "of"
+            "open"
+            "or"
+            "override"
+            "private"
+            "public"
+            "rec"
+            "return"
+            "return!"
+            "static"
+            "struct"
+            "then"
+            "to"
+            "true"
+            "try"
+            "type"
+            "upcast"
+            "use"
+            "use!"
+            "val"
+            "void"
+            "when"
+            "while"
+            "with"
+            //reserved due to being kw in OCaml
+            "asr"
+            "land"
+            "lor"
+            "lsl"
+            "lsr"
+            "lxor"
+            "mod"
+            "sig"
+            //reserved for future use
+            "atomic"
+            "break"
+            "checked"
+            "component"
+            "const"
+            "constraint"
+            "constructor"
+            "continue"
+            "eager"
+            "event"
+            "external"
+            "functor"
+            "include"
+            "method"
+            "mixin"
+            "object"
+            "parallel"
+            "process"
+            "protected"
+            "pure"
+            "sealed"
+            "tailcall"
+            "trait"
+            "virtual"
+            "volatile"
+        ]
+
+    let preventKWUsage (s:string) =
+        if keywordsAndReserved.Contains(s) then
+            sprintf "_%s" s
+        else
+            s
+
 module String =
     let replace (old:string) (_new:string) (s:string) = s.Replace(old,_new)
     let write path (s:string) = File.WriteAllText(path,s)
@@ -28,12 +143,12 @@ type ComponentParameters =
     static member create (_type:ComponentType) (componentName:string) (componentNameSpace:string) (componentType:string) (libraryNameSpace:string) =
         {
             Type=_type
-            ComponentName               = componentName
-            CamelCaseComponentName      = sprintf "%c%s" (Char.ToLowerInvariant(componentName.[0])) (componentName.Substring(1))
-            ComponentChar               = (componentName.ToLower().Substring(0,1))
-            ComponentNamespace          = componentNameSpace
-            ComponentType               = componentType
-            LibraryNamespace            = libraryNameSpace
+            ComponentName               = preventKWUsage componentName
+            CamelCaseComponentName      = preventKWUsage (sprintf "%c%s" (Char.ToLowerInvariant(componentName.[0])) (componentName.Substring(1)))
+            ComponentChar               = preventKWUsage (componentName.ToLower().Substring(0,1))
+            ComponentNamespace          = preventKWUsage componentNameSpace
+            ComponentType               = preventKWUsage componentType
+            LibraryNamespace            = preventKWUsage libraryNameSpace
     }
 
 
@@ -188,7 +303,7 @@ let htmlComponents =
             cName
             "dash_html_components" 
             cName
-            "Dash.NET.HTML_DSL" 
+            "Dash.NET.HTML" 
     )
 
 htmlComponents
