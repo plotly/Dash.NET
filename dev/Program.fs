@@ -13,8 +13,8 @@ open Giraffe.ModelBinding
 
 open Dash.NET
 
-open Dash.NET.DCC_DSL
-open Dash.NET.HTML_DSL
+open Dash.NET.DCC
+open Dash.NET.HTML
 open HTMLPropTypes
 open ComponentPropTypes
 
