@@ -62,7 +62,7 @@ let releaseNotes = (release.Notes |> String.concat "\r\n")
 let repositoryUrl ="https://github.com/plotly/Dash.NET"
 
 
-let version = SemVer.parse release.NugetVersion
+let stableVersion = SemVer.parse release.NugetVersion
 
 let pkgDir = "pkg"
 
@@ -80,28 +80,33 @@ let build = BuildTask.create "Build" [clean.IfNeeded] {
 }
 
 let pack = BuildTask.create "Pack" [clean; build.IfNeeded] {
-    !! "src/**/*.*proj"
-    |> Seq.iter (Fake.DotNet.DotNet.pack (fun p ->
-        let msBuildParams =
-            {p.MSBuildParams with 
-                Properties = ([
-                    "Version",(sprintf "%i.%i.%i" version.Major version.Minor version.Patch )
-                    "Authors",      authors
-                    "Title",        title
-                    "Owners",       owners
-                    "Description",  description
-                    "PackageLicenseUrl",   licenseUrl
-                    "PackageProjectUrl",   projectUrl
-                    "IconUrl",      iconUrl
-                    "PackageTags",         tags
-                    "PackageReleaseNotes", releaseNotes
-                    "RepositoryUrl",repositoryUrl
-                ] @ p.MSBuildParams.Properties)
+    if promptYesNo (sprintf "creating stable package with version %i.%i.%i OK?" stableVersion.Major stableVersion.Minor stableVersion.Patch ) then
+        !! "src/**/*.*proj"
+        |> Seq.iter (Fake.DotNet.DotNet.pack (fun p ->
+            let msBuildParams =
+                {p.MSBuildParams with 
+                    Properties = ([
+                        "Version",(sprintf "%i.%i.%i" stableVersion.Major stableVersion.Minor stableVersion.Patch )
+                        "Authors",      authors
+                        "Title",        title
+                        "Owners",       owners
+                        "Description",  description
+                        "PackageLicenseUrl",   licenseUrl
+                        "PackageProjectUrl",   projectUrl
+                        "IconUrl",      iconUrl
+                        "PackageTags",         tags
+                        "PackageReleaseNotes", releaseNotes
+                        "RepositoryUrl",repositoryUrl
+                        "RepositoryType","git"
+                    ] @ p.MSBuildParams.Properties)
+                }
+            {
+                p with 
+                    MSBuildParams = msBuildParams
+                    OutputPath = Some pkgDir
             }
-        {
-            p with MSBuildParams = msBuildParams
-        }
-    ))
+        ))
+    else failwith "aborted"
 }
 
 let packPrerelease = BuildTask.create "PackPrerelease" [clean; build.IfNeeded] {

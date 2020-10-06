@@ -5,12 +5,14 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_project", "_project", "{625E3CAC-600B-450D-BF54-E3059450591A}"
 	ProjectSection(SolutionItems) = preProject
-		build.bat = build.bat
-		build.sh = build.sh
+		build.fsx = build.fsx
 		.config\dotnet-tools.json = .config\dotnet-tools.json
+		fake.cmd = fake.cmd
+		fake.sh = fake.sh
 		global.json = global.json
 		dev\Properties\launchSettings.json = dev\Properties\launchSettings.json
 		README.md = README.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET", "src\Dash.NET\Dash.NET.fsproj", "{DC0359E0-7CC2-42B7-88DE-60C6ACAB0451}"
