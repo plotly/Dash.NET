@@ -3,6 +3,8 @@
 open Newtonsoft.Json
 open Plotly.NET
 open System.Runtime.InteropServices
+open System
+
 type DashComponent
     (
         [<Optional;DefaultParameterValue(false)>]IsRawString:bool
@@ -106,6 +108,15 @@ module ComponentPropTypes =
             | Session   -> "session"
             | Memory    -> "memory"
         static member convert = PersistenceTypeOptions.toString >> box
+
+    type DropdownOption = 
+        {
+            Label:IConvertible
+            Value:IConvertible
+            Disabled:bool
+            Title:string
+        }
+        static member create label value disabled title = {Label=label; Value=value; Disabled=disabled; Title=title}
 
 module HTMLPropTypes =
 
