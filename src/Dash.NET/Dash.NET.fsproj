@@ -148,9 +148,11 @@
     <Compile Include="DashComponents\HTMLComponents\Title.fs" />
     <Compile Include="DashComponents\HTMLComponents\Div.fs" />
     <Compile Include="DashComponents\CoreComponents\Dropdown.fs" />
-    <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DashComponents\CoreComponents\Graph.fs" />
     <Compile Include="DashComponents\CoreComponents\Input.fs" />
+    <Compile Include="DashComponents\CoreComponents\Tab.fs" />
+    <Compile Include="DashComponents\CoreComponents\Tabs.fs" />
+    <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Callback.fs" />
     <Compile Include="DashConfig.fs" />

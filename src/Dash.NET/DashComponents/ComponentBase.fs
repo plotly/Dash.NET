@@ -118,6 +118,15 @@ module ComponentPropTypes =
         }
         static member create label value disabled title = {Label=label; Value=value; Disabled=disabled; Title=title}
 
+    type TabColors = 
+        {
+            Border : string
+            Primary : string
+            Background : string
+        }
+        static member create border primary background = {Border=border; Primary=primary; Background=background}
+
+
 module HTMLPropTypes =
 
     type HTMLProps =
