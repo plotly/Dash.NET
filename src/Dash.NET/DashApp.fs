@@ -68,7 +68,7 @@ type DashApp =
             Layout = layout
         }
 
-    static member withCallbackHandler (callbackId: string, callback: Callback<'Function>) (app: DashApp) =
+    static member withCallbackHandler (callback: Callback<'Function>) (app: DashApp) =
         
         let dashDependency = Callback.toDashDependency callback
 
@@ -76,7 +76,7 @@ type DashApp =
         { app with
             Callbacks =
                 app.Callbacks
-                |> CallbackMap.registerCallback callbackId callback
+                |> CallbackMap.registerCallback (callback |> Callback.toOutputId) callback
 
             Dependencies = dashDependency::app.Dependencies
         }

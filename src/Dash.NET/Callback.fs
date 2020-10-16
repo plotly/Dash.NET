@@ -3,6 +3,7 @@
 open Plotly.NET
 open Newtonsoft.Json
 open DynamicInvoke
+open System
 
 type Dependency =
     {
@@ -61,13 +62,38 @@ type RequestInput =
         [<JsonProperty("value")>]
         Value: obj 
     }
+
+open Newtonsoft.Json
+open Newtonsoft.Json.Linq
+
+type SingleOrArrayConverter<'T> () =
+    inherit JsonConverter<'T []> ()
+    
+    override _.ReadJson(reader, (objectType:Type), (existingValue:'T []), (hasExistingValue:bool), (serializer:JsonSerializer)) : 'T [] =
+        let token = JToken.Load(reader)
+        if (token.Type = JTokenType.Array) then
+            token.ToObject<'T []>()
+        else 
+            let res : 'T [] = [|token.ToObject<'T>()|] 
+            res
+
+    override _.WriteJson(writer:JsonWriter, value: 'T [], serializer: JsonSerializer) =
+        if value.Length = 1 then
+            let token = JToken.FromObject(value.[0])
+            token.WriteTo(writer)
+        else
+            let jArr = JArray(value)
+            jArr.WriteTo(writer)
+
+
 ///Type to deserialize calls to _dash-update-component
 type CallbackRequest =
     {
         [<JsonProperty("output")>]
         Output: string
         [<JsonProperty("outputs")>]
-        Outputs: CallbackOutput
+        [<JsonConverter(typeof<SingleOrArrayConverter<CallbackOutput>>)>]
+        Outputs: CallbackOutput []
         [<JsonProperty("changedPropIds")>]
         ChangedPropIds: string []
         [<JsonProperty("inputs")>]
@@ -78,20 +104,25 @@ type CallbackRequest =
 type Callback<'Function> =
     {
         Inputs: CallbackInput []
-        Output: CallbackOutput
+        Outputs: CallbackOutput []
+        IsMulti: bool
+        PreventInitialCall: bool
         HandlerFunction: 'Function
     }
-    static member create inputs output (handler: 'Function) =
+
+    static member create inputs outputs pic (handler: 'Function) =
         {
             Inputs = inputs
-            Output = output
+            Outputs = outputs
+            IsMulti = outputs.Length > 1
+            PreventInitialCall = pic
             HandlerFunction = handler
         }
 
     //Necessary as generic types seem not te be unboxed as easily (problems arise e.g. when unboxing (box Callback<string,string>), as the og types used for
     //the generics are missing, therefore obj,obj is assumed and the cast fails)
     static member pack(handler: Callback<'Function>): Callback<obj> =
-        Callback.create handler.Inputs handler.Output (box handler.HandlerFunction)
+        Callback.create handler.Inputs handler.Outputs handler.PreventInitialCall (box handler.HandlerFunction)
 
     //returns a boxed result of the dynamic invokation of the handler function
     static member eval (args: seq<obj>) (handler: Callback<'Function>) =
@@ -101,35 +132,79 @@ type Callback<'Function> =
     static member evalAs<'OutputType> (args: seq<obj>) (handler: Callback<'Function>) =
         invokeDynamic<'OutputType> handler.HandlerFunction args
 
+    static member toOutputId (handler: Callback<'Function>) =
+        if handler.IsMulti then
+            handler.Outputs
+            |> Array.map (fun output ->
+                sprintf "..%s" (Dependency.toCompositeId output)
+            )
+            |> Array.reduce (fun a b -> sprintf "%s.%s" a b)
+            |> sprintf "%s.."
+        else handler.Outputs.[0] |> Dependency.toCompositeId
+
     //returns the dash dependency to serve the client on app start via _dash-dependencies´from the given Callback
     static member toDashDependency (handler: Callback<'Function>) : DashDependency = 
-        DashDependency.createWithDefaults handler.Inputs (CallbackOutput.toCompositeId handler.Output) 
+        DashDependency.create
+            handler.PreventInitialCall
+            None
+            handler.Inputs 
+            (Callback.toOutputId handler)
+            [||]
+
 
     //returns the response object to send as response to a request to _dash-update-component that triggered this callback
     static member getResponseObject (args: seq<obj>) (handler: Callback<'Function>) =
+        if handler.IsMulti then
+            let evalResult =
+                handler
+                |> Callback.pack
+                |> Callback.evalAs<obj[]> args
 
-        let evalResult =
-            handler
-            |> Callback.pack
-            |> Callback.eval args
+            match evalResult with
+            | Ok r ->
 
-        match evalResult with
-        | Ok r ->
+                //This should be properly wrapped/typed
+                let root = DynamicObj()
+                let response = DynamicObj()
 
-            //This should be properly wrapped/typed
-            let root = DynamicObj()
-            let response = DynamicObj()
-            let result = DynamicObj()
+                handler.Outputs
+                |> Array.iteri (fun i output ->
+                    let result = DynamicObj()
+                    result?(output.Property) <- r.[i]
+                    response?(output |> Dependency.toCompositeId) <- result
+                )
 
-            result?(handler.Output.Property) <- r
-            response?(handler.Output.Id) <- result
+                root?multi <-  handler.IsMulti
+                root?response <- response
 
-            root?multi <- true
-            root?response <- response
+                root
 
-            root
+            | Error e -> failwith e.Message
+        else    
 
-        | Error e -> failwith e.Message
+            let evalResult =
+                handler
+                |> Callback.pack
+                |> Callback.eval args
+
+            match evalResult with
+            | Ok r ->
+
+                //This should be properly wrapped/typed
+                let root = DynamicObj()
+                let response = DynamicObj()
+                let result = DynamicObj()
+
+                
+                result?(handler.Outputs.[0].Property) <- r
+                response?(handler |> Callback.toOutputId) <- result
+
+                root?multi <-  handler.IsMulti
+                root?response <- response
+
+                root
+
+            | Error e -> failwith e.Message
 
 type CallbackMap() =
     inherit DynamicObj()
