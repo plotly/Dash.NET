@@ -14,7 +14,6 @@ type DashApp =
         Layout: obj //This will have a proper type when the DSL for components is in place
         Config: DashConfig
         Callbacks: CallbackMap
-        Dependencies: DashDependency list
     }
 
     static member initDefault() =
@@ -23,8 +22,6 @@ type DashApp =
             Layout = obj
             Config = DashConfig.initDefault()
             Callbacks = CallbackMap()
-            Dependencies = []
-
         }
 
     static member initDefaultWith (initializer: DashApp -> DashApp) = DashApp.initDefault () |> initializer
@@ -69,16 +66,13 @@ type DashApp =
         }
 
     static member withCallbackHandler (callback: Callback<'Function>) (app: DashApp) =
-        
-        let dashDependency = Callback.toDashDependency callback
+
 
         //To-Do: Maybe use copy utility for all direct calls to underlying DynamicObjs.
         { app with
             Callbacks =
                 app.Callbacks
                 |> CallbackMap.registerCallback (callback.Output |> Dependency.toCompositeId) callback
-
-            Dependencies = dashDependency::app.Dependencies
         }
 
     static member withCallbackHandlers (callbacks: seq<(string * Callback<'Function>)>) (app: DashApp) =
@@ -103,7 +97,7 @@ type DashApp =
 
                     //Dash GET enpoints
                     route "/_dash-layout"       >=> json app.Layout        //Calls from Dash renderer for what components to render (must return serialized dash components)
-                    route "/_dash-dependencies" >=> json app.Dependencies  //Serves callback bindings as json on app start.
+                    route "/_dash-dependencies" >=> json (app.Callbacks |> CallbackMap.toDependencies) //Serves callback bindings as json on app start.
                     route "/_reload-hash"       >=> json obj               //This call is done when using hot reload.
                 ]
 
