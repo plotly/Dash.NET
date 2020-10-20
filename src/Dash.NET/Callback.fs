@@ -50,7 +50,7 @@ type DashDependency =
             State = state
         }
 
-    static member createWithDefaults inputs output = DashDependency.create false None inputs output [||]
+    static member createWithDefaults inputs output = DashDependency.create true None inputs output [||]
 
 type RequestInput = 
     { 
