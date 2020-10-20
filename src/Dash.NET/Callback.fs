@@ -2,7 +2,10 @@
 
 open Plotly.NET
 open Newtonsoft.Json
+open Newtonsoft.Json.Linq
+open System
 open DynamicInvoke
+
 
 type Dependency =
     {
@@ -38,6 +41,7 @@ type RequestInput =
         [<JsonProperty("value")>]
         Value: obj 
     }
+
 ///Type to deserialize calls to _dash-update-component
 type CallbackRequest =
     {
@@ -49,6 +53,8 @@ type CallbackRequest =
         ChangedPropIds: string []
         [<JsonProperty("inputs")>]
         Inputs: RequestInput []
+        [<JsonProperty("state")>]
+        State:RequestInput []
     }
 
 open Newtonsoft.Json

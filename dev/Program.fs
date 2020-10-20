@@ -21,11 +21,59 @@ open ComponentPropTypes
 let dslLayout = 
     Div.div [] [
         H1.h1 [] [str "Hello Dash from F#"]
+        Store.store "test-store" [] []
+        Button.button [Id "test-btn"] [str "Test Me Pls"]
+        Div.div [Id "test-output"] []
+        Div.div [Id "test-output2"] []
+        Div.div [Id "test-output3"] []
+        Button.button [Id "test-btn2"] [str "Try me at last"]
+        Div.div [Id "test-output4"] []
     ]
+
+type Test = {
+    A: string
+    B: string
+}
+
+let storeCallback =
+    Callback(
+        [CallbackInput.create("test-btn","n_clicks")],
+        CallbackOutput.create("test-store","data"),
+        (fun (click:IConvertible) ->
+            Newtonsoft.Json.JsonConvert.SerializeObject({A = "hallo"; B = "AMK"})
+        )
+    )
+
+let createStoreUpdateCB outputID outputProp =
+    Callback(
+        [CallbackInput.create("test-store","data")],
+        CallbackOutput.create(outputID,outputProp),
+        (fun (dataJson: string) ->
+            Newtonsoft.Json.JsonConvert.DeserializeObject<Test>(dataJson)
+            |> sprintf "%A"
+        )
+    )
+let myBtnCallback =
+    Callback(
+        [CallbackInput.create("test-btn2","n_clicks")],
+        CallbackOutput.create("test-output4","children"),
+        (fun (click:IConvertible) (state1:string) ->
+            state1
+        ),
+        State = [
+            CallbackState.create("test-output","children")
+
+        ]
+    )
 
 let myDashApp =
     DashApp.initDefault()
     |> DashApp.withLayout dslLayout
+    |> DashApp.withCallbackHandler(storeCallback)
+    |> DashApp.withCallbackHandler(createStoreUpdateCB "test-output"  "children")
+    |> DashApp.withCallbackHandler(createStoreUpdateCB "test-output2" "children")
+    |> DashApp.withCallbackHandler(createStoreUpdateCB "test-output3" "children")
+    |> DashApp.withCallbackHandler(myBtnCallback)
 
 // ---------------------------------
 // Error handler

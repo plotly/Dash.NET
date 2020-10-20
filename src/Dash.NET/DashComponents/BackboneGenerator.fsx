@@ -310,3 +310,11 @@ htmlComponents
 |> List.iter (fun (_component:ComponentParameters) ->
     _component |> generateComponentTemplateFile (__SOURCE_DIRECTORY__ + (sprintf "/HTMLComponents/%s.fs" _component.ComponentName))
 )
+
+ComponentParameters.create
+    ComponentType.DashComponent
+    "Store"
+    "dash_core_components"
+    "Store"
+    "Dash.NET.DCC"
+|> generateComponentTemplateFile (__SOURCE_DIRECTORY__ + "/CoreComponents/Store.fs")
