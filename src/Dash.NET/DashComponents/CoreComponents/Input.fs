@@ -47,7 +47,7 @@ module Input =
         | NSubmitTimestamp of IConvertible
         | NBlur of IConvertible
         | NBlurTimestamp of IConvertible
-        | SetPtops of obj
+        | SetProps of obj
         | LoadingState of LoadingState
         | Persistence of IConvertible
         | PersistedProps of string []
@@ -84,7 +84,7 @@ module Input =
             | NSubmitTimestamp p    -> "n_submit_timestamp", box p
             | NBlur p               -> "n_blur", box p
             | NBlurTimestamp p      -> "n_blur_timestamp", box p
-            | SetPtops p            -> "setProps", box p
+            | SetProps p            -> "setProps", box p
             | LoadingState p        -> "loading_state", box p
             | Persistence p         -> "persistence", box p
             | PersistedProps p      -> "persisted_props", box p

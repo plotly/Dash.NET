@@ -130,12 +130,14 @@ module ComponentPropTypes =
 module HTMLPropTypes =
 
     type HTMLProps =
+        | Id of string
         | ClassName of string
         | Style of DashComponentStyle
         | Custom of (string*obj)
     
         static member toDynamicMemberDef (prop:HTMLProps) =
             match prop with
+            | Id p -> "id", box p
             | ClassName p -> "className", box p
             | Style p -> "style", box p
             | Custom p -> p
