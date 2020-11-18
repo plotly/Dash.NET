@@ -147,10 +147,10 @@ type CallbackMap() =
     inherit DynamicObj()
 
     static member registerCallback
-        (callbackId: string)
         (callback: Callback<'Function>)
         (callbackMap: CallbackMap)
         =
+        let callbackId = callback.Output |> Dependency.toCompositeId
         callbackMap?(callbackId) <- (Callback.pack callback)
         callbackMap
 

@@ -69,11 +69,11 @@ let myBtnCallback =
 let myDashApp =
     DashApp.initDefault()
     |> DashApp.withLayout dslLayout
-    |> DashApp.withCallbackHandler(storeCallback)
-    |> DashApp.withCallbackHandler(createStoreUpdateCB "test-output"  "children")
-    |> DashApp.withCallbackHandler(createStoreUpdateCB "test-output2" "children")
-    |> DashApp.withCallbackHandler(createStoreUpdateCB "test-output3" "children")
-    |> DashApp.withCallbackHandler(myBtnCallback)
+    |> DashApp.addCallback(storeCallback)
+    |> DashApp.addCallback(createStoreUpdateCB "test-output"  "children")
+    |> DashApp.addCallback(createStoreUpdateCB "test-output2" "children")
+    |> DashApp.addCallback(createStoreUpdateCB "test-output3" "children")
+    |> DashApp.addCallback(myBtnCallback)
 
 // ---------------------------------
 // Error handler

@@ -99,7 +99,7 @@ module Views =
             }
 
         ///returns an IndexView with the given meta tag appended to the ones already in place.
-        static member addMetas (meta:seq<XmlNode>) (indexView:IndexView) =
+        static member appendMetas (meta:seq<XmlNode>) (indexView:IndexView) =
             {indexView with
                 Metas = Seq.append indexView.Metas  meta
             }
@@ -111,7 +111,7 @@ module Views =
             }
 
         ///returns an IndexView with the given css link tag appended to the ones already in place.
-        static member addCSSLinks (css:seq<XmlNode>) (indexView:IndexView) =
+        static member appendCSSLinks (css:seq<XmlNode>) (indexView:IndexView) =
             {indexView with
                 CSS = Seq.append indexView.CSS css
             }
@@ -123,7 +123,7 @@ module Views =
             }
 
         ///returns an IndexView with the given script tag appended to the ones already in place.
-        static member addScripts (script:seq<XmlNode>) (indexView:IndexView) =
+        static member appendScripts (script:seq<XmlNode>) (indexView:IndexView) =
             {indexView with
                 Scripts = Seq.append indexView.Scripts script
             }
