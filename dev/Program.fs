@@ -101,7 +101,7 @@ let configureApp (app : IApplicationBuilder) =
         .UseHttpsRedirection()
         .UseCors(configureCors)
         .UseStaticFiles()
-        .UseGiraffe(DashApp.toWebApp myDashApp)
+        .UseGiraffe(DashApp.toHttpHandler myDashApp)
 
 let configureServices (services : IServiceCollection) =
     services.AddCors()    |> ignore

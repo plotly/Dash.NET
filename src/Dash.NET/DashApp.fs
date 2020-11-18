@@ -111,7 +111,7 @@ type DashApp =
     /// GET /_reload-hash -> Not implemented, returns empty JSON object
     ///
     /// POST /_dash-update-component -> handles callback requests and returns serialized callback JSON responses.
-    static member toWebApp (app:DashApp) : HttpHandler =
+    static member toHttpHandler (app:DashApp) : HttpHandler =
         choose [
             GET >=>
                 choose [
