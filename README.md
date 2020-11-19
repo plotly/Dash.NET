@@ -26,7 +26,7 @@ Which creates a `DashApp` with all fields initialized with empty defaults. The h
 
 ### Basic application
 
-To get actual content into the default application, it needs a `Layout`. `Layout`s can be created via Dash.NET's DSL for html and dash components, where the first function parameter is always a list of properties, and the second a list of children.
+To get actual content into the default application, it needs a `Layout`. `Layout`s can be created via Dash.NET's DSL for html components, where the first function parameter is always a list of properties (e.g. for setting css classes), and the second a list of children.
 
 ```F#
 open Dash.NET.HTML
@@ -77,6 +77,43 @@ let test =
 
 <br>
 
+### Basic callback
+
+Callbacks describe the interactive part of your `DashApp`. In the most basic case, you have one input component, which updates one output component. For both you need to assign the property of the component that will be part of the callback. Additionally, a function is needed that takes the input and returns the output:
+
+```F#
+open Dash.NET.HTML
+open HTMLPropTypes
+open Dash.NET.DCC
+open ComponentPropTypes
+
+let myLayout = 
+    Div.div [] [
+        H1.h1 [] [str "Hello world from Dash.NET!"]
+        H2.h2 [] [str "Tell us something!"]
+        Input.input "test-input" [Input.Type InputType.Text] []
+        H2.h2 [Id "test-output"] []
+    ]
+
+let testCallback =
+    Callback(
+        [CallbackInput.create("test-input","value")],       // <- Input of the callback is the `value` property of the component with the id "test-input"
+        CallbackOutput.create("test-output","children"),    // <- Output of the callback is the `children` property of the component with the id "test-output"
+        
+        (fun (input:string) ->                              // this function takes a string as input and returns another message.
+            sprintf "You said : %s" input
+        )
+    )
+
+let test = 
+    DashApp.initDefault()
+    |> DashApp.withLayout myLayout
+    |> DashApp.addCallback testCallback
+```
+
+Note that it is currently necessary to provide the component properties in string form. You will have to take care of the correct amount and types of the callback function parameters. Binding a function with two parameters to above example would cause a runtime error.
+
+![](docsrc/img/callback.gif)
 
 ## Development
 
