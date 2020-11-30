@@ -4,7 +4,7 @@ Dash.NET is a .NET interface to [Dash](https://plotly.com/dash/) - the most down
 
 This library is under heavy development. Things might break. However, Dash.NET has a stable core and has already been used for [non trivial applications](https://github.com/CSBiology/TMEA). The current development goal is to implement all targets set in the [beta roadmap](https://github.com/plotly/Dash.NET/issues/4), where you can also see a summary of the state of the project.
 
-## Usage
+# Usage
 
 You can either use the [Dash.NET template](https://github.com/plotly/Dash.NET.Template) via the `dotnet new` templating engine to start from a new template dash application, or add Dash.NET to your existing project via our [preview nuget package](https://www.nuget.org/packages/Dash.NET)
 
@@ -24,7 +24,7 @@ let myApp = DashApp.initDefault()
 
 Which creates a `DashApp` with all fields initialized with empty defaults. The http handler for a `DashApp` can be accessed via the `DashApp.toHttpHandler` function to plug it into your aps.netcore application configuration function via `UseGiraffe` (for more info, check out Giraffe docs or take a look at the [dev project in this repo](https://github.com/plotly/Dash.NET/blob/dev/dev/Program.fs#L104))
 
-### Basic application
+## Basic application
 
 To get actual content into the default application, it needs a `Layout`. `Layout`s can be created via Dash.NET's DSL for html components, where the first function parameter is always a list of properties (e.g. for setting css classes), and the second a list of children.
 
@@ -50,6 +50,56 @@ let test =
 ---
 
 <br>
+
+## Referencing content
+
+You can include internal and external stylesheets and scripts via `DashApp.appendCSSLinks` and `DashApp.appendScripts`:
+
+Let's say you have the following `main.css` file in your wwwroot directory (served from `/main.css`)
+
+```CSS
+h1 {
+    font-size: 1.5em;
+    color: green;
+}
+```
+
+you can reference it from your `DashApp` like this (using the basic example from above):
+
+```F#
+let test = 
+    DashApp.initDefault()
+    |> DashApp.withLayout myLayout
+    |> DashApp.appendCSSLinks ["main.css"]
+
+```
+
+![](docsrc/img/hello-world-green.png)
+
+---
+
+If you want to reference external content (e.g. a CSS framework like [Bulma]()), you can do that as well. To use the classes defined there, set the `ClassName` accordingly:
+
+```F#
+let myLayout = 
+    Div.div [] [
+        H1.h1 [ClassName "title is-1"] [str "Hello world from Dash.NET!"]
+    ]
+
+
+let test = 
+    DashApp.initDefault()
+    |> DashApp.withLayout myLayout
+    |> DashApp.appendCSSLinks [
+        "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.1/css/bulma.min.css"
+    ]
+```
+
+![](docsrc/img/hello-world-bulma.png)
+
+---
+
+## Dash Core components (DCC)
 
 You can also use most dash core components. The following example uses the Plotly.NET to create a plotly graph component. Note that all core components must have a nunique id, and therefore have the mandatory id parameter:
 
@@ -77,7 +127,7 @@ let test =
 
 <br>
 
-### Basic callback
+## Basic callback
 
 Callbacks describe the interactive part of your `DashApp`. In the most basic case, you have one input component, which updates one output component. For both you need to assign the property of the component that will be part of the callback. Additionally, a function is needed that takes the input and returns the output:
 
@@ -115,16 +165,17 @@ Note that it is currently necessary to provide the component properties in strin
 
 ![](docsrc/img/callback.gif)
 
-## Development
+
+# Development
 
 To build the project and dev server application, run the `fake.cmd` script in order to restore and build 
 
-##### Windows
+### Windows
 ```
 > ./fake.cmd build
 ```
 
-##### Linux/MacOS
+### Linux/MacOS
 ```
 $ ./fake.sh build
 ```
