@@ -13,10 +13,11 @@ This library is under heavy development. Things might break. However, Dash.NET h
     - [Referencing content](#referencing-content)
     - [Dash Core components (DCC)](#dash-core-components-dcc)
     - [Basic callback](#basic-callback)
+    - [Using state](#using-state)
 - [Development](#development)
     - [Windows](#windows)
     - [Linux/MacOS](#linuxmacos)
-- [Run the dev server application](#run-the-dev-server-application)
+    - [Run the dev server application](#run-the-dev-server-application)
 
 <!-- /TOC -->
 
@@ -94,7 +95,7 @@ let test =
 
 ---
 
-If you want to reference external content (e.g. a CSS framework like [Bulma]()), you can do that as well. To use the classes defined there, set the `ClassName` accordingly:
+If you want to reference external content (e.g. a CSS framework like [Bulma](https://bulma.io/)), you can do that as well. To use the classes defined there, set the `ClassName` accordingly:
 
 ```F#
 let myLayout = 
@@ -181,6 +182,42 @@ Note that it is currently necessary to provide the component properties in strin
 
 ![](docsrc/img/callback.gif)
 
+---
+
+### Using state 
+
+Use states as non-triggering input for callbacks. You can use the optional `State` constructor parameter of `Callback`. Just keep in mind that the state will be used for your callback function parameters _after_ the callback inputs:
+
+```F#
+let myLayout = 
+    Div.div [] [
+        H1.h1 [] [str "Hello world from Dash.NET!"]
+        H2.h2 [] [str "Tell us something!"]
+        Input.input "test-input" [Input.Type InputType.Text] []
+        H3.h3 [] [str "Input below will not trigger the callback"]
+        Input.input "test-input-state" [Input.Type InputType.Text] []
+        H2.h2 [Id "test-output"] []
+    ]
+
+let testCallback =
+    Callback(
+        [CallbackInput.create("test-input","value")],
+        CallbackOutput.create("test-output","children"),
+        (fun (input:string) (state:string) ->
+            sprintf "You said : '%s' and we added the state: '%s'" input state
+        ),
+        State = [CallbackState.create("test-input-state","value")]
+    )
+
+let test = 
+    DashApp.initDefault()
+    |> DashApp.withLayout myLayout
+    |> DashApp.addCallback testCallback
+```
+
+![](docsrc/img/state.gif)
+
+---
 
 ## Development
 
@@ -196,7 +233,7 @@ To build the project and dev server application, run the `fake.cmd` script in or
 $ ./fake.sh build
 ```
 
-## Run the dev server application
+### Run the dev server application
 
 The dev server is useful to test new components/code. After a successful build 
 you can start the dev server application by executing the following command in your terminal:
