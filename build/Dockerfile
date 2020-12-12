@@ -10,4 +10,4 @@ RUN sudo apt-get update \
  && sudo chown root:root /etc/apt/sources.list.d/microsoft-prod.list \
  && sudo apt-get install -y apt-transport-https \
  && sudo apt-get update \
- && sudo apt-get install -y dotnet-sdk-3.1 
+ && sudo apt-get install -y dotnet-sdk-5.0
