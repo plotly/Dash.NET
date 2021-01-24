@@ -147,6 +147,7 @@
     <Compile Include="DashComponents\HTMLComponents\Xmp.fs" />
     <Compile Include="DashComponents\HTMLComponents\Title.fs" />
     <Compile Include="DashComponents\HTMLComponents\Div.fs" />
+    <Compile Include="DashComponents\CoreComponents\RadioItems.fs" />
     <Compile Include="DashComponents\CoreComponents\Dropdown.fs" />
     <Compile Include="DashComponents\CoreComponents\Graph.fs" />
     <Compile Include="DashComponents\CoreComponents\Input.fs" />
