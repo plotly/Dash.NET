@@ -124,7 +124,7 @@ module ComponentPropTypes =
             Value:IConvertible
             Disabled:bool
         }
-        static member create label value disabled title = {Label=label; Value=value; Disabled=disabled}
+        static member create label value disabled = {Label=label; Value=value; Disabled=disabled}
 
     type TabColors = 
         {
