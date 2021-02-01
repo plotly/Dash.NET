@@ -39,7 +39,7 @@ type RequestInput =
         [<JsonProperty("property")>]
         Property: string
         [<JsonProperty("value")>]
-        Value: obj 
+        Value: JToken
     }
 
 ///Type to deserialize calls to _dash-update-component
@@ -68,9 +68,12 @@ type OutputConverter() =
         let res : CallbackOutput = token.ToObject<CallbackOutput>()
         res
     override _.WriteJson(writer:JsonWriter, value: CallbackOutput, serializer: JsonSerializer) =
-            let value' = CallbackOutput.toCompositeId value
-            let token = JToken.FromObject(value')
-            token.WriteTo(writer)
+        let value' = CallbackOutput.toCompositeId value
+        let token = JToken.FromObject(value')
+        token.WriteTo(writer)
+
+open System.Reflection
+open Microsoft.FSharp.Reflection
 
 //Central type for Callbacks. Creating an instance of this type and registering it on the callback map is the equivalent of the @app.callback decorator in python.
 type Callback<'Function> 
@@ -118,7 +121,21 @@ type Callback<'Function>
         invokeDynamic<'OutputType> handler.HandlerFunction args
 
     //returns the response object to send as response to a request to _dash-update-component that triggered this callback
-    static member getResponseObject (args: seq<obj>) (handler: Callback<'Function>) =
+    static member getResponseObject (args: seq<JToken>) (handler: Callback<'Function>) =
+
+        let argumentArray = DynamicInvoke.getArgumentArray (handler.HandlerFunction.GetType())
+
+        // shadow input args with a boxed collection of guarded conversions from the jtoken to the handler function's input type
+        let args =
+            if argumentArray.Length = Seq.length args then
+                argumentArray
+                |> Seq.zip args
+                |> Seq.map (fun (argument,targetType) -> 
+                    //printfn "JsonType: %A;      ArgType:%A" argument.Type targetType
+                    // it may be necessary to inspect the JToken when the input is an object/higher kinded type
+                    argument.ToObject(targetType))
+            else
+                failwithf "arguments and targetTypes have different lenght: args:%i vs. types:%i" argumentArray.Length (Seq.length args)
 
         let evalResult =
             handler

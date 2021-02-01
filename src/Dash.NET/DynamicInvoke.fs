@@ -10,6 +10,17 @@ module DynamicInvoke =
         | InvokeSuccess of obj
         | ObjectWasNotAFunction of Type
 
+    /// Returns an array of input types (the domain) for the given function type (without the range)
+    let getArgumentArray t =
+        let rec loop (f:System.Type) acc =
+            if FSharpType.IsFunction f then
+                let firstArg, rest = FSharpType.GetFunctionElements f
+                loop rest (firstArg::acc)
+            else
+                acc
+        loop t []
+        |> List.rev
+
     //This function is (as far as i see it) a 'necessary evil' for solving the problem of callbacks having arbitrary amounts of parameters.
     //However, just like DynamicObj in Plotly.NET, it is definately usable when correctly encapsulated to prevent direct usage.
     ///<summary>Invokes the given function with the given arguments (passed as boxed values) </summary>

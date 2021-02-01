@@ -131,19 +131,21 @@ type DashApp =
                         >=> bindJson ( fun (cbRequest:CallbackRequest) -> 
 
                             let inputs = 
-                                let inputs = cbRequest.Inputs |> Array.map (fun reqInput -> box reqInput.Value) //generate argument list for the callback
+                                let inputs = cbRequest.Inputs |> Array.map (fun reqInput ->  reqInput.Value) //generate argument list for the callback
                                 let states = 
                                     //Yes, this is ugly. I currently cant find a way to deserialize an empty array directly when the state property is missing in the JSON, but that sounds like a problem that is solvable.
                                     try
-                                        cbRequest.State |> Array.map (fun reqInput -> box reqInput.Value)
+                                        cbRequest.State |> Array.map (fun reqInput -> reqInput.Value)
                                     with _ ->
                                         [||]
                                 Array.append inputs states
 
+                            printfn "Input Tokens: %A" inputs
+
                             let result = 
                                 app.Callbacks
                                 |> CallbackMap.getPackedCallbackById (cbRequest.Output) //get the callback from then callback map
-                                |> Callback.getResponseObject inputs //evaluate the handler function and get the response to send to the client
+                                |> Callback.getResponseObject inputs//evaluate the handler function and get the response to send to the client
 
                             json result //return serialized result of the handler function
                         )
