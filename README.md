@@ -1,5 +1,7 @@
 # Dash.NET
 
+![](docs/img/logo_title.svg)
+
 Dash.NET is a .NET interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps - written in F#. Built on top of Plotly.js, React and asp.netcore (via Giraffe), Dash.NET ties modern UI elements like dropdowns, sliders, and graphs directly to your analytical .NET code.
 
 This library is under heavy development. Things might break. However, Dash.NET has a stable core and has already been used for [non trivial applications](https://github.com/CSBiology/TMEA). The current development goal is to implement all targets set in the [beta roadmap](https://github.com/plotly/Dash.NET/issues/4), where you can also see a summary of the state of the project.
@@ -62,7 +64,7 @@ let test =
     |> DashApp.withLayout myLayout
 ```
 
-![](docsrc/img/hello-world.png)
+![](docs/img/hello-world.png)
 
 ---
 
@@ -91,7 +93,7 @@ let test =
 
 ```
 
-![](docsrc/img/hello-world-green.png)
+![](docs/img/hello-world-green.png)
 
 ---
 
@@ -112,7 +114,7 @@ let test =
     ]
 ```
 
-![](docsrc/img/hello-world-bulma.png)
+![](docs/img/hello-world-bulma.png)
 
 ---
 
@@ -138,7 +140,7 @@ let test =
     |> DashApp.withLayout myLayout
 ```
 
-![](docsrc/img/hello-graph.png)
+![](docs/img/hello-graph.png)
 
 ---
 
@@ -180,7 +182,7 @@ let test =
 
 Note that it is currently necessary to provide the component properties in string form. You will have to take care of the correct amount and types of the callback function parameters. Binding a function with two parameters to above example would cause a runtime error.
 
-![](docsrc/img/callback.gif)
+![](docs/img/callback.gif)
 
 ---
 
@@ -215,7 +217,7 @@ let test =
     |> DashApp.addCallback testCallback
 ```
 
-![](docsrc/img/state.gif)
+![](docs/img/state.gif)
 
 ---
 

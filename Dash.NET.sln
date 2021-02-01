@@ -19,6 +19,10 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET", "src\Dash.NET\Da
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Dev", "dev\Dash.NET.Dev.fsproj", "{F0897969-9701-4EAB-AEFF-5F5291D32014}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8531DA15-1690-4671-8741-89C4953163C6}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dash.NET.Tests", "tests\Dash.NET.Tests\Dash.NET.Tests.fsproj", "{ECDBA25E-39B4-4C59-B665-0695F50A51BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,11 +57,26 @@ Global
 		{F0897969-9701-4EAB-AEFF-5F5291D32014}.Release|x64.Build.0 = Release|Any CPU
 		{F0897969-9701-4EAB-AEFF-5F5291D32014}.Release|x86.ActiveCfg = Release|Any CPU
 		{F0897969-9701-4EAB-AEFF-5F5291D32014}.Release|x86.Build.0 = Release|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Debug|x64.Build.0 = Debug|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Debug|x86.Build.0 = Debug|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x64.ActiveCfg = Release|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x64.Build.0 = Release|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47D6A0E3-05A6-4BB7-81D1-A90CE758E430}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ECDBA25E-39B4-4C59-B665-0695F50A51BF} = {8531DA15-1690-4671-8741-89C4953163C6}
 	EndGlobalSection
 EndGlobal
