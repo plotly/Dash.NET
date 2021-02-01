@@ -118,6 +118,14 @@ module ComponentPropTypes =
         }
         static member create label value disabled title = {Label=label; Value=value; Disabled=disabled; Title=title}
 
+    type RadioItemsOption = 
+        {
+            Label:IConvertible
+            Value:IConvertible
+            Disabled:bool
+        }
+        static member create label value disabled = {Label=label; Value=value; Disabled=disabled}
+
     type TabColors = 
         {
             Border : string

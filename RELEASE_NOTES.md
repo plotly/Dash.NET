@@ -5,3 +5,4 @@
  * [Auto generate id for callback registration](https://github.com/plotly/Dash.NET/commit/0b9cd854b6c42463523199048130a729558ccbc5)
  * [Prevent initial callback calls per default](https://github.com/plotly/Dash.NET/commit/a9e6c632dfa8736afb055a3340b6513490ea6d23)
  * [Add Store core component](https://github.com/plotly/Dash.NET/commit/0b9cd854b6c42463523199048130a729558ccbc5)
+ * [Add Radioitems component](https://github.com/plotly/Dash.NET/commit/9010769db4fc65f496ece6ed47c0113a6d6f5b28)
