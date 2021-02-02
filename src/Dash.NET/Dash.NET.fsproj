@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\docs\img\logo.png" Pack="true" PackagePath="\"/>
+    <None Include="..\..\docs\img\logo.png" Pack="true" PackagePath="\" />
     <None Include="DashComponents\htmlComponentBackbone.template" />
     <None Include="DashComponents\componentBackbone.template" />
     <None Include="DashComponents\Readme.md" />
@@ -172,9 +172,12 @@
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Callback.fs" />
+    <Compile Include="CallbackBinding.fs" />
+    <Compile Include="CallbackBuilder.fs" />
     <Compile Include="DashConfig.fs" />
     <Compile Include="Views.fs" />
     <Compile Include="DashApp.fs" />
+    <Compile Include="Operators.fs" />
   </ItemGroup>
 
   <ItemGroup>
