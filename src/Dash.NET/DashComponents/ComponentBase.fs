@@ -134,7 +134,6 @@ module ComponentPropTypes =
         }
         static member create border primary background = {Border=border; Primary=primary; Background=background}
 
-
 module HTMLPropTypes =
 
     type HTMLProps =
@@ -149,3 +148,16 @@ module HTMLPropTypes =
             | ClassName p -> "className", box p
             | Style p -> "style", box p
             | Custom p -> p
+
+type ComponentProperty =
+    | Children
+    | Value
+    | N_Clicks
+    | CustomProperty of string
+
+    static member toPropertyName (ctp:ComponentProperty) =
+        match ctp with
+        | Children      -> "children"
+        | Value         -> "value"
+        | N_Clicks      -> "n_clicks"
+        | CustomProperty p  -> p
