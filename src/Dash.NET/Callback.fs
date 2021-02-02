@@ -6,7 +6,6 @@ open Newtonsoft.Json.Linq
 open System
 open DynamicInvoke
 
-
 type Dependency =
     {
         [<JsonProperty("id")>]
@@ -15,6 +14,7 @@ type Dependency =
         Property: string
     }
     static member create(id, property) = { Id = id; Property = property }
+    static member create(id, property:ComponentProperty) = {Id = id; Property = ComponentProperty.toPropertyName property}
     static member toCompositeId (d:Dependency) = sprintf "%s.%s" d.Id d.Property
     static member ofList (dict:seq<string*string>) =
         dict
@@ -123,19 +123,22 @@ type Callback<'Function>
     //returns the response object to send as response to a request to _dash-update-component that triggered this callback
     static member getResponseObject (args: seq<JToken>) (handler: Callback<'Function>) =
 
-        let argumentArray = DynamicInvoke.getArgumentArray (handler.HandlerFunction.GetType())
+        // array of types of the input arguments of the handler function
+        let callbackHandlerFunctionRange = DynamicInvoke.getFunctionDomain (handler.HandlerFunction.GetType())
+
+        let range = DynamicInvoke.getFunctionRange (handler.HandlerFunction.GetType())
 
         // shadow input args with a boxed collection of guarded conversions from the jtoken to the handler function's input type
         let args =
-            if argumentArray.Length = Seq.length args then
-                argumentArray
+            if callbackHandlerFunctionRange.Length = Seq.length args then
+                callbackHandlerFunctionRange
                 |> Seq.zip args
                 |> Seq.map (fun (argument,targetType) -> 
                     //printfn "JsonType: %A;      ArgType:%A" argument.Type targetType
                     // it may be necessary to inspect the JToken when the input is an object/higher kinded type
                     argument.ToObject(targetType))
             else
-                failwithf "arguments and targetTypes have different lenght: args:%i vs. types:%i" argumentArray.Length (Seq.length args)
+                failwithf "handler function arguments and targetTypes have different lenght: args:%i vs. types:%i" callbackHandlerFunctionRange.Length (Seq.length args)
 
         let evalResult =
             handler
