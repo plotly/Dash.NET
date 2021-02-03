@@ -41,15 +41,13 @@ let dslLayout =
         ] []
         Label.label [] [str "selected values:"]
         Div.div [Id "output-1"] []
+        Div.div [Id "output-2"] []
+        Div.div [Id "output-3"] []
+        Div.div [Id "output-4"] []
         Button.button [ClassName "button is-primary"; Id "testInput2"] [str "Click ME!"]
         Br.br [] []
         Label.label [] [str "Number of clicks:"]
-        Div.div [Id "output-2"] []
-        Input.input "testInput3" [
-            Input.Value """{"B":"hallo"}"""
-        ] []
-        Button.button [ClassName "button is-primary"; Id "testInput4"] [str "Click ME!"]
-        Div.div [Id "output-3"] []
+        Div.div [Id "output-5"] []
     ]
 
 
@@ -65,47 +63,33 @@ let dslLayout =
 
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
+open Dash.NET.Operators
 
 let callbackArrayInput =
-    Callback(
-        Inputs = [
-            CallbackInput.create("testInput1","value")
+    Callback.multiOut(
+        ["testInput1" @.Value],
+        [
+            "output-1" @.Children
+            "output-2" @.Children
         ],
-        Output = CallbackOutput.create("output-1","children"),
-        //HandlerFunction=(fun (x:float[]) -> sprintf "%A" x)
-        //HandlerFunction=(fun (x:JArray) -> sprintf "%A" (x.ToObject<int[]>()))
-        HandlerFunction = (fun (x:int[]) -> sprintf "%A" x)
-    )
-
-let clickInput =
-    Callback(
-        Inputs = [
-            CallbackInput.create("testInput2","n_clicks")
-        ],
-        Output = CallbackOutput.create("output-2","children"),
-        //HandlerFunction=(fun (x:int) -> sprintf "%A" x)
-        HandlerFunction=(fun (x:int) -> sprintf "%A" x)
-    )
-
-let multiOutput (a:(string*obj) list) = a
-
-let callbackArrayInput3 =
-    Callback(
-        Inputs = [
-            CallbackInput.create("testInput4","n_clicks")
-        ],
-        Outputs = [
-            CallbackOutput.create("output2","children")
-            CallbackOutput.create("output","children")
-            ],
-        State = [CallbackState.create("testInput3","value")],
-        //HandlerFunction=(fun (x:float[]) -> sprintf "%A" x)
-        //HandlerFunction=(fun (x:JArray) -> sprintf "%A" (x.ToObject<int[]>()))
-        HandlerFunction = (fun (clicks:int64) (x:A) -> 
-            multiOutput [
-                "output","children",box 2
-                "output2","children", box "hallo"
+        (fun (inputs:float []) (nclicks:float) ->
+            [
+                "output-1" @. Children => (Array.last inputs) * nclicks * 1.
+                "output-2" @. Children => (Array.last inputs) * nclicks * 2.
             ]
+        ),
+        State = [
+            "testInput2" @. N_Clicks
+        ]
+    )
+
+// usage of the new operators:
+let clickInput =
+    Callback.singleOut(
+        "testInput2" @. N_Clicks,
+        "output-5" @. Children,
+        (fun (x:float) -> 
+            "output-5" @. Children => sprintf "%A" x
         )
     )
 
@@ -125,8 +109,6 @@ let myDashApp =
     ]
     |> DashApp.addCallback callbackArrayInput // register the callback that will update the map
     |> DashApp.addCallback clickInput // register the callback that will update the map
-    |> DashApp.addCallback callbackArrayInput3 // register the callback that will update the map
-
 
 // The things below are Giraffe/ASP:NetCore specific and will likely be abstracted in the future.
 

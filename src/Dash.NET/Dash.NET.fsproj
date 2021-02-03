@@ -171,8 +171,9 @@
     <Compile Include="DashComponents\CoreComponents\Tabs.fs" />
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DynamicInvoke.fs" />
-    <Compile Include="Callback.fs" />
+    <Compile Include="Dependency.fs" />
     <Compile Include="CallbackBinding.fs" />
+    <Compile Include="Callback.fs" />
     <Compile Include="CallbackBuilder.fs" />
     <Compile Include="DashConfig.fs" />
     <Compile Include="Views.fs" />

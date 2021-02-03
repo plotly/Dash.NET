@@ -6,24 +6,6 @@ open Newtonsoft.Json.Linq
 open System
 open DynamicInvoke
 
-type Dependency =
-    {
-        [<JsonProperty("id")>]
-        Id: string
-        [<JsonProperty("property")>]
-        Property: string
-    }
-    static member create(id, property) = { Id = id; Property = property }
-    static member create(id, property:ComponentProperty) = {Id = id; Property = ComponentProperty.toPropertyName property}
-    static member toCompositeId (d:Dependency) = sprintf "%s.%s" d.Id d.Property
-    static member ofList (dict:seq<string*string>) =
-        dict
-        |> Seq.map Dependency.create
-
-type CallbackInput = Dependency
-type CallbackOutput = Dependency
-type CallbackState = Dependency
-
 type ClientSideFunction =
     {
         [<JsonProperty("namespace")>]
@@ -42,13 +24,34 @@ type RequestInput =
         Value: JToken
     }
 
+open Newtonsoft.Json
+open Newtonsoft.Json.Linq
+open System
+
+type SingleOrArrayConverter<'T>() =
+
+    inherit JsonConverter<'T []>()
+
+    override _.ReadJson(reader, (objectType:Type), (existingValue:'T []), (hasExistingValue:bool), (serializer:JsonSerializer)) =
+        let token = JToken.Load(reader)
+        if (token.Type = JTokenType.Array) then
+            token.ToObject<'T []>()
+        else
+            [|token.ToObject<'T>()|]
+
+    override _.WriteJson(writer:JsonWriter, value: 'T [], serializer: JsonSerializer) =
+        let token = JToken.FromObject(value)
+        token.WriteTo(writer)
+
+
 ///Type to deserialize calls to _dash-update-component
 type CallbackRequest =
     {
         [<JsonProperty("output")>]
         Output: string
         [<JsonProperty("outputs")>]
-        Outputs: CallbackOutput
+        [<JsonConverter(typeof<SingleOrArrayConverter<CallbackOutput>>)>]
+        Outputs: CallbackOutput []
         [<JsonProperty("changedPropIds")>]
         ChangedPropIds: string []
         [<JsonProperty("inputs")>]
@@ -57,60 +60,272 @@ type CallbackRequest =
         State:RequestInput []
     }
 
-open Newtonsoft.Json
-open Newtonsoft.Json.Linq
-open System
+type CallbackResponse() = 
+    inherit DynamicObj()
 
-type OutputConverter() =
-    inherit JsonConverter<CallbackOutput> ()
-    override _.ReadJson(reader, (objectType:Type), (existingValue:CallbackOutput), (hasExistingValue:bool), (serializer:JsonSerializer)) : CallbackOutput =
-        let token = JToken.Load(reader)
-        let res : CallbackOutput = token.ToObject<CallbackOutput>()
-        res
-    override _.WriteJson(writer:JsonWriter, value: CallbackOutput, serializer: JsonSerializer) =
-        let value' = CallbackOutput.toCompositeId value
-        let token = JToken.FromObject(value')
-        token.WriteTo(writer)
+    static member singleOut
+        (
+            outputId: string,
+            outputProperty:string,
+            evaluationResult:obj
+        ) = 
 
-open System.Reflection
-open Microsoft.FSharp.Reflection
+            let cr = CallbackResponse()
+            
+            //This should be properly wrapped/typed
+            let response = DynamicObj()
+            let result = DynamicObj()
 
-//Central type for Callbacks. Creating an instance of this type and registering it on the callback map is the equivalent of the @app.callback decorator in python.
+            result?(outputProperty) <- evaluationResult
+            response?(outputId) <- result
+
+            cr?multi <- true
+            cr?response <- response
+
+            printfn "Result JSON : %A" (result |> JsonConvert.SerializeObject)
+            printfn "Response JSON : %A" (response |> JsonConvert.SerializeObject)
+            printfn "final response : %A" cr
+            printfn "final response JSON : %A" (cr |> JsonConvert.SerializeObject)
+
+            cr
+
+    static member singleOut
+        (
+            binding:CallbackResultBinding
+        ) = 
+
+            CallbackResponse.singleOut
+                (
+                    binding.Target.Id,
+                    binding.Target.Property,
+                    binding.BoxedResult
+                )
+
+    static member multiOut 
+        (
+            outputs: seq<string*string*obj>
+        ) = 
+            let cr = CallbackResponse()
+            let response = DynamicObj()
+
+            outputs 
+            |> Seq.iter (fun (outputId, outputProperty, evaluationResult) ->
+                let result = DynamicObj()
+                result?(outputProperty) <- evaluationResult
+                response?(outputId) <- result
+            )
+
+            cr?multi <- true
+            cr?response <- response
+
+            cr
+
+    static member multiOut 
+           (
+               bindings: seq<CallbackResultBinding>
+           ) = 
+               CallbackResponse.multiOut
+                (
+                    bindings |> Seq.map (fun binding -> 
+                        binding.Target.Id, binding.Target.Property, binding.BoxedResult
+                    )
+                )
+
+/// The Central Callback type. 
+/// This type serves two purposes:
+///
+/// 1. Externally, the Serialized object is returned via the `_dash-dependencies` endpoint of a dash application to set up the dash renderer loop
+///
+/// 2. Internally, the HandlerFunction of the Callback is evaluated when a qualified call to `_dash-update-component` is performed.
+///
+/// As this type needs dynamic members in addition to the static members created by the default constructor, it is not recommended to use the constructor to create a callback,
+/// but rather the `singleOut` or `multiOut` members.
+///
+/// Creating an instance of this type and registering it on the callback map of the DashApp is the equivalent of the @app.callback decorator in python.
 type Callback<'Function> 
     (
-        Inputs: seq<CallbackInput>,
-        Output: CallbackOutput,
         HandlerFunction: 'Function,
-        ?State: seq<CallbackState>,
-        ?PreventInitialCall: bool,
-        ?ClientsideFunction: ClientSideFunction
+        Multi: bool,
+        ?PreventInitialCall:bool,
+        ?ClientSideFunction:ClientSideFunction
     ) =
-    [<JsonProperty("inputs")>]
-    member _.Inputs = Inputs
-    [<JsonProperty("output")>]
-    [<JsonConverter(typeof<OutputConverter>)>]
-    member _.Output = Output
+
+    inherit DynamicObj()
+
+    //static members
     [<JsonIgnore()>]
-    member _.HandlerFunction = HandlerFunction
-    [<JsonProperty("state")>]
-    member _.State = defaultArg State Seq.empty
+    member _.HandlerFunction : 'Function = HandlerFunction
+
+    [<JsonProperty("multi")>]
+    member _.Multi : bool = Multi 
+
     [<JsonProperty("prevent_initial_call")>]
     member _.PreventInitialCall = defaultArg PreventInitialCall true
+
     [<JsonProperty("clientside_function")>]
-    member _.ClientsideFunction = ClientsideFunction
-    [<JsonProperty("multi")>]
-    member _.Multi = false // no multi callbacks supported atm
+    member _.ClientSideFunction = ClientSideFunction
+
+    //initializers using dynamic fields
+
+    ////dynamic members
+    //[<JsonProperty("inputs")>]
+    //member _.Inputs = Inputs
+    //[<JsonProperty("output")>]
+    //[<JsonConverter(typeof<OutputConverter>)>]
+    //member _.Output = Output
+    //[<JsonProperty("state")>]
+    //member _.State = defaultArg State Seq.empty
+
+
+
+    /// returns a callback that binds a handler function mapping from multiple input components to a single output component (n -> 1)
+    static member singleOut
+        (
+            inputs: seq<CallbackInput>,
+            output: CallbackOutput,
+            handlerFunction: 'Function,
+            ?State: seq<CallbackState>,
+            ?PreventInitialCall:bool,
+            ?ClientSideFunction:ClientSideFunction
+        ) =
+            let cb = 
+                Callback(
+                    handlerFunction,
+                    false,
+                    ?PreventInitialCall = PreventInitialCall,
+                    ?ClientSideFunction = ClientSideFunction
+                )
+            let callbackId = Dependency.toCompositeId output
+            let state = 
+                defaultArg State Seq.empty
+                |> Seq.map Dependency.toCompositeId
+
+            callbackId  |> DynObj.setValue cb "output"
+            inputs      |> DynObj.setValue cb "inputs"
+            state       |> DynObj.setValue cb "state"
+
+            output |> Seq.singleton |> DynObj.setValue cb "outputDependencies"
+
+            cb
+    
+    /// returns a callback that binds a handler function mapping from a single input component to a single output component
+    static member singleOut
+        (
+            input: CallbackInput,
+            output: CallbackOutput,
+            handlerFunction: 'Function,
+            ?State: seq<CallbackState>,
+            ?PreventInitialCall:bool,
+            ?ClientSideFunction:ClientSideFunction
+        ) =
+            Callback.singleOut
+                (
+                    input |> Seq.singleton,
+                    output,
+                    handlerFunction,
+                    ?State = State,
+                    ?PreventInitialCall=PreventInitialCall,
+                    ?ClientSideFunction=ClientSideFunction
+                )
+
+    static member multiOut 
+        (
+            inputs: seq<CallbackInput>,
+            outputs: seq<CallbackOutput>,
+            handlerFunction: 'Function,
+            ?State: seq<CallbackState>,
+            ?PreventInitialCall:bool,
+            ?ClientSideFunction:ClientSideFunction
+        ) = 
+            let cb = 
+                Callback(
+                    handlerFunction,
+                    true,
+                    ?PreventInitialCall = PreventInitialCall,
+                    ?ClientSideFunction = ClientSideFunction
+                )
+
+            let callbackId = Dependency.toMultiCompositeId outputs
+
+            let state = defaultArg State Seq.empty
+
+            callbackId  |> DynObj.setValue cb "output"
+            inputs      |> DynObj.setValue cb "inputs"
+            state       |> DynObj.setValue cb "state"
+
+            outputs |> DynObj.setValue cb "outputDependencies"
+
+            cb
+
+    static member multiOut 
+        (
+            input: CallbackInput,
+            outputs: seq<CallbackOutput>,
+            handlerFunction: 'Function,
+            ?State: seq<CallbackState>,
+            ?PreventInitialCall:bool,
+            ?ClientSideFunction:ClientSideFunction
+        ) = 
+            Callback.multiOut
+                (
+                    input |> Seq.singleton,
+                    outputs,
+                    handlerFunction,
+                    ?State = State,
+                    ?PreventInitialCall=PreventInitialCall,
+                    ?ClientSideFunction=ClientSideFunction
+                )
+
+    static member copy (callback: Callback<'Function>) : Callback<'Function> =
+
+        let copyDynamicMembers (fromObj:DynamicObj) (toObj:DynamicObj) =
+            fromObj.GetProperties(false)
+            |> Seq.iter (fun (kv) ->
+                toObj?(kv.Key) <- kv.Value
+            )
+
+        let copy = 
+            Callback(
+                callback.HandlerFunction,
+                callback.Multi,
+                callback.PreventInitialCall,
+                ?ClientSideFunction = callback.ClientSideFunction
+            )
+
+        copyDynamicMembers callback copy
+
+        copy
+
+    static member toDependencyGraph (callback: Callback<'Function>) =
+
+        let copy = Callback.copy callback
+
+        DynObj.remove copy "outputDependencies"
+
+        copy
+
 
     //Necessary as generic types seem not te be unboxed as easily (problems arise e.g. when unboxing (box Callback<string,string>), as the og types used for
     //the generics are missing, therefore obj,obj is assumed and the cast fails)
     static member pack(handler: Callback<'Function>): Callback<obj> =
-        Callback(
-            handler.Inputs,
-            handler.Output,
-            (box handler.HandlerFunction),
-            handler.State,
-            handler.PreventInitialCall
-        )
+        
+        let copyDynamicMembers (fromObj:DynamicObj) (toObj:DynamicObj) =
+            fromObj.GetProperties(false)
+            |> Seq.iter (fun (kv) ->
+                toObj?(kv.Key) <- kv.Value
+            )
+
+        let packed = 
+            Callback(
+                box handler.HandlerFunction,
+                handler.Multi,
+                handler.PreventInitialCall,
+                ?ClientSideFunction = handler.ClientSideFunction
+            )
+
+        copyDynamicMembers handler packed
+
+        packed
 
     //returns a boxed result of the dynamic invokation of the handler function
     static member eval (args: seq<obj>) (handler: Callback<'Function>) =
@@ -148,18 +363,49 @@ type Callback<'Function>
         match evalResult with
         | Ok r ->
 
-            //This should be properly wrapped/typed
-            let root = DynamicObj()
-            let response = DynamicObj()
-            let result = DynamicObj()
+            if handler.Multi then
 
-            result?(handler.Output.Property) <- r
-            response?(handler.Output.Id) <- result
+                match r with
+                | :? seq<CallbackResultBinding> as bindings -> 
+                    CallbackResponse.multiOut(bindings)
 
-            root?multi <- true
-            root?response <- response
+                | :? seq<obj> as boxedResults -> 
 
-            root
+                    let outputs = 
+                        handler?outputDependencies 
+                        |> unbox<seq<CallbackOutput>>
+
+                    if (Seq.length outputs) = (Seq.length boxedResults) then
+
+                        CallbackResponse.multiOut(
+                            outputs
+                            |> Seq.zip boxedResults
+                            |> Seq.map (fun (boxedRes, output) -> output.Id, output.Property, boxedRes)
+
+                        )
+
+                    else
+                        failwithf "amount of multi callback outputs did not match to the actual callback binding (expected %i but got %i)" (Seq.length outputs) (Seq.length boxedResults)
+
+                | _ -> failwithf "multi callback result %O was not a collection." r
+
+            else
+                
+                match r with
+                | :? CallbackResultBinding as binding -> 
+                     CallbackResponse.singleOut(binding)
+
+                | _ -> 
+                    let output = 
+                        handler?outputDependencies 
+                        |> unbox<seq<CallbackOutput>>
+                        |> Seq.item 0
+                
+                    CallbackResponse.singleOut(
+                        output.Id,
+                        output.Property,
+                        r
+                    )
 
         | Error e -> failwith e.Message
 
@@ -170,7 +416,7 @@ type CallbackMap() =
         (callback: Callback<'Function>)
         (callbackMap: CallbackMap)
         =
-        let callbackId = callback.Output |> Dependency.toCompositeId
+        let callbackId = callback?output |> unbox<string>
         callbackMap?(callbackId) <- (Callback.pack callback)
         callbackMap
 
@@ -193,6 +439,7 @@ type CallbackMap() =
         members
         |> Seq.map (fun cName ->
             CallbackMap.getPackedCallbackById cName callbackMap
+            |> Callback.toDependencyGraph
         )
 
         
