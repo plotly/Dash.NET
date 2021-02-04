@@ -5,10 +5,10 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_project", "_project", "{625E3CAC-600B-450D-BF54-E3059450591A}"
 	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
 		build.fsx = build.fsx
+		build.sh = build.sh
 		.config\dotnet-tools.json = .config\dotnet-tools.json
-		fake.cmd = fake.cmd
-		fake.sh = fake.sh
 		global.json = global.json
 		dev\Properties\launchSettings.json = dev\Properties\launchSettings.json
 		README.md = README.md
@@ -21,7 +21,37 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Dev", "dev\Dash.NE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8531DA15-1690-4671-8741-89C4953163C6}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dash.NET.Tests", "tests\Dash.NET.Tests\Dash.NET.Tests.fsproj", "{ECDBA25E-39B4-4C59-B665-0695F50A51BF}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Tests", "tests\Dash.NET.Tests\Dash.NET.Tests.fsproj", "{ECDBA25E-39B4-4C59-B665-0695F50A51BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{420D4858-5F4C-45FE-BD17-818FDB1E94ED}"
+	ProjectSection(SolutionItems) = preProject
+		docs\_template.html = docs\_template.html
+		docs\_template.ipynb = docs\_template.ipynb
+		docs\index.fsx = docs\index.fsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{EBDFED69-A812-46BC-80E8-5D7DCFED71FE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\img\callback.gif = docs\img\callback.gif
+		docs\img\favicon.ico = docs\img\favicon.ico
+		docs\img\hello-graph.png = docs\img\hello-graph.png
+		docs\img\hello-world-bulma.png = docs\img\hello-world-bulma.png
+		docs\img\hello-world-green.png = docs\img\hello-world-green.png
+		docs\img\hello-world.png = docs\img\hello-world.png
+		docs\img\logo.png = docs\img\logo.png
+		docs\img\logo_title.svg = docs\img\logo_title.svg
+		docs\img\state.gif = docs\img\state.gif
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reference", "reference", "{C93A091D-58DB-4896-A9DA-1016011A6494}"
+	ProjectSection(SolutionItems) = preProject
+		docs\reference\_template.html = docs\reference\_template.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{ED23F221-EFE6-4538-BEA2-A6A4F806FDDF}"
+	ProjectSection(SolutionItems) = preProject
+		docs\content\fsdocs-custom.css = docs\content\fsdocs-custom.css
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,10 +103,13 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {47D6A0E3-05A6-4BB7-81D1-A90CE758E430}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{ECDBA25E-39B4-4C59-B665-0695F50A51BF} = {8531DA15-1690-4671-8741-89C4953163C6}
+		{EBDFED69-A812-46BC-80E8-5D7DCFED71FE} = {420D4858-5F4C-45FE-BD17-818FDB1E94ED}
+		{C93A091D-58DB-4896-A9DA-1016011A6494} = {420D4858-5F4C-45FE-BD17-818FDB1E94ED}
+		{ED23F221-EFE6-4538-BEA2-A6A4F806FDDF} = {420D4858-5F4C-45FE-BD17-818FDB1E94ED}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47D6A0E3-05A6-4BB7-81D1-A90CE758E430}
 	EndGlobalSection
 EndGlobal
