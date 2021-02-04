@@ -31,6 +31,23 @@ module DynamicInvoke =
                 f
         loop t
 
+    let isIConvertible (t:Type) =
+        t.GetInterfaces()
+        |> Array.exists (fun t -> t = typeof<IConvertible>)
+
+    let isSeq (t:Type) =
+        t.GetInterfaces()
+        |> Array.exists (fun t -> t = typeof<System.Collections.IEnumerable>)
+
+    let isIConvertibleSeq (t:Type) =
+        if isSeq t then
+            let genericArgs = t.GetGenericArguments()
+            if genericArgs.Length > 0 then
+                isIConvertible genericArgs.[0]
+            else
+                false
+        else
+            false
 
     //This function is (as far as i see it) a 'necessary evil' for solving the problem of callbacks having arbitrary amounts of parameters.
     //However, just like DynamicObj in Plotly.NET, it is definately usable when correctly encapsulated to prevent direct usage.

@@ -367,9 +367,12 @@ type Callback<'Function>
 
                 match r with
                 | :? seq<CallbackResultBinding> as bindings -> 
+                // The result is a sequence of boxed CallbackResultBindings
+
                     CallbackResponse.multiOut(bindings)
 
                 | :? seq<obj> as boxedResults -> 
+                // The result of the multioutput is a sequence of boxed types
 
                     let outputs = 
                         handler?outputDependencies 
@@ -381,13 +384,37 @@ type Callback<'Function>
                             outputs
                             |> Seq.zip boxedResults
                             |> Seq.map (fun (boxedRes, output) -> output.Id, output.Property, boxedRes)
-
                         )
 
                     else
                         failwithf "amount of multi callback outputs did not match to the actual callback binding (expected %i but got %i)" (Seq.length outputs) (Seq.length boxedResults)
 
-                | _ -> failwithf "multi callback result %O was not a collection." r
+                | r when (isIConvertibleSeq (r.GetType())) ->
+                // The result of the multioutput is a boxed sequence of IConvertibles, e.g.
+                // [2;3;4], [|"1";"2"|]; seq{2.;3.}
+                
+                    let primitiveSeq = 
+                        r 
+                        |> unbox<System.Collections.IEnumerable> 
+                        |> Seq.cast<IConvertible>
+
+                    let outputs = 
+                        handler?outputDependencies 
+                        |> unbox<seq<CallbackOutput>>
+
+                    if (Seq.length outputs) = (Seq.length primitiveSeq) then
+
+                        CallbackResponse.multiOut(
+                            outputs
+                            |> Seq.zip primitiveSeq
+                            |> Seq.map (fun (result, output) -> output.Id, output.Property, (box result))
+
+                        )
+
+                    else
+                        failwithf "The amount of multi callback outputs returned by the callback function did not match to the amount of outputs defined by the callback dependency (expected %i vs %i). Make sure that the callback function returns a collection of results of length %i" (Seq.length primitiveSeq) (Seq.length outputs) (Seq.length outputs)
+
+                | _ -> failwithf "multi callback result %O of type %O was not a supported collection (supported: seq<IConvertible>, seq<obj>, seq<CallbackResultBinding>). You might be able to circumvent this problem by boxing the return values of your results to generate a seq<obj>." r (r.GetType())
 
             else
                 

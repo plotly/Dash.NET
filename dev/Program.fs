@@ -74,8 +74,8 @@ let callbackArrayInput =
         ],
         (fun (inputs:float []) (nclicks:float) ->
             [
-                "output-1" @. Children => (Array.last inputs) * nclicks * 1.
-                "output-2" @. Children => (Array.last inputs) * nclicks * 2.
+               (Array.last inputs) * nclicks * 1.
+               (Array.last inputs) * nclicks * 2.
             ]
         ),
         State = [
