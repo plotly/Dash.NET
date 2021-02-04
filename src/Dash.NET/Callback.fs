@@ -6,28 +6,7 @@ open Newtonsoft.Json.Linq
 open System
 open DynamicInvoke
 
-type ClientSideFunction =
-    {
-        [<JsonProperty("namespace")>]
-        Namespace: string
-        [<JsonProperty("function_name")>]
-        FunctionName: string
-    }
-
-type RequestInput = 
-    { 
-        [<JsonProperty("id")>]
-        Id: string
-        [<JsonProperty("property")>]
-        Property: string
-        [<JsonProperty("value")>]
-        Value: JToken
-    }
-
-open Newtonsoft.Json
-open Newtonsoft.Json.Linq
-open System
-
+/// JSON converter to always convert a single item as well as a JArray of items on the same field to `Seq<'T>`
 type SingleOrArrayConverter<'T>() =
 
     inherit JsonConverter<'T []>()
@@ -43,8 +22,27 @@ type SingleOrArrayConverter<'T>() =
         let token = JToken.FromObject(value)
         token.WriteTo(writer)
 
+/// Client side function that can be bound to a callback
+type ClientSideFunction =
+    {
+        [<JsonProperty("namespace")>]
+        Namespace: string
+        [<JsonProperty("function_name")>]
+        FunctionName: string
+    }
 
-///Type to deserialize calls to _dash-update-component
+/// A single element of the `inputs` field of a JSON request to `_dash-update-component`
+type RequestInput = 
+    { 
+        [<JsonProperty("id")>]
+        Id: string
+        [<JsonProperty("property")>]
+        Property: string
+        [<JsonProperty("value")>]
+        Value: JToken
+    }
+
+///Type to deserialize calls to _dash-update-component into
 type CallbackRequest =
     {
         [<JsonProperty("output")>]
@@ -60,9 +58,11 @@ type CallbackRequest =
         State:RequestInput []
     }
 
+/// The response object that will be serialized and returned as response to requests at `_dash-update-component`
 type CallbackResponse() = 
     inherit DynamicObj()
 
+    /// creates a `CallbackResponse` object for a single output callback response for the given property of the given component with the given evaluation result
     static member singleOut
         (
             outputId: string,
@@ -89,6 +89,7 @@ type CallbackResponse() =
 
             cr
 
+    /// creates a `CallbackResponse` object for a single output callback response from the given `CallbackResultBinding`
     static member singleOut
         (
             binding:CallbackResultBinding
@@ -152,33 +153,33 @@ type Callback<'Function>
 
     inherit DynamicObj()
 
-    //static members
+    //static members -----------------------------------------------------------------------------------------
+    
     [<JsonIgnore()>]
+    /// The handler function that maps the callback input components to the callback output components
     member _.HandlerFunction : 'Function = HandlerFunction
 
     [<JsonProperty("multi")>]
+    /// Indicates wether the callback is a n -> i mapping (false) or n -> n mapping (true)
     member _.Multi : bool = Multi 
 
     [<JsonProperty("prevent_initial_call")>]
+    /// If true, the callback will not be called during initialization of the DashApp
     member _.PreventInitialCall = defaultArg PreventInitialCall true
 
     [<JsonProperty("clientside_function")>]
+    /// A clientside function that should be run by this callback
     member _.ClientSideFunction = ClientSideFunction
 
-    //initializers using dynamic fields
+    //dynamic member initialization --------------------------------------------------------------------------
 
-    ////dynamic members
-    //[<JsonProperty("inputs")>]
-    //member _.Inputs = Inputs
-    //[<JsonProperty("output")>]
-    //[<JsonConverter(typeof<OutputConverter>)>]
-    //member _.Output = Output
-    //[<JsonProperty("state")>]
-    //member _.State = defaultArg State Seq.empty
-
-
-
-    /// returns a callback that binds a handler function mapping from multiple input components to a single output component (n -> 1)
+    /// <summary>returns a callback that binds a handler function mapping from multiple input components to a single output component (n -> 1)</summary>
+    /// <param name="inputs"> A sequence of `CallbackInput` that represents the input components of this callback. Changes to any of these components signalled by the client will trigger the callback. </param>
+    /// <param name="output"> A `CallbackOutput` that represents the output component of this callback </param>
+    /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
+    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
     static member singleOut
         (
             inputs: seq<CallbackInput>,
@@ -208,7 +209,13 @@ type Callback<'Function>
 
             cb
     
-    /// returns a callback that binds a handler function mapping from a single input component to a single output component
+    /// <summary>returns a callback that binds a handler function mapping from a single input component to a single output component (1 -> 1)</summary>
+    /// <param name="input"> A `CallbackInput` that represents the input component of this callback. Changes to this component signalled by the client will trigger the callback.</param>
+    /// <param name="output"> A `CallbackOutput` that represents the output component of this callback </param>
+    /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
+    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
     static member singleOut
         (
             input: CallbackInput,
@@ -228,6 +235,13 @@ type Callback<'Function>
                     ?ClientSideFunction=ClientSideFunction
                 )
 
+    /// <summary>returns a callback that binds a handler function mapping from multiple input components to multiple output components (n -> n)</summary>
+    /// <param name="inputs"> A sequence of `CallbackInput` that represents the input components of this callback. Changes to any of these components signalled by the client will trigger the callback. </param>
+    /// <param name="outputs"> A sequence of `CallbackOutput` that represents the output components of this callback </param>
+    /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
+    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
     static member multiOut 
         (
             inputs: seq<CallbackInput>,
@@ -257,6 +271,13 @@ type Callback<'Function>
 
             cb
 
+    /// returns a callback that binds a handler function mapping from a single input component to multiple output components (1 -> n)
+    /// <param name="input"> A `CallbackInput` that represents the input component of this callback. Changes to this component signalled by the client will trigger the callback. </param>
+    /// <param name="outputs"> A sequence of `CallbackOutput` that represents the output components of this callback </param>
+    /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
+    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
     static member multiOut 
         (
             input: CallbackInput,
@@ -276,6 +297,7 @@ type Callback<'Function>
                     ?ClientSideFunction=ClientSideFunction
                 )
 
+    /// Returns a copy of the given `Callback` (copies dynamic members aswell)
     static member copy (callback: Callback<'Function>) : Callback<'Function> =
 
         let copyDynamicMembers (fromObj:DynamicObj) (toObj:DynamicObj) =
@@ -296,6 +318,7 @@ type Callback<'Function>
 
         copy
 
+    /// Returns a copy of the callback with all dynamic fields removed that prevent the callback to be correctly serialized and returned as dependency graph at `_dash-dependencies`
     static member toDependencyGraph (callback: Callback<'Function>) =
 
         let copy = Callback.copy callback
@@ -415,9 +438,8 @@ type Callback<'Function>
                         failwithf "The amount of multi callback outputs returned by the callback function did not match to the amount of outputs defined by the callback dependency (expected %i vs %i). Make sure that the callback function returns a collection of results of length %i" (Seq.length primitiveSeq) (Seq.length outputs) (Seq.length outputs)
 
                 | _ -> failwithf "multi callback result %O of type %O was not a supported collection (supported: seq<IConvertible>, seq<obj>, seq<CallbackResultBinding>). You might be able to circumvent this problem by boxing the return values of your results to generate a seq<obj>." r (r.GetType())
-
+            
             else
-                
                 match r with
                 | :? CallbackResultBinding as binding -> 
                      CallbackResponse.singleOut(binding)
@@ -433,20 +455,25 @@ type Callback<'Function>
                         output.Property,
                         r
                     )
-
         | Error e -> failwith e.Message
 
 type CallbackMap() =
     inherit DynamicObj()
 
-    static member registerCallback
-        (callback: Callback<'Function>)
-        (callbackMap: CallbackMap)
-        =
+    /// adds the given `Callback` to the given `CallbackMap` by setting it as dynamic member with the field name equal to the callback output composite id.
+    static member registerCallback (callback: Callback<'Function>) (callbackMap: CallbackMap) =
+        if 
+            callbackMap.GetProperties(false) 
+            |> Seq.exists(fun kv -> 
+                kv.Key = (callback?output |> unbox<string>)
+            )  
+        then printfn "Warning: duplicate registration of %s. The previous callback registration will be overwritten." (callback?output |> unbox<string>)
+        
         let callbackId = callback?output |> unbox<string>
         callbackMap?(callbackId) <- (Callback.pack callback)
         callbackMap
 
+    /// If there is a callback registered at the given id (meaning if there is a dynamic member with the given field name) , removes it from the `CallbackMap`.
     static member unregisterCallback (callbackId: string) (callbackMap: CallbackMap) =
         match (callbackMap.TryGetTypedValue<Callback<obj>> callbackId) with
         | Some _ ->
@@ -454,6 +481,7 @@ type CallbackMap() =
             callbackMap
         | None -> callbackMap
 
+    /// Returns the packed `Callback` (meaning the generic type annotation of the `Callback` is obj, as its handlerfunction is boxed) registered at the given id when it exists.
     static member getPackedCallbackById (callbackId: string) (callbackMap: CallbackMap)
         : Callback<obj>
         =

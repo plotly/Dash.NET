@@ -1,6 +1,7 @@
 ﻿namespace Dash.NET
 
 //This module should most likely be its own nuget package, bundled with the dynamic object from Plotly.NET
+/// Reflection based dynamic invocation of functions and related helpers
 module DynamicInvoke =
 
     open System
@@ -31,14 +32,17 @@ module DynamicInvoke =
                 f
         loop t
 
+    /// Returns true if the given type implements the IConvertible interface
     let isIConvertible (t:Type) =
         t.GetInterfaces()
         |> Array.exists (fun t -> t = typeof<IConvertible>)
 
+    /// Returns true if the given type implements the IEnumerable interface
     let isSeq (t:Type) =
         t.GetInterfaces()
         |> Array.exists (fun t -> t = typeof<System.Collections.IEnumerable>)
 
+    /// Returns true if the given type implements the IEnumerable interface and the type contained in the collection implements the IConvertible interface
     let isIConvertibleSeq (t:Type) =
         if isSeq t then
             let genericArgs = t.GetGenericArguments()
@@ -51,10 +55,10 @@ module DynamicInvoke =
 
     //This function is (as far as i see it) a 'necessary evil' for solving the problem of callbacks having arbitrary amounts of parameters.
     //However, just like DynamicObj in Plotly.NET, it is definately usable when correctly encapsulated to prevent direct usage.
+    
     ///<summary>Invokes the given function with the given arguments (passed as boxed values) </summary>
     ///<param name="fn">an obj type representing the function to dynamically invoke. Internally a check is performed if it is a FSharp function - and if true - it will be consequitively be invoked with the arguments provided by args</param>
-    ///<param name="args">a sequence </param>
-    ///<returns>A Result<'FunctionResult,System.Exception</returns>
+    ///<param name="args">a sequence or boxed function arguments</param>
     let invokeDynamic<'FunctionResult> (fn: obj) (args: obj seq): Result<'FunctionResult, System.Exception> =
         let rec dynamicFunctionInternal (next: obj) (args: obj list): InvokeResult =
             match args.IsEmpty with
@@ -62,7 +66,7 @@ module DynamicInvoke =
                 let fType = next.GetType()
 
                 if FSharpType.IsFunction fType then
-                    //To-Do: add safety for arg count <> function arg count
+
                     let (head, tail) = (args.Head, args.Tail)
 
                     let methodInfo =
