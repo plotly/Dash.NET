@@ -197,9 +197,7 @@ type Callback<'Function>
                     ?ClientSideFunction = ClientSideFunction
                 )
             let callbackId = Dependency.toCompositeId output
-            let state = 
-                defaultArg State Seq.empty
-                |> Seq.map Dependency.toCompositeId
+            let state = defaultArg State Seq.empty
 
             callbackId  |> DynObj.setValue cb "output"
             inputs      |> DynObj.setValue cb "inputs"
