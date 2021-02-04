@@ -1,247 +1,89 @@
-# Dash.NET
+﻿![](docs/img/logo_title.svg)
 
-![](docs/img/logo_title.svg)
+[![](https://img.shields.io/nuget/vpre/Dash.NET)](https://www.nuget.org/packages/Dash.NET/)
 
-Dash.NET is a .NET interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps - written in F#. Built on top of Plotly.js, React and asp.netcore (via Giraffe), Dash.NET ties modern UI elements like dropdowns, sliders, and graphs directly to your analytical .NET code.
+Dash.NET is a .NET interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps - written in F#. Built on top of [Plotly.NET](https://github.com/plotly/Plotly.NET), React and asp.netcore (via Giraffe), Dash.NET ties modern UI elements like dropdowns, sliders, and graphs directly to your analytical .NET code.
 
-This library is under heavy development. Things might break. However, Dash.NET has a stable core and has already been used for [non trivial applications](https://github.com/CSBiology/TMEA). The current development goal is to implement all targets set in the [beta roadmap](https://github.com/plotly/Dash.NET/issues/4), where you can also see a summary of the state of the project.
+This library is under heavy development. Things might break. However, Dash.NET has a stable core and has already been used for non trivial applications ([example1](https://github.com/CSBiology/TMEA), [example2](https://github.com/TRR175/ExploreKinetics)). The current development goal is to implement all targets set in the [beta roadmap](https://github.com/plotly/Dash.NET/issues/4), where you can also see a summary of the state of the project.
 
-# Table of contents of this readme
+The documentation is WIP as well.
 
 <!-- TOC -->
 
-- [Usage](#usage)
-    - [Basic application](#basic-application)
-    - [Referencing content](#referencing-content)
-    - [Dash Core components (DCC)](#dash-core-components-dcc)
-    - [Basic callback](#basic-callback)
-    - [Using state](#using-state)
+- [Installation](#installation)
+- [Documentation](#documentation)
 - [Development](#development)
-    - [Windows](#windows)
-    - [Linux/MacOS](#linuxmacos)
-    - [Run the dev server application](#run-the-dev-server-application)
+    - [build](#build)
+    - [docs](#docs)
+    - [release](#release)
 
 <!-- /TOC -->
 
-## Usage
 
-You can either use the [Dash.NET template](https://github.com/plotly/Dash.NET.Template) via the `dotnet new` templating engine to start from a new template dash application, or add Dash.NET to your existing project via our [preview nuget package](https://www.nuget.org/packages/Dash.NET)
+## Installation
 
-In Dash.NET, everything is basically about constructing a `DashApp` that holds all parts of your dash application, such as:
--  the `Layout`, which holds the UI components of your application
-- `Callbacks` that handle how different components in your `Layout` interact with each other
-- Various server and renderer configurations via `DashConfig`
-- The `IndexView` template that controls the html scaffold that holds the rendered application.
+Get the latest preview package via nuget: [![](https://img.shields.io/nuget/vpre/Dash.NET)](https://www.nuget.org/packages/Dash.NET/)
 
-The most simple (and boring) Dash.NET application looks like this:
+Use the `dotnet new` template: 
 
-```F#
-open Dash.NET
+`dotnet new -i Dash.NET.Template::*` 
 
-let myApp = DashApp.initDefault()
-```
+(watch out, this template might not use the latest Dash.NET package, take a look at the referenced version and update if needed )
 
-Which creates a `DashApp` with all fields initialized with empty defaults. The http handler for a `DashApp` can be accessed via the `DashApp.toHttpHandler` function to plug it into your aps.netcore application configuration function via `UseGiraffe` (for more info, check out Giraffe docs or take a look at the [dev project in this repo](https://github.com/plotly/Dash.NET/blob/dev/dev/Program.fs#L104))
+## Documentation
 
-### Basic application
-
-To get actual content into the default application, it needs a `Layout`. `Layout`s can be created via Dash.NET's DSL for html components, where the first function parameter is always a list of properties (e.g. for setting css classes), and the second a list of children.
-
-```F#
-open Dash.NET.HTML
-
-//Will create the following html:
-//<div>
-//  <h1>"Hello world from Dash.NET!"</h1>
-//</div>
-//
-let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-    ]
-let test = 
-    DashApp.initDefault()
-    |> DashApp.withLayout myLayout
-```
-
-![](docs/img/hello-world.png)
-
----
-
-<br>
-
-### Referencing content
-
-You can include internal and external stylesheets and scripts via `DashApp.appendCSSLinks` and `DashApp.appendScripts`:
-
-Let's say you have the following `main.css` file in your wwwroot directory (served from `/main.css`)
-
-```CSS
-h1 {
-    font-size: 1.5em;
-    color: green;
-}
-```
-
-you can reference it from your `DashApp` like this (using the basic example from above):
-
-```F#
-let test = 
-    DashApp.initDefault()
-    |> DashApp.withLayout myLayout
-    |> DashApp.appendCSSLinks ["main.css"]
-
-```
-
-![](docs/img/hello-world-green.png)
-
----
-
-If you want to reference external content (e.g. a CSS framework like [Bulma](https://bulma.io/)), you can do that as well. To use the classes defined there, set the `ClassName` accordingly:
-
-```F#
-let myLayout = 
-    Div.div [] [
-        H1.h1 [ClassName "title is-1"] [str "Hello world from Dash.NET!"]
-    ]
-
-
-let test = 
-    DashApp.initDefault()
-    |> DashApp.withLayout myLayout
-    |> DashApp.appendCSSLinks [
-        "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.1/css/bulma.min.css"
-    ]
-```
-
-![](docs/img/hello-world-bulma.png)
-
----
-
-### Dash Core components (DCC)
-
-You can also use most dash core components. The following example uses the Plotly.NET to create a plotly graph component. Note that all core components must have a nunique id, and therefore have the mandatory id parameter:
-
-```F#
-open Dash.NET.HTML
-open Dash.NET.DCC
-open Plotly.NET
-
-let myGraph = Chart.Line([(1,1);(2,2)])
-
-let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        H2.h2 [] [str "Take a look at this graph:"]
-        Graph.graph "my-ghraph-id" [Graph.Figure (myGraph |> GenericChart.toFigure)] []
-    ]
-let test = 
-    DashApp.initDefault()
-    |> DashApp.withLayout myLayout
-```
-
-![](docs/img/hello-graph.png)
-
----
-
-<br>
-
-### Basic callback
-
-Callbacks describe the interactive part of your `DashApp`. In the most basic case, you have one input component, which updates one output component. For both you need to assign the property of the component that will be part of the callback. Additionally, a function is needed that takes the input and returns the output:
-
-```F#
-open Dash.NET.HTML
-open HTMLPropTypes
-open Dash.NET.DCC
-open ComponentPropTypes
-
-let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        H2.h2 [] [str "Tell us something!"]
-        Input.input "test-input" [Input.Type InputType.Text] []
-        H2.h2 [Id "test-output"] []
-    ]
-
-let testCallback =
-    Callback(
-        [CallbackInput.create("test-input","value")],       // <- Input of the callback is the `value` property of the component with the id "test-input"
-        CallbackOutput.create("test-output","children"),    // <- Output of the callback is the `children` property of the component with the id "test-output"
-        
-        (fun (input:string) ->                              // this function takes a string as input and returns another message.
-            sprintf "You said : %s" input
-        )
-    )
-
-let test = 
-    DashApp.initDefault()
-    |> DashApp.withLayout myLayout
-    |> DashApp.addCallback testCallback
-```
-
-Note that it is currently necessary to provide the component properties in string form. You will have to take care of the correct amount and types of the callback function parameters. Binding a function with two parameters to above example would cause a runtime error.
-
-![](docs/img/callback.gif)
-
----
-
-### Using state 
-
-Use states as non-triggering input for callbacks. You can use the optional `State` constructor parameter of `Callback`. Just keep in mind that the state will be used for your callback function parameters _after_ the callback inputs:
-
-```F#
-let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        H2.h2 [] [str "Tell us something!"]
-        Input.input "test-input" [Input.Type InputType.Text] []
-        H3.h3 [] [str "Input below will not trigger the callback"]
-        Input.input "test-input-state" [Input.Type InputType.Text] []
-        H2.h2 [Id "test-output"] []
-    ]
-
-let testCallback =
-    Callback(
-        [CallbackInput.create("test-input","value")],
-        CallbackOutput.create("test-output","children"),
-        (fun (input:string) (state:string) ->
-            sprintf "You said : '%s' and we added the state: '%s'" input state
-        ),
-        State = [CallbackState.create("test-input-state","value")]
-    )
-
-let test = 
-    DashApp.initDefault()
-    |> DashApp.withLayout myLayout
-    |> DashApp.addCallback testCallback
-```
-
-![](docs/img/state.gif)
-
----
+The landing page of our docs contains everything to get you started fast, check it out [📖 here](http://plotly.github.io/Dash.NET/) 
 
 ## Development
 
-To build the project and dev server application, run the `fake.cmd` script in order to restore and build 
+_Note:_ The `release` and `prerelease` build targets assume that there is a `NUGET_KEY` environment variable that contains a valid Nuget.org API key.
 
-### Windows
-```
-> ./fake.cmd build
+### build
+
+Check the [build.fsx file](https://github.com/plotly/Dash.NET/blob/dev/build.fsx) to take a look at the  build targets. Here are some examples:
+
+```shell
+# Windows
+
+# Build only
+./build.cmd
+
+# Full release buildchain: build, test, pack, build the docs, push a git tag, publsih thze nuget package, release the docs
+./build.cmd -t release
+
+# The same for prerelease versions:
+./build.cmd -t prerelease
+
+
+# Linux/mac
+
+# Build only
+build.sh
+
+# Full release buildchain: build, test, pack, build the docs, push a git tag, publsih thze nuget package, release the docs
+build.sh -t release
+
+# The same for prerelease versions:
+build.sh -t prerelease
+
 ```
 
-### Linux/MacOS
-```
-$ ./fake.sh build
-```
+### docs
 
-### Run the dev server application
+The docs are contained in `.fsx` and `.md` files in the `docs` folder. To develop docs on a local server with hot reload, run the following in the root of the project:
 
-The dev server is useful to test new components/code. After a successful build 
-you can start the dev server application by executing the following command in your terminal:
+```shell
+# Windows
+./build.cmd -t watchdocs
 
-```
-dotnet run -p ./dev/Dash.NET.Dev.fsproj
+# Linux/mac
+./build.sh -t watchdocs
 ```
 
-After the application has started visit [https://localhost:5001/](https://localhost:5001/) or [http://localhost:5000/](http://localhost:5000/) in your preferred browser.
+
+### release
+
+Library license
+===============
+
+The library is available under the [MIT license](https://github.com/plotly/Dash.NET/blob/dev/LICENSE).
