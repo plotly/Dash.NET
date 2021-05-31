@@ -1,7 +1,7 @@
 ﻿namespace Dash.NET
 
 open Giraffe
-open GiraffeViewEngine
+open Giraffe.ViewEngine
 open Views
 open Plotly.NET
 open System 

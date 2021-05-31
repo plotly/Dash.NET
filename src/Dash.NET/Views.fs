@@ -1,7 +1,7 @@
 ﻿namespace Dash.NET
 
 module Views =
-    open Giraffe.GiraffeViewEngine
+    open Giraffe.ViewEngine
     
     let createConfigScript (config:DashConfig) =
         let innerJson = Newtonsoft.Json.JsonConvert.SerializeObject config
