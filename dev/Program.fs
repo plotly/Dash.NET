@@ -9,10 +9,8 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
-open Giraffe.ModelBinding
 
 open Dash.NET
-open Plotly.NET
 
 //----------------------------------------------------------------------------------------------------
 //============================================== LAYOUT ==============================================
