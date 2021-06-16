@@ -7,14 +7,14 @@
 </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="Kevin Schneider">
-    <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="https://github.com/plotly/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
 
-    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-default.css" />
-    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-custom.css" />
-    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-tips.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://github.com/plotly/Dash.NET/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://github.com/plotly/Dash.NET/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://github.com/plotly/Dash.NET/content/fsdocs-tips.js"></script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -30,13 +30,13 @@
         <div id="fsdocs-menu" class="column is-2 is-paddingless">
             <aside class="menu">
                 <div class="container is-paddingless is-marginless has-background-dark">
-                    <a href="https://plotly.github.io/Dash.NET/">
+                    <a href="https://github.com/plotly/Dash.NET/">
                         <figure class="image is-128x128 container">
-                            <img src="https://plotly.github.io/Dash.NET/img/logo.png">
+                            <img src="https://github.com/plotly/Dash.NET/img/logo.png">
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha8</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -119,17 +119,22 @@
 <p>Which creates a <code>DashApp</code> with all fields initialized with empty defaults. The http handler for a <code>DashApp</code> can be accessed via the <code>DashApp.toHttpHandler</code> function to plug it into your aps.netcore application configuration function via <code>UseGiraffe</code> (for more info, check out Giraffe docs or take a look at the <a href="https://github.com/plotly/Dash.NET/blob/dev/dev/Program.fs#L104">dev project in this repo</a>)</p>
 <h3><a name="Basic-application" class="anchor" href="#Basic-application">Basic application</a></h3>
 <p>To get actual content into the default application, it needs a <code>Layout</code>. <code>Layout</code>s can be created via Dash.NET's DSL for html components, where the first function parameter is always a list of properties (e.g. for setting css classes), and the second a list of children.</p>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">HTML</span>
-
-<span class="c">//Will create the following html:</span>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="c">//Will create the following html:</span>
 <span class="c">//&lt;div&gt;</span>
 <span class="c">//  &lt;h1&gt;&quot;Hello world from Dash.NET!&quot;&lt;/h1&gt;</span>
 <span class="c">//&lt;/div&gt;</span>
 <span class="c">//</span>
+<span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">Html</span>
+
 <span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="id">myLayout</span> <span class="o">=</span> 
-    <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span>
-        <span class="id">H1</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
+    <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span>
+        <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="pn">[</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span>
+                <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span>
+            <span class="pn">]</span>
+        <span class="pn">]</span>
     <span class="pn">]</span>
+
 <span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="id">test</span> <span class="o">=</span> 
     <span class="id">DashApp</span><span class="pn">.</span><span class="id">initDefault</span><span class="pn">(</span><span class="pn">)</span>
     <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span onmouseout="hideTip(event, 'fs2', 4)" onmouseover="showTip(event, 'fs2', 4)" class="id">myLayout</span>
@@ -154,15 +159,19 @@
 <p><img src="img/hello-world-green.png" alt="" /></p>
 <hr />
 <p>If you want to reference external content (e.g. a CSS framework like <a href="https://bulma.io/">Bulma</a>), you can do that as well. To use the classes defined there, set the <code>ClassName</code> accordingly:</p>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 7)" onmouseover="showTip(event, 'fs2', 7)" class="id">myLayout</span> <span class="o">=</span> 
-    <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span>
-        <span class="id">H1</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="id">ClassName</span> <span class="s">&quot;title is-1&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="id">myLayout3</span> <span class="o">=</span> 
+    <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span>
+        <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="pn">[</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span>
+                <span class="id">Attr</span><span class="pn">.</span><span class="id">className</span> <span class="s">&quot;title is-1&quot;</span>
+                <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span>
+            <span class="pn">]</span>
+        <span class="pn">]</span>
     <span class="pn">]</span>
 
-
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 8)" onmouseover="showTip(event, 'fs3', 8)" class="id">test</span> <span class="o">=</span> 
+<span class="k">let</span> <span class="id">test3</span> <span class="o">=</span> 
     <span class="id">DashApp</span><span class="pn">.</span><span class="id">initDefault</span><span class="pn">(</span><span class="pn">)</span>
-    <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span onmouseout="hideTip(event, 'fs2', 9)" onmouseover="showTip(event, 'fs2', 9)" class="id">myLayout</span>
+    <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span class="id">myLayout3</span>
     <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">appendCSSLinks</span> <span class="pn">[</span>
         <span class="s">&quot;https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.1/css/bulma.min.css&quot;</span>
     <span class="pn">]</span>
@@ -171,21 +180,24 @@
 <hr />
 <h3><a name="Dash-Core-components-DCC" class="anchor" href="#Dash-Core-components-DCC">Dash Core components (DCC)</a></h3>
 <p>You can also use most dash core components. The following example uses the Plotly.NET to create a plotly graph component. Note that all core components must have a nunique id, and therefore have the mandatory id parameter:</p>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">HTML</span>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">Html</span>
 <span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">DCC</span>
 <span class="k">open</span> <span class="id">Plotly</span><span class="pn">.</span><span class="id">NET</span>
 
 <span class="k">let</span> <span class="id">myGraph</span> <span class="o">=</span> <span class="id">Chart</span><span class="pn">.</span><span class="id">Line</span><span class="pn">(</span><span class="pn">[</span><span class="pn">(</span><span class="n">1</span><span class="pn">,</span><span class="n">1</span><span class="pn">)</span><span class="pn">;</span><span class="pn">(</span><span class="n">2</span><span class="pn">,</span><span class="n">2</span><span class="pn">)</span><span class="pn">]</span><span class="pn">)</span>
 
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 10)" onmouseover="showTip(event, 'fs2', 10)" class="id">myLayout</span> <span class="o">=</span> 
-    <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span>
-        <span class="id">H1</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Take a look at this graph:&quot;</span><span class="pn">]</span>
-        <span class="id">Graph</span><span class="pn">.</span><span class="id">graph</span> <span class="s">&quot;my-ghraph-id&quot;</span> <span class="pn">[</span><span class="id">Graph</span><span class="pn">.</span><span class="id">Figure</span> <span class="pn">(</span><span class="id">myGraph</span> <span class="o">|&gt;</span> <span class="id">GenericChart</span><span class="pn">.</span><span class="id">toFigure</span><span class="pn">)</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 7)" onmouseover="showTip(event, 'fs2', 7)" class="id">myLayout</span> <span class="o">=</span> 
+    <span class="id">Html</span><span class="pn">.</span><span class="id">div</span>  <span class="pn">[</span>
+        <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="pn">[</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span> <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span> <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Take a look at this graph:&quot;</span><span class="pn">]</span>
+            <span class="id">Graph</span><span class="pn">.</span><span class="id">graph</span> <span class="s">&quot;my-ghraph-id&quot;</span> <span class="pn">[</span><span class="id">Graph</span><span class="pn">.</span><span class="id">Figure</span> <span class="pn">(</span><span class="id">myGraph</span> <span class="o">|&gt;</span> <span class="id">GenericChart</span><span class="pn">.</span><span class="id">toFigure</span><span class="pn">)</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+        <span class="pn">]</span>
     <span class="pn">]</span>
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 11)" onmouseover="showTip(event, 'fs3', 11)" class="id">test</span> <span class="o">=</span> 
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 8)" onmouseover="showTip(event, 'fs3', 8)" class="id">test</span> <span class="o">=</span> 
     <span class="id">DashApp</span><span class="pn">.</span><span class="id">initDefault</span><span class="pn">(</span><span class="pn">)</span>
-    <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span onmouseout="hideTip(event, 'fs2', 12)" onmouseover="showTip(event, 'fs2', 12)" class="id">myLayout</span>
+    <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span onmouseout="hideTip(event, 'fs2', 9)" onmouseover="showTip(event, 'fs2', 9)" class="id">myLayout</span>
 </code></pre>
 <p><img src="img/hello-graph.png" alt="" /></p>
 <hr />
@@ -195,17 +207,18 @@
 <h4><a name="single-output" class="anchor" href="#single-output">single output</a></h4>
 <p>Callbacks with single outputs describe either a (1 -&gt; 1) or (n -&gt; 1) dependency between components.</p>
 <p>In the most basic case, you have one input component, which updates one output component (1 -&gt; 1). For both you need to assign the property of the component that will be part of the callback. Additionally, a function is needed that takes the input and returns the output. Lets first define the layout for this example:</p>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">HTML</span>
-<span class="k">open</span> <span class="id">HTMLPropTypes</span>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">Html</span>
 <span class="k">open</span> <span class="id">Dash</span><span class="pn">.</span><span class="id">NET</span><span class="pn">.</span><span class="id">DCC</span>
 <span class="k">open</span> <span class="id">ComponentPropTypes</span>
 
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 13)" onmouseover="showTip(event, 'fs2', 13)" class="id">myLayout</span> <span class="o">=</span> 
-    <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span>
-        <span class="id">H1</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Tell us something!&quot;</span><span class="pn">]</span>
-        <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Text</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Id</span> <span class="s">&quot;test-output&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 10)" onmouseover="showTip(event, 'fs2', 10)" class="id">myLayout</span> <span class="o">=</span> 
+    <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span>
+        <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="pn">[</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Tell us something!&quot;</span><span class="pn">]</span>
+            <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Text</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;test-output&quot;</span><span class="pn">]</span> 
+        <span class="pn">]</span>
     <span class="pn">]</span>
 </code></pre>
 <p>There are multiple ways of defining callbacks, all of which use the respective <code>DashApp.singleOut</code> overloads for (1 -&gt; 1), as well as (1 -&gt; n) callbacks.</p>
@@ -216,10 +229,10 @@
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// a 1 -&gt; 1 callback</span>
 <span class="k">let</span> <span class="id">testCallback</span> <span class="o">=</span>
     <span class="id">Callback</span><span class="pn">.</span><span class="id">singleOut</span><span class="pn">(</span>
-        <span class="id">CallbackInput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-input&quot;</span><span class="pn">,</span><span class="s">&quot;value&quot;</span><span class="pn">)</span><span class="pn">]</span><span class="pn">,</span>       <span class="c">// &lt;- Input of the callback is the `value` property of the component with the id &quot;test-input&quot;</span>
+        <span class="id">CallbackInput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-input&quot;</span><span class="pn">,</span><span class="s">&quot;value&quot;</span><span class="pn">)</span><span class="pn">,</span>       <span class="c">// &lt;- Input of the callback is the `value` property of the component with the id &quot;test-input&quot;</span>
         <span class="id">CallbackOutput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-output&quot;</span><span class="pn">,</span><span class="s">&quot;children&quot;</span><span class="pn">)</span><span class="pn">,</span>    <span class="c">// &lt;- Output of the callback is the `children` property of the component with the id &quot;test-output&quot;</span>
-        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 14)" onmouseover="showTip(event, 'fs4', 14)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>                              <span class="c">// this function takes a string as input and returns another message.</span>
-            <span onmouseout="hideTip(event, 'fs5', 15)" onmouseover="showTip(event, 'fs5', 15)" class="id">sprintf</span> <span class="s">&quot;You said : %s&quot;</span> <span class="id">input</span>
+        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 11)" onmouseover="showTip(event, 'fs4', 11)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>                              <span class="c">// this function takes a string as input and returns another message.</span>
+            <span onmouseout="hideTip(event, 'fs5', 12)" onmouseover="showTip(event, 'fs5', 12)" class="id">sprintf</span> <span class="s">&quot;You said : %s&quot;</span> <span class="id">input</span>
         <span class="pn">)</span>
     <span class="pn">)</span>
 </code></pre>
@@ -238,8 +251,8 @@
     <span class="id">Callback</span><span class="pn">.</span><span class="id">singleOut</span><span class="pn">(</span>
         <span class="s">&quot;test-input&quot;</span> <span class="id">@.</span> <span class="id">Value</span><span class="pn">,</span>       <span class="c">// &lt;- Input of the callback is the `value`property of the component with the id &quot;test-input&quot;, now typesafe</span>
         <span class="s">&quot;test-output&quot;</span> <span class="id">@.</span> <span class="id">Children</span><span class="pn">,</span>    <span class="c">// &lt;- Output of the callback is the `children` property of the component with the id &quot;test-output&quot;, now typesafe</span>
-        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 16)" onmouseover="showTip(event, 'fs4', 16)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>                              <span class="c">// this function takes a string as input and returns another message, now bound to the output property</span>
-            <span class="s">&quot;test-output&quot;</span> <span class="id">@.</span> <span class="id">Children</span> <span class="o">=&gt;</span> <span onmouseout="hideTip(event, 'fs5', 17)" onmouseover="showTip(event, 'fs5', 17)" class="id">sprintf</span> <span class="s">&quot;You said : %s&quot;</span> <span class="id">input</span>
+        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 13)" onmouseover="showTip(event, 'fs4', 13)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>                              <span class="c">// this function takes a string as input and returns another message, now bound to the output property</span>
+            <span class="s">&quot;test-output&quot;</span> <span class="id">@.</span> <span class="id">Children</span> <span class="o">=&gt;</span> <span onmouseout="hideTip(event, 'fs5', 14)" onmouseover="showTip(event, 'fs5', 14)" class="id">sprintf</span> <span class="s">&quot;You said : %s&quot;</span> <span class="id">input</span>
         <span class="pn">)</span>
     <span class="pn">)</span>
 </code></pre>
@@ -248,10 +261,10 @@
     <span class="id">Callback</span><span class="pn">.</span><span class="id">singleOut</span><span class="pn">(</span>
         <span class="id">CallbackInput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-input&quot;</span> <span class="pn">,</span><span class="id">Value</span><span class="pn">)</span><span class="pn">,</span>       <span class="c">// &lt;- Input of the callback is the `value` property of the component with the id &quot;test-input&quot;</span>
         <span class="id">CallbackOutput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-output&quot;</span><span class="pn">,</span> <span class="id">Children</span><span class="pn">)</span><span class="pn">,</span>    <span class="c">// &lt;- Output of the callback is the `children` property of the component with the id &quot;test-output&quot;</span>
-        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 18)" onmouseover="showTip(event, 'fs4', 18)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>                              <span class="c">// this function takes a string as input and returns another message.</span>
+        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 15)" onmouseover="showTip(event, 'fs4', 15)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>                              <span class="c">// this function takes a string as input and returns another message.</span>
             <span class="id">CallbackResultBinding</span><span class="pn">.</span><span class="id">bindResult</span> 
                 <span class="pn">(</span><span class="id">CallbackOutput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-output&quot;</span><span class="pn">,</span> <span class="id">Children</span><span class="pn">)</span><span class="pn">)</span>
-                <span class="pn">(</span><span onmouseout="hideTip(event, 'fs5', 19)" onmouseover="showTip(event, 'fs5', 19)" class="id">sprintf</span> <span class="s">&quot;You said : %s&quot;</span> <span class="id">input</span><span class="pn">)</span>
+                <span class="pn">(</span><span onmouseout="hideTip(event, 'fs5', 16)" onmouseover="showTip(event, 'fs5', 16)" class="id">sprintf</span> <span class="s">&quot;You said : %s&quot;</span> <span class="id">input</span><span class="pn">)</span>
         <span class="pn">)</span>
     <span class="pn">)</span>
 </code></pre>
@@ -259,19 +272,20 @@
 <p>The following example shows how to define a (n -&gt; n) multi output callback, again first with the most python-like way, and then in more type safe .NET manner.</p>
 <p>let's first define the layout used in this example:</p>
 <pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span class="id">testLayout</span> <span class="o">=</span>
-
-    <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span>
-        <span class="id">H1</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
-        <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input1&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Number</span><span class="pn">;</span> <span class="id">Input</span><span class="pn">.</span><span class="id">Value</span> <span class="n">2.</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input2&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Number</span><span class="pn">;</span> <span class="id">Input</span><span class="pn">.</span><span class="id">Value</span> <span class="n">3.</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;first number times 2 is:&quot;</span><span class="pn">]</span>
-        <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Id</span> <span class="s">&quot;test-output1&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>        
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;first number times squared is:&quot;</span><span class="pn">]</span>
-        <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Id</span> <span class="s">&quot;test-output2&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;second number times 3 is:&quot;</span><span class="pn">]</span>
-        <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Id</span> <span class="s">&quot;test-output3&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;second number squared is:&quot;</span><span class="pn">]</span>
-        <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Id</span> <span class="s">&quot;test-output4&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+    <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span>
+        <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="pn">[</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
+            <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input1&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Number</span><span class="pn">;</span> <span class="id">Input</span><span class="pn">.</span><span class="id">Value</span> <span class="n">2.</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+            <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input2&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Number</span><span class="pn">;</span> <span class="id">Input</span><span class="pn">.</span><span class="id">Value</span> <span class="n">3.</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;first number times 2 is:&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;test-output1&quot;</span><span class="pn">]</span> 
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;first number times squared is:&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;test-output2&quot;</span><span class="pn">]</span> 
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;second number times 3 is:&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;test-output3&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;second number squared is:&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;test-output4&quot;</span><span class="pn">]</span>
+        <span class="pn">]</span>
     <span class="pn">]</span>
 </code></pre>
 <p>We will now create a (2 -&gt; 4) callback, where we multiply and square each number.</p>
@@ -288,7 +302,7 @@
             <span class="id">CallbackInput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-output3&quot;</span><span class="pn">,</span> <span class="s">&quot;children&quot;</span><span class="pn">)</span>
             <span class="id">CallbackInput</span><span class="pn">.</span><span class="id">create</span><span class="pn">(</span><span class="s">&quot;test-output4&quot;</span><span class="pn">,</span> <span class="s">&quot;children&quot;</span><span class="pn">)</span>
         <span class="pn">]</span><span class="pn">,</span>
-        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input1</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 20)" onmouseover="showTip(event, 'fs6', 20)" class="id">float</span><span class="pn">)</span> <span class="pn">(</span><span class="id">input2</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 21)" onmouseover="showTip(event, 'fs6', 21)" class="id">float</span><span class="pn">)</span> <span class="k">-&gt;</span>
+        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input1</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 17)" onmouseover="showTip(event, 'fs6', 17)" class="id">float</span><span class="pn">)</span> <span class="pn">(</span><span class="id">input2</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 18)" onmouseover="showTip(event, 'fs6', 18)" class="id">float</span><span class="pn">)</span> <span class="k">-&gt;</span>
             <span class="pn">[</span>
                <span class="id">input1</span> <span class="pn">*</span> <span class="n">2.</span>
                <span class="id">input1</span> <span class="pn">*</span> <span class="id">input1</span>
@@ -318,7 +332,7 @@
             <span class="s">&quot;test-output3&quot;</span> <span class="id">@.</span> <span class="id">Children</span>
             <span class="s">&quot;test-output4&quot;</span> <span class="id">@.</span> <span class="id">Children</span>
         <span class="pn">]</span><span class="pn">,</span>
-        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input1</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 22)" onmouseover="showTip(event, 'fs6', 22)" class="id">float</span><span class="pn">)</span> <span class="pn">(</span><span class="id">input2</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 23)" onmouseover="showTip(event, 'fs6', 23)" class="id">float</span><span class="pn">)</span> <span class="k">-&gt;</span>
+        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input1</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 19)" onmouseover="showTip(event, 'fs6', 19)" class="id">float</span><span class="pn">)</span> <span class="pn">(</span><span class="id">input2</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs6', 20)" onmouseover="showTip(event, 'fs6', 20)" class="id">float</span><span class="pn">)</span> <span class="k">-&gt;</span>
             <span class="pn">[</span>
                <span class="s">&quot;test-output1&quot;</span> <span class="id">@.</span> <span class="id">Children</span> <span class="o">=&gt;</span> <span class="id">input1</span> <span class="pn">*</span> <span class="n">2.</span>
                <span class="s">&quot;test-output3&quot;</span> <span class="id">@.</span> <span class="id">Children</span> <span class="o">=&gt;</span> <span class="id">input2</span> <span class="pn">*</span> <span class="n">3.</span>
@@ -332,30 +346,32 @@
 <hr />
 <h3><a name="Using-state" class="anchor" href="#Using-state">Using state</a></h3>
 <p>Use states as non-triggering input for callbacks. You can use the optional <code>State</code> constructor parameter of <code>Callback</code>. Just keep in mind that the state will be used for your callback function parameters <em>after</em> the callback inputs:</p>
-<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 24)" onmouseover="showTip(event, 'fs2', 24)" class="id">myLayout</span> <span class="o">=</span> 
-    <span class="id">Div</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span>
-        <span class="id">H1</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Tell us something!&quot;</span><span class="pn">]</span>
-        <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Text</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">H3</span><span class="pn">.</span><span class="id">h3</span> <span class="pn">[</span><span class="pn">]</span> <span class="pn">[</span><span class="id">str</span> <span class="s">&quot;Input below will not trigger the callback&quot;</span><span class="pn">]</span>
-        <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input-state&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Text</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
-        <span class="id">H2</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Id</span> <span class="s">&quot;test-output&quot;</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+<pre class="fssnip highlighted"><code lang="fsharp"><span class="k">let</span> <span onmouseout="hideTip(event, 'fs2', 21)" onmouseover="showTip(event, 'fs2', 21)" class="id">myLayout</span> <span class="o">=</span> 
+    <span class="id">Html</span><span class="pn">.</span><span class="id">div</span> <span class="pn">[</span>
+        <span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="pn">[</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h1</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Hello world from Dash.NET!&quot;</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Tell us something!&quot;</span><span class="pn">]</span>
+            <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Text</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h3</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;Input below will not trigger the callback&quot;</span><span class="pn">]</span>
+            <span class="id">Input</span><span class="pn">.</span><span class="id">input</span> <span class="s">&quot;test-input-state&quot;</span> <span class="pn">[</span><span class="id">Input</span><span class="pn">.</span><span class="id">Type</span> <span class="id">InputType</span><span class="pn">.</span><span class="id">Text</span><span class="pn">]</span> <span class="pn">[</span><span class="pn">]</span>
+            <span class="id">Html</span><span class="pn">.</span><span class="id">h2</span> <span class="pn">[</span><span class="id">Attr</span><span class="pn">.</span><span class="id">children</span> <span class="s">&quot;test-output&quot;</span><span class="pn">]</span>
+        <span class="pn">]</span>
     <span class="pn">]</span>
 
 <span class="k">let</span> <span class="id">testCallback</span> <span class="o">=</span>
     <span class="id">Callback</span><span class="pn">.</span><span class="id">singleOut</span><span class="pn">(</span>
         <span class="s">&quot;test-input&quot;</span> <span class="id">@.</span> <span class="id">Value</span><span class="pn">,</span>
         <span class="s">&quot;test-output&quot;</span> <span class="id">@.</span> <span class="id">Children</span><span class="pn">,</span>
-        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 25)" onmouseover="showTip(event, 'fs4', 25)" class="id">string</span><span class="pn">)</span> <span class="pn">(</span><span class="id">state</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 26)" onmouseover="showTip(event, 'fs4', 26)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>
+        <span class="pn">(</span><span class="k">fun</span> <span class="pn">(</span><span class="id">input</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 22)" onmouseover="showTip(event, 'fs4', 22)" class="id">string</span><span class="pn">)</span> <span class="pn">(</span><span class="id">state</span><span class="pn">:</span><span onmouseout="hideTip(event, 'fs4', 23)" onmouseover="showTip(event, 'fs4', 23)" class="id">string</span><span class="pn">)</span> <span class="k">-&gt;</span>
             <span class="s">&quot;test-output&quot;</span> <span class="id">@.</span> <span class="id">Children</span> <span class="o">=&gt;</span> <span class="pn">(</span>
-                <span onmouseout="hideTip(event, 'fs5', 27)" onmouseover="showTip(event, 'fs5', 27)" class="id">sprintf</span> <span class="s">&quot;You said : &#39;%s&#39; and we added the state: &#39;%s&#39;&quot;</span> <span class="id">input</span> <span class="id">state</span><span class="pn">)</span>
+                <span onmouseout="hideTip(event, 'fs5', 24)" onmouseover="showTip(event, 'fs5', 24)" class="id">sprintf</span> <span class="s">&quot;You said : &#39;%s&#39; and we added the state: &#39;%s&#39;&quot;</span> <span class="id">input</span> <span class="id">state</span><span class="pn">)</span>
         <span class="pn">)</span><span class="pn">,</span>
         <span class="id">State</span> <span class="o">=</span> <span class="pn">[</span><span class="s">&quot;test-input-state&quot;</span> <span class="id">@.</span> <span class="id">Value</span><span class="pn">]</span>
     <span class="pn">)</span>
 
-<span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 28)" onmouseover="showTip(event, 'fs3', 28)" class="id">test</span> <span class="o">=</span> 
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs3', 25)" onmouseover="showTip(event, 'fs3', 25)" class="id">test</span> <span class="o">=</span> 
     <span class="id">DashApp</span><span class="pn">.</span><span class="id">initDefault</span><span class="pn">(</span><span class="pn">)</span>
-    <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span onmouseout="hideTip(event, 'fs2', 29)" onmouseover="showTip(event, 'fs2', 29)" class="id">myLayout</span>
+    <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">withLayout</span> <span onmouseout="hideTip(event, 'fs2', 26)" onmouseover="showTip(event, 'fs2', 26)" class="id">myLayout</span>
     <span class="o">|&gt;</span> <span class="id">DashApp</span><span class="pn">.</span><span class="id">addCallback</span> <span class="id">testCallback</span>
 </code></pre>
 <p><img src="img/state.gif" alt="" /></p>
@@ -411,16 +427,16 @@ you can start the dev server application by executing the following command in y
 <div class="fsdocs-tip" id="fs3">val test : obj</div>
 <div class="fsdocs-tip" id="fs4">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />--------------------<br />type string = System.String</div>
 <div class="fsdocs-tip" id="fs5">val sprintf : format:Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T</div>
-<div class="fsdocs-tip" id="fs6">Multiple items<br />val float : value:&#39;T -&gt; float (requires member op_Explicit)<br /><br />--------------------<br />type float = System.Double<br /><br />--------------------<br />type float&lt;&#39;Measure&gt; = float</div>
+<div class="fsdocs-tip" id="fs6">Multiple items<br />val float : value:&#39;T -&gt; float (requires member op_Explicit)<br /><br />--------------------<br />[&lt;Struct&gt;]<br />type float = System.Double<br /><br />--------------------<br />type float&lt;&#39;Measure&gt; =<br />&#160;&#160;float</div>
 
     </div>
 
     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
-    <script type="text/javascript">var fsdocs_search_baseurl = 'https://plotly.github.io/Dash.NET/'</script>
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://github.com/plotly/Dash.NET/'</script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
-    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-search.js"></script>
+    <script type="text/javascript" src="https://github.com/plotly/Dash.NET/content/fsdocs-search.js"></script>
     <!-- END SEARCH BOX: this adds support for the search box -->
 </body>
 
