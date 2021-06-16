@@ -61,6 +61,8 @@ module ProjectInfo =
 
     let project = "Dash.NET"
 
+    let solutionFile  = "Dash.NET.sln"
+
     let testProject = "tests/Dash.NET.Tests/Dash.NET.Tests.fsproj"
 
     let summary = "F# interface to Dash- the most downloaded framework for building ML & data science web apps"
@@ -115,8 +117,8 @@ module BasicTasks =
     }
 
     let build = BuildTask.create "Build" [clean] {
-        !! "src/**/*.*proj"
-        |> Seq.iter (DotNet.build id)
+        solutionFile
+        |> DotNet.build id
     }
 
     let copyBinaries = BuildTask.create "CopyBinaries" [clean; build] {
@@ -135,12 +137,15 @@ module TestTasks =
     open ProjectInfo
     open BasicTasks
 
+
     let runTests = BuildTask.create "RunTests" [clean; build; copyBinaries] {
         let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
         Fake.DotNet.DotNet.test(fun testParams ->
             {
                 testParams with
                     Logger = Some "console;verbosity=detailed"
+                    Configuration = DotNet.BuildConfiguration.fromString configuration
+                    NoBuild = true
             }
         ) testProject
     }
