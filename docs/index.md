@@ -63,20 +63,27 @@ Which creates a `DashApp` with all fields initialized with empty defaults. The h
 To get actual content into the default application, it needs a `Layout`. `Layout`s can be created via Dash.NET's DSL for html components, where the first function parameter is always a list of properties (e.g. for setting css classes), and the second a list of children.
 
 ```fsharp
-open Dash.NET.HTML
 
 //Will create the following html:
 //<div>
 //  <h1>"Hello world from Dash.NET!"</h1>
 //</div>
 //
+open Dash.NET.Html
+
 let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
+    Html.div [
+        Attr.children [
+            Html.h1 [
+                Attr.children "Hello world from Dash.NET!"
+            ]
+        ]
     ]
+
 let test = 
     DashApp.initDefault()
     |> DashApp.withLayout myLayout
+
 ```
 
 ![](img/hello-world.png)
@@ -115,18 +122,23 @@ let test =
 If you want to reference external content (e.g. a CSS framework like [Bulma](https://bulma.io/)), you can do that as well. To use the classes defined there, set the `ClassName` accordingly:
 
 ```fsharp
-let myLayout = 
-    Div.div [] [
-        H1.h1 [ClassName "title is-1"] [str "Hello world from Dash.NET!"]
+let myLayout3 = 
+    Html.div [
+        Attr.children [
+            Html.h1 [
+                Attr.className "title is-1"
+                Attr.children "Hello world from Dash.NET!"
+            ]
+        ]
     ]
 
-
-let test = 
+let test3 = 
     DashApp.initDefault()
-    |> DashApp.withLayout myLayout
+    |> DashApp.withLayout myLayout3
     |> DashApp.appendCSSLinks [
         "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.1/css/bulma.min.css"
     ]
+
 ```
 
 ![](img/hello-world-bulma.png)
@@ -138,18 +150,22 @@ let test =
 You can also use most dash core components. The following example uses the Plotly.NET to create a plotly graph component. Note that all core components must have a nunique id, and therefore have the mandatory id parameter:
 
 ```fsharp
-open Dash.NET.HTML
+
+open Dash.NET.Html
 open Dash.NET.DCC
 open Plotly.NET
 
 let myGraph = Chart.Line([(1,1);(2,2)])
 
 let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        H2.h2 [] [str "Take a look at this graph:"]
-        Graph.graph "my-ghraph-id" [Graph.Figure (myGraph |> GenericChart.toFigure)] []
+    Html.div  [
+        Attr.children [
+            Html.h1 [ Attr.children "Hello world from Dash.NET!"]
+            Html.h2 [ Attr.children "Take a look at this graph:"]
+            Graph.graph "my-ghraph-id" [Graph.Figure (myGraph |> GenericChart.toFigure)] []
+        ]
     ]
+
 let test = 
     DashApp.initDefault()
     |> DashApp.withLayout myLayout
@@ -172,17 +188,18 @@ Callbacks with single outputs describe either a (1 -> 1) or (n -> 1) dependency 
 In the most basic case, you have one input component, which updates one output component (1 -> 1). For both you need to assign the property of the component that will be part of the callback. Additionally, a function is needed that takes the input and returns the output. Lets first define the layout for this example:
 
 ```fsharp
-open Dash.NET.HTML
-open HTMLPropTypes
+open Dash.NET.Html
 open Dash.NET.DCC
 open ComponentPropTypes
 
 let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        H2.h2 [] [str "Tell us something!"]
-        Input.input "test-input" [Input.Type InputType.Text] []
-        H2.h2 [Id "test-output"] []
+    Html.div [
+        Attr.children [
+            Html.h1 [Attr.children "Hello world from Dash.NET!"]
+            Html.h2 [Attr.children "Tell us something!"]
+            Input.input "test-input" [Input.Type InputType.Text] []
+            Html.h2 [Attr.children "test-output"] 
+        ]
     ]
 ```
 
@@ -197,7 +214,7 @@ The most simple (1 -> 1) callback needs:
 // a 1 -> 1 callback
 let testCallback =
     Callback.singleOut(
-        CallbackInput.create("test-input","value")],       // <- Input of the callback is the `value` property of the component with the id "test-input"
+        CallbackInput.create("test-input","value"),       // <- Input of the callback is the `value` property of the component with the id "test-input"
         CallbackOutput.create("test-output","children"),    // <- Output of the callback is the `children` property of the component with the id "test-output"
         (fun (input:string) ->                              // this function takes a string as input and returns another message.
             sprintf "You said : %s" input
@@ -256,21 +273,21 @@ let's first define the layout used in this example:
 
 ```fsharp
 let testLayout =
-
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        Input.input "test-input1" [Input.Type InputType.Number; Input.Value 2.] []
-        Input.input "test-input2" [Input.Type InputType.Number; Input.Value 3.] []
-        H2.h2 [] [str "first number times 2 is:"]
-        Div.div [Id "test-output1"] []        
-        H2.h2 [] [str "first number times squared is:"]
-        Div.div [Id "test-output2"] []
-        H2.h2 [] [str "second number times 3 is:"]
-        Div.div [Id "test-output3"] []
-        H2.h2 [] [str "second number squared is:"]
-        Div.div [Id "test-output4"] []
+    Html.div [
+        Attr.children [
+            Html.h1 [Attr.children "Hello world from Dash.NET!"]
+            Input.input "test-input1" [Input.Type InputType.Number; Input.Value 2.] []
+            Input.input "test-input2" [Input.Type InputType.Number; Input.Value 3.] []
+            Html.h2 [Attr.children "first number times 2 is:"]
+            Html.div [Attr.children "test-output1"] 
+            Html.h2 [Attr.children "first number times squared is:"]
+            Html.div [Attr.children "test-output2"] 
+            Html.h2 [Attr.children "second number times 3 is:"]
+            Html.div [Attr.children "test-output3"]
+            Html.h2 [Attr.children "second number squared is:"]
+            Html.div [Attr.children "test-output4"]
+        ]
     ]
-
 ```
 
 We will now create a (2 -> 4) callback, where we multiply and square each number.
@@ -278,7 +295,6 @@ We will now create a (2 -> 4) callback, where we multiply and square each number
 To define multi output callbacks, use `Callback.multiOut`:
 
 ```fsharp
-
 let multiOutCallbackExample =
     Callback.multiOut(
         [
@@ -348,13 +364,15 @@ Use states as non-triggering input for callbacks. You can use the optional `Stat
 
 ```fsharp
 let myLayout = 
-    Div.div [] [
-        H1.h1 [] [str "Hello world from Dash.NET!"]
-        H2.h2 [] [str "Tell us something!"]
-        Input.input "test-input" [Input.Type InputType.Text] []
-        H3.h3 [] [str "Input below will not trigger the callback"]
-        Input.input "test-input-state" [Input.Type InputType.Text] []
-        H2.h2 [Id "test-output"] []
+    Html.div [
+        Attr.children [
+            Html.h1 [Attr.children "Hello world from Dash.NET!"]
+            Html.h2 [Attr.children "Tell us something!"]
+            Input.input "test-input" [Input.Type InputType.Text] []
+            Html.h3 [Attr.children "Input below will not trigger the callback"]
+            Input.input "test-input-state" [Input.Type InputType.Text] []
+            Html.h2 [Attr.children "test-output"]
+        ]
     ]
 
 let testCallback =
@@ -372,6 +390,7 @@ let test =
     DashApp.initDefault()
     |> DashApp.withLayout myLayout
     |> DashApp.addCallback testCallback
+
 ```
 
 ![](img/state.gif)

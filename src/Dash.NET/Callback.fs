@@ -177,9 +177,9 @@ type Callback<'Function>
     /// <param name="inputs"> A sequence of `CallbackInput` that represents the input components of this callback. Changes to any of these components signalled by the client will trigger the callback. </param>
     /// <param name="output"> A `CallbackOutput` that represents the output component of this callback </param>
     /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
-    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
-    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
-    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
+    /// <param name="State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="ClientSideFunction"> A client side function to execute with the callback </param>
     static member singleOut
         (
             inputs: seq<CallbackInput>,
@@ -211,9 +211,9 @@ type Callback<'Function>
     /// <param name="input"> A `CallbackInput` that represents the input component of this callback. Changes to this component signalled by the client will trigger the callback.</param>
     /// <param name="output"> A `CallbackOutput` that represents the output component of this callback </param>
     /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
-    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
-    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
-    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
+    /// <param name="State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="ClientSideFunction"> A client side function to execute with the callback </param>
     static member singleOut
         (
             input: CallbackInput,
@@ -237,9 +237,9 @@ type Callback<'Function>
     /// <param name="inputs"> A sequence of `CallbackInput` that represents the input components of this callback. Changes to any of these components signalled by the client will trigger the callback. </param>
     /// <param name="outputs"> A sequence of `CallbackOutput` that represents the output components of this callback </param>
     /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
-    /// <param name="?State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
-    /// <param name="?PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
-    /// <param name="?ClientSideFunction"> A client side function to execute with the callback </param>
+    /// <param name="State"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
+    /// <param name="PreventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
+    /// <param name="ClientSideFunction"> A client side function to execute with the callback </param>
     static member multiOut 
         (
             inputs: seq<CallbackInput>,

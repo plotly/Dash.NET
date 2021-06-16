@@ -27,7 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{420D4858-5
 	ProjectSection(SolutionItems) = preProject
 		docs\_template.html = docs\_template.html
 		docs\_template.ipynb = docs\_template.ipynb
-		docs\index.fsx = docs\index.fsx
+		index.fsx = index.fsx
+		docs\index.md = docs\index.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{EBDFED69-A812-46BC-80E8-5D7DCFED71FE}"
