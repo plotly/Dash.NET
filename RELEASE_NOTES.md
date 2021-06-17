@@ -1,4 +1,6 @@
 ## Version 0.1.0 - (tbd)
+ * [Use Feliz.Engine for HTML and CSS DSL - thanks [@kaashyapan](https://github.com/kaashyapan)](https://github.com/plotly/Dash.NET/commit/6fb16df9a22caa754afe596f286107225d5c320c)
+ * [Target .NET 5](https://github.com/plotly/Dash.NET/commit/03e5f2a6cdbcd29bd8d6cccda83399bbc3b3a756)
  * [Enable callback evaluation for boxed IConvertible sequences aswell](https://github.com/plotly/Dash.NET/commit/49fcae9b281d0124013ab9b6b8b50eeb96875a88)
  * [Vastly Refactor callback, add multi-output callbacks ](https://github.com/plotly/Dash.NET/commit/66ba10d93aebeed550c3bbbfa5f4e640057e5cee)
  * [Add custom operators and the CallbackBinding type](https://github.com/plotly/Dash.NET/commit/a75eac6ee30e475f0653e8aa2f05fc30c9ac39dd)
