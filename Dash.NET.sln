@@ -54,6 +54,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{ED23
 		docs\content\fsdocs-custom.css = docs\content\fsdocs-custom.css
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Dash.NET.ComponentGeneration", "src\Dash.NET.ComponentGeneration\Dash.NET.ComponentGeneration.fsproj", "{8451791C-0654-441A-AF7C-0E0C5B097113}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,18 @@ Global
 		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x64.Build.0 = Release|Any CPU
 		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x86.ActiveCfg = Release|Any CPU
 		{ECDBA25E-39B4-4C59-B665-0695F50A51BF}.Release|x86.Build.0 = Release|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Debug|x64.Build.0 = Debug|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Debug|x86.Build.0 = Debug|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Release|x64.ActiveCfg = Release|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Release|x64.Build.0 = Release|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Release|x86.ActiveCfg = Release|Any CPU
+		{8451791C-0654-441A-AF7C-0E0C5B097113}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
