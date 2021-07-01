@@ -12,9 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<Compile Include="ComponentString.fs" />
+	<Compile Include="ComponentAST.fs" />
 	<None Include="Component.template.fs" />
     <Compile Include="Keywords.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fantomas" Version="4.4.0" />
+    <PackageReference Include="FsAst" Version="0.9.0" />
   </ItemGroup>
 
 </Project>
