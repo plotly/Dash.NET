@@ -12,10 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<Compile Include="ComponentString.fs" />
-	<Compile Include="ComponentAST.fs" />
-	<None Include="Component.template.fs" />
-    <Compile Include="Keywords.fs" />
+	<Compile Include="Prelude.fs" />
+	<Compile Include="ComponentParameters.fs" />
+	<Compile Include="ASTHelpers.fs" />
+	<Compile Include="ASTGeneration.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
