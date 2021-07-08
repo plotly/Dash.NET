@@ -22,8 +22,7 @@ let createComponentAST (parameters: ComponentParameters) =
     let componentPropertyDUCases =
         parameters.DUSafePropertyNames
         |> List.map (fun prop -> simpleUnionCase prop [anonUnionField "string"])
-        |> SynTypeDefnSimpleReprUnionRcd.Create
-        |> SynTypeDefnSimpleReprRcd.Union
+        |> unionDefinition
 
     let componentPropertyToDynamicMemberDefDeclaration =
         { SynBindingRcd.Null with //TODO replace with binding

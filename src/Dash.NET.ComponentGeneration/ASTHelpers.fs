@@ -36,10 +36,12 @@ let letDeclaration (binding: SynBindingRcd) =
 
 let typeDefinition (tDef: SynMemberDefns) (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateType(tInfo, tDef) 
-let simpleTypeDefinition (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
-    SynModuleDecl.CreateSimpleType(tInfo, tSimpleDef, tDef)
 let typeInherit (itype: SynExpr) =
     SynMemberDefn.Inherit (SynType.StaticConstantExpr(itype, range.Zero), None, range.Zero)
+let simpleTypeDefinition (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
+    SynModuleDecl.CreateSimpleType(tInfo, tSimpleDef, tDef)
+let unionDefinition (cases: SynUnionCaseRcd list) =
+    cases |> SynTypeDefnSimpleReprUnionRcd.Create |> SynTypeDefnSimpleReprRcd.Union
 
 let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
     SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
