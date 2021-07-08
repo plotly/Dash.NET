@@ -39,6 +39,10 @@ module Views =
         script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.plot.ly/plotly-latest.min.js"] []
     ]
 
+    let componentScripts () =
+        ComponentLoader.loadedComponents()
+        |> List.map (fun lc -> script [_type "application/javascript"; _crossorigin " "; _src lc.ComponentJavascript] [])
+
     let createIndex metas appTitle faviconPath css appEntry config scripts renderer = 
         html [] [
             head [] [
@@ -146,6 +150,7 @@ module Views =
                     footer [] [
                         createConfigScript indexView.Config
                         yield! indexView.Scripts
+                        yield! componentScripts()
                         createRendererScript defaultRenderer
                     ]
                 ]

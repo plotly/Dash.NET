@@ -59,6 +59,10 @@ module TestComponent =
 
     ///This is additional test documentation
     let testComponent (id: string) (props: seq<TestComponentProps>) (children: seq<DashComponent>) =
+        ComponentLoader.loadComponent
+            { ComponentName = "TestComponent"
+              ComponentJavascript = "TestNamespace.min.js" }
+
         let t = TestComponent.init (id, children)
 
         let componentProps =
