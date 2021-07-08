@@ -111,9 +111,12 @@ let createComponentAST (parameters: ComponentParameters) =
         |> typeDefinition componentTypeMemberDeclarations
 
     let componentDeclaration =
-        //TODO pass in
         expressionSequence
-          [ patternNamed "t" |> binding (SynExpr.CreateApp(SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]), SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"])) |> Let
+          [ applicationMany (SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "ComponentLoader.loadComponent"))
+                [ SynExpr.CreateRecord 
+                    [ ((LongIdentWithDots.CreateString "ComponentName",true), Some (SynExpr.CreateConstString parameters.ComponentName)) 
+                      ((LongIdentWithDots.CreateString "ComponentJavascript",true), Some (SynExpr.CreateConstString parameters.ComponentJavascript)) ] ] |> Expression
+            patternNamed "t" |> binding (SynExpr.CreateApp(SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]), SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"])) |> Let
             patternNamed "componentProps" |> binding
               ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.CreateString "t.TryGetTypedValue", [SynType.Create "DashComponentProps"], SynExpr.CreateConstString "props")
                 |> matchStatement

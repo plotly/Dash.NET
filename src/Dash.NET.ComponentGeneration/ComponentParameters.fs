@@ -10,6 +10,7 @@ type ComponentParameters =
         ComponentNamespace:             string
         ComponentType:                  string
         LibraryNamespace:               string
+        ComponentJavascript:            string
         PropertyNames:                  string list
         DUSafePropertyNames:            string list
     }
@@ -23,6 +24,7 @@ type ComponentParameters =
             ComponentNamespace              = componentNameSpace
             ComponentType                   = componentType
             LibraryNamespace                = libraryNameSpace
+            ComponentJavascript             = sprintf "%s.min.js" componentNameSpace //TODO not always the case
             PropertyNames                   = propertyNames
             DUSafePropertyNames             = propertyNames |> List.map String.toValidDULabel
         }
