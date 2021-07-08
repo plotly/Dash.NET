@@ -1,6 +1,6 @@
 ﻿namespace Dash.NET
 
-open System.Collections.Concurrent
+open System.Collections.Generic
 open System.Threading
 
 module ComponentLoader =
@@ -11,27 +11,15 @@ module ComponentLoader =
           ComponentJavascript: string }
 
     type ComponentLoader internal () =
-        let loadedComponents: ConcurrentDictionary<string,LoadableComponent> = ConcurrentDictionary<string,LoadableComponent>()
-
-        let mailbox =
-            MailboxProcessor.Start( fun inbox->
-                let rec messageLoop() = 
-                    async {
-                        let! msg = inbox.Receive()
-                        if loadedComponents.TryAdd(msg.ComponentName, msg) then
-                            printfn "Loaded component: %s" msg.ComponentName
-                        return! messageLoop()
-                    }
-
-                messageLoop() )
+        let loadedComponents: Dictionary<string,LoadableComponent> = Dictionary<string,LoadableComponent>()
 
         member _.LoadComponent(comp: LoadableComponent) =
-            mailbox.Post(comp)
+            if loadedComponents.TryAdd(comp.ComponentName, comp) then
+                printfn "Loaded component: %s" comp.ComponentName
 
         member _.LoadedComponents() = 
-            loadedComponents.ToArray()
-            |> Array.map (fun kvp -> kvp.Value)
-            |> Array.toList
+            loadedComponents.Values
+            |> Seq.toList
 
     let ComponentLoader = ComponentLoader()
 
