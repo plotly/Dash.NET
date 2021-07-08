@@ -16,6 +16,7 @@
 	<Compile Include="ComponentParameters.fs" />
 	<Compile Include="ASTHelpers.fs" />
 	<Compile Include="ASTGeneration.fs" />
+	<Compile Include="ProjectGeneration.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
