@@ -17,6 +17,10 @@ open Microsoft.Extensions.DependencyInjection
 [<assembly:AutoOpen("Dash.NET.DCC")>]
 do ()
 
+open System.Collections.Generic
+open System.Runtime.InteropServices
+open System.Reflection
+
 type DashApp =
     {
         Index: IndexView
@@ -121,15 +125,63 @@ type DashApp =
     ///
     /// POST /_dash-update-component -> handles callback requests and returns serialized callback JSON responses.
     static member toHttpHandler (app:DashApp) : HttpHandler =
+
+        //TODO: put this component loading somewhere nicer when the Giraffe setup is abstracted
+        let loadedApp =
+            //Go through an assembly and look for any types that inherit DashComponent
+            //if one is found then look for the LoadableComponentDefinition and add its script
+            let tryLoadComponents (innerApp: DashApp) (a: Assembly) =
+                try
+                    a.GetModules()
+                    |> Array.collect (fun m -> m.GetTypes())
+                    |> Array.choose (fun t -> if t.IsSubclassOf typeof<DashComponent> then Some t else None)
+                    |> Array.choose (fun t -> t.GetProperty "definition" |> Option.ofObj)
+                    |> Array.choose (fun p -> p.GetValue(null,null) |> Option.ofObj)
+                    |> Array.choose tryUnbox
+                    |> Array.fold
+                        (fun (acc: DashApp) (def: LoadableComponentDefinition) -> 
+                            printfn "Loading component: %s" def.ComponentName
+                            DashApp.appendScripts [def.ComponentJavascript] acc)
+                        innerApp
+                with
+                | e -> innerApp
+
+            //Get every assembly referenced by an assembly
+            let getReferenced (a: Assembly) = a.GetReferencedAssemblies()
+
+            //Call tryLoadComponents on an assembly and every assembly it references
+            let rec loadAssemblies ((innerApp, loaded): DashApp * (string Set)) (toLoad: string) =
+                if not(loaded.Contains toLoad) then
+                    try
+                        let assembly = Assembly.Load(toLoad)
+
+                        assembly 
+                        |> getReferenced
+                        |> List.ofArray 
+                        |> List.map (fun a -> a.FullName)
+                        |> List.fold 
+                            loadAssemblies 
+                            (tryLoadComponents innerApp assembly, loaded.Add toLoad)
+                    with
+                    | e -> 
+                        printfn "Failed to load assembly: %s \n %O" toLoad e
+                        innerApp, loaded
+                else
+                    innerApp, loaded
+
+            Assembly.GetEntryAssembly().FullName
+            |> loadAssemblies (app, Set.empty)
+            |> fst
+
         choose [
             GET >=>
                 choose [
                     //serve the index
-                    route "/" >=> htmlView (app |> DashApp.getIndexHTML)
+                    route "/" >=> htmlView (loadedApp |> DashApp.getIndexHTML)
 
                     //Dash GET enpoints
-                    route "/_dash-layout"       >=> json app.Layout        //Calls from Dash renderer for what components to render (must return serialized dash components)
-                    route "/_dash-dependencies" >=> json (app.Callbacks |> CallbackMap.toDependencies) //Serves callback bindings as json on app start.
+                    route "/_dash-layout"       >=> json loadedApp.Layout        //Calls from Dash renderer for what components to render (must return serialized dash components)
+                    route "/_dash-dependencies" >=> json (loadedApp.Callbacks |> CallbackMap.toDependencies) //Serves callback bindings as json on app start.
                     route "/_reload-hash"       >=> json obj               //This call is done when using hot reload.
                 ]
 
@@ -152,7 +204,7 @@ type DashApp =
                             printfn "Input Tokens: %A" inputs
 
                             let result = 
-                                app.Callbacks
+                                loadedApp.Callbacks
                                 |> CallbackMap.getPackedCallbackById (cbRequest.Output) //get the callback from then callback map
                                 |> Callback.getResponseObject inputs//evaluate the handler function and get the response to send to the client
 
@@ -212,3 +264,4 @@ type DashApp =
             .Run()
         
         0
+    
