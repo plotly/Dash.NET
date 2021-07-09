@@ -40,7 +40,6 @@
     <Compile Include="DashComponents\CoreComponents\Tab.fs" />
     <Compile Include="DashComponents\CoreComponents\Tabs.fs" />
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
-    <Compile Include="ComponentLoader.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Dependency.fs" />
     <Compile Include="CallbackBinding.fs" />

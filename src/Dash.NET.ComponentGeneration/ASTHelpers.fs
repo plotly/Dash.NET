@@ -63,6 +63,7 @@ let functionPatternNoArgTypes (fname: string) (args: (string) list) =
             patternNamed pname
             |> SynPatRcd.CreateParen )
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDecarations)
+
 let memberFunctionPattern (fname: string) (args: (string*SynType*bool) list) =
     let argumentDecarations = 
         args

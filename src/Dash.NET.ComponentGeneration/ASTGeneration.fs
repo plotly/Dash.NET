@@ -79,7 +79,7 @@ let createComponentAST (parameters: ComponentParameters) =
         |> SynMemberDefn.CreateStaticMember
 
     let componentTypeInitDeclaration =
-        { SynBindingRcd.Null with
+        { SynBindingRcd.Null with //TODO replace with binding
             Pattern = memberFunctionPattern "init" 
                 [ ("id", SynType.Create "string", true)
                   ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true)
@@ -97,11 +97,21 @@ let createComponentAST (parameters: ComponentParameters) =
         }
         |> SynMemberDefn.CreateStaticMember
 
+    let componentTypeDefinitionDeclaration =
+        patternNamed "definition"
+        |> withPatternType (SynType.Create "LoadableComponentDefinition")
+        |> binding
+          ( SynExpr.CreateRecord 
+                [ ((LongIdentWithDots.CreateString "ComponentName",true), Some (SynExpr.CreateConstString parameters.ComponentName)) 
+                  ((LongIdentWithDots.CreateString "ComponentJavascript",true), Some (SynExpr.CreateConstString parameters.ComponentJavascript)) ] )
+        |> SynMemberDefn.CreateStaticMember    
+
     let componentTypeMemberDeclarations =
         [ SynMemberDefn.CreateImplicitCtor()
           typeInherit (SynExpr.CreateApp (SynExpr.CreateIdentString "DashComponent", SynExpr.CreateUnit)) 
           componentTypeApplyMembersDeclaration
-          componentTypeInitDeclaration ]
+          componentTypeInitDeclaration
+          componentTypeDefinitionDeclaration ]
 
     let componentTypeDeclaration =
         parameters.ComponentName
@@ -112,11 +122,7 @@ let createComponentAST (parameters: ComponentParameters) =
 
     let componentDeclaration =
         expressionSequence
-          [ applicationMany (SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "ComponentLoader.loadComponent"))
-                [ SynExpr.CreateRecord 
-                    [ ((LongIdentWithDots.CreateString "ComponentName",true), Some (SynExpr.CreateConstString parameters.ComponentName)) 
-                      ((LongIdentWithDots.CreateString "ComponentJavascript",true), Some (SynExpr.CreateConstString parameters.ComponentJavascript)) ] ] |> Expression
-            patternNamed "t" |> binding (SynExpr.CreateApp(SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]), SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"])) |> Let
+          [ patternNamed "t" |> binding (SynExpr.CreateApp(SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]), SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"])) |> Let
             patternNamed "componentProps" |> binding
               ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.CreateString "t.TryGetTypedValue", [SynType.Create "DashComponentProps"], SynExpr.CreateConstString "props")
                 |> matchStatement

@@ -57,12 +57,12 @@ module TestComponent =
                 (id, children, ?normalProp = normalProp, ?``🥑`` = ``🥑``, ?_test = _test)
                 (TestComponent())
 
-    ///This is additional test documentation
-    let testComponent (id: string) (props: seq<TestComponentProps>) (children: seq<DashComponent>) =
-        ComponentLoader.loadComponent
+        static member definition: LoadableComponentDefinition =
             { ComponentName = "TestComponent"
               ComponentJavascript = "TestNamespace.min.js" }
 
+    ///This is additional test documentation
+    let testComponent (id: string) (props: seq<TestComponentProps>) (children: seq<DashComponent>) =
         let t = TestComponent.init (id, children)
 
         let componentProps =
