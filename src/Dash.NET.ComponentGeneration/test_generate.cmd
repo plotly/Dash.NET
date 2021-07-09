@@ -1,0 +1,1 @@
+".\bin\Debug\net5.0\Dash.NET.ComponentGeneration.exe"
