@@ -19,6 +19,9 @@ open ComponentParameters
 //This will be fixed
 
 let createComponentAST (parameters: ComponentParameters) =
+
+    printfn "Creating component bindings"
+
     let componentPropertyDUCases =
         parameters.DUSafePropertyNames
         |> List.map (fun prop -> simpleUnionCase prop [anonUnionField "string"])
@@ -175,16 +178,22 @@ let createComponentAST (parameters: ComponentParameters) =
     |> ParsedInput.CreateImplFile
 
 let generateCodeFromAST (path: string) ast =
-    let cfg = { FormatConfig.FormatConfig.Default with StrictMode = true }
-    let formattedCodeAsync = CodeFormatter.FormatASTAsync(ast, Path.GetFileName path, [], None, cfg)
+    async {
+        let cfg = { FormatConfig.FormatConfig.Default with StrictMode = true }
+        let formattedCodeAsync = CodeFormatter.FormatASTAsync(ast, Path.GetFileName path, [], None, cfg)
 
-    let formattedCode =
-        [   "//------------------------------------------------------------------------------" //TODO documentation comments
-            "//        This file has been automatically generated."
-            "//        Changes to this file will be lost when the code is regenerated."
-            "//------------------------------------------------------------------------------"
-            formattedCodeAsync |> Async.RunSynchronously ] //We dont really need this to be async, as this is all the app is doing
-        |> String.concat Environment.NewLine
+        let formattedCode =
+            [   "//------------------------------------------------------------------------------" //TODO documentation comments
+                "//        This file has been automatically generated."
+                "//        Changes to this file will be lost when the code is regenerated."
+                "//------------------------------------------------------------------------------"
+                formattedCodeAsync |> Async.RunSynchronously ] //We dont really need this to be async, as this is all the app is doing
+            |> String.concat Environment.NewLine
 
-    File.WriteAllText(path,formattedCode)
+        try
+            File.WriteAllText(path,formattedCode)
+            return true, sprintf "Created %s" path, ""
+        with | ex -> 
+            return false, "", sprintf "Failed to write %s\n%s" path (ex.ToString())
+    }
             

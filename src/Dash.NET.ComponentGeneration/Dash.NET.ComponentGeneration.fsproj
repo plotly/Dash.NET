@@ -12,17 +12,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<Content Include="componentTemplate\.template.config\template.json">
+	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	</Content>
+	<None Include="componentTemplate\TemplateDashComponent.fsproj">
+	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	</None>
 	<Compile Include="Prelude.fs" />
 	<Compile Include="ComponentParameters.fs" />
 	<Compile Include="ASTHelpers.fs" />
 	<Compile Include="ASTGeneration.fs" />
 	<Compile Include="ProjectGeneration.fs" />
     <Compile Include="Program.fs" />
-  </ItemGroup>
-
+  </ItemGroup>  
+	
   <ItemGroup>
     <PackageReference Include="Fantomas" Version="4.4.0" />
     <PackageReference Include="FsAst" Version="0.9.0" />
   </ItemGroup>
+
+  <Target Name="CopyTemplate" AfterTargets="AfterBuild">
+  	<Copy SourceFiles="componentTemplate/TemplateDashComponent.fsproj" DestinationFolder="$(OutDir)/componentTemplate" />
+  	<Copy SourceFiles="componentTemplate/.template.config/template.json" DestinationFolder="$(OutDir)/componentTemplate/.template.config" />
+  </Target>
 
 </Project>

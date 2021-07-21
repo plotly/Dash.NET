@@ -3,6 +3,9 @@
 open System
 open System.Diagnostics
 open System.IO
+open Prelude
+
+let thisPath = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
 
 let runCommandAsync (workingDir: string) (fileName: string) (args: string list) = 
     async {
@@ -53,38 +56,69 @@ let runCommandAsync (workingDir: string) (fileName: string) (args: string list) 
 
 let runFunctionAsync (func: unit -> bool*string*string) = async { return func() }
 
-let (|@>) (c1: Async<bool*string*string>) (c2: Async<bool*string*string>) =
-    async {
-        let! success, o, e = c1
-        if success then
-            let! newSuccess, u, r = c2
-            return newSuccess, sprintf "%s\n%s" o u, sprintf "%s\n%s" e r
-        else
-            return success, o, e
-    }
-
-let createProject (name: string) =
-    async {
+let createProject (name: string) (fsFile: string) (jsFilePath:string) (dashVersion: string) =
+    //TODO this template may be better moved to nuget instead of being included with the tool?
+    //Install template
+    runCommandAsync "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "componentTemplate")]
+    |@!> async {
         //TODO: make sure dotnet 5.0 cli is installed
         //TODO: specify we are using dotnet 5 cli
 
         //TODO: nuget CLI to allow for publishing and to add Dash.NET
 
-        printfn "Creating project..."
-        return!
-            //This is slightly easier then creating a new template, because we dont have to check if it is installed
-            runCommandAsync "." "dotnet" ["new"; "classlib"; "--force"; "-lang"; "F#"; "-n"; name]
-            |@> runCommandAsync "." "dotnet" ["remove"; name; "reference"; "Library.fs"]
-            |@> runFunctionAsync (fun () ->
-                let fileName = sprintf "%s/Library.fs" name
-                try
-                    File.Delete(fileName) 
-                    true, sprintf "Deleted file %s" fileName, ""
-                with | ex ->
-                    false, "", sprintf "Failed to delete file %s\n%s" fileName (ex.ToString()))
-    }
+        if (File.Exists jsFilePath) then
 
-//let addComponentToProject
+            let jsFile = Path.GetFileName jsFilePath
+
+            printfn "Creating project %s" name
+            return!
+                //Create project folder
+                runFunctionAsync (fun () ->
+                    try
+                        let _ = Directory.CreateDirectory(name)
+                        true, sprintf "Created directory %s" name, ""
+                    with | ex ->
+                        false, "", sprintf "Failed to copy file %s to %s\n%s" jsFile name (ex.ToString()))
+
+                //Create project
+                |@> runCommandAsync name "dotnet" 
+                    [ "new"; "dashcomponent"
+                      "--force" 
+                      "-lang"; "F#"
+                      "-n"; name
+                      "--componentFile"; fsFile
+                      "--componentJavascript"; jsFile
+                      "--dashVersion"; dashVersion ]
+
+                //Copy Js file
+                |@> runFunctionAsync (fun () ->
+                    try
+                        let newJsPath = Path.Combine(name, jsFile)
+                        if not (File.Exists(newJsPath)) then
+                            File.Copy(jsFilePath, newJsPath)
+                            true, sprintf "Copied file %s to %s" jsFile name, ""
+                        else
+                            true, sprintf "File %s already exists" newJsPath, ""
+                    with | ex ->
+                        false, "", sprintf "Failed to copy file %s to %s\n%s" jsFile name (ex.ToString()))
+
+                    
+
+        else 
+            return false, "", "One of the specified paths does not exist"
+    }
+    //Uninstall the template again
+    //Not doing this can cause weird conflicts if the template is ever updated
+    |@!> runCommandAsync "." "dotnet" ["new"; "-u"; Path.GetFullPath(Path.Combine(thisPath, "componentTemplate"))]
+
+let buildProject (name: string) =
+    async {
+        if (Directory.Exists name) then
+            printfn "Building project %s" name
+            return! runCommandAsync "." "dotnet" ["build"; name]
+        else
+            return false, "", "The project does not exist"
+    }
 
 //let publishProject
 
