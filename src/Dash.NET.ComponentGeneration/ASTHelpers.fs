@@ -9,6 +9,9 @@ open FSharp.Compiler.XmlDoc
 //TODO: Clean up this file
 //TODO: Add documentation
 
+let componentInfo = Ident.CreateLong >> SynComponentInfoRcd.Create
+let namespaceInfo = Ident.CreateLong >> SynModuleOrNamespaceRcd.CreateNamespace
+
 let patternNamedOptional (pname: string) = SynPatRcd.OptionalVal {Id = Ident.Create pname; Range = range.Zero}
 let patternNamed (pname: string) = SynPatRcd.CreateNamed(Ident.Create pname, SynPatRcd.CreateWild)
 let patternNamedTuple (pnames: string list) = pnames |> List.map patternNamed |> SynPatRcd.CreateTuple
@@ -34,11 +37,11 @@ let binding (expr: SynExpr) (lpatt: SynPatRcd)  =
 let letDeclaration (binding: SynBindingRcd) =
     SynModuleDecl.CreateLet [ binding ]
 
-let typeDefinition (tDef: SynMemberDefns) (tInfo: SynComponentInfoRcd) = 
+let typeDeclaration (tDef: SynMemberDefns) (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateType(tInfo, tDef) 
 let typeInherit (itype: SynExpr) =
     SynMemberDefn.Inherit (SynType.StaticConstantExpr(itype, range.Zero), None, range.Zero)
-let simpleTypeDefinition (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
+let simpleTypeDeclaration (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateSimpleType(tInfo, tSimpleDef, tDef)
 let unionDefinition (cases: SynUnionCaseRcd list) =
     cases |> SynTypeDefnSimpleReprUnionRcd.Create |> SynTypeDefnSimpleReprRcd.Union
@@ -109,5 +112,7 @@ let expressionSequence (expressions: ExpressionSequenceItem list) =
             | Expression e -> SynExpr.Sequential (DebugPointAtSequential.Both, false, e, nextExpr, range.Zero))
             last
 
-let applicationMany (funExpr: SynExpr) (argExprs: SynExpr list) = 
-    argExprs |> List.fold (fun expr newExpr -> SynExpr.CreateApp(expr, newExpr)) funExpr
+let application (expers: SynExpr list) = 
+    match expers with
+    | funExpr::argExprs -> argExprs |> List.fold (fun expr newExpr -> SynExpr.CreateApp(expr, newExpr)) funExpr
+    | [] -> SynExpr.CreateUnit

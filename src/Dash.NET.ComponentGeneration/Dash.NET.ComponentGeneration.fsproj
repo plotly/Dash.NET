@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<None Include="README.md" />
 	<Content Include="componentTemplate\.template.config\template.json">
 	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	</Content>

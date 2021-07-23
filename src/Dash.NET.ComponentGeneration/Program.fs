@@ -27,5 +27,6 @@ let main argv =
         if not success then
             printfn "Error: %s" error
     }
+    //This is all in asyncs to make handling async and IO operations easier, it doesn't actually have to run async
     |> Async.RunSynchronously
     0
