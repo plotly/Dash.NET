@@ -33,7 +33,13 @@ module String =
     let decapitalize (s: string) = (sprintf "%c%s" (Char.ToLowerInvariant(s.[0])) (s.Substring(1)))
     let capitalize (s: string) = (sprintf "%c%s" (Char.ToUpperInvariant(s.[0])) (s.Substring(1)))
 
-    let escape (s: string) = s.Replace("\\","\\\\").Replace("\"","\\\"")
+    let removeQuotes (s: string) = 
+        if Regex.IsMatch(s, "^(['\"`]).*(['\"`])$") then
+            s.Substring(1,s.Length - 2)
+        else if Regex.IsMatch(s, "^(\\\").*(\\\")$") then
+            s.Substring(2,s.Length - 4)
+        else
+            s
 
     //DU labels have to start with a capital, if a property/value name starts with an _ or other non-letter character
     //then we have to add a letter in front of it

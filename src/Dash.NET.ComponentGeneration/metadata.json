@@ -1,0 +1,73 @@
+{
+    "test_component.js": {
+      "description": "TestComponent is an example component.",
+      "displayName": "TestComponent",
+      "methods": [],
+      "props": {
+        "id": {
+          "type": {
+            "name": "string"
+          },
+          "required": false,
+          "description": "The ID used to identify this component in Dash callbacks."
+        },
+        "aProp": {
+          "type": {
+            "name": "string"
+          },
+          "required": true,
+          "description": "A property."
+        },
+        "bProp": {
+          "type": {
+            "name": "shape",
+            "value": {
+              "aField": {
+                "name": "bool",
+                "description": "Determines if the component is loading or not",
+                "required": false
+              },
+              "bField": {
+                "name": "string",
+                "description": "Holds which property is loading",
+                "required": false
+              },
+              "cField": {
+                "name": "string",
+                "description": "Holds the name of the component that is loading",
+                "required": false
+              }
+            }
+          },
+          "required": false,
+          "description": "A different property."
+        },
+        "cProp": {
+          "type": {
+            "name": "union",
+            "value": [
+                {
+                    "name": "enum",
+                    "value": [
+                        {
+                            "value": "enabled"
+                        },
+                        {
+                            "value": "disabled"
+                        },
+                        {
+                            "value": "\"auto\""
+                        }
+                    ]
+                },
+                {
+                    "name": "bool"
+                }
+            ]
+          },
+          "required": false,
+          "description": "A fancy property."
+        }
+      }
+    }
+  }

@@ -34,6 +34,11 @@ let binding (expr: SynExpr) (lpatt: SynPatRcd)  =
     { SynBindingRcd.Let with 
         Pattern = lpatt
         Expr = expr }
+let memberBinding (expr: SynExpr) (lpatt: SynPatRcd)  =
+    { SynBindingRcd.Let with 
+        Pattern = lpatt
+        Expr = expr
+        ValData = SynValData( Some (MemberFlags.InstanceMember) ,SynValInfo ([], SynArgInfo ([], false, None)), None) }
 let letDeclaration (binding: SynBindingRcd) =
     SynModuleDecl.CreateLet [ binding ]
 
@@ -41,31 +46,39 @@ let typeDeclaration (tDef: SynMemberDefns) (tInfo: SynComponentInfoRcd) =
     SynModuleDecl.CreateType(tInfo, tDef) 
 let typeInherit (itype: SynExpr) =
     SynMemberDefn.Inherit (SynType.StaticConstantExpr(itype, range.Zero), None, range.Zero)
+
 let simpleTypeDeclaration (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateSimpleType(tInfo, tSimpleDef, tDef)
 let unionDefinition (cases: SynUnionCaseRcd list) =
     cases |> SynTypeDefnSimpleReprUnionRcd.Create |> SynTypeDefnSimpleReprRcd.Union
+let recordDefinition (cases: SynFieldRcd list) =
+    cases |> SynTypeDefnSimpleReprRecordRcd.Create |> SynTypeDefnSimpleReprRcd.Record
 
 let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
     SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
-let anonUnionField (ftype: string) =
+
+let simpleField (fname:string) (ftype: string) =
+    SynFieldRcd.Create (fname, LongIdentWithDots.CreateString ftype) 
+let anonSimpleField (ftype: string) =
     { SynFieldRcd.Create ("", LongIdentWithDots.CreateString ftype) with Id = None }
 
 let functionPattern (fname: string) (args: (string*SynType) list) =
-    let argumentDecarations = 
+    let argumentDeclarations = 
         args
         |> List.map (fun (pname, ptype) -> 
             patternNamed pname
             |> withPatternType ptype
             |> SynPatRcd.CreateParen )
-    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDecarations)
+    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
 let functionPatternNoArgTypes (fname: string) (args: (string) list) =
-    let argumentDecarations = 
+    let argumentDeclarations = 
         args
         |> List.map (fun pname -> 
             patternNamed pname
             |> SynPatRcd.CreateParen )
-    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDecarations)
+    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
+let functionPatternThunk (fname: string) =
+    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, [SynPatRcd.Const {Const = SynConst.Unit; Range = range.Zero}])
 
 let memberFunctionPattern (fname: string) (args: (string*SynType*bool) list) =
     let argumentDecarations = 
@@ -82,6 +95,9 @@ let simpleMatchClause (pat: string) (args: string list) (whenc: SynExpr option) 
     SynMatchClause.Clause ((functionPatternNoArgTypes pat args).FromRcd, whenc, result, range.Zero, DebugPointForTarget.No)
 let matchStatement (clauses: SynMatchClause list) (matchOn: SynExpr)  =
     SynExpr.CreateMatch (matchOn, clauses)
+
+let anonRecord (fields: (Ident*SynExpr) list) =
+    SynExpr.AnonRecd (false, None, fields, range.Zero)
 
 let simpleLambdaStatement (args: (string*SynType) list) (expr: SynExpr) =
     let argumentDecarations = 

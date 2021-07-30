@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="TestComponentAST.fs" />
+		<Compile Include="TestComponent.fs" />
 		<None Include="test_component.js" >
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
