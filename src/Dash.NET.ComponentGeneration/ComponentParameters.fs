@@ -20,6 +20,7 @@ type ComponentParameters =
         PropertyNames:                  string list
         DUSafePropertyNames:            string list
         PropertyTypes:                  SafeReactProp list
+        Metadata:                       SafeReactComponent
     }
 
     static member create (componentName: string) (componentJavascript: string) (componentMetadata: SafeReactComponent) =
@@ -43,6 +44,7 @@ type ComponentParameters =
             PropertyNames                   = pnames
             DUSafePropertyNames             = pnames |> List.map String.toValidDULabel
             PropertyTypes                   = pvals
+            Metadata                        = componentMetadata
         }
 
     static member fromReactMetadata (meta: ReactMetadata) =

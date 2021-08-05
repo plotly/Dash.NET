@@ -17,10 +17,18 @@ let patternNamed (pname: string) = SynPatRcd.CreateNamed(Ident.Create pname, Syn
 let patternNamedTuple (pnames: string list) = pnames |> List.map patternNamed |> SynPatRcd.CreateTuple
 let withPatternType (ptype: SynType) (pat: SynPatRcd) = SynPatRcd.CreateTyped(pat, ptype)
 
-let withXMLDoc (doc: string) (cinfo: SynComponentInfoRcd) =
-    { cinfo with XmlDoc = PreXmlDoc.Create doc }
-let withXMLDocLet (doc: string) (binfo: SynBindingRcd) =
-    { binfo with XmlDoc = PreXmlDoc.Create doc }
+let withXMLDoc (docLines: string list) (cinfo: SynComponentInfoRcd) =
+    let xml =
+        docLines
+        |> List.map PreXmlDoc.Create
+        |> List.reduce PreXmlDoc.Merge
+    { cinfo with XmlDoc = xml }
+let withXMLDocLet (docLines: string list) (binfo: SynBindingRcd) =
+    let xml =
+        docLines
+        |> List.map PreXmlDoc.Create
+        |> List.reduce PreXmlDoc.Merge
+    { binfo with XmlDoc = xml }
 
 let withNamespaceDeclarations (decls: SynModuleDecl list) (moduOrNsp: SynModuleOrNamespaceRcd) = 
     moduOrNsp.AddDeclarations decls
@@ -53,6 +61,10 @@ let unionDefinition (cases: SynUnionCaseRcd list) =
     cases |> SynTypeDefnSimpleReprUnionRcd.Create |> SynTypeDefnSimpleReprRcd.Union
 let recordDefinition (cases: SynFieldRcd list) =
     cases |> SynTypeDefnSimpleReprRecordRcd.Create |> SynTypeDefnSimpleReprRcd.Record
+let typeAbbreviationDefinition (atype: SynType) =
+    { ParseDetail = ParserDetail.Ok
+      Type = atype
+      Range = range.Zero } |> SynTypeDefnSimpleReprRcd.TypeAbbrev
 
 let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
     SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
@@ -61,6 +73,11 @@ let simpleField (fname:string) (ftype: string) =
     SynFieldRcd.Create (fname, LongIdentWithDots.CreateString ftype) 
 let anonSimpleField (ftype: string) =
     { SynFieldRcd.Create ("", LongIdentWithDots.CreateString ftype) with Id = None }
+
+let simpleAppField (fname:string) (ftype: string) (fargs: string list) =
+    (SynFieldRcd.CreateApp fname (LongIdentWithDots.CreateString ftype) (fargs |> List.map LongIdentWithDots.CreateString))
+let anonAppField (ftype: string) (fargs: string list) =
+    { (SynFieldRcd.CreateApp "" (LongIdentWithDots.CreateString ftype) (fargs |> List.map LongIdentWithDots.CreateString)) with Id = None }
 
 let functionPattern (fname: string) (args: (string*SynType) list) =
     let argumentDeclarations = 

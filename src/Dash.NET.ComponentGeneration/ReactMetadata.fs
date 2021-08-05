@@ -88,8 +88,8 @@ type SafeReactPropType =
     | String of props: SafeReactPropProps * value: string option
     | Object of props: SafeReactPropProps * value: string option
     | Any of props: SafeReactPropProps * value: string option
-    | Element of props: SafeReactPropProps * value: string option //TODO?
-    | Node of props: SafeReactPropProps * value: string option //TODO?
+    | Element of props: SafeReactPropProps * value: string option
+    | Node of props: SafeReactPropProps * value: string option
 
     // React PropTypes
     | Enum of props: SafeReactPropProps * value: SafeReactPropType list option
@@ -110,8 +110,8 @@ type SafeReactPropType =
         | String _ -> Some "string"
         | Object _ -> Some "obj"
         | Any _ -> Some "obj"
-        | Element _ -> Some "obj"
-        | Node _ -> Some "obj"
+        | Element _ -> Some "obj" //TODO allow passing in dash components?
+        | Node _ -> Some "obj" //TODO allow passing in dash components?
 
         // Special cases, each type will have a unique name
         | Enum _ -> None
@@ -123,6 +123,25 @@ type SafeReactPropType =
 
         // A type we can't process
         | Other _ -> Some "obj"
+
+    static member getProps (from: SafeReactPropType) =
+        match from with
+        | Array (props, _)
+        | Bool (props, _)
+        | Number (props, _)
+        | String (props, _)
+        | Object (props, _)
+        | Any (props, _)
+        | Element (props, _)
+        | Node (props, _)
+        | Enum (props, _)
+        | Union (props, _)
+        | ArrayOf (props, _)
+        | ObjectOf (props, _)
+        | Shape (props, _)
+        | Exact (props, _)
+        | Other (_, props, _) ->
+            props
 
     static member fromReactPropType (from: ReactPropType) =
         let props =

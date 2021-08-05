@@ -3,15 +3,14 @@
 open FsAst.AstCreate
 open FsAst.AstRcd
 open FSharp.Compiler.SyntaxTree
-open FSharp.Compiler.Range
 open Fantomas
 open System
 open System.IO
-open FSharp.Compiler.XmlDoc
 open Prelude
 open ASTHelpers
 open ComponentParameters
 open ReactMetadata
+open DocumentationGeneration
 
 // TODO: Clean up this file
 // TODO: Add documentation
@@ -76,7 +75,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     /// Create the union definition
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc "This is test documentation" // TODO documentation comments
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
                     |> simpleTypeDeclaration 
                          (duCases |> unionDefinition)
                          [ toCaseValueDefinition ] 
@@ -141,7 +140,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     let unionTypeDefinition =
                         propTypeName
                         |> componentInfo
-                        |> withXMLDoc "This is test documentation" // TODO documentation comments
+                        |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
                         |> simpleTypeDeclaration 
                                 (duCases |> unionDefinition)
                                 [ toCaseValueDefinition ]
@@ -154,15 +153,113 @@ let createComponentAST (parameters: ComponentParameters) =
                     None
 
             | SafeReactPropType.ArrayOf (_, Some utype) -> 
-                //TODO Json compatable ToString
-                generatePropTypes (sprintf "%sType" propTypeName) utype
+                let recursiveTypes = 
+                    generatePropTypes (sprintf "%sType" propTypeName) utype
+                    |> Option.defaultValue []
+                
+                let caseInnerType = 
+                    utype 
+                    |> SafeReactPropType.tryGetFSharpTypeName
+                    |> Option.defaultValue (sprintf "%sType" propTypeName)
+
+                // | DProp of list<string>
+                //
+                /// Create single case DU case
+                let singleCaseUnion =
+                    [ anonAppField "list" [ caseInnerType ] ]
+                    |> simpleUnionCase propTypeName
+                    |> List.singleton
+
+                // override this.ToString() =
+                //     match this with
+                //     | DProp (v) -> JsonSerializer.Serialize(List.map (fun (i: string) -> i.ToString()) v)
+                //
+                /// Define the json conversion
+                let toCaseValueDefinition =
+                    let matchResult =
+                        let mapStrings =
+                            application
+                                [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
+                                  SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["i"; "ToString"])
+                                  |> simpleLambdaStatement [("i", SynType.Create caseInnerType)]
+                                  |> SynExpr.CreateParen
+                                  SynExpr.CreateIdentString "v"]
+                            |> SynExpr.CreateParen
+                        SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], mapStrings)
+
+                    let matchCase =
+                        SynExpr.CreateIdentString "this"
+                        |> matchStatement 
+                            [ simpleMatchClause propTypeName ["v"] None matchResult ]
+
+                    functionPatternThunk "this.ToString"
+                    |> binding matchCase
+                    |> SynMemberDefn.CreateOverrideMember
+
+                // type DProp =
+                //
+                /// Create the union definition
+                let unionDefinition =
+                    propTypeName
+                    |> componentInfo
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                    |> simpleTypeDeclaration
+                        (singleCaseUnion |> unionDefinition)
+                        [ toCaseValueDefinition ]
+
+                (unionDefinition :: recursiveTypes) 
+                |> List.rev 
+                |> Some
 
             | SafeReactPropType.ObjectOf (_, Some utype) -> 
-                //TODO Json compatable ToString
-                generatePropTypes (sprintf "%sType" propTypeName) utype
+                let recursiveTypes = 
+                    generatePropTypes (sprintf "%sType" propTypeName) utype
+                    |> Option.defaultValue []
 
-            | SafeReactPropType.Shape (_, Some values) 
-            | SafeReactPropType.Exact (_, Some values) -> 
+                let caseInnerType = 
+                    utype 
+                    |> SafeReactPropType.tryGetFSharpTypeName
+                    |> Option.defaultValue (sprintf "%sType" propTypeName)
+
+                // | EProp of bool
+                //
+                /// Create single case DU case
+                let singeCaseUnion =
+                    [ anonSimpleField caseInnerType ]
+                    |> simpleUnionCase propTypeName
+                    |> List.singleton
+
+                // override this.ToString() =
+                //     match this with
+                //     | EProp (v) -> v.ToString()
+                //
+                /// Define the json conversion
+                let toCaseValueDefinition =
+                    let matchCase =
+                        SynExpr.CreateIdentString "this"
+                        |> matchStatement 
+                            [ simpleMatchClause propTypeName ["v"] None ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["v"; "ToString"]) ) ]
+                    functionPatternThunk "this.ToString"
+                    |> binding matchCase
+                    |> SynMemberDefn.CreateOverrideMember
+
+                // type EProp =
+                //
+                /// Create the union definition
+                let unionDefinition =
+                    propTypeName
+                    |> componentInfo
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                    |> simpleTypeDeclaration
+                        (singeCaseUnion |> unionDefinition)
+                        [ toCaseValueDefinition ]
+
+                (unionDefinition :: recursiveTypes) 
+                |> List.rev 
+                |> Some
+
+            | SafeReactPropType.Shape (props, Some values) 
+            | SafeReactPropType.Exact (props, Some values) -> 
                 let fields =
                     (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
                     ||> List.zip 
@@ -174,8 +271,8 @@ let createComponentAST (parameters: ComponentParameters) =
                             generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.capitalize)) ptype)
                         |> List.concat
                 
-                    // { AField: bool
-                    //   BField: string
+                    // { AField: Option<bool>
+                    //   BField: Option<string>
                     //   CField: string }
                     //
                     /// Define the fields for the record
@@ -185,12 +282,15 @@ let createComponentAST (parameters: ComponentParameters) =
                             let fieldTypeName =
                                 SafeReactPropType.tryGetFSharpTypeName ptype
                                 |> Option.defaultValue (sprintf "%s%sType" propTypeName (pname |> String.capitalize))
-                            simpleField (pname |> String.capitalize) fieldTypeName)
+                            if (ptype |> SafeReactPropType.getProps).required = Some false then 
+                                simpleAppField (pname |> String.capitalize) "Option" [ fieldTypeName ]
+                            else
+                                simpleField (pname |> String.capitalize) fieldTypeName)
 
                     // override this.ToString() =
                     //     JsonSerializer.Serialize
-                    //         {| aField = this.AField.ToString()
-                    //            bField = this.BField.ToString()
+                    //         {| aField = Some(this.AField.ToString())
+                    //            bField = Some(this.BField.ToString())
                     //            cField = this.CField.ToString() |}
                     //
                     /// Define the json conversion
@@ -198,9 +298,17 @@ let createComponentAST (parameters: ComponentParameters) =
                         let toString =
                             let serializable =
                                 fields
-                                |> List.map (fun (pname, _) -> 
-                                    ( Ident.Create pname, 
-                                      SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.capitalize; "ToString"] ) ))
+                                |> List.map (fun (pname, ptype) -> 
+                                    let jsonConversion =
+                                        if (ptype |> SafeReactPropType.getProps).required = Some false then 
+                                            application
+                                                [ SynExpr.CreateIdentString "Some"
+                                                  SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.capitalize; "ToString"] )
+                                                  |> SynExpr.CreateParen ]
+                                        else
+                                            SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.capitalize; "ToString"] )
+                                            
+                                    ( Ident.Create pname, jsonConversion ))
                                 |> anonRecord
 
                             SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], serializable)
@@ -215,7 +323,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     let recordTypeDefinition =
                         propTypeName
                         |> componentInfo
-                        |> withXMLDoc "This is test documentation" // TODO documentation comments
+                        |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
                         |> simpleTypeDeclaration 
                                 (fieldDefinitions |> recordDefinition)
                                 [ toStringDefinition ]
@@ -273,12 +381,33 @@ let createComponentAST (parameters: ComponentParameters) =
                         |||> List.zip3
                         |> List.map (fun (psafe, pname, prop) -> 
                             let pConvert =
-                                match prop.propType |> Option.bind SafeReactPropType.tryGetFSharpTypeName with
-                                | Some _ -> 
+                                match prop.propType with 
+                                | Some (Array _)
+                                | Some (Bool _)
+                                | Some (Number _)
+                                | Some (String _)-> 
                                     SynExpr.CreateIdentString "p"
-                                | None -> 
+
+                                | Some (Object _)
+                                | Some (Any _)
+                                | Some (Element _)
+                                | Some (Node _) -> 
+                                    SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], SynExpr.CreateIdentString "p")
+
+                                // Special cases, each type has a custom ToString
+                                | Some (Enum _)
+                                | Some (Union _)
+                                | Some (ArrayOf _)
+                                | Some (ObjectOf _)
+                                | Some (Shape _)
+                                | Some (Exact _) -> 
                                     SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["p"; "ToString"])
                                     |> SynExpr.CreateParen
+
+                                // A type we can't process
+                                | Some (Other _)
+                                | None -> 
+                                    SynExpr.CreateIdentString "p"
                             simpleMatchClause psafe ["p"] None 
                               ( SynExpr.CreateTuple 
                                     [ SynExpr.CreateConstString pname
@@ -291,7 +420,7 @@ let createComponentAST (parameters: ComponentParameters) =
         // Create the type definition
         parameters.ComponentPropsName
         |> componentInfo
-        |> withXMLDoc "This is test documentation" // TODO documentation comments
+        |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation |> wrapSummary)
         |> simpleTypeDeclaration 
             componentPropertyDUCases
             [ componentPropertyToDynamicMemberDefDeclaration ] 
@@ -390,7 +519,7 @@ let createComponentAST (parameters: ComponentParameters) =
         // Create the type definition
         parameters.ComponentName
         |> componentInfo
-        |> withXMLDoc "This is additional test documentation" // TODO documentation comments
+        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> wrapSummary)
         |> typeDeclaration 
           [ SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
             typeInherit (application [SynExpr.CreateIdentString "DashComponent"; SynExpr.CreateUnit]) 
@@ -447,7 +576,7 @@ let createComponentAST (parameters: ComponentParameters) =
               ("props", SynType.CreateApp(SynType.Create "seq", [SynType.Create parameters.ComponentPropsName]))
               ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"])) ]
         |> binding componentDeclaration
-        |> withXMLDocLet "This is additional test documentation" //TODO documentation comments
+        |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> wrapSummary)
         |> letDeclaration
 
     //  ///This is additional test documentation
@@ -458,7 +587,7 @@ let createComponentAST (parameters: ComponentParameters) =
     let moduleDeclaration = 
         parameters.ComponentName
         |> componentInfo
-        |> withXMLDoc "This is additional test documentation" // TODO documentation comments
+        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> wrapSummary)
         |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
         |> nestedModule
             [ yield! componentPropertyTypeDeclarations

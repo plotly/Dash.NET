@@ -35,7 +35,7 @@
               "cField": {
                 "name": "string",
                 "description": "Holds the name of the component that is loading",
-                "required": false
+                "required": true
               }
             }
           },
@@ -64,6 +64,28 @@
                     "name": "bool"
                 }
             ]
+          },
+          "required": false,
+          "description": "A fancy property."
+        },
+        "dProp": {
+          "type": {
+            "name": "arrayOf",
+            "value": 
+              {
+                  "name": "string"
+              }
+          },
+          "required": false,
+          "description": "A fancy property."
+        },
+        "eProp": {
+          "type": {
+            "name": "objectOf",
+            "value": 
+              {
+                  "name": "bool"
+              }
           },
           "required": false,
           "description": "A fancy property."

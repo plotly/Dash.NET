@@ -22,6 +22,7 @@
 	<Compile Include="Prelude.fs" />
 	<Compile Include="ReactMetadata.fs" />
 	<Compile Include="ComponentParameters.fs" />
+	<Compile Include="DocumentationGeneration.fs" />
 	<Compile Include="ASTHelpers.fs" />
 	<Compile Include="ASTGeneration.fs" />
 	<Compile Include="ProjectGeneration.fs" />
