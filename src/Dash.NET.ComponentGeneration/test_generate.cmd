@@ -1,1 +1,1 @@
-".\bin\Debug\net5.0\Dash.NET.ComponentGeneration.exe"
+".\bin\Debug\net5.0\Dash.NET.ComponentGeneration.exe" -n TestComponent -f TestComponentJavascript

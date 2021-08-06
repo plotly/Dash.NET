@@ -11,16 +11,6 @@
     "type": "project"
   },
   "symbols": {
-    "componentFile": {
-      "type": "parameter",
-      "replaces": "ComponentFilePlaceholder",
-      "isRequired": true
-    },
-    "componentJavascript": {
-      "type": "parameter",
-      "replaces": "ComponentJavascriptFilePlaceholder",
-      "isRequired": true
-    },
     "dashVersion": {
       "type": "parameter",
       "replaces": "DashVersionPlaceholder",

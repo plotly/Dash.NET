@@ -497,9 +497,19 @@ let createComponentAST (parameters: ComponentParameters) =
 
             |> SynMemberDefn.CreateStaticMember
 
+        // [ "TestNamespace.min.js"
+        //   "supplimentary.min.js" ]
+        //
+        /// Define the list of javascript files to include
+        let componentJavascriptList =
+            parameters.ComponentJavascript
+            |> List.map String.escape
+            |> List.map SynExpr.CreateConstString
+            |> expressionList
+
         //  static member definition: LoadableComponentDefinition =
         //      { ComponentName = "TestComponent"
-        //        ComponentJavascript = "TestNamespace.min.js" }
+        //        ComponentJavascript = ... }
         //
         /// Define the static member "definition"
         let componentTypeDefinitionDeclaration =
@@ -508,7 +518,7 @@ let createComponentAST (parameters: ComponentParameters) =
             |> binding
               ( SynExpr.CreateRecord 
                     [ ((LongIdentWithDots.CreateString "ComponentName",true), Some (SynExpr.CreateConstString parameters.ComponentName)) 
-                      ((LongIdentWithDots.CreateString "ComponentJavascript",true), Some (SynExpr.CreateConstString parameters.ComponentJavascript)) ] )
+                      ((LongIdentWithDots.CreateString "ComponentJavascript",true), Some componentJavascriptList) ] )
 
             |> SynMemberDefn.CreateStaticMember
 
@@ -625,7 +635,7 @@ let generateCodeFromAST (path: string) ast =
         let formattedCode =
             [ "//------------------------------------------------------------------------------" // TODO documentation comments
               "//        This file has been automatically generated."
-              "//        Changes to this file will be lost when the code is regenerated."
+              "//        Changes to this file will be lost if the code is regenerated."
               "//------------------------------------------------------------------------------"
               formattedCode ]
             |> String.concat Environment.NewLine

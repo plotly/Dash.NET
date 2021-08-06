@@ -149,3 +149,6 @@ let application (expers: SynExpr list) =
     match expers with
     | funExpr::argExprs -> argExprs |> List.fold (fun expr newExpr -> SynExpr.CreateApp(expr, newExpr)) funExpr
     | [] -> SynExpr.CreateUnit
+
+let expressionList (expers: SynExpr list) =
+    SynExpr.ArrayOrList (false, expers, range.Zero)

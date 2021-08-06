@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //        This file has been automatically generated.
-//        Changes to this file will be lost when the code is regenerated.
+//        Changes to this file will be lost if the code is regenerated.
 //------------------------------------------------------------------------------
 namespace TestComponent
 
@@ -141,7 +141,7 @@ module TestComponent =
 
         static member definition: LoadableComponentDefinition =
             { ComponentName = "TestComponent"
-              ComponentJavascript = "test_component.js" }
+              ComponentJavascript = [ "ComponentFiles\\test_component.min.js" ] }
 
     ///<summary>
     ///TestComponent is an example component.

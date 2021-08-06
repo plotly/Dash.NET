@@ -3,7 +3,6 @@
 open System.Text.Json
 open System
 open System.Collections.Generic
-open FSharpPlus.Lens
 open Prelude
 
 let jsonOptions = 
@@ -278,11 +277,6 @@ type SafeReactProp =
     description: string option
     defaultValue: SafeReactPropType option }
 
-    static member inline _type f (p: SafeReactProp) = f p.propType <&> fun x -> { p with propType = x }
-    static member inline _required f (p: SafeReactProp) = f p.required <&> fun x -> { p with required = x }
-    static member inline _description f (p: SafeReactProp) = f p.description <&> fun x -> { p with description = x }
-    static member inline _defaultValue f (p: SafeReactProp) = f p.defaultValue <&> fun x -> { p with defaultValue = x }
-
     static member fromReactProp (prop: ReactProp): SafeReactProp =
         { propType = prop.``type`` |> optional |> Option.map (SafeReactPropType.fromReactPropType)
           required = prop.required |> optional
@@ -293,10 +287,6 @@ type SafeReactComponent =
   { description: string option
     displayName: string option
     props: Dictionary<string, SafeReactProp> }
-
-    static member inline _description f (p: SafeReactComponent) = f p.description <&> fun x -> { p with description = x }
-    static member inline _displayName f (p: SafeReactComponent) = f p.displayName <&> fun x -> { p with displayName = x }
-    static member inline _props f (p: SafeReactComponent) = f p.props <&> fun x -> { p with props = x }
 
     static member fromReactComponent (comp: ReactComponent): SafeReactComponent =
         { description = comp.description |> optional

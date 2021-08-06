@@ -41,6 +41,8 @@ module String =
         else
             s
 
+    let escape = replace @"\" @"\\"
+
     //DU labels have to start with a capital, if a property/value name starts with an _ or other non-letter character
     //then we have to add a letter in front of it
     //TODO There are other rules to DU names that don't apply to normal variable names (like no control characters like " and \)

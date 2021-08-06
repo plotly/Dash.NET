@@ -2,7 +2,6 @@
 
 open System.IO
 open Prelude
-open FSharpPlus.Lens
 open ReactMetadata
 
 
@@ -14,7 +13,7 @@ type ComponentParameters =
         ComponentNamespace:             string
         ComponentType:                  string
         LibraryNamespace:               string
-        ComponentJavascript:            string
+        ComponentJavascript:            string list
         ComponentFSharp:                string
         ComponentDescription:           string option
         PropertyNames:                  string list
@@ -23,7 +22,7 @@ type ComponentParameters =
         Metadata:                       SafeReactComponent
     }
 
-    static member create (componentName: string) (componentJavascript: string) (componentMetadata: SafeReactComponent) =
+    static member create (componentName: string) (componentJavascript: string list) (componentMetadata: SafeReactComponent) =
         let pnames, pvals =
             (componentMetadata.props.Values |> List.ofSeq)
             |> List.zip (componentMetadata.props.Keys |> List.ofSeq)
@@ -47,14 +46,13 @@ type ComponentParameters =
             Metadata                        = componentMetadata
         }
 
-    static member fromReactMetadata (meta: ReactMetadata) =
+    static member fromReactMetadata (javascriptFiles: string list) (meta: ReactMetadata) =
         (meta.Values |> List.ofSeq)
         |> List.zip (meta.Keys |> List.ofSeq)
-        |> List.choose (fun (script, comp) -> 
+        |> List.choose (fun (_, comp) -> 
             //TODO: allow naming the F# version differntly to the js version
-            let maybeCName = view SafeReactComponent._displayName comp
-            let scriptName = script |> Path.GetFileName
+            let maybeCName = comp.displayName
             match maybeCName with
-            | Some cName -> ComponentParameters.create cName scriptName comp |> Some
+            | Some cName -> ComponentParameters.create cName javascriptFiles comp |> Some
             | None -> None
         )

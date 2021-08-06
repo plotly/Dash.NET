@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="ComponentFilePlaceholder" />
-		<None Include="ComponentJavascriptFilePlaceholder" >
+		<Compile Include="*.fs" />
+		<None Include="ComponentFiles/*" >
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

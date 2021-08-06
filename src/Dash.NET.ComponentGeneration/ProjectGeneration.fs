@@ -56,7 +56,7 @@ let runCommandAsync (workingDir: string) (fileName: string) (args: string list) 
 
 let runFunctionAsync (func: unit -> bool*string*string) = async { return func() }
 
-let createProject (name: string) (fsFile: string) (jsFilePath:string) (dashVersion: string) =
+let createProject (name: string) (componentFolder: string) (localFilePaths: string list) (dashVersion: string) =
     //TODO this template may be better moved to nuget instead of being included with the tool?
     //Install template
     runCommandAsync "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "componentTemplate")]
@@ -66,46 +66,53 @@ let createProject (name: string) (fsFile: string) (jsFilePath:string) (dashVersi
 
         //TODO: nuget CLI to allow for publishing and to add Dash.NET
 
-        if (File.Exists jsFilePath) then
+        let localFilesDirPath = Path.Combine (name,"ComponentFiles")
 
-            let jsFile = Path.GetFileName jsFilePath
+        printfn "Creating project %s" name
+        return!
+            //Create project folder
+            runFunctionAsync (fun () ->
+                try
+                    let _ = Directory.CreateDirectory(name)
+                    true, sprintf "Created directory %s" name, ""
+                with | ex ->
+                    false, "", sprintf "Failed to create folder %s\n%s" name (ex.ToString()))
 
-            printfn "Creating project %s" name
-            return!
-                //Create project folder
-                runFunctionAsync (fun () ->
+            //Create project
+            |@> runCommandAsync name "dotnet" 
+                [ "new"; "dashcomponent"
+                  "--force" 
+                  "-lang"; "F#"
+                  "-n"; name
+                  "--dashVersion"; dashVersion ]
+
+            //Create project folder
+            |@> runFunctionAsync (fun () ->
+                try
+                    let _ = Directory.CreateDirectory(localFilesDirPath)
+                    true, sprintf "Created directory %s" localFilesDirPath, ""
+                with | ex ->
+                    false, "", sprintf "Failed to create folder %s\n%s" localFilesDirPath (ex.ToString()))
+
+            //Copy local files
+            |@> runFunctionAsync (fun () ->
+                localFilePaths
+                |> List.map (fun localFile ->
                     try
-                        let _ = Directory.CreateDirectory(name)
-                        true, sprintf "Created directory %s" name, ""
-                    with | ex ->
-                        false, "", sprintf "Failed to copy file %s to %s\n%s" jsFile name (ex.ToString()))
-
-                //Create project
-                |@> runCommandAsync name "dotnet" 
-                    [ "new"; "dashcomponent"
-                      "--force" 
-                      "-lang"; "F#"
-                      "-n"; name
-                      "--componentFile"; fsFile
-                      "--componentJavascript"; jsFile
-                      "--dashVersion"; dashVersion ]
-
-                //Copy Js file
-                |@> runFunctionAsync (fun () ->
-                    try
-                        let newJsPath = Path.Combine(name, jsFile)
-                        if not (File.Exists(newJsPath)) then
-                            File.Copy(jsFilePath, newJsPath)
-                            true, sprintf "Copied file %s to %s" jsFile name, ""
+                        if File.Exists(localFile) then
+                            let localFileName = Path.GetRelativePath (componentFolder, localFile)
+                            let newJsPath = Path.Combine(localFilesDirPath, localFileName)
+                            if not (File.Exists(newJsPath)) then
+                                File.Copy(localFile, newJsPath)
+                                true, sprintf "Copied file %s to %s" localFileName name, ""
+                            else
+                                true, sprintf "File %s already exists" newJsPath, ""
                         else
-                            true, sprintf "File %s already exists" newJsPath, ""
+                            false, "", sprintf "File %s does not exists" localFile
                     with | ex ->
-                        false, "", sprintf "Failed to copy file %s to %s\n%s" jsFile name (ex.ToString()))
+                        false, "", sprintf "Failed to copy file %s to %s\n%s" localFile localFilesDirPath (ex.ToString()))
+                |> List.reduce ( fun (s1, o1, e1) (s2, o2, e2) -> (s1 && s2, sprintf "%s\n%s" o1 o2, sprintf "%s\n%s" e1 e2) ))
 
-                    
-
-        else 
-            return false, "", "One of the specified paths does not exist"
     }
     //Uninstall the template again
     //Not doing this can cause weird conflicts if the template is ever updated
