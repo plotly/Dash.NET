@@ -12,13 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+  	<Folder Include="template\" />
+	<None Include="template\.template.config\template.json" />
+	<None Include="template\TemplateDashComponent.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<None Include="README.md" />
-	<Content Include="componentTemplate\.template.config\template.json">
-	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	</Content>
-	<None Include="componentTemplate\TemplateDashComponent.fsproj">
-	  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	</None>
 	<Compile Include="Prelude.fs" />
 	<Compile Include="ReactMetadata.fs" />
 	<Compile Include="ComponentParameters.fs" />
@@ -36,8 +36,8 @@
   </ItemGroup>
 
   <Target Name="CopyTemplate" AfterTargets="AfterBuild">
-  	<Copy SourceFiles="componentTemplate/TemplateDashComponent.fsproj" DestinationFolder="$(OutDir)/componentTemplate" />
-  	<Copy SourceFiles="componentTemplate/.template.config/template.json" DestinationFolder="$(OutDir)/componentTemplate/.template.config" />
+  	<Copy SourceFiles="template/TemplateDashComponent.fsproj" DestinationFolder="$(OutDir)/template" />
+  	<Copy SourceFiles="template/.template.config/template.json" DestinationFolder="$(OutDir)/template/.template.config" />
   </Target>
 
 </Project>

@@ -22,7 +22,7 @@ type ComponentParameters =
         Metadata:                       SafeReactComponent
     }
 
-    static member create (componentName: string) (componentJavascript: string list) (componentMetadata: SafeReactComponent) =
+    static member create (componentName: string) (componentNamespace: string) (componentJavascript: string list) (componentMetadata: SafeReactComponent) =
         let pnames, pvals =
             (componentMetadata.props.Values |> List.ofSeq)
             |> List.zip (componentMetadata.props.Keys |> List.ofSeq)
@@ -34,7 +34,7 @@ type ComponentParameters =
             ComponentName                   = componentName
             ComponentPropsName              = sprintf "%sProps" componentName
             CamelCaseComponentName          = componentName |> String.decapitalize
-            ComponentNamespace              = componentName
+            ComponentNamespace              = componentNamespace
             ComponentType                   = componentName
             LibraryNamespace                = componentName
             ComponentJavascript             = componentJavascript
@@ -46,13 +46,13 @@ type ComponentParameters =
             Metadata                        = componentMetadata
         }
 
-    static member fromReactMetadata (javascriptFiles: string list) (meta: ReactMetadata) =
+    static member fromReactMetadata (componentShortName: string) (javascriptFiles: string list) (meta: ReactMetadata) =
         (meta.Values |> List.ofSeq)
         |> List.zip (meta.Keys |> List.ofSeq)
-        |> List.choose (fun (_, comp) -> 
+        |> List.choose (fun (_, comp) ->
             //TODO: allow naming the F# version differntly to the js version
             let maybeCName = comp.displayName
             match maybeCName with
-            | Some cName -> ComponentParameters.create cName javascriptFiles comp |> Some
+            | Some cName -> ComponentParameters.create cName componentShortName javascriptFiles comp |> Some
             | None -> None
         )

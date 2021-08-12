@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  	<OutputType>Exe</OutputType>
+  	<TargetFramework>net5</TargetFramework>
+  	<GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ASTGenerationTests.fs" />
+    <Compile Include="ReactMetadataTests.fs" />
+    <Compile Include="Main.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Expecto" Version="9.*" />
+    <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Dash.NET.ComponentGeneration\Dash.NET.ComponentGeneration.fsproj" />
+    <ProjectReference Include="..\..\src\Dash.NET\Dash.NET.fsproj" />
+  </ItemGroup>
+
+</Project>

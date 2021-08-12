@@ -103,14 +103,14 @@ type SafeReactPropType =
 
     static member tryGetFSharpTypeName (from: SafeReactPropType) =
         match from with
-        | Array _ -> Some "obj list"
-        | Bool _ -> Some "bool"
-        | Number _ -> Some "IConvertible"
-        | String _ -> Some "string"
-        | Object _ -> Some "obj"
-        | Any _ -> Some "obj"
-        | Element _ -> Some "obj" //TODO allow passing in dash components?
-        | Node _ -> Some "obj" //TODO allow passing in dash components?
+        | Array _ -> Some ["list"; "obj"]
+        | Bool _ -> Some ["bool"]
+        | Number _ -> Some ["IConvertible"]
+        | String _ -> Some ["string"]
+        | Object _ -> Some ["obj"]
+        | Any _ -> Some ["obj"]
+        | Element _ -> Some ["obj"] //TODO allow passing in dash components?
+        | Node _ -> Some ["obj"] //TODO allow passing in dash components?
 
         // Special cases, each type will have a unique name
         | Enum _ -> None
@@ -121,7 +121,7 @@ type SafeReactPropType =
         | Exact _ -> None
 
         // A type we can't process
-        | Other _ -> Some "obj"
+        | Other _ -> Some ["obj"]
 
     static member getProps (from: SafeReactPropType) =
         match from with

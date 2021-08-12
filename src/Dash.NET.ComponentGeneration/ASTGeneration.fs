@@ -75,7 +75,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     /// Create the union definition
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
                     |> simpleTypeDeclaration 
                          (duCases |> unionDefinition)
                          [ toCaseValueDefinition ] 
@@ -105,9 +105,9 @@ let createComponentAST (parameters: ComponentParameters) =
                         let caseTypeName = 
                             case 
                             |> SafeReactPropType.tryGetFSharpTypeName
-                            |> Option.defaultValue (sprintf "%sCase%dType" propTypeName i)
+                            |> Option.defaultValue ([sprintf "%sCase%dType" propTypeName i])
 
-                        simpleUnionCase caseName [anonSimpleField caseTypeName]
+                        simpleUnionCase caseName [anonAppField caseTypeName]
                         |> Some)
 
                 // | CPropCase0 (v) -> v.ToString()
@@ -140,7 +140,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     let unionTypeDefinition =
                         propTypeName
                         |> componentInfo
-                        |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                        |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
                         |> simpleTypeDeclaration 
                                 (duCases |> unionDefinition)
                                 [ toCaseValueDefinition ]
@@ -160,13 +160,13 @@ let createComponentAST (parameters: ComponentParameters) =
                 let caseInnerType = 
                     utype 
                     |> SafeReactPropType.tryGetFSharpTypeName
-                    |> Option.defaultValue (sprintf "%sType" propTypeName)
+                    |> Option.defaultValue ([sprintf "%sType" propTypeName])
 
                 // | DProp of list<string>
                 //
                 /// Create single case DU case
                 let singleCaseUnion =
-                    [ anonAppField "list" [ caseInnerType ] ]
+                    [ anonAppField [ yield "list"; yield! caseInnerType ] ]
                     |> simpleUnionCase propTypeName
                     |> List.singleton
 
@@ -181,7 +181,7 @@ let createComponentAST (parameters: ComponentParameters) =
                             application
                                 [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
                                   SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["i"; "ToString"])
-                                  |> simpleLambdaStatement [("i", SynType.Create caseInnerType)]
+                                  |> simpleLambdaStatement [("i", appType caseInnerType)]
                                   |> SynExpr.CreateParen
                                   SynExpr.CreateIdentString "v"]
                             |> SynExpr.CreateParen
@@ -202,7 +202,7 @@ let createComponentAST (parameters: ComponentParameters) =
                 let unionDefinition =
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
                     |> simpleTypeDeclaration
                         (singleCaseUnion |> unionDefinition)
                         [ toCaseValueDefinition ]
@@ -219,13 +219,13 @@ let createComponentAST (parameters: ComponentParameters) =
                 let caseInnerType = 
                     utype 
                     |> SafeReactPropType.tryGetFSharpTypeName
-                    |> Option.defaultValue (sprintf "%sType" propTypeName)
+                    |> Option.defaultValue ([sprintf "%sType" propTypeName])
 
                 // | EProp of bool
                 //
                 /// Create single case DU case
                 let singeCaseUnion =
-                    [ anonSimpleField caseInnerType ]
+                    [ anonAppField caseInnerType ]
                     |> simpleUnionCase propTypeName
                     |> List.singleton
 
@@ -249,7 +249,7 @@ let createComponentAST (parameters: ComponentParameters) =
                 let unionDefinition =
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
                     |> simpleTypeDeclaration
                         (singeCaseUnion |> unionDefinition)
                         [ toCaseValueDefinition ]
@@ -281,11 +281,11 @@ let createComponentAST (parameters: ComponentParameters) =
                         |> List.map (fun (pname, ptype) -> 
                             let fieldTypeName =
                                 SafeReactPropType.tryGetFSharpTypeName ptype
-                                |> Option.defaultValue (sprintf "%s%sType" propTypeName (pname |> String.capitalize))
+                                |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.capitalize)])
                             if (ptype |> SafeReactPropType.getProps).required = Some false then 
-                                simpleAppField (pname |> String.capitalize) "Option" [ fieldTypeName ]
+                                simpleAppField (pname |> String.capitalize) [ yield "Option"; yield! fieldTypeName ]
                             else
-                                simpleField (pname |> String.capitalize) fieldTypeName)
+                                simpleAppField (pname |> String.capitalize) fieldTypeName)
 
                     // override this.ToString() =
                     //     JsonSerializer.Serialize
@@ -323,7 +323,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     let recordTypeDefinition =
                         propTypeName
                         |> componentInfo
-                        |> withXMLDoc (ptype |> generatePropDocumentation |> wrapSummary)
+                        |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
                         |> simpleTypeDeclaration 
                                 (fieldDefinitions |> recordDefinition)
                                 [ toStringDefinition ]
@@ -361,8 +361,8 @@ let createComponentAST (parameters: ComponentParameters) =
                 |> Option.map (fun ptype ->
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue (pname |> String.capitalize)
-                    simpleUnionCase psafe [anonSimpleField propTypeName]))
+                        |> Option.defaultValue ([pname |> String.capitalize])
+                    simpleUnionCase psafe [anonAppField propTypeName]))
             |> unionDefinition
 
         // static member toDynamicMemberDef(prop: TestComponentProps) =
@@ -393,6 +393,7 @@ let createComponentAST (parameters: ComponentParameters) =
                                 | Some (Element _)
                                 | Some (Node _) -> 
                                     SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], SynExpr.CreateIdentString "p")
+                                    |> SynExpr.CreateParen
 
                                 // Special cases, each type has a custom ToString
                                 | Some (Enum _)
@@ -420,7 +421,7 @@ let createComponentAST (parameters: ComponentParameters) =
         // Create the type definition
         parameters.ComponentPropsName
         |> componentInfo
-        |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation |> wrapSummary)
+        |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation |> toXMLDoc)
         |> simpleTypeDeclaration 
             componentPropertyDUCases
             [ componentPropertyToDynamicMemberDefDeclaration ] 
@@ -529,7 +530,7 @@ let createComponentAST (parameters: ComponentParameters) =
         // Create the type definition
         parameters.ComponentName
         |> componentInfo
-        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> wrapSummary)
+        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
         |> typeDeclaration 
           [ SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
             typeInherit (application [SynExpr.CreateIdentString "DashComponent"; SynExpr.CreateUnit]) 
@@ -586,7 +587,7 @@ let createComponentAST (parameters: ComponentParameters) =
               ("props", SynType.CreateApp(SynType.Create "seq", [SynType.Create parameters.ComponentPropsName]))
               ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"])) ]
         |> binding componentDeclaration
-        |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> wrapSummary)
+        |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> toXMLDoc)
         |> letDeclaration
 
     //  ///This is additional test documentation
@@ -597,7 +598,7 @@ let createComponentAST (parameters: ComponentParameters) =
     let moduleDeclaration = 
         parameters.ComponentName
         |> componentInfo
-        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> wrapSummary)
+        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
         |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
         |> nestedModule
             [ yield! componentPropertyTypeDeclarations
@@ -627,19 +628,23 @@ let createComponentAST (parameters: ComponentParameters) =
         .AddModule(namespaceDeclaration)
     |> ParsedInput.CreateImplFile
 
-let generateCodeFromAST (path: string) ast =
+let generateCodeStringFromAST (path: string) ast =
     async {
         let cfg = { FormatConfig.FormatConfig.Default with StrictMode = true }
         let! formattedCode = CodeFormatter.FormatASTAsync(ast, Path.GetFileName path, [], None, cfg)
 
-        let formattedCode =
+        return
             [ "//------------------------------------------------------------------------------" // TODO documentation comments
               "//        This file has been automatically generated."
               "//        Changes to this file will be lost if the code is regenerated."
               "//------------------------------------------------------------------------------"
               formattedCode ]
             |> String.concat Environment.NewLine
+    }
 
+let generateCodeFromAST (path: string) ast =
+    async {
+        let! formattedCode = generateCodeStringFromAST path ast
         try
             File.WriteAllText(path,formattedCode)
             return true, sprintf "Created %s" path, ""

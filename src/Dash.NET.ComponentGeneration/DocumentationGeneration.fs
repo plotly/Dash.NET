@@ -144,7 +144,7 @@ let generatePropDocumentation (prop: SafeReactPropType) =
 
     [ yield typeDoc; yield descriptionDoc ]
 
-let wrapSummary (inner: string list) =
+let toXMLDoc (inner: string list) =
     let modInner =
         inner
         |> List.filter (String.length >> (<) 0)
@@ -152,3 +152,7 @@ let wrapSummary (inner: string list) =
         |> List.fold (fun acc (i, s) -> if i = 0 then s::acc else s::"&#10;"::acc) []
         |> List.rev
     [yield "<summary>"; yield! modInner; yield "</summary>"]
+    |> List.map (String.replace "\r" "")
+    |> List.map (String.split "\n")
+    |> List.concat
+    |> List.map String.escape

@@ -66,6 +66,12 @@ let typeAbbreviationDefinition (atype: SynType) =
       Type = atype
       Range = range.Zero } |> SynTypeDefnSimpleReprRcd.TypeAbbrev
 
+let appType (tApp: string list) =
+    match tApp with
+    | [t] -> SynType.Create t
+    | t::at -> SynType.CreateApp(SynType.Create t, at |> List.map SynType.Create)
+    | [] -> SynType.Create "obj"
+
 let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
     SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
 
@@ -74,10 +80,16 @@ let simpleField (fname:string) (ftype: string) =
 let anonSimpleField (ftype: string) =
     { SynFieldRcd.Create ("", LongIdentWithDots.CreateString ftype) with Id = None }
 
-let simpleAppField (fname:string) (ftype: string) (fargs: string list) =
-    (SynFieldRcd.CreateApp fname (LongIdentWithDots.CreateString ftype) (fargs |> List.map LongIdentWithDots.CreateString))
-let anonAppField (ftype: string) (fargs: string list) =
-    { (SynFieldRcd.CreateApp "" (LongIdentWithDots.CreateString ftype) (fargs |> List.map LongIdentWithDots.CreateString)) with Id = None }
+let simpleAppField (fname:string) (funApp: string list) =
+    match funApp with
+    | [funType] -> simpleField fname funType
+    | funType::argTypes -> (SynFieldRcd.CreateApp fname (LongIdentWithDots.CreateString funType) (argTypes |> List.map LongIdentWithDots.CreateString))
+    | [] -> simpleField fname "obj"
+let anonAppField (funApp: string list) =
+    match funApp with
+    | [funType] -> anonSimpleField funType
+    | funType::argTypes -> { (SynFieldRcd.CreateApp "" (LongIdentWithDots.CreateString funType) (argTypes |> List.map LongIdentWithDots.CreateString)) with Id = None }
+    | [] -> anonSimpleField "obj"
 
 let functionPattern (fname: string) (args: (string*SynType) list) =
     let argumentDeclarations = 

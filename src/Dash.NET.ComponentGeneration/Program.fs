@@ -8,56 +8,56 @@ open System
 
 // Hardcoded defaults
 let defaultDashVersion = "0.1.0-alpha9"
-
-let defaultIgnoreFiles = []
-let defaultIgnoreFolders = [ "__pycache__" ]
-let defaultIgnoreExtensions = [ "py" ]
+let defaultIgnore = [ "__pycache__"; ".*\.py" ]
 
 // Command line arguments
 type CmdArgs =
     | [<AltCommandLine("-n"); First; Mandatory; Unique>] Name of name:string
-    | [<AltCommandLine("-f"); Mandatory; Unique>] Folder of folder:string
+    | [<AltCommandLine("-s"); Mandatory; Unique>] ShortName of name:string
+    | [<AltCommandLine("-f"); Mandatory; Unique>] ComponentDirectory of folder:string
     | [<AltCommandLine("-m"); Unique>] Metadata of meta:string
     | [<AltCommandLine("-v"); Unique>] DashVersion of version:string
+    | [<AltCommandLine("-o"); Unique>] OutputDirectory of folder:string
     | [<AltCommandLine("-a")>] AddFile of source:string
-    | [<AltCommandLine("-i")>] IgnoreFile of source:string
-    | [<AltCommandLine("-o")>] IgnoreFolder of folder:string
-    | [<AltCommandLine("-x")>] IgnoreExtension of extension:string
+    | [<AltCommandLine("-i")>] Ignore of source:string
     | [<AltCommandLine("-d"); Unique>] DisableDefaultIgnore
 with
     interface IArgParserTemplate with
         member this.Usage =
             match this with
             | Name _ -> "Name of the component or group of components"
-            | Folder _ -> "Folder containing the component"
+            | ShortName _ -> "Name of the exported javascript namespace component"
+            | ComponentDirectory _ -> "Folder containing the component"
             | Metadata _ -> "React docgen metadata.json file, defaults to '<component_folder>/metadata.json'"
             | DashVersion _ -> "The version of Dash.NET to use, defaults to '0.1.0-alpha9'"
+            | OutputDirectory _ -> "Directory to create the F# project folder in, defaults to ./"
             | AddFile _ -> "Additional local source file to include"
-            | IgnoreFile _ -> "Ignore files with this name"
-            | IgnoreFolder _ -> "Ignore folders with this name"
-            | IgnoreExtension _ -> "Ignore files in the folder with this extension (eg. py, js, json)"
-            | DisableDefaultIgnore -> "Don't ignore *.py and __pycache__ by default"
+            | Ignore _ -> "Ignore folders and file paths that match this regex (by default this includes \"__pycache__\" and \".*\.py\")"
+            | DisableDefaultIgnore -> "Don't ignore \"__pycache__\" and \".*\.py\" by default"
 
-let performGeneration (componentProjectName: string) (dashVersion: string) (componentFolder: string) (metaFile: string) (localFiles: string list) =
+let performGeneration (componentProjectName: string) (componentShortName: string) (outputFolder: string) (dashVersion: string) (componentFolder: string) (metaFile: string) (localFiles: string list) =
     async {
         let localJavascript =
             localFiles
             |> List.filter (Path.GetExtension >> (fun s -> s.ToLowerInvariant()) >> (=) ".js")
             |> List.map (fun js -> Path.GetRelativePath(componentFolder, js))
-            |> List.map (fun js -> Path.Combine("ComponentFiles", js))
+            |> List.map (fun js -> Path.Combine(componentProjectName, js))
 
         let parametersList = 
             metaFile
             |> File.ReadAllText
             |> ReactMetadata.jsonDeserialize
-            |> ComponentParameters.fromReactMetadata localJavascript
+            |> ComponentParameters.fromReactMetadata componentShortName localJavascript
 
         let projectCreate =
             ProjectGeneration.createProject 
                 componentProjectName
+                outputFolder
                 componentFolder
                 localFiles
                 dashVersion
+
+        let projectFolder = Path.Combine(outputFolder, componentProjectName)
 
         return!
             parametersList
@@ -65,10 +65,9 @@ let performGeneration (componentProjectName: string) (dashVersion: string) (comp
                 state
                 |@> (parameters
                         |> ASTGeneration.createComponentAST 
-                        |> ASTGeneration.generateCodeFromAST (Path.Combine(".", parameters.ComponentName, parameters.ComponentFSharp)) )
-
-                |@> ProjectGeneration.buildProject parameters.ComponentName)
+                        |> ASTGeneration.generateCodeFromAST (Path.Combine(projectFolder, parameters.ComponentFSharp)) ))
                 projectCreate
+            |@> ProjectGeneration.buildProject componentProjectName outputFolder
     }
 
 [<EntryPoint>]
@@ -87,14 +86,26 @@ let main argv =
         |> Option.map Ok
         |> Option.defaultValue (Error "Missing argument: name")
 
+    let maybeShortName = 
+        args 
+        |> List.tryPick ( function | ShortName m -> Some m | _ -> None )
+        |> Option.map Ok
+        |> Option.defaultValue (Error "Missing argument: short name")
+
+    let maybeOutputFolder = 
+        args 
+        |> List.tryPick ( function | OutputDirectory f -> Some f | _ -> None )
+        |> Option.map (fun f -> if Directory.Exists f then Ok f else Error (sprintf "Folder %s does not exist" f))
+        |> Option.defaultValue (Ok ".")
+
     let maybeFolder = 
         args 
-        |> List.tryPick ( function | Folder f -> Some f | _ -> None )
+        |> List.tryPick ( function | ComponentDirectory f -> Some f | _ -> None )
         |> Option.map (fun f -> if Directory.Exists f then Ok f else Error (sprintf "Folder %s does not exist" f))
         |> Option.defaultValue (Error "Missing argument: folder")
 
-    match maybeName, maybeFolder with
-    | Ok name, Ok folder ->
+    match maybeName, maybeShortName, maybeFolder, maybeOutputFolder with
+    | Ok name, Ok shortName, Ok folder, Ok outputFolder ->
         
         let maybeMetadata =
             args 
@@ -104,25 +115,16 @@ let main argv =
 
         let disableDefaultIgnore = args |> List.contains DisableDefaultIgnore
 
-        let ignoreFiles = 
+        let ignoreRegexes = 
             args 
-            |> List.choose ( function | IgnoreFile m -> Some m | _ -> None )
-            |> (if disableDefaultIgnore then (@) defaultIgnoreFiles else id)
-        let ignoreFolders = 
-            args 
-            |> List.choose ( function | IgnoreFolder m -> Some m | _ -> None )
-            |> (if disableDefaultIgnore then (@) defaultIgnoreFolders else id)
-        let ignoreExtensions = 
-            args 
-            |> List.choose ( function | IgnoreExtension m -> Some m | _ -> None )
-            |> (if disableDefaultIgnore then (@) defaultIgnoreExtensions else id)
+            |> List.choose ( function | Ignore m -> Some m | _ -> None )
+            |> (if disableDefaultIgnore then id else (@) defaultIgnore)
 
         let maybeLocalFiles = 
             let rec recursiveFolderFiles f =
                 let recursiveFiles =
                     Directory.EnumerateDirectories f 
                     |> List.ofSeq
-                    |> List.filter (fun folder -> ignoreFolders |> List.contains folder |> not)
                     |> List.collect recursiveFolderFiles
 
                 let rootFiles =
@@ -132,8 +134,7 @@ let main argv =
                 [ yield! recursiveFiles; yield! rootFiles ]
 
             recursiveFolderFiles folder
-            |> List.filter (fun file -> ignoreFiles |> List.contains file |> not)
-            |> List.filter (fun ex -> ignoreExtensions |> List.contains (ex |> Path.GetExtension |> sprintf ".%s") |> not)
+            |> List.filter (fun s -> ignoreRegexes |> List.map String.matches |> List.map (fun f -> f s |> not) |> List.fold (&&) true)
             |> (function | [] -> Error "No local source files found" | j -> Ok j)
 
         let dashVersion =
@@ -145,7 +146,7 @@ let main argv =
         | Ok metadata, Ok localFiles -> 
             //This is all in asyncs to make handling async and IO operations easier, it doesn't actually have to run async
             let success, output, error = 
-                performGeneration name dashVersion folder metadata localFiles
+                performGeneration name shortName outputFolder dashVersion folder metadata localFiles 
                 |> Async.RunSynchronously
 
             //TODO better logging (allow for verbose logging)
@@ -165,7 +166,9 @@ let main argv =
             printfn "Error: %s" error
             1
     
-    | Error error, _ 
-    | _, Error error -> 
+    | Error error, _, _, _ 
+    | _, Error error, _, _ 
+    | _, _, Error error, _ 
+    | _, _, _, Error error -> 
         printfn "Error: %s" error
         1

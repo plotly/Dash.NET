@@ -27,6 +27,7 @@ let validDULabel = Regex "^[ABCDEFGHIJKLMNOPQRSTUVWXYZ].*"
 
 module String =
     let replace (old: string) (_new: string) (s: string) = s.Replace(old,_new)
+    let split (on: string) (s: string) = s.Split(on) |> List.ofArray
     let write path (s: string) = File.WriteAllText(path,s)
 
     let firstLetter (s: string) = s.ToLower().Substring(0,1)
@@ -50,4 +51,6 @@ module String =
         let capitalizedLabel = s |> capitalize
         if validDULabel.IsMatch(capitalizedLabel) then capitalizedLabel
         else sprintf "Prop%s" s
+
+    let matches (reg: string) (s: string) = Regex.IsMatch(s, reg)
 

@@ -8,14 +8,14 @@
 
 	<ItemGroup>
 		<Compile Include="*.fs" />
-		<None Include="ComponentFiles/*" >
+		<None Include="WebRoot/TemplateDashComponent/*" >
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
 		<!--<PackageReference Include="Dash.Net" Version="DashVersionPlaceholder" />-->
-		<ProjectReference Include="..\..\Dash.NET\Dash.NET.fsproj" /> <!--TODO: temporary for build testing-->
+		<ProjectReference Include="..\..\Dash.NET\src\Dash.NET\Dash.NET.fsproj" /> <!--TODO: temporary for build testing-->
 	</ItemGroup>
 
 </Project>

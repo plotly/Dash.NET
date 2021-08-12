@@ -1,0 +1,1 @@
+".\bin\Debug\net5.0\Dash.NET.ComponentGeneration.exe" -n SampleDashComponent -s sample_dash_component -f "..\..\..\sample_dash_component\sample_dash_component" -o "..\..\..\sample_dash_component" 

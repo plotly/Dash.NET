@@ -56,30 +56,31 @@ let runCommandAsync (workingDir: string) (fileName: string) (args: string list) 
 
 let runFunctionAsync (func: unit -> bool*string*string) = async { return func() }
 
-let createProject (name: string) (componentFolder: string) (localFilePaths: string list) (dashVersion: string) =
+let createProject (name: string) (outputFolder: string) (componentFolder: string) (localFilePaths: string list) (dashVersion: string) =
     //TODO this template may be better moved to nuget instead of being included with the tool?
     //Install template
-    runCommandAsync "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "componentTemplate")]
+    runCommandAsync "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "template")]
     |@!> async {
         //TODO: make sure dotnet 5.0 cli is installed
         //TODO: specify we are using dotnet 5 cli
 
         //TODO: nuget CLI to allow for publishing and to add Dash.NET
 
-        let localFilesDirPath = Path.Combine (name,"ComponentFiles")
+        let outputPath = Path.Combine (outputFolder, name)
+        let localFilesDirPath = Path.Combine (outputPath,"WebRoot",name)
 
         printfn "Creating project %s" name
         return!
             //Create project folder
             runFunctionAsync (fun () ->
                 try
-                    let _ = Directory.CreateDirectory(name)
-                    true, sprintf "Created directory %s" name, ""
+                    let _ = Directory.CreateDirectory(outputPath)
+                    true, sprintf "Created directory %s" outputPath, ""
                 with | ex ->
-                    false, "", sprintf "Failed to create folder %s\n%s" name (ex.ToString()))
+                    false, "", sprintf "Failed to create folder %s\n%s" outputPath (ex.ToString()))
 
             //Create project
-            |@> runCommandAsync name "dotnet" 
+            |@> runCommandAsync outputPath "dotnet" 
                 [ "new"; "dashcomponent"
                   "--force" 
                   "-lang"; "F#"
@@ -102,11 +103,9 @@ let createProject (name: string) (componentFolder: string) (localFilePaths: stri
                         if File.Exists(localFile) then
                             let localFileName = Path.GetRelativePath (componentFolder, localFile)
                             let newJsPath = Path.Combine(localFilesDirPath, localFileName)
-                            if not (File.Exists(newJsPath)) then
-                                File.Copy(localFile, newJsPath)
-                                true, sprintf "Copied file %s to %s" localFileName name, ""
-                            else
-                                true, sprintf "File %s already exists" newJsPath, ""
+                            Directory.CreateDirectory(Path.GetDirectoryName newJsPath) |> ignore
+                            File.Copy(localFile, newJsPath, true)
+                            true, sprintf "Copied file %s to %s" localFileName localFilesDirPath, ""
                         else
                             false, "", sprintf "File %s does not exists" localFile
                     with | ex ->
@@ -116,13 +115,13 @@ let createProject (name: string) (componentFolder: string) (localFilePaths: stri
     }
     //Uninstall the template again
     //Not doing this can cause weird conflicts if the template is ever updated
-    |@!> runCommandAsync "." "dotnet" ["new"; "-u"; Path.GetFullPath(Path.Combine(thisPath, "componentTemplate"))]
+    |@!> runCommandAsync "." "dotnet" ["new"; "-u"; Path.GetFullPath(Path.Combine(thisPath, "template"))]
 
-let buildProject (name: string) =
+let buildProject (name: string) (path: string) =
     async {
-        if (Directory.Exists name) then
+        if (Directory.Exists (Path.Combine(path, name))) then
             printfn "Building project %s" name
-            return! runCommandAsync "." "dotnet" ["build"; name]
+            return! runCommandAsync path "dotnet" ["build"; name]
         else
             return false, "", "The project does not exist"
     }
