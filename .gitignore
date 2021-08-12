@@ -363,3 +363,4 @@ FodyWeavers.xsd
 tmp/watch
 .fsdocs/cache
 output/
+/temp
