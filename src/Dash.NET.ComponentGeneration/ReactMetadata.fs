@@ -21,27 +21,48 @@ type ReactPropType =
 
     // used in objectOf/exact/ect
     required: Nullable<bool>
-    description: string }
+    description: string 
+    
+    // flow and ts types
+    ``type``: string
+    raw: string
+    elements: seq<ReactPropType>
+    signature: ReactFlowSignature } 
+
+    static member empty =
+        { name = null
+          value = Nullable()
+          computed = Nullable()
+          required = Nullable()
+          description = null 
+          ``type`` = null
+          raw = null
+          elements = []
+          signature = ReactFlowSignature.empty }
 
     static member fromJsonString (json: string): ReactPropType =
-        let emptyPType =
-            { name = null
-              value = Nullable()
-              computed = Nullable()
-              required = Nullable()
-              description = null }
-
         try
             JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
             |> optional
-            |> Option.defaultValue emptyPType
+            |> Option.defaultValue ReactPropType.empty
         with
-        | _ -> emptyPType
+        | _ -> ReactPropType.empty
+
+and ReactFlowSignature =
+  { properties: seq<ReactFlowProperty> }
+
+    static member empty = 
+      { properties = seq [] }
+
+and ReactFlowProperty = 
+  { key: string
+    value: ReactPropType 
+    required: Nullable<bool> }
 
 type ReactProp = 
   { ``type``: ReactPropType
-    //flowType: ReactFlowType //TODO
-    //tsType: ReactTsType //TODO
+    flowType: ReactPropType
+    tsType: ReactPropType
     required: Nullable<bool>
     description: string
     defaultValue: ReactPropType }
@@ -65,7 +86,7 @@ let toSafeDict (converter: 'a -> 'b) (dict: Dictionary<string, 'a>): Dictionary<
     )
     newDict
 
-let jsonToArray (json: string): string list =
+let jsonToList (json: string): string list =
     try
         JsonSerializer.Deserialize<seq<JsonElement>>(json, jsonOptions)
         |> optional
@@ -80,6 +101,7 @@ type SafeReactPropProps =
       required: bool option
       description: string option }
 
+// TODO: so far only handing the prop types that are also handled in _py_components_generation.py
 type SafeReactPropType =
     | Array of props: SafeReactPropProps * value: string option
     | Bool of props: SafeReactPropProps * value: bool option
@@ -98,6 +120,11 @@ type SafeReactPropType =
     | Shape of props: SafeReactPropProps * value: Dictionary<string, SafeReactPropType> option
     | Exact of props: SafeReactPropProps * value: Dictionary<string, SafeReactPropType> option
 
+    // Flow types
+    | FlowUnion of props: SafeReactPropProps * value: SafeReactPropType list option
+    | FlowArray of props: SafeReactPropProps * value: SafeReactPropType option
+    | FlowObject of props: SafeReactPropProps * value: Dictionary<string, SafeReactPropType> option
+
     // A type we can't process
     | Other of name: string * props: SafeReactPropProps * value: string option
 
@@ -113,12 +140,16 @@ type SafeReactPropType =
         | Node _ -> Some ["obj"] //TODO allow passing in dash components?
 
         // Special cases, each type will have a unique name
-        | Enum _ -> None
-        | Union _ -> None
-        | ArrayOf _ -> None
-        | ObjectOf _ -> None
-        | Shape _ -> None
-        | Exact _ -> None
+        | Enum _
+        | Union _
+        | ArrayOf _
+        | ObjectOf _
+        | Shape _
+        | Exact _
+        | FlowUnion _
+        | FlowArray _
+        | FlowObject _ -> None
+
 
         // A type we can't process
         | Other _ -> Some ["obj"]
@@ -139,10 +170,13 @@ type SafeReactPropType =
         | ObjectOf (props, _)
         | Shape (props, _)
         | Exact (props, _)
+        | FlowUnion (props, _)
+        | FlowArray (props, _)
+        | FlowObject (props, _)
         | Other (_, props, _) ->
             props
 
-    static member fromReactPropType (from: ReactPropType) =
+    static member fromReactPropType (isFlow: bool) (from: ReactPropType) =
         let props =
             { computed = from.computed |> optional
               required = from.required |> optional
@@ -156,11 +190,33 @@ type SafeReactPropType =
                 // this causes annoying issues down the line, so we want to get rid of those quotes here
                 dv.ToString() |> String.removeQuotes)
 
+        let maybeType: string option =
+            from.``type``
+            |> optional
+
+        let maybeElements: ReactPropType list =
+            from.elements
+            |> optional
+            |> Option.map List.ofSeq
+            |> Option.defaultValue []
+            |> List.choose optional
+
+        let maybeSignatureProps: ReactFlowProperty list =
+            from.signature
+            |> optional
+            |> Option.bind (fun s -> 
+                s.properties
+                |> optional
+                |> Option.map List.ofSeq
+                |> Option.map (List.choose optional))
+            |> Option.defaultValue []
+
         match from.name |> optional with
         | Some "array" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Array
-        | Some "bool" -> 
+        | Some "bool" 
+        | Some "boolean" -> 
             ( props,
               maybeStringVal
               |> Option.map (fun dv ->
@@ -176,16 +232,19 @@ type SafeReactPropType =
         | Some "string" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.String
-        | Some "object" -> 
+        | Some "object" 
+        | Some "Object" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Object 
         | Some "any" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Any 
-        | Some "element" -> 
+        | Some "element"
+        | Some "Element" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Element
-        | Some "node" -> 
+        | Some "node" 
+        | Some "Node" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Node
 
@@ -194,34 +253,34 @@ type SafeReactPropType =
             ( props,
               maybeStringVal
               |> Option.map
-                ( jsonToArray 
+                ( jsonToList 
                   >> List.map ReactPropType.fromJsonString
-                  >> List.map SafeReactPropType.fromReactPropType ) )
+                  >> List.map (SafeReactPropType.fromReactPropType isFlow) ) )
             |> SafeReactPropType.Enum
-        | Some "union" ->
+        | Some "union" when not isFlow ->
             ( props,
               maybeStringVal
               |> Option.map
-                ( jsonToArray 
+                ( jsonToList 
                   >> List.map ReactPropType.fromJsonString
-                  >> List.map SafeReactPropType.fromReactPropType ) )
+                  >> List.map (SafeReactPropType.fromReactPropType isFlow) ) )
             |> SafeReactPropType.Union
         | Some "arrayOf" ->
             ( props,
               maybeStringVal
               |> Option.map ReactPropType.fromJsonString
-              |> Option.map SafeReactPropType.fromReactPropType )
+              |> Option.map (SafeReactPropType.fromReactPropType isFlow) )
             |> SafeReactPropType.ArrayOf
         | Some "objectOf" ->
             ( props,
               maybeStringVal
               |> Option.map ReactPropType.fromJsonString
-              |> Option.map SafeReactPropType.fromReactPropType )
+              |> Option.map (SafeReactPropType.fromReactPropType isFlow) )
             |> SafeReactPropType.ObjectOf
         | Some "shape" ->
             ( props,
               maybeStringVal
-              |> Option.map (fun v -> 
+              |> Option.bind (fun v -> 
                 try
                     let jsonDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>> v
                     let newDict = Dictionary<string, SafeReactPropType>()
@@ -232,17 +291,17 @@ type SafeReactPropType =
                         |> optional
                         |> Option.map (fun v -> v.ToString())
                         |> Option.map ReactPropType.fromJsonString
-                        |> Option.map SafeReactPropType.fromReactPropType
+                        |> Option.map (SafeReactPropType.fromReactPropType isFlow)
                         |> Option.iter (fun v -> newDict.Add( k, v )))
-                    newDict
+                    Some newDict
                 with
-                | _ -> Dictionary<string, SafeReactPropType>() //TODO better error logging       
+                | _ -> None //TODO better error logging       
               ) )
             |> SafeReactPropType.Shape
         | Some "exact" -> 
             ( props,
               maybeStringVal
-              |> Option.map (fun v -> 
+              |> Option.bind (fun v -> 
                 try
                     let jsonDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>> v
                     let newDict = Dictionary<string, SafeReactPropType>()
@@ -253,13 +312,58 @@ type SafeReactPropType =
                         |> optional
                         |> Option.map (fun v -> v.ToString())
                         |> Option.map ReactPropType.fromJsonString
-                        |> Option.map SafeReactPropType.fromReactPropType
+                        |> Option.map (SafeReactPropType.fromReactPropType isFlow)
                         |> Option.iter (fun v -> newDict.Add( k, v )))
-                    newDict
+                    Some newDict
                 with
-                | _ -> Dictionary<string, SafeReactPropType>() //TODO better error logging   
+                | _ -> None //TODO better error logging   
               ) )
             |> SafeReactPropType.Exact
+
+        // Flow and ts types
+        | Some "union" when isFlow ->
+            ( props,
+              maybeElements
+              |> List.map (SafeReactPropType.fromReactPropType isFlow)
+              |> (fun l -> if (l.Length) > 0 then Some l else None) )
+            |> SafeReactPropType.FlowUnion
+        | Some "Array" -> 
+            ( props,
+              maybeElements
+              |> List.tryHead
+              |> Option.map (SafeReactPropType.fromReactPropType isFlow) )
+            |> SafeReactPropType.FlowArray
+        | Some "signature" when maybeType = Some "object" -> 
+            ( props,
+              try
+                  let newDict = Dictionary<string, SafeReactPropType>()
+                  maybeSignatureProps
+                  |> List.iter (fun prop -> 
+                      let maybeKey = 
+                          prop.key
+                          |> optional
+
+                      let maybeRequired = 
+                          prop.required
+                          |> optional
+
+                      let maybeProp =
+                          prop.value
+                          |> optional
+                          |> Option.map (fun (ptype: ReactPropType) ->
+                              maybeRequired
+                              |> Option.map (fun req -> { ptype with required = req })
+                              |> Option.defaultValue ptype)
+                          |> Option.map (SafeReactPropType.fromReactPropType isFlow)
+
+                      (maybeKey, maybeProp)
+                      ||> Option.map2 (fun k v -> newDict.Add( k, v ))
+                      |> ignore)
+
+                  Some newDict
+              with
+              | _ -> None ) //TODO better error logging
+            |> SafeReactPropType.FlowObject
 
         // We dont know how to proccess this type
         | Some name ->
@@ -278,10 +382,27 @@ type SafeReactProp =
     defaultValue: SafeReactPropType option }
 
     static member fromReactProp (prop: ReactProp): SafeReactProp =
-        { propType = prop.``type`` |> optional |> Option.map (SafeReactPropType.fromReactPropType)
+        let propType =
+            prop.``type`` 
+            |> optional 
+            |> Option.map (SafeReactPropType.fromReactPropType false)
+
+            // If there is no prop type defined, check for a flow type
+            |> Option.bindNone
+              ( prop.flowType
+                |> optional 
+                |> Option.map (SafeReactPropType.fromReactPropType true) )
+
+            // If there is no flow type defined, check for a ts type
+            |> Option.bindNone
+              ( prop.tsType
+                |> optional 
+                |> Option.map (SafeReactPropType.fromReactPropType true) )
+
+        { propType = propType
           required = prop.required |> optional
           description = prop.description  |> optional
-          defaultValue = prop.defaultValue |> optional |> Option.map (SafeReactPropType.fromReactPropType)}
+          defaultValue = prop.defaultValue |> optional |> Option.map (SafeReactPropType.fromReactPropType false)}
 
 type SafeReactComponent =
   { description: string option

@@ -25,7 +25,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Array (p, v) -> 
                         Expect.equal 
@@ -48,7 +48,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Bool (p, v) -> 
                         Expect.equal 
@@ -71,7 +71,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Number (p, v) -> 
                         Expect.equal 
@@ -94,7 +94,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | String (p, v) -> 
                         Expect.equal 
@@ -117,7 +117,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Object (p, v) -> 
                         Expect.equal 
@@ -140,7 +140,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Any (p, v) -> 
                         Expect.equal 
@@ -163,7 +163,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Element (p, v) -> 
                         Expect.equal 
@@ -186,7 +186,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Node (p, v) -> 
                         Expect.equal 
@@ -224,7 +224,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Enum (p, v) -> 
                         Expect.equal 
@@ -260,7 +260,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Union (p, v) -> 
                         Expect.equal 
@@ -288,7 +288,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | ArrayOf (p, v) -> 
                         Expect.equal 
@@ -314,7 +314,7 @@ let tests =
                     """
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | ObjectOf (p, v) -> 
                         Expect.equal 
@@ -360,7 +360,7 @@ let tests =
                     |> Dictionary
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Shape (p, v) -> 
                         Expect.equal p { computed = Some false; required = Some true; description = Some "test" } "Json does not correctly deserialize all properties"
@@ -400,9 +400,121 @@ let tests =
                     |> Dictionary
 
                 JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
-                |> SafeReactPropType.fromReactPropType
+                |> SafeReactPropType.fromReactPropType false
                 |> function 
                     | Exact (p, v) -> 
+                        Expect.equal p { computed = Some false; required = Some true; description = Some "test" } "Json does not correctly deserialize all properties"
+                        Expect.equal (v |> Option.map List.ofSeq) (dict |> List.ofSeq |> Some) "Json does not correctly deserialize all properties"  
+                    | _ ->
+                        Expect.isTrue false "Json does not deserialize to the correct type"
+
+            testCase "Parse Flow Union Prop Type" <| fun _ ->
+                let json =
+                    """
+                    {
+                        "name": "union",
+                        "raw": "bool | string | number",
+                        "elements": [
+                            { "name": "bool" },
+                            { "name": "string" },
+                            { "name": "number" }
+                        ],
+                        "description": "test",
+                        "required": true,
+                        "computed": false
+                    }
+                    """
+
+                JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
+                |> SafeReactPropType.fromReactPropType true
+                |> function 
+                    | FlowUnion (p, v) -> 
+                        Expect.equal 
+                            (p, v) 
+                            ({ computed = Some false; required = Some true; description = Some "test" }, 
+                             [ SafeReactPropType.Bool ({ computed = None; required = None; description = None }, None)
+                               SafeReactPropType.String ({ computed = None; required = None; description = None }, None)
+                               SafeReactPropType.Number ({ computed = None; required = None; description = None }, None) ] |> Some ) 
+                            "Json does not correctly deserialize all properties"
+                    | _ ->
+                        Expect.isTrue false "Json does not deserialize to the correct type"
+
+            testCase "Parse Flow Array Prop Type" <| fun _ ->
+                let json =
+                    """
+                    {
+                        "name": "Array",
+                        "elements": [{ "name": "bool" }],
+                        "raw": "Array<bool>",
+                        "description": "test",
+                        "required": true,
+                        "computed": false
+                    }
+                    """
+
+                JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
+                |> SafeReactPropType.fromReactPropType true
+                |> function 
+                    | FlowArray (p, v) -> 
+                        Expect.equal 
+                            (p, v) 
+                            ({ computed = Some false; required = Some true; description = Some "test" }, 
+                             SafeReactPropType.Bool ({ computed = None; required = None; description = None }, None) |> Some ) 
+                            "Json does not correctly deserialize all properties"
+                    | _ ->
+                        Expect.isTrue false "Json does not deserialize to the correct type"
+
+            testCase "Parse Flow Object Signature Prop Type" <| fun _ ->
+                let json =
+                    """
+                    {
+                        "name": "signature",
+                        "type": "object",
+                        "raw": "{ p1: bool, p2: string, p2: number }",
+                        "signature": {
+                            "properties": [
+                                {
+                                    "key": "p1",
+                                    "value": {
+                                        "name": "boolean",
+                                        "nullable": true,
+                                        "required": false
+                                    }
+                                },
+                                {
+                                    "key": "p2",
+                                    "value": {
+                                        "name": "string",
+                                        "nullable": true,
+                                        "required": false
+                                    }
+                                },
+                                {
+                                    "key": "p3",
+                                    "value": {
+                                        "name": "number",
+                                        "nullable": true,
+                                        "required": false
+                                    }
+                                }
+                            ]
+                        },
+                        "description": "test",
+                        "required": true,
+                        "computed": false
+                    }
+                    """
+
+                let dict =
+                    [ KeyValuePair("p1", SafeReactPropType.Bool ({ computed = None; required = Some false; description = None }, None))
+                      KeyValuePair("p2", SafeReactPropType.String ({ computed = None; required = Some false; description = None }, None))
+                      KeyValuePair("p3", SafeReactPropType.Number ({ computed = None; required = Some false; description = None }, None)) ]
+                    |> Dictionary
+
+                JsonSerializer.Deserialize<ReactPropType>(json, jsonOptions)
+                |> SafeReactPropType.fromReactPropType true
+                |> function 
+                    | FlowObject (p, v) -> 
                         Expect.equal p { computed = Some false; required = Some true; description = Some "test" } "Json does not correctly deserialize all properties"
                         Expect.equal (v |> Option.map List.ofSeq) (dict |> List.ofSeq |> Some) "Json does not correctly deserialize all properties"  
                     | _ ->
@@ -416,6 +528,60 @@ let tests =
                     """
                     {
                         "type": {
+                            "name": "bool"
+                        },
+                        "required": false,
+                        "description": "test",
+                        "defaultValue": {
+                            "value": "false",
+                            "computed": false
+                        }
+
+                    }
+                    """
+
+                let expectedProp =
+                    { propType = Bool ({ computed = None; required = None; description = None }, None) |> Some
+                      required = Some false
+                      description = Some "test"
+                      defaultValue = Any ({ computed = Some false; required = None; description = None }, Some "false") |> Some }
+
+                JsonSerializer.Deserialize<ReactProp>(json, jsonOptions)
+                |> SafeReactProp.fromReactProp
+                |> (fun prop -> Expect.equal prop expectedProp "Json does not correctly deserialize all properties")
+
+            testCase "Parse React Flow Prop" <| fun _ ->
+                let json =
+                    """
+                    {
+                        "flowType": {
+                            "name": "bool"
+                        },
+                        "required": false,
+                        "description": "test",
+                        "defaultValue": {
+                            "value": "false",
+                            "computed": false
+                        }
+
+                    }
+                    """
+
+                let expectedProp =
+                    { propType = Bool ({ computed = None; required = None; description = None }, None) |> Some
+                      required = Some false
+                      description = Some "test"
+                      defaultValue = Any ({ computed = Some false; required = None; description = None }, Some "false") |> Some }
+
+                JsonSerializer.Deserialize<ReactProp>(json, jsonOptions)
+                |> SafeReactProp.fromReactProp
+                |> (fun prop -> Expect.equal prop expectedProp "Json does not correctly deserialize all properties")
+
+            testCase "Parse React Typescript Prop" <| fun _ ->
+                let json =
+                    """
+                    {
+                        "tsType": {
                             "name": "bool"
                         },
                         "required": false,

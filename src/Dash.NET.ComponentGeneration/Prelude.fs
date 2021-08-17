@@ -25,6 +25,12 @@ let (|@>) (c1: Async<bool*string*string>) (c2: Async<bool*string*string>) =
 
 let validDULabel = Regex "^[ABCDEFGHIJKLMNOPQRSTUVWXYZ].*"
 
+module Option =
+    let bindNone (ifNone: 'a option) (op: 'a option) =
+        match op with
+        | Some _ -> op
+        | None -> ifNone
+
 module String =
     let replace (old: string) (_new: string) (s: string) = s.Replace(old,_new)
     let split (on: string) (s: string) = s.Split(on) |> List.ofArray

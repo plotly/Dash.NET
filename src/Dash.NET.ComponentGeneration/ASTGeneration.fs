@@ -85,7 +85,8 @@ let createComponentAST (parameters: ComponentParameters) =
                 else
                     None
 
-            | SafeReactPropType.Union (_, Some utypes) -> 
+            | SafeReactPropType.Union (_, Some utypes) 
+            | SafeReactPropType.FlowUnion (_, Some utypes) -> 
                 let recursiveTypes = 
                     utypes
                     |> List.indexed
@@ -152,7 +153,8 @@ let createComponentAST (parameters: ComponentParameters) =
                 else
                     None
 
-            | SafeReactPropType.ArrayOf (_, Some utype) -> 
+            | SafeReactPropType.ArrayOf (_, Some utype) 
+            | SafeReactPropType.FlowArray (_, Some utype) -> 
                 let recursiveTypes = 
                     generatePropTypes (sprintf "%sType" propTypeName) utype
                     |> Option.defaultValue []
@@ -259,7 +261,8 @@ let createComponentAST (parameters: ComponentParameters) =
                 |> Some
 
             | SafeReactPropType.Shape (props, Some values) 
-            | SafeReactPropType.Exact (props, Some values) -> 
+            | SafeReactPropType.Exact (props, Some values) 
+            | SafeReactPropType.FlowObject (props, Some values) -> 
                 let fields =
                     (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
                     ||> List.zip 
@@ -401,7 +404,10 @@ let createComponentAST (parameters: ComponentParameters) =
                                 | Some (ArrayOf _)
                                 | Some (ObjectOf _)
                                 | Some (Shape _)
-                                | Some (Exact _) -> 
+                                | Some (Exact _)
+                                | Some (FlowUnion _)
+                                | Some (FlowArray _)
+                                | Some (FlowObject _) -> 
                                     SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["p"; "ToString"])
                                     |> SynExpr.CreateParen
 
