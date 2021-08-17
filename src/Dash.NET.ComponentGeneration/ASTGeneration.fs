@@ -183,7 +183,7 @@ let createComponentAST (parameters: ComponentParameters) =
                             application
                                 [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
                                   SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["i"; "ToString"])
-                                  |> simpleLambdaStatement [("i", appType caseInnerType)]
+                                  |> typedLambdaStatement false [("i", appType caseInnerType)]
                                   |> SynExpr.CreateParen
                                   SynExpr.CreateIdentString "v"]
                             |> SynExpr.CreateParen
@@ -352,7 +352,7 @@ let createComponentAST (parameters: ComponentParameters) =
     let componentPropertyDUDeclaration =
 
         // | AProp of string
-        // | BProp of number
+        // | BProp of int
         // | CProp of CProp
         //
         /// Define the cases for the descriminated union
@@ -432,6 +432,68 @@ let createComponentAST (parameters: ComponentParameters) =
             componentPropertyDUCases
             [ componentPropertyToDynamicMemberDefDeclaration ] 
 
+    /// Define the component property descriminated union
+    let componentAttributeDUDeclaration =
+        // | Prop of SampleDashComponentProps
+        // | Children of DashComponent list
+        //
+        /// Define the cases for the descriminated union
+        let componentAttributeDUCases =
+            [ simpleUnionCase "Prop" [anonSimpleField parameters.ComponentPropsName]
+              simpleUnionCase "Children" [anonAppField ["list"; "DashComponent"]] ]
+            |> unionDefinition
+
+        //  static member AProp(p: string) = Prop(AProp p)
+        //  static member BProp(p: int) = Prop(BProp p)
+        //  static member CProp(p: CProp) = Prop(CProp p)
+        //
+        /// Create Feliz style attribute constructors for properties
+        let componentPropertyConstructorDeclarations =
+            (parameters.DUSafePropertyNames, parameters.PropertyNames, parameters.PropertyTypes)
+            |||> List.zip3
+            |> List.choose (fun (psafe, pname, prop) ->
+                prop.propType
+                |> Option.map (fun ptype ->
+                    let propTypeName =
+                        SafeReactPropType.tryGetFSharpTypeName ptype
+                        |> Option.defaultValue ([pname |> String.capitalize])
+                    functionPattern pname [("p", appType propTypeName)]
+                    |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen])
+                    |> SynMemberDefn.CreateStaticMember))
+
+        //  static member children(value: int) = Children([ Html.Html.text value ])
+        //  static member children(value: string) = Children([ Html.Html.text value ])
+        //  static member children(value: float) = Children([ Html.Html.text value ])
+        //  static member children(value: System.Guid) = Children([ Html.Html.text value ])
+        //  static member children(value: DashComponent) = Children([ value ])
+        //  static member children(value: list<DashComponent>) = Children(value)
+        //  static member children(value: seq<DashComponent>) = Children(List.ofSeq value)
+        //
+        /// Create Feliz style attribute constructors for children
+        let componentChildrenConstructorDeclarations =
+            let createCon ty app =
+                functionPattern "children" [("value", ty)]
+                |> binding (application [SynExpr.CreateIdentString "Children"; app |> SynExpr.CreateParen])
+                |> SynMemberDefn.CreateStaticMember
+            [ createCon (appType ["int"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ]) 
+              createCon (appType ["string"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
+              createCon (appType ["float"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
+              createCon (SynType.CreateLongIdent (LongIdentWithDots.Create ["System"; "Guid"]) ) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
+              createCon (appType ["DashComponent"]) (expressionList [ SynExpr.CreateIdentString "value" ])
+              createCon (appType ["list"; "DashComponent"]) (SynExpr.CreateIdentString "value")
+              createCon (appType ["seq"; "DashComponent"]) (application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "ofSeq"]); SynExpr.CreateIdentString "value" ]) ]
+
+        // type SampleDashComponentAttr =
+        //
+        // Create the type definition
+        parameters.ComponentAttrsName
+        |> componentInfo
+        //|> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation |> toXMLDoc) //TODO
+        |> simpleTypeDeclaration 
+            componentAttributeDUCases
+            [ yield! componentPropertyConstructorDeclarations
+              yield! componentChildrenConstructorDeclarations ] 
+
     /// Define the component class
     let componentTypeDeclaration =
         
@@ -477,7 +539,7 @@ let createComponentAST (parameters: ComponentParameters) =
                       yield SynExpr.CreateIdentString "t" |> Expression ]
 
                 // fun (t: TestComponent) ->
-                |> simpleLambdaStatement [("t", SynType.Create parameters.ComponentName)]
+                |> typedLambdaStatement false [("t", SynType.Create parameters.ComponentName)]
                 |> SynExpr.CreateParen )
             
             |> SynMemberDefn.CreateStaticMember
@@ -550,7 +612,30 @@ let createComponentAST (parameters: ComponentParameters) =
         /// Define the inner expression
         let componentDeclaration =
             expressionSequence
-              [ //  let t = TestComponent.init (id, children)
+              [ //  let props, children =
+                //      List.fold
+                //          (fun (props, children) (a: SampleDashComponentAttr) ->
+                //                  match a with
+                //                  | Prop prop -> (prop :: props, children)
+                //                  | Children child -> (props, child @ children))
+                //          ([], [])
+                //          attrs
+                patternNamedTuple ["props"; "children"] |> binding 
+                  ( application
+                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "fold"])
+                        
+                        SynExpr.CreateIdentString "a"
+                        |> matchStatement
+                            [ simpleMatchClause "Prop" ["prop"] None ( SynExpr.CreateTuple [ application [ SynExpr.CreateIdentString "prop"; SynExpr.CreateIdentString "::"; SynExpr.CreateIdentString "props" ]; SynExpr.CreateIdentString "children" ] )
+                              simpleMatchClause "Children" ["child"] None ( SynExpr.CreateTuple [ SynExpr.CreateIdentString "props"; application [ SynExpr.CreateIdentString "child"; SynExpr.CreateIdentString "@"; SynExpr.CreateIdentString "children" ] ] ) ]
+                        |> typedLambdaStatement true [ ("a", SynType.Create parameters.ComponentAttrsName) ]
+                        |> simpleLambdaStatement false [ "props"; "children" ]
+                        |> SynExpr.CreateParen
+
+                        SynExpr.CreateTuple [expressionList []; expressionList []] |> SynExpr.CreateParen
+                        SynExpr.CreateIdentString "attrs" ] ) |> Let 
+              
+                //  let t = TestComponent.init (id, children)
                 patternNamed "t" |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]); SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"]]) |> Let
                 
                 //  let componentProps =
@@ -574,7 +659,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     expressionSequence
                       [ patternNamedTuple ["fieldName"; "boxedProp"] |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentPropsName; "toDynamicMemberDef"]); SynExpr.CreateIdentString "prop"]) |> Let
                         application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "componentProps"; SynExpr.CreateIdentString "fieldName"; SynExpr.CreateIdentString "boxedProp" ] |> Expression ]
-                    |> simpleLambdaStatement [("prop", SynType.Create parameters.ComponentPropsName)]
+                    |> typedLambdaStatement false [("prop", SynType.Create parameters.ComponentPropsName)]
                     |> SynExpr.CreateParen
                     SynExpr.CreateIdentString "props" ] |> Expression
                 
@@ -590,8 +675,7 @@ let createComponentAST (parameters: ComponentParameters) =
         // Create the binding
         functionPattern parameters.CamelCaseComponentName
             [ ("id", SynType.Create "string")
-              ("props", SynType.CreateApp(SynType.Create "seq", [SynType.Create parameters.ComponentPropsName]))
-              ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"])) ]
+              ("attrs", SynType.CreateApp(SynType.Create "list", [SynType.Create parameters.ComponentAttrsName])) ]
         |> binding componentDeclaration
         |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> toXMLDoc)
         |> letDeclaration
@@ -608,7 +692,8 @@ let createComponentAST (parameters: ComponentParameters) =
         |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
         |> nestedModule
             [ yield! componentPropertyTypeDeclarations
-              yield componentPropertyDUDeclaration 
+              yield componentPropertyDUDeclaration
+              yield componentAttributeDUDeclaration
               yield componentTypeDeclaration
               yield componentLetDeclaration ]
 

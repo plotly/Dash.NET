@@ -128,14 +128,23 @@ let matchStatement (clauses: SynMatchClause list) (matchOn: SynExpr)  =
 let anonRecord (fields: (Ident*SynExpr) list) =
     SynExpr.AnonRecd (false, None, fields, range.Zero)
 
-let simpleLambdaStatement (args: (string*SynType) list) (expr: SynExpr) =
+let simpleLambdaStatement (isSeq: bool) (args: string list) (expr: SynExpr) =
+    let argumentDecarations = 
+        let simplePats =
+            args
+            |> List.map (fun pname -> 
+                SynSimplePat.Id (Ident.Create pname, None, false, false, false, range.Zero))
+        SynSimplePats.SimplePats (simplePats, range.Zero)
+    SynExpr.Lambda (false, isSeq, argumentDecarations, expr, None, range.Zero)   
+
+let typedLambdaStatement (isSeq: bool) (args: (string*SynType) list) (expr: SynExpr) =
     let argumentDecarations = 
         let simplePats =
             args
             |> List.map (fun (pname, ptype) -> 
                 SynSimplePat.CreateTyped (Ident.Create pname, ptype))
         SynSimplePats.SimplePats (simplePats, range.Zero)
-    SynExpr.Lambda (false, false, argumentDecarations, expr, None, range.Zero)
+    SynExpr.Lambda (false, isSeq, argumentDecarations, expr, None, range.Zero)   
 
 let expressionUpcast (etype: SynType) (expr: SynExpr) =
     SynExpr.Upcast(expr, etype, range.Zero)

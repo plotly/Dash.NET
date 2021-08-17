@@ -9,6 +9,7 @@ type ComponentParameters =
     {
         ComponentName:                  string
         ComponentPropsName:             string
+        ComponentAttrsName:             string
         CamelCaseComponentName:         string
         ComponentNamespace:             string
         ComponentType:                  string
@@ -32,7 +33,8 @@ type ComponentParameters =
 
         {
             ComponentName                   = componentName
-            ComponentPropsName              = sprintf "%sProps" componentName
+            ComponentPropsName              = "Prop"//sprintf "%sProp" componentName
+            ComponentAttrsName              = "Attr"//sprintf "%sAttr" componentName
             CamelCaseComponentName          = componentName |> String.decapitalize
             ComponentNamespace              = componentNamespace
             ComponentType                   = componentName

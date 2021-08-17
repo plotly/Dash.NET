@@ -5,6 +5,8 @@ open System.IO
 open System.Text.Json
 open Argu
 open System
+open FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler.Text
 
 // Hardcoded defaults
 let defaultDashVersion = "0.1.0-alpha9"
@@ -172,3 +174,29 @@ let main argv =
     | _, _, _, Error error -> 
         printfn "Error: %s" error
         1
+
+    
+
+    //let checker = FSharpChecker.Create()
+
+    //let sourcetext =
+    //    """
+    //    fun (testa, testb) testc -> true
+    //    """
+    //    |> SourceText.ofString
+
+    //let projOptions, errors =
+    //    checker.GetProjectOptionsFromScript("test.fs", sourcetext)
+    //    |> Async.RunSynchronously
+
+    //let parsingOptions, _errors = checker.GetParsingOptionsFromProjectOptions(projOptions)
+
+    //// Run the first phase (untyped parsing) of the compiler
+    //let parseFileResults =
+    //    checker.ParseFile("test.fs", sourcetext, parsingOptions)
+    //    |> Async.RunSynchronously
+
+    //parseFileResults.ParseTree
+    //|> printfn "%A"
+
+    //0
