@@ -4,11 +4,18 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<WarnOn>3390;$(WarnOn)</WarnOn>
+
+		<PackageId>TemplateDashComponent</PackageId>
+		<Version>ComponentVersionPlaceholder</Version>
+		
+		<Description>OptionalDescriptionPlaceholder</Description>
+		<Authors>OptionalAuthorsPlaceholder</Authors>
+		<Company>OptionalCompanyPlaceholder</Company>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Include="*.fs" />
-		<None Include="WebRoot/TemplateDashComponent/*" >
+		<None Include="WebRoot/components/TemplateDashComponent/*" >
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

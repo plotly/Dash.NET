@@ -11,10 +11,33 @@
     "type": "project"
   },
   "symbols": {
+    "componentVersion": {
+      "type": "parameter",
+      "replaces": "ComponentVersionPlaceholder",
+      "isRequired": true
+    },
     "dashVersion": {
       "type": "parameter",
       "replaces": "DashVersionPlaceholder",
       "isRequired": true
+    },
+    "description": {
+      "type": "parameter",
+      "replaces": "OptionalDescriptionPlaceholder",
+      "isRequired": false,
+      "defaultValue": ""
+    },
+    "authors": {
+      "type": "parameter",
+      "replaces": "OptionalAuthorsPlaceholder",
+      "isRequired": false,
+      "defaultValue": ""
+    },
+    "company": {
+      "type": "parameter",
+      "replaces": "OptionalCompanyPlaceholder",
+      "isRequired": false,
+      "defaultValue": ""
     }
   }
 }

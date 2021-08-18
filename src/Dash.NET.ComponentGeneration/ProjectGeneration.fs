@@ -56,7 +56,16 @@ let runCommandAsync (workingDir: string) (fileName: string) (args: string list) 
 
 let runFunctionAsync (func: unit -> bool*string*string) = async { return func() }
 
-let createProject (name: string) (outputFolder: string) (componentFolder: string) (localFilePaths: string list) (dashVersion: string) =
+let createProject 
+    (name: string) 
+    (outputFolder: string) 
+    (componentFolder: string) 
+    (localFilePaths: string list) 
+    (componentVersion: string) 
+    (dashVersion: string) 
+    (description: string) 
+    (authors: string list) =
+
     //TODO this template may be better moved to nuget instead of being included with the tool?
     //Install template
     runCommandAsync "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "template")]
@@ -67,7 +76,7 @@ let createProject (name: string) (outputFolder: string) (componentFolder: string
         //TODO: nuget CLI to allow for publishing and to add Dash.NET
 
         let outputPath = Path.Combine (outputFolder, name)
-        let localFilesDirPath = Path.Combine (outputPath,"WebRoot",name)
+        let localFilesDirPath = Path.Combine (outputPath,"WebRoot","components",name)
 
         printfn "Creating project %s" name
         return!
@@ -81,11 +90,18 @@ let createProject (name: string) (outputFolder: string) (componentFolder: string
 
             //Create project
             |@> runCommandAsync outputPath "dotnet" 
-                [ "new"; "dashcomponent"
-                  "--force" 
-                  "-lang"; "F#"
-                  "-n"; name
-                  "--dashVersion"; dashVersion ]
+                [ yield! [ "new"; "dashcomponent" ] 
+                  yield! [ "--force" ]
+                  yield! [ "-lang"; "F#" ]
+                  yield! [ "-n"; name |> sprintf "\"%s\"" ]
+                  yield! [ "--componentVersion"; componentVersion |> sprintf "\"%s\"" ]
+                  yield! [ "--dashVersion"; dashVersion |> sprintf "\"%s\"" ]
+                  yield! [ "--description"; description |> sprintf "\"%s\""] 
+                  yield!
+                      match authors with
+                      | [] -> []
+                      | [auth] -> [ "--authors"; auth |> sprintf "\"%s\"" ]
+                      | auths -> [ "--authors"; auths |> List.reduce (sprintf "%s;%s") |> sprintf "\"%s\"" ] ]
 
             //Create project folder
             |@> runFunctionAsync (fun () ->
@@ -121,10 +137,31 @@ let buildProject (name: string) (path: string) =
     async {
         if (Directory.Exists (Path.Combine(path, name))) then
             printfn "Building project %s" name
-            return! runCommandAsync path "dotnet" ["build"; name]
+            return! 
+                runCommandAsync path "dotnet" ["build"; name]
         else
             return false, "", "The project does not exist"
     }
 
-//let publishProject
+let packageProject (name: string) (path: string) =
+    async {
+        if (Directory.Exists (Path.Combine(path, name))) then
+            printfn "Packaging project %s" name
+            return! 
+                runCommandAsync path "dotnet" ["pack"; name; "--configuration"; "Release"]
+        else
+            return false, "", "The project does not exist"
+    }
 
+let publishProject (name: string) (path: string) (version: string) (apiKey: string) =
+    async {
+        if (Directory.Exists (Path.Combine(path, name))) then
+            printfn "Publishing project %s" name
+            return! 
+                runCommandAsync path "dotnet" 
+                    [ "nuget"; "push"; Path.Combine(name, "bin", "Release", sprintf "%s.%s.nupkg" name version)
+                      "--api-key"; apiKey
+                      "--source"; "https://api.nuget.org/v3/index.json" ]
+        else
+            return false, "", "The project does not exist"
+    }
