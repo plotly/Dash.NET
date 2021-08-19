@@ -691,17 +691,20 @@ let tests =
                       KeyValuePair("p2", expectedProp) ]
                     |> Dictionary
 
-                jsonDeserialize json
-                |> List.ofSeq
-                |> List.tryHead
-                |> function
-                    | Some kvpair -> 
-                        let file, comp = kvpair.Key, kvpair.Value
-                        Expect.equal file "Test.react.js" "Json does not correctly deserialize all properties"
-                        Expect.equal comp.description (Some "test") "Json does not correctly deserialize all properties"
-                        Expect.equal comp.displayName (Some "test") "Json does not correctly deserialize all properties"
-                        Expect.equal (comp.props |> List.ofSeq) (expectedProps |> List.ofSeq) "Json does not correctly deserialize all properties"
-                    | None -> Expect.isTrue false "Json does not correctly deserialize all properties"
+                match jsonDeserialize json with
+                | Ok dict ->
+                    dict
+                    |> List.ofSeq
+                    |> List.tryHead
+                    |> function
+                        | Some kvpair -> 
+                            let file, comp = kvpair.Key, kvpair.Value
+                            Expect.equal file "Test.react.js" "Json does not correctly deserialize all properties"
+                            Expect.equal comp.description (Some "test") "Json does not correctly deserialize all properties"
+                            Expect.equal comp.displayName (Some "test") "Json does not correctly deserialize all properties"
+                            Expect.equal (comp.props |> List.ofSeq) (expectedProps |> List.ofSeq) "Json does not correctly deserialize all properties"
+                        | None -> Expect.isTrue false "Json does not correctly deserialize all properties"
+                | Error e -> Expect.isTrue false (sprintf "Json fails to deserialize: %s" (e.ToString()))
         ]
 
     ]

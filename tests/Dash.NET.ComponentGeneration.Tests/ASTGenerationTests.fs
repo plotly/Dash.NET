@@ -5,6 +5,7 @@ open System
 open System.Collections.Generic
 open FSharp.Compiler.SourceCodeServices
 open FSharp.Compiler.Text
+open Serilog
 
 open Dash.NET.ComponentGeneration.Prelude
 open Dash.NET.ComponentGeneration.ReactMetadata
@@ -16,6 +17,8 @@ let checker = FSharpChecker.Create()
 // Perform pre-compilation (parsing and type checking) on the generated code to check if it is valid
 let propertyCodeGenerationTest (prop: SafeReactProp) =
     async {
+        let log = (new LoggerConfiguration()).CreateLogger()
+
         // making it an fsx makes referencing outside DLLs much easier
         let file = "test.fsx"
 
@@ -29,10 +32,10 @@ let propertyCodeGenerationTest (prop: SafeReactProp) =
               props = props }
 
         let! sourceText =
-            ComponentParameters.fromReactMetadata "test" ["test.js"] ([KeyValuePair("test.js", comp)] |> Dictionary)
+            ComponentParameters.fromReactMetadata log "test" ["test.js"] ([KeyValuePair("test.js", comp)] |> Dictionary)
             |> List.head
-            |> createComponentAST
-            |> generateCodeStringFromAST file
+            |> createComponentAST log
+            |> generateCodeStringFromAST log file
 
         let sourceInput =
             // these are reffering to the DLLs in the build output of this tests fsproj

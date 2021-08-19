@@ -4,23 +4,22 @@ open System
 open System.IO
 open System.Text.RegularExpressions
 
-//Bind two Async<bool*string*string>'s
-let (|@!>) (c1: Async<bool*string*string>) (c2: Async<bool*string*string>) =
+//Bind two Async<bool>'s
+let (|@!>) (c1: Async<bool>) (c2: Async<bool>) =
     async {
-        let! success, o, e = c1
-        let! newSuccess, u, r = c2
-        return newSuccess && success, sprintf "%s\n%s" o u, sprintf "%s\n%s" e r
+        let! success = c1
+        let! newSuccess = c2
+        return newSuccess && success
     }
 
-//Bind two Async<bool*string*string>'s, but only if the first one succeeded
-let (|@>) (c1: Async<bool*string*string>) (c2: Async<bool*string*string>) =
+//Bind two Async<bool>'s, but only if the first one succeeded
+let (|@>) (c1: Async<bool>) (c2: Async<bool>) =
     async {
-        let! success, o, e = c1
+        let! success = c1
         if success then
-            let! newSuccess, u, r = c2
-            return newSuccess, sprintf "%s\n%s" o u, sprintf "%s\n%s" e r
+            return! c2
         else
-            return success, o, e
+            return success
     }
 
 let validDULabel = Regex "^[ABCDEFGHIJKLMNOPQRSTUVWXYZ].*"

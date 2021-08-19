@@ -2,11 +2,9 @@
 open ComponentParameters
 open Prelude
 open System.IO
-open System.Text.Json
 open Argu
 open System
-open FSharp.Compiler.SourceCodeServices
-open FSharp.Compiler.Text
+open Serilog
 
 // Hardcoded defaults
 let defaultVersion = "1.0.0"
@@ -28,6 +26,7 @@ type CmdArgs =
     | [<AltCommandLine("-i")>] Ignore of regex:string
     | [<AltCommandLine("-ddi"); Unique>] DisableDefaultIgnore
     | [<AltCommandLine("-p"); Unique>] PublishToNuget of apiKey:string
+    | [<Unique>] Verbose
 with
     interface IArgParserTemplate with
         member this.Usage =
@@ -45,8 +44,10 @@ with
             | Ignore _ -> "Ignore folders and file paths that match this regex, by default this includes \"__pycache__\" and \".*\.py\", there can be more than one of these, defaults to none"
             | DisableDefaultIgnore -> "Don't ignore \"__pycache__\" and \".*\.py\" by default"
             | PublishToNuget _ -> "Publish this package straight to nuget with this API key, defaults to not publishing. Can be published later using \"dotnet nuget push <path-to-component>/bin/Release/<component-name>.<component-version>.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json\""
+            | Verbose -> "Print all logs"
 
 let performGeneration 
+    (log: Core.Logger)
     (componentProjectName: string) 
     (componentShortName: string) 
     (outputFolder: string) 
@@ -65,43 +66,60 @@ let performGeneration
             |> List.map (fun js -> Path.GetRelativePath(componentFolder, js))
             |> List.map (fun js -> Path.Combine("components", componentProjectName, js))
 
-        let parametersList = 
+        log.Debug("Javascript files pulled from local files: {LocalJavascriptFiles}", localJavascript)
+
+        let maybeComponentMetadata =
             metaFile
             |> File.ReadAllText
             |> ReactMetadata.jsonDeserialize
-            |> ComponentParameters.fromReactMetadata componentShortName localJavascript
 
-        let projectCreate =
-            ProjectGeneration.createProject 
-                componentProjectName
-                outputFolder
-                componentFolder
-                localFiles
-                componentVersion
-                dashVersion
-                description
-                authors
+        match maybeComponentMetadata with
+        | Ok componentMetadata ->
+            let parametersList = ComponentParameters.fromReactMetadata log componentShortName localJavascript componentMetadata
 
-        let projectFolder = Path.Combine(outputFolder, componentProjectName)
+            let projectCreate =
+                ProjectGeneration.createProject 
+                    log
+                    componentProjectName
+                    outputFolder
+                    componentFolder
+                    localFiles
+                    componentVersion
+                    dashVersion
+                    description
+                    authors
 
-        let projectResult =
-            parametersList
-            |> List.fold (fun state parameters -> 
-                state
-                |@> (parameters
-                        |> ASTGeneration.createComponentAST 
-                        |> ASTGeneration.generateCodeFromAST (Path.Combine(projectFolder, parameters.ComponentFSharp)) ))
-                projectCreate
-            |@> ProjectGeneration.buildProject componentProjectName outputFolder
-            |@> ProjectGeneration.packageProject componentProjectName outputFolder
+            let projectFolder = Path.Combine(outputFolder, componentProjectName)
 
-        return!
+            log.Debug("Dotnet project folder set to {ComponentProjectFolder}", projectFolder)
+
+            let projectResult =
+                parametersList
+                |> List.fold (fun state parameters -> 
+                    state
+                    |@> (parameters
+                            |> ASTGeneration.createComponentAST log
+                            |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, parameters.ComponentFSharp)) ))
+                    projectCreate
+                |@> ProjectGeneration.buildProject log componentProjectName outputFolder
+                |@> ProjectGeneration.packageProject log componentProjectName outputFolder
+
+            
             match maybePublishingKey with
             | Some apiKey -> 
-                projectResult
-                |@> ProjectGeneration.publishProject componentProjectName outputFolder componentVersion apiKey
+                log.Debug("Nuget publishing key found")
+                return!
+                    projectResult
+                    |@> ProjectGeneration.publishProject log componentProjectName outputFolder componentVersion apiKey
             | None -> 
-                projectResult
+                log.Debug("Nuget publishing key not found")
+                let! ret = projectResult
+                log.Information("Skipping publishing")
+                return ret
+
+        | Error err ->
+            log.Error(err, "Exception while deserializing metadata json")
+            return false
     }
 
 [<EntryPoint>]
@@ -113,6 +131,17 @@ let main argv =
         parser
             .ParseCommandLine(argv)
             .GetAllResults()
+
+    let isVerbose = args |> List.contains Verbose
+    let log = 
+        new LoggerConfiguration()
+        |> (fun l -> 
+            match isVerbose with 
+            | true -> l.MinimumLevel.Debug()
+            | false -> l.MinimumLevel.Information())
+        |> (fun l -> l.WriteTo.Console().CreateLogger())
+
+    log.Debug("Verbose logging enabled")
 
     // Mandatory, no defaulted
     let maybeName = 
@@ -172,6 +201,15 @@ let main argv =
 
     match maybeName, maybeShortName, maybeFolder, maybeOutputFolder, maybeDescription, maybeAuthors with
     | Ok name, Ok shortName, Ok folder, Ok outputFolder, Ok description, Ok authors ->
+
+        log.Debug("Component name set to {ComponentName}", name)
+        log.Debug("Component short name set to {ComponentShortName}", shortName)
+        log.Debug("Component version set to {ComponentVersion}", componentVersion)
+        log.Debug("Dash version set to {DashVersion}", dashVersion)
+        log.Debug("Component description set to {ComponentDescription}", description)
+        log.Debug("Component authors set to {@ComponentAuthors}", authors)
+        log.Debug("Component set to component in {ComponentFolder}", folder)
+        log.Debug("Working directory set to {OutputFolder}", outputFolder)
         
         let maybeMetadata =
             args 
@@ -198,39 +236,41 @@ let main argv =
 
         match maybeMetadata, maybeLocalFiles with 
         | Ok metadata, Ok localFiles -> 
-            //This is all in asyncs to make handling async and IO operations easier, it doesn't actually have to run async
-            let success, output, error = 
-                performGeneration name shortName outputFolder componentVersion dashVersion folder metadata localFiles description authors maybePublishingKey
+
+            log.Debug("Metadata file set to {MetadataFile}", metadata)
+            log.Debug("Ignored files include the regexes {@IgnoredFileRegexes}", ignoreRegexes)
+            log.Debug("Local files found: {@LocalFiles}", localFiles)
+
+            // This is all in asyncs to make handling async and IO operations easier, it doesn't actually have to run async
+            let success = 
+                performGeneration log name shortName outputFolder componentVersion dashVersion folder metadata localFiles description authors maybePublishingKey
                 |> Async.RunSynchronously
 
-            //TODO better logging (allow for verbose logging)
-            #if DEBUG
-            printfn "%s" output
-            #endif
-
-            if not success then
-                printfn "Error: %s" error
-                1
-
-            else 
+            if success then 
                 //TODO: add in convinient build / publish scripts to make it easier?
-                printfn ""
-                printfn "Successfully created component %s!" name
-                printfn ""
-                printfn "If you make changes to the generated code please be sure to run \"dotnet pack %s --configuration Release\"" name
-                printfn "Additionally if you are re-publishing a new version remember to update the version number in the %s.fsproj" name
-                printfn ""
+                log.Information("")
+                log.Information("Successfully created component {ComponentName}!", name)
+                log.Information("")
+                log.Information("If you make changes to the generated code please be sure to run \"dotnet pack {ComponentName} --configuration Release\"", name)
+                log.Information("Additionally if you are re-publishing a new version remember to update the version number in the {ComponentName}.fsproj", name)
+                log.Information("")
 
                 match maybePublishingKey with
                 | Some _ ->
-                    printfn "You can re-publish the component later with the command \"dotnet nuget push <path-to-component>/bin/Release/%s.<component-version>.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json\"" name
+                    log.Information("You can re-publish the component later with the command \"dotnet nuget push <path-to-component>/bin/Release/{ComponentName}.<component-version>.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json\"", name)
                 | None ->
-                    printfn "You can publish the component later with the command \"dotnet nuget push <path-to-component>/bin/Release/%s.<component-version>.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json\"" name
+                    log.Information("You can publish the component later with the command \"dotnet nuget push <path-to-component>/bin/Release/{ComponentName}.<component-version>.nupkg --api-key <api-key> --source https://api.nuget.org/v3/index.json\"", name)
                 0
+            else
+                log.Information("")
+                log.Error("Component generation failed!")
+                1
 
         | Error error, _ 
         | _, Error error -> 
-            printfn "Error: %s" error
+            log.Error("Error: {Error}", error)
+            log.Information("")
+            log.Error("Component generation failed!")
             1
 
     | Error error, _, _, _, _, _ 
@@ -239,7 +279,9 @@ let main argv =
     | _, _, _, Error error, _, _
     | _, _, _, _, Error error, _
     | _, _, _, _, _, Error error -> 
-        printfn "Error: %s" error
+        log.Error("Error: {Error}", error)
+        log.Information("")
+        log.Error("Component generation failed!")
         1
     
     

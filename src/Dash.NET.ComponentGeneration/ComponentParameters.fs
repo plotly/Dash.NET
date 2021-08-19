@@ -3,6 +3,7 @@
 open System.IO
 open Prelude
 open ReactMetadata
+open Serilog
 
 
 type ComponentParameters = 
@@ -48,7 +49,7 @@ type ComponentParameters =
             Metadata                        = componentMetadata
         }
 
-    static member fromReactMetadata (componentShortName: string) (javascriptFiles: string list) (meta: ReactMetadata) =
+    static member fromReactMetadata (log: Core.Logger) (componentShortName: string) (javascriptFiles: string list) (meta: ReactMetadata) =
         (meta.Values |> List.ofSeq)
         |> List.zip (meta.Keys |> List.ofSeq)
         |> List.choose (fun (_, comp) ->

@@ -6,15 +6,16 @@ open FSharp.Compiler.SyntaxTree
 open Fantomas
 open System
 open System.IO
+open Serilog
 open Prelude
 open ASTHelpers
 open ComponentParameters
 open ReactMetadata
 open DocumentationGeneration
 
-let createComponentAST (parameters: ComponentParameters) =
+let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
 
-    printfn "Creating component bindings"
+    log.Information("Creating component bindings")
 
     let componentPropertyTypeDeclarations =
         let rec generatePropTypes (name: string) (ptype: SafeReactPropType) =
@@ -37,7 +38,9 @@ let createComponentAST (parameters: ComponentParameters) =
                             let duSafeCleanValue = cleanValue |> String.toValidDULabel
                             simpleUnionCase duSafeCleanValue []
                             |> Some
-                        | _ -> None)
+                        | _ -> 
+                            log.Warning("Enum property {PropertyName} contained an invalid case, it was ignored", name)
+                            None)
                 
                 // | ACase -> "aCase"
                 // | BCase -> "bCase"
@@ -53,7 +56,9 @@ let createComponentAST (parameters: ComponentParameters) =
                             let duSafeCleanValue = cleanValue |> String.toValidDULabel
                             simpleMatchClause duSafeCleanValue [] None (SynExpr.CreateConstString cleanValue)
                             |> Some
-                        | _ -> None)
+                        | _ -> 
+                            log.Warning("Enum property {PropertyName} contained an invalid case, it was ignored", name)
+                            None)
 
                 if duCases.Length > 0 then
                     // override this.ToString() =
@@ -80,6 +85,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     |> Some
 
                 else
+                    log.Error("Enum property {PropertyName} contained no cases, a type could not be created", name)
                     None
 
             | SafeReactPropType.Union (_, Some utypes) 
@@ -98,15 +104,14 @@ let createComponentAST (parameters: ComponentParameters) =
                 let duCases =
                     utypes
                     |> List.indexed
-                    |> List.choose (fun (i, case) -> 
+                    |> List.map (fun (i, case) -> 
                         let caseName = (sprintf "%sCase%d" propTypeName i)
                         let caseTypeName = 
                             case 
                             |> SafeReactPropType.tryGetFSharpTypeName
                             |> Option.defaultValue ([sprintf "%sCase%dType" propTypeName i])
 
-                        simpleUnionCase caseName [anonAppField caseTypeName]
-                        |> Some)
+                        simpleUnionCase caseName [anonAppField caseTypeName])
 
                 // | CPropCase0 (v) -> v.ToString()
                 // | CPropCase1 (v) -> v.ToString()
@@ -115,10 +120,9 @@ let createComponentAST (parameters: ComponentParameters) =
                 let caseValues =
                     utypes
                     |> List.indexed
-                    |> List.choose (fun (i, _) -> 
+                    |> List.map (fun (i, _) -> 
                         let caseName = (sprintf "%sCase%d" propTypeName i)
-                        simpleMatchClause caseName ["v"] None ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["v"; "ToString"]) ) 
-                        |> Some)
+                        simpleMatchClause caseName ["v"] None ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["v"; "ToString"]) ))
 
                 // override this.ToString() =
                 //     match this with
@@ -148,6 +152,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     |> Some
 
                 else
+                    log.Error("Union property {PropertyName} contained no cases, a type could not be created", name)
                     None
 
             | SafeReactPropType.ArrayOf (_, Some utype) 
@@ -257,9 +262,9 @@ let createComponentAST (parameters: ComponentParameters) =
                 |> List.rev 
                 |> Some
 
-            | SafeReactPropType.Shape (props, Some values) 
-            | SafeReactPropType.Exact (props, Some values) 
-            | SafeReactPropType.FlowObject (props, Some values) -> 
+            | SafeReactPropType.Shape (_, Some values) 
+            | SafeReactPropType.Exact (_, Some values) 
+            | SafeReactPropType.FlowObject (_, Some values) -> 
                 let fields =
                     (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
                     ||> List.zip 
@@ -333,6 +338,7 @@ let createComponentAST (parameters: ComponentParameters) =
                     |> Some
 
                 else
+                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
                     None
 
             // Other types dont need definitions
@@ -716,7 +722,7 @@ let createComponentAST (parameters: ComponentParameters) =
         .AddModule(namespaceDeclaration)
     |> ParsedInput.CreateImplFile
 
-let generateCodeStringFromAST (path: string) ast =
+let generateCodeStringFromAST (log: Core.Logger) (path: string) ast =
     async {
         let cfg = { FormatConfig.FormatConfig.Default with StrictMode = true }
         let! formattedCode = CodeFormatter.FormatASTAsync(ast, Path.GetFileName path, [], None, cfg)
@@ -730,13 +736,15 @@ let generateCodeStringFromAST (path: string) ast =
             |> String.concat Environment.NewLine
     }
 
-let generateCodeFromAST (path: string) ast =
+let generateCodeFromAST (log: Core.Logger) (path: string) ast =
     async {
-        let! formattedCode = generateCodeStringFromAST path ast
+        let! formattedCode = generateCodeStringFromAST log path ast
         try
             File.WriteAllText(path,formattedCode)
-            return true, sprintf "Created %s" path, ""
+            log.Debug("Created file {ComponentFSharpFile}",path)
+            return true
         with | ex -> 
-            return false, "", sprintf "Failed to write %s\n%s" path (ex.ToString())
+            log.Error(ex, "Failed to write file {ComponentFSharpFile}",path)
+            return false
     }
             

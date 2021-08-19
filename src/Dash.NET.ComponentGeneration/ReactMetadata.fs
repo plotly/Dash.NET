@@ -3,6 +3,7 @@
 open System.Text.Json
 open System
 open System.Collections.Generic
+open Serilog
 open Prelude
 
 let jsonOptions = 
@@ -280,43 +281,37 @@ type SafeReactPropType =
         | Some "shape" ->
             ( props,
               maybeStringVal
-              |> Option.bind (fun v -> 
-                try
-                    let jsonDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>> v
-                    let newDict = Dictionary<string, SafeReactPropType>()
-                    (jsonDict.Keys |> List.ofSeq, jsonDict.Values |> List.ofSeq)
-                    ||> List.zip
-                    |> List.iter (fun (k,vj) -> 
-                        vj
-                        |> optional
-                        |> Option.map (fun v -> v.ToString())
-                        |> Option.map ReactPropType.fromJsonString
-                        |> Option.map (SafeReactPropType.fromReactPropType isFlow)
-                        |> Option.iter (fun v -> newDict.Add( k, v )))
-                    Some newDict
-                with
-                | _ -> None //TODO better error logging       
+              |> Option.map (fun v -> 
+                  let jsonDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>> v
+                  let newDict = Dictionary<string, SafeReactPropType>()
+                  (jsonDict.Keys |> List.ofSeq, jsonDict.Values |> List.ofSeq)
+                  ||> List.zip
+                  |> List.iter (fun (k,vj) -> 
+                      vj
+                      |> optional
+                      |> Option.map (fun v -> v.ToString())
+                      |> Option.map ReactPropType.fromJsonString
+                      |> Option.map (SafeReactPropType.fromReactPropType isFlow)
+                      |> Option.iter (fun v -> newDict.Add( k, v )))
+                  newDict    
               ) )
             |> SafeReactPropType.Shape
         | Some "exact" -> 
             ( props,
               maybeStringVal
-              |> Option.bind (fun v -> 
-                try
-                    let jsonDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>> v
-                    let newDict = Dictionary<string, SafeReactPropType>()
-                    (jsonDict.Keys |> List.ofSeq, jsonDict.Values |> List.ofSeq)
-                    ||> List.zip
-                    |> List.iter (fun (k,vj) -> 
-                        vj
-                        |> optional
-                        |> Option.map (fun v -> v.ToString())
-                        |> Option.map ReactPropType.fromJsonString
-                        |> Option.map (SafeReactPropType.fromReactPropType isFlow)
-                        |> Option.iter (fun v -> newDict.Add( k, v )))
-                    Some newDict
-                with
-                | _ -> None //TODO better error logging   
+              |> Option.map (fun v -> 
+                  let jsonDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>> v
+                  let newDict = Dictionary<string, SafeReactPropType>()
+                  (jsonDict.Keys |> List.ofSeq, jsonDict.Values |> List.ofSeq)
+                  ||> List.zip
+                  |> List.iter (fun (k,vj) -> 
+                      vj
+                      |> optional
+                      |> Option.map (fun v -> v.ToString())
+                      |> Option.map ReactPropType.fromJsonString
+                      |> Option.map (SafeReactPropType.fromReactPropType isFlow)
+                      |> Option.iter (fun v -> newDict.Add( k, v )))
+                  newDict  
               ) )
             |> SafeReactPropType.Exact
 
@@ -335,34 +330,31 @@ type SafeReactPropType =
             |> SafeReactPropType.FlowArray
         | Some "signature" when maybeType = Some "object" -> 
             ( props,
-              try
-                  let newDict = Dictionary<string, SafeReactPropType>()
-                  maybeSignatureProps
-                  |> List.iter (fun prop -> 
-                      let maybeKey = 
-                          prop.key
-                          |> optional
+              let newDict = Dictionary<string, SafeReactPropType>()
+              maybeSignatureProps
+              |> List.iter (fun prop -> 
+                  let maybeKey = 
+                      prop.key
+                      |> optional
 
-                      let maybeRequired = 
-                          prop.required
-                          |> optional
+                  let maybeRequired = 
+                      prop.required
+                      |> optional
 
-                      let maybeProp =
-                          prop.value
-                          |> optional
-                          |> Option.map (fun (ptype: ReactPropType) ->
-                              maybeRequired
-                              |> Option.map (fun req -> { ptype with required = req })
-                              |> Option.defaultValue ptype)
-                          |> Option.map (SafeReactPropType.fromReactPropType isFlow)
+                  let maybeProp =
+                      prop.value
+                      |> optional
+                      |> Option.map (fun (ptype: ReactPropType) ->
+                          maybeRequired
+                          |> Option.map (fun req -> { ptype with required = req })
+                          |> Option.defaultValue ptype)
+                      |> Option.map (SafeReactPropType.fromReactPropType isFlow)
 
-                      (maybeKey, maybeProp)
-                      ||> Option.map2 (fun k v -> newDict.Add( k, v ))
-                      |> ignore)
+                  (maybeKey, maybeProp)
+                  ||> Option.map2 (fun k v -> newDict.Add( k, v ))
+                  |> ignore)
 
-                  Some newDict
-              with
-              | _ -> None ) //TODO better error logging
+              Some newDict) //TODO better error logging
             |> SafeReactPropType.FlowObject
 
         // We dont know how to proccess this type
@@ -427,7 +419,8 @@ let toSafe (meta: Dictionary<string, ReactComponent>): ReactMetadata =
     |> Option.defaultValue (Dictionary())
 
 let jsonDeserialize (json: string) = 
-    //TODO failure handling
-    JsonSerializer.Deserialize<Dictionary<string, ReactComponent>>(json, jsonOptions)
-    |> toSafe
-
+    try
+        JsonSerializer.Deserialize<Dictionary<string, ReactComponent>>(json, jsonOptions) |> toSafe |> Ok
+    with 
+    | e -> 
+        Error e

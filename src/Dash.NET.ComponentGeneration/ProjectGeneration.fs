@@ -4,10 +4,11 @@ open System
 open System.Diagnostics
 open System.IO
 open Prelude
+open Serilog
 
 let thisPath = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
 
-let runCommandAsync (workingDir: string) (fileName: string) (args: string list) = 
+let runCommandAsync (log: Core.Logger) (workingDir: string) (fileName: string) (args: string list) = 
     async {
         let argString = args |> String.concat " "
         
@@ -38,7 +39,9 @@ let runCommandAsync (workingDir: string) (fileName: string) (args: string list) 
                 false, ex.ToString()
         
         if not started then
-            return (false, "", sprintf "Failed to start process %s\n%s" fileName startedErr)
+            log.Error("Failed to start process \"{Process}\"", startInfo.ToString())
+            log.Error("Error: {Error}", startedErr)
+            return false
         else 
             p.BeginOutputReadLine()
             p.BeginErrorReadLine()
@@ -51,12 +54,23 @@ let runCommandAsync (workingDir: string) (fileName: string) (args: string list) 
                 l 
                 |> Seq.filter (fun o -> String.IsNullOrEmpty o |> not)
                 |> String.concat "\n"
-            return (p.ExitCode = 0, getOutput outputs, getOutput errors)
+
+            if p.ExitCode = 0 then
+                log.Debug("Ran process \"{Process}\"", fileName)
+                log.Debug("Output: {ProcessOutput}", getOutput outputs)
+                return true
+            else
+                log.Error("Failed to run process \"{Process}\"", fileName)
+                log.Error("Output: {ProcessOutput}", getOutput outputs)
+                log.Error("Error: {Error}", getOutput errors)
+                return false
+                
     }
 
-let runFunctionAsync (func: unit -> bool*string*string) = async { return func() }
+let runFunctionAsync (func: unit -> bool) = async { return func() }
 
 let createProject 
+    (log: Core.Logger)
     (name: string) 
     (outputFolder: string) 
     (componentFolder: string) 
@@ -68,7 +82,7 @@ let createProject
 
     //TODO this template may be better moved to nuget instead of being included with the tool?
     //Install template
-    runCommandAsync "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "template")]
+    runCommandAsync log "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "template")]
     |@!> async {
         //TODO: make sure dotnet 5.0 cli is installed
         //TODO: specify we are using dotnet 5 cli
@@ -76,18 +90,20 @@ let createProject
         let outputPath = Path.Combine (outputFolder, name)
         let localFilesDirPath = Path.Combine (outputPath,"WebRoot","components",name)
 
-        printfn "Creating project %s" name
+        log.Information("Creating project {ComponentName}", name)
         return!
             //Create project folder
             runFunctionAsync (fun () ->
                 try
                     let _ = Directory.CreateDirectory(outputPath)
-                    true, sprintf "Created directory %s" outputPath, ""
+                    log.Debug("Created directory {ComponentProjectFolder}", outputPath)
+                    true
                 with | ex ->
-                    false, "", sprintf "Failed to create folder %s\n%s" outputPath (ex.ToString()))
+                    log.Error(ex, "Failed to create directory {ComponentProjectFolder}", outputPath)
+                    false)
 
             //Create project
-            |@> runCommandAsync outputPath "dotnet" 
+            |@> runCommandAsync log outputPath "dotnet" 
                 [ yield! [ "new"; "dashcomponent" ] 
                   yield! [ "--force" ]
                   yield! [ "-lang"; "F#" ]
@@ -105,9 +121,11 @@ let createProject
             |@> runFunctionAsync (fun () ->
                 try
                     let _ = Directory.CreateDirectory(localFilesDirPath)
-                    true, sprintf "Created directory %s" localFilesDirPath, ""
+                    log.Debug("Created directory {LocalFilesFolder}", localFilesDirPath)
+                    true
                 with | ex ->
-                    false, "", sprintf "Failed to create folder %s\n%s" localFilesDirPath (ex.ToString()))
+                    log.Error(ex, "Failed to create directory {LocalFilesFolder}", localFilesDirPath)
+                    false)
 
             //Copy local files
             |@> runFunctionAsync (fun () ->
@@ -119,47 +137,53 @@ let createProject
                             let newJsPath = Path.Combine(localFilesDirPath, localFileName)
                             Directory.CreateDirectory(Path.GetDirectoryName newJsPath) |> ignore
                             File.Copy(localFile, newJsPath, true)
-                            true, sprintf "Copied file %s to %s" localFileName localFilesDirPath, ""
+                            log.Debug("Copied file {LocalFile} to {LocalFilesFolder}", localFile, localFilesDirPath)
+                            true
                         else
-                            false, "", sprintf "File %s does not exists" localFile
+                            log.Error("Error, file {LocalFile} does not exist", localFile)
+                            false
                     with | ex ->
-                        false, "", sprintf "Failed to copy file %s to %s\n%s" localFile localFilesDirPath (ex.ToString()))
-                |> List.reduce ( fun (s1, o1, e1) (s2, o2, e2) -> (s1 && s2, sprintf "%s\n%s" o1 o2, sprintf "%s\n%s" e1 e2) ))
+                        log.Debug(ex, "Failed to copy file {LocalFile} to {LocalFilesFolder}", localFile, localFilesDirPath)
+                        false)
+                |> List.reduce (&&))
 
     }
     //Uninstall the template again
     //Not doing this can cause weird conflicts if the template is ever updated
-    |@!> runCommandAsync "." "dotnet" ["new"; "-u"; Path.GetFullPath(Path.Combine(thisPath, "template"))]
+    |@!> runCommandAsync log "." "dotnet" ["new"; "-u"; Path.GetFullPath(Path.Combine(thisPath, "template"))]
 
-let buildProject (name: string) (path: string) =
+let buildProject (log: Core.Logger) (name: string) (path: string) =
     async {
         if (Directory.Exists (Path.Combine(path, name))) then
-            printfn "Building project %s" name
+            log.Information("Building project {ComponentName}", name)
             return! 
-                runCommandAsync path "dotnet" ["build"; name]
+                runCommandAsync log path "dotnet" ["build"; name]
         else
-            return false, "", "The project does not exist"
+            log.Error("Error, the project {ComponentProjectFolder} does not exist", Path.Combine(path, name))
+            return false
     }
 
-let packageProject (name: string) (path: string) =
+let packageProject (log: Core.Logger) (name: string) (path: string) =
     async {
         if (Directory.Exists (Path.Combine(path, name))) then
-            printfn "Packaging project %s" name
+            log.Information("Packaging project {ComponentName}", name)
             return! 
-                runCommandAsync path "dotnet" ["pack"; name; "--configuration"; "Release"]
+                runCommandAsync log path "dotnet" ["pack"; name; "--configuration"; "Release"]
         else
-            return false, "", "The project does not exist"
+            log.Error("Error, the project {ComponentProjectFolder} does not exist", Path.Combine(path, name))
+            return false
     }
 
-let publishProject (name: string) (path: string) (version: string) (apiKey: string) =
+let publishProject (log: Core.Logger) (name: string) (path: string) (version: string) (apiKey: string) =
     async {
         if (Directory.Exists (Path.Combine(path, name))) then
-            printfn "Publishing project %s" name
+            log.Information("Publishing project {ComponentName}", name)
             return! 
-                runCommandAsync path "dotnet" 
+                runCommandAsync log path "dotnet" 
                     [ "nuget"; "push"; Path.Combine(name, "bin", "Release", sprintf "%s.%s.nupkg" name version)
                       "--api-key"; apiKey
                       "--source"; "https://api.nuget.org/v3/index.json" ]
         else
-            return false, "", "The project does not exist"
+            log.Error("Error, the project {ComponentProjectFolder} does not exist", Path.Combine(path, name))
+            return false
     }
