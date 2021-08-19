@@ -52,7 +52,6 @@ type ComponentParameters =
         (meta.Values |> List.ofSeq)
         |> List.zip (meta.Keys |> List.ofSeq)
         |> List.choose (fun (_, comp) ->
-            //TODO: allow naming the F# version differntly to the js version
             let maybeCName = comp.displayName
             match maybeCName with
             | Some cName -> ComponentParameters.create cName componentShortName javascriptFiles comp |> Some

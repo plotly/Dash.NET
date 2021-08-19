@@ -213,6 +213,7 @@ let main argv =
                 1
 
             else 
+                //TODO: add in convinient build / publish scripts to make it easier?
                 printfn ""
                 printfn "Successfully created component %s!" name
                 printfn ""

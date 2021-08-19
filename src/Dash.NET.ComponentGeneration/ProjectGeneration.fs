@@ -73,8 +73,6 @@ let createProject
         //TODO: make sure dotnet 5.0 cli is installed
         //TODO: specify we are using dotnet 5 cli
 
-        //TODO: nuget CLI to allow for publishing and to add Dash.NET
-
         let outputPath = Path.Combine (outputFolder, name)
         let localFilesDirPath = Path.Combine (outputPath,"WebRoot","components",name)
 

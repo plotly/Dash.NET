@@ -12,9 +12,6 @@ open ComponentParameters
 open ReactMetadata
 open DocumentationGeneration
 
-// TODO: Clean up this file
-// TODO: Add documentation
-
 let createComponentAST (parameters: ComponentParameters) =
 
     printfn "Creating component bindings"
