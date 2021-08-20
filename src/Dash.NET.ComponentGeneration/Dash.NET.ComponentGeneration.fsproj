@@ -9,6 +9,10 @@
 	<IncludeSymbols>true</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+	<PackAsTool>true</PackAsTool>
+	<ToolCommandName>dash-component-generation</ToolCommandName>
+	<PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
