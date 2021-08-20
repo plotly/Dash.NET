@@ -79,6 +79,7 @@ let performGeneration
         | Ok componentMetadata ->
             let parametersList = ComponentParameters.fromReactMetadata log componentShortName localJavascript componentMetadata
 
+            // Create the F# project
             let projectCreate =
                 ProjectGeneration.createProject 
                     log
@@ -96,6 +97,7 @@ let performGeneration
             log.Debug("Dotnet project folder set to {ComponentProjectFolder}", projectFolder)
 
             let projectResult =
+                // Generate the F# bindings
                 parametersList
                 |> List.fold (fun state parameters -> 
                     state
@@ -103,6 +105,8 @@ let performGeneration
                             |> ASTGeneration.createComponentAST log
                             |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, parameters.ComponentFSharp)) ))
                     projectCreate
+
+                // Build the project
                 |@> ProjectGeneration.buildProject log componentProjectName outputFolder
                 |@> ProjectGeneration.packageProject log componentProjectName outputFolder
 
@@ -112,6 +116,7 @@ let performGeneration
                 log.Debug("Nuget publishing key found")
                 return!
                     projectResult
+                    // Publish the project
                     |@> ProjectGeneration.publishProject log componentProjectName outputFolder componentVersion apiKey
             | None -> 
                 log.Debug("Nuget publishing key not found")
@@ -219,6 +224,7 @@ let main argv =
             |> Option.defaultValue (Path.Combine(folder, "metadata.json"))
             |> (fun m -> if File.Exists m then Ok m else Error (sprintf "Metadata file %s does not exist" m))
 
+        // Search the folder structure for all of the files in the component
         let maybeLocalFiles = 
             let rec recursiveFolderFiles f =
                 let recursiveFiles =
@@ -233,6 +239,7 @@ let main argv =
                 [ yield! recursiveFiles; yield! rootFiles ]
 
             recursiveFolderFiles folder
+            // Ignore files we dont care about (eg. python dash bindings)
             |> List.filter (fun s -> ignoreRegexes |> List.map String.matches |> List.map (fun f -> f s |> not) |> List.fold (&&) true)
             |> (function | [] -> Error "No local source files found" | j -> Ok j)
 
@@ -243,13 +250,14 @@ let main argv =
             log.Debug("Ignored files include the regexes {@IgnoredFileRegexes}", ignoreRegexes)
             log.Debug("Local files found: {@LocalFiles}", localFiles)
 
-            // This is all in asyncs to make handling async and IO operations easier, it doesn't actually have to run async
+            // Run the actual generation
             let success = 
                 performGeneration log name shortName outputFolder componentVersion dashVersion folder metadata localFiles description authors maybePublishingKey
+                // This is all in asyncs to make handling async and IO operations easier, it doesn't actually have to run async
                 |> Async.RunSynchronously
 
             if success then 
-                //TODO: add in convinient build / publish scripts to make it easier?
+                //TODO: add in convinient build / publish scripts to template to make republishing easier?
                 log.Information("")
                 log.Information("Successfully created component {ComponentName}!", name)
                 log.Information("")

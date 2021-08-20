@@ -149,6 +149,21 @@ let generateComponentDocumentation (comp: SafeReactComponent) =
 
     [ yield! componentDescription; yield "Properties:"; yield! componentParameterDocs ]
 
+// <summary>
+// ExampleComponent is an example component.
+// It takes a property, `label`, and
+// displays it.
+// It renders an input with the property `value`
+// which is editable by the user.
+// &#10;
+// Properties:
+// &#10;
+// • id (string) - The ID used to identify this component in Dash callbacks.
+// &#10;
+// • label (string) - A label that will be printed when this component is rendered.
+// &#10;
+// • value (string) - The value displayed in the input.
+// </summary>
 let generatePropDocumentation (prop: SafeReactPropType) =
     let typeDoc = 
         prop
@@ -167,6 +182,7 @@ let toXMLDoc (inner: string list) =
         inner
         |> List.filter (String.length >> (<) 0)
         |> List.indexed
+        //adding "&#10;" is the best way I could find to allow fantomas to add newlines to xml docs
         |> List.fold (fun acc (i, s) -> if i = 0 then s::acc else s::"&#10;"::acc) []
         |> List.rev
     [yield "<summary>"; yield! modInner; yield "</summary>"]
