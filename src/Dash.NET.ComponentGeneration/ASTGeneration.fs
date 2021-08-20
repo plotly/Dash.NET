@@ -189,7 +189,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                   |> SynExpr.CreateParen
                                   SynExpr.CreateIdentString "v"]
                             |> SynExpr.CreateParen
-                        SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], mapStrings)
+                        SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], mapStrings)
 
                     let matchCase =
                         SynExpr.CreateIdentString "this"
@@ -316,7 +316,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                     ( Ident.Create pname, jsonConversion ))
                                 |> anonRecord
 
-                            SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], serializable)
+                            SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], serializable)
 
                         functionPatternThunk "this.ToString"
                         |> binding toString
