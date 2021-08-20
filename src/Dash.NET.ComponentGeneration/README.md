@@ -1,4 +1,36 @@
-﻿
+﻿# How to use the tool
+```
+USAGE: Dash.NET.ComponentGeneration.exe [--help] --name <name> --shortname <name> --componentdirectory <folder>
+                                        --description <description> --author <name> [--metadata <meta>]
+                                        [--version <version>] [--dashversion <version>] [--outputdirectory <folder>]
+                                        [--addfile <source>] [--ignore <regex>] [--disabledefaultignore]
+                                        [--publishtonuget <apiKey>] [--verbose]
+
+REQUIRED:
+    --name, -n <name>                       Name of the component or group of components, required
+    --shortname, -s <name>                  Name of the exported javascript namespace of the component, required
+    --componentdirectory, -d <folder>       Folder containing the component, required
+    --description, -e <description>         A short description of the component, required
+    --author, -a <name>                     Author of the component, there can be more than one of these, at least one required
+
+OPTIONS:
+    --metadata, -m <meta>                   React docgen metadata.json file, defaults to '<component_folder>/metadata.json'
+    --version, -v <version>                 The version of the compenent, defaults to 1.0.0
+    --dashversion, -vd <version>            The version of Dash.NET to use, defaults to '0.1.0-alpha9'
+    --outputdirectory, -o <folder>          Directory to create the F# project folder in, defaults to ./
+    --addfile, -f <source>                  Additional local source file to include, there can be more than one of these, 
+                                            defaults to none
+    --ignore, -i <regex>                    Ignore folders and file paths that match this regex, by default this includes
+                                            "__pycache__" and ".*\.py", there can be more than one of these, defaults to none
+    --disabledefaultignore, -ddi            Don't ignore "__pycache__" and ".*\.py" by default
+    --publishtonuget, -p <apiKey>           Publish this package straight to nuget with this API key, defaults to not publishing. Can
+                                            be published later using "dotnet nuget push <path-to-component>/bin/Release/<component-name>.<component-version>.nupkg 
+                                            --api-key <api-key> --source https://api.nuget.org/v3/index.json"
+    --verbose                               Print all logs
+    --help                                  display a list of options.
+```
+
+
 # Basics of AST (Abstract Syntax Tree) based code generation
 This is a basic overview of AST based code generation. It covers the most commonly used
 concepts in F# syntax and how they are generated using the tools in the `FSharp.Compiler`
