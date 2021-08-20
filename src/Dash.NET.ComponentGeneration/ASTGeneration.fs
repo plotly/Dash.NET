@@ -77,7 +77,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     /// Create the union definition
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
                     |> simpleTypeDeclaration 
                          (duCases |> unionDefinition)
                          [ toCaseValueDefinition ] 
@@ -142,7 +142,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     let unionTypeDefinition =
                         propTypeName
                         |> componentInfo
-                        |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
+                        |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
                         |> simpleTypeDeclaration 
                                 (duCases |> unionDefinition)
                                 [ toCaseValueDefinition ]
@@ -206,7 +206,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 let unionDefinition =
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
                     |> simpleTypeDeclaration
                         (singleCaseUnion |> unionDefinition)
                         [ toCaseValueDefinition ]
@@ -253,7 +253,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 let unionDefinition =
                     propTypeName
                     |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
                     |> simpleTypeDeclaration
                         (singeCaseUnion |> unionDefinition)
                         [ toCaseValueDefinition ]
@@ -328,7 +328,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     let recordTypeDefinition =
                         propTypeName
                         |> componentInfo
-                        |> withXMLDoc (ptype |> generatePropDocumentation |> toXMLDoc)
+                        |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
                         |> simpleTypeDeclaration 
                                 (fieldDefinitions |> recordDefinition)
                                 [ toStringDefinition ]
@@ -430,7 +430,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         // Create the type definition
         parameters.ComponentPropsName
         |> componentInfo
-        |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation |> toXMLDoc)
+        |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation false |> toXMLDoc)
         |> simpleTypeDeclaration 
             componentPropertyDUCases
             [ componentPropertyToDynamicMemberDefDeclaration ] 
@@ -462,6 +462,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |> Option.defaultValue ([pname |> String.capitalize])
                     functionPattern pname [("p", appType propTypeName)]
                     |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen])
+                    |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
                     |> SynMemberDefn.CreateStaticMember))
 
         //  static member children(value: int) = Children([ Html.Html.text value ])
@@ -477,6 +478,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             let createCon ty app =
                 functionPattern "children" [("value", ty)]
                 |> binding (application [SynExpr.CreateIdentString "Children"; app |> SynExpr.CreateParen])
+                |> withXMLDocLet (["The child or children of this dash component"] |> toXMLDoc)
                 |> SynMemberDefn.CreateStaticMember
             [ createCon (appType ["int"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ]) 
               createCon (appType ["string"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
@@ -728,9 +730,9 @@ let generateCodeStringFromAST (log: Core.Logger) (path: string) ast =
         let! formattedCode = CodeFormatter.FormatASTAsync(ast, Path.GetFileName path, [], None, cfg)
 
         return
-            [ "//------------------------------------------------------------------------------" // TODO documentation comments
+            [ "//------------------------------------------------------------------------------"
               "//        This file has been automatically generated."
-              "//        Changes to this file will be lost if the code is regenerated."
+              "//        Changes to this file will be lost if it is regenerated."
               "//------------------------------------------------------------------------------"
               formattedCode ]
             |> String.concat Environment.NewLine

@@ -141,7 +141,6 @@ type DashApp =
                     |> Array.fold
                         (fun (acc: DashApp) (def: LoadableComponentDefinition) -> 
                             printfn "Loading component: %s" def.ComponentName
-                            //TODO ignore duplicates
                             DashApp.appendScripts def.ComponentJavascript acc)
                         innerApp
                 with

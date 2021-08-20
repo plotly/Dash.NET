@@ -88,14 +88,11 @@ let toSafeDict (converter: 'a -> 'b) (dict: Dictionary<string, 'a>): Dictionary<
     newDict
 
 let jsonToList (json: string): string list =
-    try
-        JsonSerializer.Deserialize<seq<JsonElement>>(json, jsonOptions)
-        |> optional
-        |> Option.map (List.ofSeq)
-        |> Option.map (List.map (fun (j: JsonElement) -> j.ToString()))
-        |> Option.defaultValue []
-    with
-    | e -> [] //TODO better error logging 
+    JsonSerializer.Deserialize<seq<JsonElement>>(json, jsonOptions)
+    |> optional
+    |> Option.map (List.ofSeq)
+    |> Option.map (List.map (fun (j: JsonElement) -> j.ToString()))
+    |> Option.defaultValue []
 
 type SafeReactPropProps = 
     { computed: bool option
@@ -216,13 +213,15 @@ type SafeReactPropType =
         | Some "array" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Array
+
         | Some "bool" 
         | Some "boolean" -> 
             ( props,
               maybeStringVal
               |> Option.map (fun dv ->
                   dv.ToLowerInvariant() = "true") )
-            |> SafeReactPropType.Bool 
+            |> SafeReactPropType.Bool
+
         | Some "number" -> 
             ( props,
               maybeStringVal
@@ -230,20 +229,25 @@ type SafeReactPropType =
                   let suc, v = dv |> Double.TryParse
                   if suc then Some (v :> IConvertible) else None) )
             |> SafeReactPropType.Number
+
         | Some "string" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.String
+
         | Some "object" 
         | Some "Object" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Object 
+
         | Some "any" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Any 
+
         | Some "element"
         | Some "Element" -> 
             ( props, maybeStringVal )
             |> SafeReactPropType.Element
+
         | Some "node" 
         | Some "Node" -> 
             ( props, maybeStringVal )
@@ -258,6 +262,7 @@ type SafeReactPropType =
                   >> List.map ReactPropType.fromJsonString
                   >> List.map (SafeReactPropType.fromReactPropType isFlow) ) )
             |> SafeReactPropType.Enum
+
         | Some "union" when not isFlow ->
             ( props,
               maybeStringVal
@@ -266,18 +271,21 @@ type SafeReactPropType =
                   >> List.map ReactPropType.fromJsonString
                   >> List.map (SafeReactPropType.fromReactPropType isFlow) ) )
             |> SafeReactPropType.Union
+
         | Some "arrayOf" ->
             ( props,
               maybeStringVal
               |> Option.map ReactPropType.fromJsonString
               |> Option.map (SafeReactPropType.fromReactPropType isFlow) )
             |> SafeReactPropType.ArrayOf
+
         | Some "objectOf" ->
             ( props,
               maybeStringVal
               |> Option.map ReactPropType.fromJsonString
               |> Option.map (SafeReactPropType.fromReactPropType isFlow) )
             |> SafeReactPropType.ObjectOf
+
         | Some "shape" ->
             ( props,
               maybeStringVal
@@ -296,6 +304,7 @@ type SafeReactPropType =
                   newDict    
               ) )
             |> SafeReactPropType.Shape
+
         | Some "exact" -> 
             ( props,
               maybeStringVal
@@ -322,12 +331,14 @@ type SafeReactPropType =
               |> List.map (SafeReactPropType.fromReactPropType isFlow)
               |> (fun l -> if (l.Length) > 0 then Some l else None) )
             |> SafeReactPropType.FlowUnion
+
         | Some "Array" -> 
             ( props,
               maybeElements
               |> List.tryHead
               |> Option.map (SafeReactPropType.fromReactPropType isFlow) )
             |> SafeReactPropType.FlowArray
+
         | Some "signature" when maybeType = Some "object" -> 
             ( props,
               let newDict = Dictionary<string, SafeReactPropType>()
@@ -354,7 +365,7 @@ type SafeReactPropType =
                   ||> Option.map2 (fun k v -> newDict.Add( k, v ))
                   |> ignore)
 
-              Some newDict) //TODO better error logging
+              Some newDict)
             |> SafeReactPropType.FlowObject
 
         // We dont know how to proccess this type
@@ -365,7 +376,7 @@ type SafeReactPropType =
         // Default (usually defaultValue)
         | None -> 
             ( props, maybeStringVal )
-            |> SafeReactPropType.Any 
+            |> SafeReactPropType.Any
 
 type SafeReactProp = 
   { propType: SafeReactPropType option
@@ -402,13 +413,23 @@ type SafeReactComponent =
     props: Dictionary<string, SafeReactProp> }
 
     static member fromReactComponent (comp: ReactComponent): SafeReactComponent =
+        
+        let removeUnrepresentableProps (dict: Dictionary<string, SafeReactProp>) =
+            let newDict = Dictionary()
+            (dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
+            ||> List.zip
+            |> List.filter (snd >> (fun p -> p.propType) >> function | Some (Other _) | None -> false | _ -> true)
+            |> List.iter newDict.Add
+            newDict
+
         { description = comp.description |> optional
           displayName = comp.displayName |> optional 
           props = 
             comp.props 
             |> optional 
             |> Option.map (toSafeDict SafeReactProp.fromReactProp)
-            |> Option.defaultValue (Dictionary()) }
+            |> Option.defaultValue (Dictionary())
+            |> removeUnrepresentableProps }
 
 type ReactMetadata = Dictionary<string, SafeReactComponent>
 

@@ -25,14 +25,14 @@ let getTypeHasDefault (dval: SafeReactPropType) =
 //TODO formating for complex types?
 let rec getTypePropDocumentation (ptype: SafeReactPropType) =
     match ptype with 
-    | Array _ -> "list"
-    | Bool _ -> "boolean"
-    | Number _ -> "number"
-    | String _ -> "string"
-    | Object _ -> "record"
-    | Any _ -> "boolean | number | string | record | list"
-    | Element _ -> "dash component"
-    | Node _ -> "a list of or a singular dash component, string or number"
+    | Array _ -> "list" |> Some
+    | Bool _ -> "boolean" |> Some
+    | Number _ -> "number" |> Some
+    | String _ -> "string" |> Some
+    | Object _ -> "record" |> Some
+    | Any _ -> "boolean | number | string | record | list" |> Some
+    | Element _ -> "dash component" |> Some
+    | Node _ -> "a list of or a singular dash component, string or number" |> Some
 
     // Special cases, each type will have a unique name
     | Enum (_, Some values) -> 
@@ -48,28 +48,34 @@ let rec getTypePropDocumentation (ptype: SafeReactPropType) =
             |> List.map (sprintf "'%s'")
             |> List.reduce (sprintf "%s, %s")
             |> sprintf "value equal to: %s"
+            |> Some
         else if valueList.Length = 1 then
             sprintf "value equal to: '%s'" valueList.[0]
+            |> Some
         else
             sprintf "value equal to: unknown"
+            |> Some
 
     | Union (_, Some values) ->
         let valueList =
             values
-            |> List.map getTypePropDocumentation
+            |> List.choose getTypePropDocumentation
         
         if valueList.Length > 1 then
             valueList
             |> List.reduce (sprintf "%s | %s")
+            |> Some
         else if valueList.Length = 1 then
             valueList.[0]
+            |> Some
         else
             sprintf "unknown"
+            |> Some
 
     | ArrayOf (_, Some value) -> 
         value
         |> getTypePropDocumentation
-        |> sprintf "list with values of type: %s"
+        |> Option.map (sprintf "list with values of type: %s")
 
     | ObjectOf (_, Some value) -> 
         getTypePropDocumentation value
@@ -79,26 +85,35 @@ let rec getTypePropDocumentation (ptype: SafeReactPropType) =
         let valueList =
             (dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
             ||> List.zip
-            |> List.map (fun (key, value) ->
+            |> List.choose (fun (key, value) ->
                 let optionalDoc = 
                     value 
                     |> getTypeHasDefault
                     |> Option.defaultValue (value |> getTypeIsRequired)
-                sprintf "%s: %s (%s)" key (getTypePropDocumentation value) optionalDoc) 
+                getTypePropDocumentation value
+                |> Option.map (fun pdoc -> sprintf "%s: %s (%s)" key pdoc optionalDoc))
 
         if valueList.Length > 1 then
             valueList
             |> List.map (sprintf "'%s'")
             |> List.reduce (sprintf "%s, %s")
             |> sprintf "record with the fields: %s"
+            |> Some
         else if valueList.Length = 1 then
-            sprintf "record with the field: '%s'" valueList.[0]
+            sprintf "record with the field: '%s'" valueList.[0] 
+            |> Some
         else
-            sprintf "record with the fields: unknown"
+            sprintf "record with the fields: unknown" 
+            |> Some
 
     // A type we can't process
     | Other _
-    | _ -> "unknown"
+    | _ -> None
+
+let generateComponentPropDescription (prop: SafeReactProp) =
+    prop.description
+    |> Option.defaultValue ""
+    |> List.singleton
 
 let generateComponentPropDocumentation (pname: string) (prop: SafeReactProp) =
     let optionalDoc = 
@@ -109,26 +124,28 @@ let generateComponentPropDocumentation (pname: string) (prop: SafeReactProp) =
 
     let typeDoc = 
         prop.propType 
-        |> Option.map getTypePropDocumentation
-        |> Option.defaultValue ""
+        |> Option.bind getTypePropDocumentation
 
     let descriptionDoc = 
         prop.description
         |> Option.map (sprintf " - %s")
         |> Option.defaultValue ""
 
-    sprintf "• %s (%s%s)%s" pname typeDoc optionalDoc descriptionDoc
+    typeDoc
+    |> Option.map (fun tdoc -> sprintf "• %s (%s%s)%s" pname tdoc optionalDoc descriptionDoc)
 
-let generateComponentPropsDocumentation (comp: SafeReactComponent) = 
+let generateComponentPropsDocumentation (keepId: bool) (comp: SafeReactComponent) = 
     (comp.props.Keys |> List.ofSeq, comp.props.Values |> List.ofSeq)
-    ||> List.map2 generateComponentPropDocumentation
+    ||> List.zip
+    |> (if not keepId then List.filter (fun (k,_) -> k.ToLowerInvariant() = "id" |> not) else id)
+    |> List.choose (fun (k,v) -> generateComponentPropDocumentation k v)
 
 let generateComponentDescription (comp: SafeReactComponent) = 
     [ comp.description |> Option.defaultValue "" ]
 
 let generateComponentDocumentation (comp: SafeReactComponent) = 
     let componentDescription = comp |> generateComponentDescription
-    let componentParameterDocs = comp |> generateComponentPropsDocumentation
+    let componentParameterDocs = comp |> generateComponentPropsDocumentation true
 
     [ yield! componentDescription; yield "Properties:"; yield! componentParameterDocs ]
 
@@ -142,7 +159,8 @@ let generatePropDocumentation (prop: SafeReactPropType) =
         |> getTypeDescription
         |> Option.defaultValue ""
 
-    [ yield typeDoc; yield descriptionDoc ]
+    typeDoc
+    |> Option.map (fun tdoc -> [ yield tdoc; yield descriptionDoc ])
 
 let toXMLDoc (inner: string list) =
     let modInner =

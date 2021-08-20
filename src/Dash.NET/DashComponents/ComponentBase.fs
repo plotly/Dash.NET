@@ -5,7 +5,6 @@ open Plotly.NET
 open System.Runtime.InteropServices
 open System
 
-//TODO: add specification as to whether or not the javascript file is hosted locally or remotely (cors)
 type LoadableComponentDefinition = 
     { ComponentName: string
       ComponentJavascript: string list }
