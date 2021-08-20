@@ -8,7 +8,7 @@ open Serilog
 
 let thisPath = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
 
-let runCommandAsync (log: Core.Logger) (workingDir: string) (fileName: string) (args: string list) = 
+let runCommandWithOutputAsync (log: Core.Logger) (workingDir: string) (fileName: string) (args: string list) = 
     async {
         let argString = args |> String.concat " "
         
@@ -41,7 +41,7 @@ let runCommandAsync (log: Core.Logger) (workingDir: string) (fileName: string) (
         if not started then
             log.Error("Failed to start process \"{Process}\"", startInfo.ToString())
             log.Error("Error: {Error}", startedErr)
-            return false
+            return false, "", startedErr
         else 
             p.BeginOutputReadLine()
             p.BeginErrorReadLine()
@@ -55,19 +55,35 @@ let runCommandAsync (log: Core.Logger) (workingDir: string) (fileName: string) (
                 |> Seq.filter (fun o -> String.IsNullOrEmpty o |> not)
                 |> String.concat "\n"
 
+            let output = getOutput outputs
+            let error = getOutput errors
+
             if p.ExitCode = 0 then
                 log.Debug("Ran process \"{Process}\"", fileName)
-                log.Debug("Output: {ProcessOutput}", getOutput outputs)
-                return true
+                log.Debug("Output: {ProcessOutput}", output)
+                log.Debug("Error: {Error}", error)
+                return true, output, error
             else
                 log.Error("Failed to run process \"{Process}\"", fileName)
-                log.Error("Output: {ProcessOutput}", getOutput outputs)
-                log.Error("Error: {Error}", getOutput errors)
-                return false
+                log.Error("Output: {ProcessOutput}", output)
+                log.Error("Error: {Error}", error)
+                return false, output, error
                 
     }
 
+let runCommandAsync (log: Core.Logger) (workingDir: string) (fileName: string) (args: string list) = 
+    async.Bind(runCommandWithOutputAsync log workingDir fileName args, (fun (s,_,_) -> async {return s}))
+
 let runFunctionAsync (func: unit -> bool) = async { return func() }
+
+let checkDotnetVersion (log: Core.Logger) =
+    // Conveniently "dotnet --version" ONLY outputs a version number, so we can take advantage of this
+    // since this isn't a very robust way of checking compatability we will only give a warning if it isn't .Net 5
+    async {
+        let! _,o,_ = runCommandWithOutputAsync log "." "dotnet" ["--version"]
+        if o |> String.matches "^5" |> not then
+            log.Warning("This tool was built to use the .NET 5 CLI, an unexpected version of the CLI was detected and as a result this application may not work as expected.")
+    }
 
 let createProject 
     (log: Core.Logger)
@@ -84,9 +100,6 @@ let createProject
     //Install template
     runCommandAsync log "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "template")]
     |@!> async {
-        //TODO: make sure dotnet 5.0 cli is installed
-        //TODO: specify we are using dotnet 5 cli
-
         let outputPath = Path.Combine (outputFolder, name)
         let localFilesDirPath = Path.Combine (outputPath,"WebRoot","components",name)
 

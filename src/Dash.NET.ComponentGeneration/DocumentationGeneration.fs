@@ -22,7 +22,7 @@ let getTypeHasDefault (dval: SafeReactPropType) =
     | Any (_, Some v) -> sprintf "default %s" v |> Some
     | _ -> None
 
-//TODO formating for complex types?
+//TODO nicer formatting for complex types
 let rec getTypePropDocumentation (ptype: SafeReactPropType) =
     match ptype with 
     | Array _ -> "list" |> Some

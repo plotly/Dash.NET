@@ -6,17 +6,20 @@ open FSharp.Compiler.SyntaxTree
 open FSharp.Compiler.Range
 open FSharp.Compiler.XmlDoc
 
-//TODO: Clean up this file
-//TODO: Add documentation
-
+// Organizational unit information / identity
+// ------------------------------------------
 let componentInfo = Ident.CreateLong >> SynComponentInfoRcd.Create
 let namespaceInfo = Ident.CreateLong >> SynModuleOrNamespaceRcd.CreateNamespace
 
+// Patterns
+// ------------------------------------------
 let patternNamedOptional (pname: string) = SynPatRcd.OptionalVal {Id = Ident.Create pname; Range = range.Zero}
 let patternNamed (pname: string) = SynPatRcd.CreateNamed(Ident.Create pname, SynPatRcd.CreateWild)
 let patternNamedTuple (pnames: string list) = pnames |> List.map patternNamed |> SynPatRcd.CreateTuple
 let withPatternType (ptype: SynType) (pat: SynPatRcd) = SynPatRcd.CreateTyped(pat, ptype)
 
+// Documentation
+// ------------------------------------------
 let withXMLDoc (docLines: string list) (cinfo: SynComponentInfoRcd) =
     let xml =
         docLines
@@ -30,14 +33,20 @@ let withXMLDocLet (docLines: string list) (binfo: SynBindingRcd) =
         |> List.reduce PreXmlDoc.Merge
     { binfo with XmlDoc = xml }
 
+// Namespace and module declaration helpers
+// ------------------------------------------
 let withNamespaceDeclarations (decls: SynModuleDecl list) (moduOrNsp: SynModuleOrNamespaceRcd) = 
     moduOrNsp.AddDeclarations decls
-let withModuleAttribute (attrib: SynAttribute) (modu: SynComponentInfoRcd) =
-    { modu with Attributes = (SynAttributeList.Create [attrib]) :: modu.Attributes }
-
 let nestedModule (members: SynModuleDecl list) (modu: SynComponentInfoRcd) =
     SynModuleDecl.CreateNestedModule (modu, members)
 
+// Attributes
+// ------------------------------------------
+let withModuleAttribute (attrib: SynAttribute) (modu: SynComponentInfoRcd) =
+    { modu with Attributes = (SynAttributeList.Create [attrib]) :: modu.Attributes }
+
+// Bindings
+// ------------------------------------------
 let binding (expr: SynExpr) (lpatt: SynPatRcd)  =
     { SynBindingRcd.Let with 
         Pattern = lpatt
@@ -47,9 +56,14 @@ let memberBinding (expr: SynExpr) (lpatt: SynPatRcd)  =
         Pattern = lpatt
         Expr = expr
         ValData = SynValData( Some (MemberFlags.InstanceMember) ,SynValInfo ([], SynArgInfo ([], false, None)), None) }
+
+// In-module let declaration
+// ------------------------------------------
 let letDeclaration (binding: SynBindingRcd) =
     SynModuleDecl.CreateLet [ binding ]
 
+// Type declaration
+// ------------------------------------------
 let typeDeclaration (tDef: SynMemberDefns) (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateType(tInfo, tDef) 
 let typeInherit (itype: SynExpr) =
@@ -57,23 +71,22 @@ let typeInherit (itype: SynExpr) =
 
 let simpleTypeDeclaration (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateSimpleType(tInfo, tSimpleDef, tDef)
+
+// Union
+// ------------------------------------------
 let unionDefinition (cases: SynUnionCaseRcd list) =
     cases |> SynTypeDefnSimpleReprUnionRcd.Create |> SynTypeDefnSimpleReprRcd.Union
+let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
+    SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
+
+// Record
+// ------------------------------------------
 let recordDefinition (cases: SynFieldRcd list) =
     cases |> SynTypeDefnSimpleReprRecordRcd.Create |> SynTypeDefnSimpleReprRcd.Record
 let typeAbbreviationDefinition (atype: SynType) =
     { ParseDetail = ParserDetail.Ok
       Type = atype
       Range = range.Zero } |> SynTypeDefnSimpleReprRcd.TypeAbbrev
-
-let appType (tApp: string list) =
-    match tApp with
-    | [t] -> SynType.Create t
-    | t::at -> SynType.CreateApp(SynType.Create t, at |> List.map SynType.Create)
-    | [] -> SynType.Create "obj"
-
-let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
-    SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
 
 let simpleField (fname:string) (ftype: string) =
     SynFieldRcd.Create (fname, LongIdentWithDots.CreateString ftype) 
@@ -91,6 +104,16 @@ let anonAppField (funApp: string list) =
     | funType::argTypes -> { (SynFieldRcd.CreateApp "" (LongIdentWithDots.CreateString funType) (argTypes |> List.map LongIdentWithDots.CreateString)) with Id = None }
     | [] -> anonSimpleField "obj"
 
+// Type referencing
+// ------------------------------------------
+let appType (tApp: string list) =
+    match tApp with
+    | [t] -> SynType.Create t
+    | t::at -> SynType.CreateApp(SynType.Create t, at |> List.map SynType.Create)
+    | [] -> SynType.Create "obj"
+
+// Function pattern
+// ------------------------------------------
 let functionPattern (fname: string) (args: (string*SynType) list) =
     let argumentDeclarations = 
         args
@@ -120,6 +143,8 @@ let memberFunctionPattern (fname: string) (args: (string*SynType*bool) list) =
         |> SynPatRcd.CreateParen
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, [argumentDecarations])
 
+// Match statement
+// ------------------------------------------
 let simpleMatchClause (pat: string) (args: string list) (whenc: SynExpr option) (result: SynExpr) =
     SynMatchClause.Clause ((functionPatternNoArgTypes pat args).FromRcd, whenc, result, range.Zero, DebugPointForTarget.No)
 let matchStatement (clauses: SynMatchClause list) (matchOn: SynExpr)  =
@@ -128,6 +153,8 @@ let matchStatement (clauses: SynMatchClause list) (matchOn: SynExpr)  =
 let anonRecord (fields: (Ident*SynExpr) list) =
     SynExpr.AnonRecd (false, None, fields, range.Zero)
 
+// Lambda statement
+// ------------------------------------------
 let simpleLambdaStatement (isSeq: bool) (args: string list) (expr: SynExpr) =
     let argumentDecarations = 
         let simplePats =
@@ -146,9 +173,8 @@ let typedLambdaStatement (isSeq: bool) (args: (string*SynType) list) (expr: SynE
         SynSimplePats.SimplePats (simplePats, range.Zero)
     SynExpr.Lambda (false, isSeq, argumentDecarations, expr, None, range.Zero)   
 
-let expressionUpcast (etype: SynType) (expr: SynExpr) =
-    SynExpr.Upcast(expr, etype, range.Zero)
-
+// Expressions
+// ------------------------------------------
 type ExpressionSequenceItem =
     | Let of SynBindingRcd
     | Expression of SynExpr
@@ -165,6 +191,9 @@ let expressionSequence (expressions: ExpressionSequenceItem list) =
             | Let b -> SynExpr.LetOrUse (false, false, [ b.FromRcd ], nextExpr, range.Zero )
             | Expression e -> SynExpr.Sequential (DebugPointAtSequential.Both, false, e, nextExpr, range.Zero))
             last
+
+let expressionUpcast (etype: SynType) (expr: SynExpr) =
+    SynExpr.Upcast(expr, etype, range.Zero)
 
 let application (expers: SynExpr list) = 
     match expers with

@@ -134,8 +134,8 @@ type SafeReactPropType =
         | String _ -> Some ["string"]
         | Object _ -> Some ["obj"]
         | Any _ -> Some ["obj"]
-        | Element _ -> Some ["obj"] //TODO allow passing in dash components?
-        | Node _ -> Some ["obj"] //TODO allow passing in dash components?
+        | Element _ -> Some ["DashComponent"]
+        | Node _ -> Some ["DashComponent"] 
 
         // Special cases, each type will have a unique name
         | Enum _

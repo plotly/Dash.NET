@@ -398,7 +398,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 | Some (Any _)
                                 | Some (Element _)
                                 | Some (Node _) -> 
-                                    SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonSerializer"; "Serialize"], SynExpr.CreateIdentString "p")
+                                    SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], SynExpr.CreateIdentString "p")
                                     |> SynExpr.CreateParen
 
                                 // Special cases, each type has a custom ToString
@@ -493,7 +493,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         // Create the type definition
         parameters.ComponentAttrsName
         |> componentInfo
-        //|> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation |> toXMLDoc) //TODO
+        |> withXMLDoc (["A list of children or a property for this dash component"] |> toXMLDoc)
         |> simpleTypeDeclaration 
             componentAttributeDUCases
             [ yield! componentPropertyConstructorDeclarations
@@ -715,7 +715,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             [ SynModuleDecl.CreateOpen "Dash.NET" 
               SynModuleDecl.CreateOpen "System"
               SynModuleDecl.CreateOpen "Plotly.NET"
-              SynModuleDecl.CreateOpen "System.Text.Json"
+              SynModuleDecl.CreateOpen "Newtonsoft.Json"
               moduleDeclaration ] 
 
     // Create the file

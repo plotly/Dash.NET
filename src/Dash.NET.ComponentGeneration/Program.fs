@@ -60,6 +60,8 @@ let performGeneration
     (authors: string list)
     (maybePublishingKey: string option) =
     async {
+        do! ProjectGeneration.checkDotnetVersion log
+
         let localJavascript =
             localFiles
             |> List.filter (Path.GetExtension >> (fun s -> s.ToLowerInvariant()) >> (=) ".js")
