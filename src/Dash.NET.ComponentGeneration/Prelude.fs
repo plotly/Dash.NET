@@ -57,6 +57,7 @@ module String =
         else sprintf "Prop%s" s
         |> replace @"\" ""
         |> replace "\"" ""
+        |> replace "+" "Plus"
 
     let matches (reg: string) (s: string) = Regex.IsMatch(s, reg)
 

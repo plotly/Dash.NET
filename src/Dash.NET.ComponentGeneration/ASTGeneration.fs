@@ -148,7 +148,6 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 [ toCaseValueDefinition ]
 
                     (unionTypeDefinition :: recursiveTypes) 
-                    |> List.rev 
                     |> Some
 
                 else
@@ -211,8 +210,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         (singleCaseUnion |> unionDefinition)
                         [ toCaseValueDefinition ]
 
-                (unionDefinition :: recursiveTypes) 
-                |> List.rev 
+                (unionDefinition :: recursiveTypes)
                 |> Some
 
             | SafeReactPropType.ObjectOf (_, Some utype) -> 
@@ -258,8 +256,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         (singeCaseUnion |> unionDefinition)
                         [ toCaseValueDefinition ]
 
-                (unionDefinition :: recursiveTypes) 
-                |> List.rev 
+                (unionDefinition :: recursiveTypes)
                 |> Some
 
             | SafeReactPropType.Shape (_, Some values) 
@@ -334,7 +331,6 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 [ toStringDefinition ]
 
                     (recordTypeDefinition :: recursiveTypes)
-                    |> List.rev 
                     |> Some
 
                 else
@@ -350,6 +346,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             ptype.propType
             |> Option.bind (generatePropTypes pname))
         |> List.concat
+        |> List.rev
 
     /// Define the component property descriminated union
     let componentPropertyDUDeclaration =

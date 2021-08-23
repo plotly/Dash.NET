@@ -185,6 +185,9 @@ let toXMLDoc (inner: string list) =
         //adding "&#10;" is the best way I could find to allow fantomas to add newlines to xml docs
         |> List.fold (fun acc (i, s) -> if i = 0 then s::acc else s::"&#10;"::acc) []
         |> List.rev
+        |> List.map (String.replace "<" "&lt;")
+        |> List.map (String.replace ">" "&gt;")
+        |> List.map (String.replace "`" "&#96;")
     [yield "<summary>"; yield! modInner; yield "</summary>"]
     |> List.map (String.replace "\r" "")
     |> List.map (String.split "\n")

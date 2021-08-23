@@ -62,6 +62,14 @@ let memberBinding (expr: SynExpr) (lpatt: SynPatRcd)  =
 let letDeclaration (binding: SynBindingRcd) =
     SynModuleDecl.CreateLet [ binding ]
 
+// Type referencing
+// ------------------------------------------
+let rec appType (tApp: string list) =
+    match tApp with
+    | [] -> SynType.Create "obj"
+    | [t] -> SynType.Create t
+    | t::at -> SynType.CreateApp(SynType.Create t, [appType at])
+
 // Type declaration
 // ------------------------------------------
 let typeDeclaration (tDef: SynMemberDefns) (tInfo: SynComponentInfoRcd) = 
@@ -94,23 +102,9 @@ let anonSimpleField (ftype: string) =
     { SynFieldRcd.Create ("", LongIdentWithDots.CreateString ftype) with Id = None }
 
 let simpleAppField (fname:string) (funApp: string list) =
-    match funApp with
-    | [funType] -> simpleField fname funType
-    | funType::argTypes -> (SynFieldRcd.CreateApp fname (LongIdentWithDots.CreateString funType) (argTypes |> List.map LongIdentWithDots.CreateString))
-    | [] -> simpleField fname "obj"
+    SynFieldRcd.Create (Ident.Create fname, appType funApp)
 let anonAppField (funApp: string list) =
-    match funApp with
-    | [funType] -> anonSimpleField funType
-    | funType::argTypes -> { (SynFieldRcd.CreateApp "" (LongIdentWithDots.CreateString funType) (argTypes |> List.map LongIdentWithDots.CreateString)) with Id = None }
-    | [] -> anonSimpleField "obj"
-
-// Type referencing
-// ------------------------------------------
-let appType (tApp: string list) =
-    match tApp with
-    | [t] -> SynType.Create t
-    | t::at -> SynType.CreateApp(SynType.Create t, at |> List.map SynType.Create)
-    | [] -> SynType.Create "obj"
+    { (SynFieldRcd.Create (Ident.Create "", appType funApp)) with Id = None }
 
 // Function pattern
 // ------------------------------------------
