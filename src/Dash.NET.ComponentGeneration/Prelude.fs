@@ -39,6 +39,15 @@ module String =
     let decapitalize (s: string) = (sprintf "%c%s" (Char.ToLowerInvariant(s.[0])) (s.Substring(1)))
     let capitalize (s: string) = (sprintf "%c%s" (Char.ToUpperInvariant(s.[0])) (s.Substring(1)))
 
+    let toPascalCase (s:string) =
+        s
+        |> split "_"
+        |> List.map capitalize
+        |> (function
+            | [] -> ""
+            | [s] -> s
+            | l -> List.reduce (sprintf "%s%s") l)
+
     let removeQuotes (s: string) = 
         if Regex.IsMatch(s, "^(['\"`]).*(['\"`])$") then
             s.Substring(1,s.Length - 2)
@@ -52,7 +61,7 @@ module String =
     //DU labels have to start with a capital, if a property/value name starts with an _ or other non-letter character
     //then we have to add a letter in front of it
     let toValidDULabel (s: string) = 
-        let capitalizedLabel = s |> capitalize
+        let capitalizedLabel = s |> toPascalCase
         if validDULabel.IsMatch(capitalizedLabel) then capitalizedLabel
         else sprintf "Prop%s" s
         |> replace @"\" ""

@@ -20,7 +20,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
     let componentPropertyTypeDeclarations =
         let rec generatePropTypes (name: string) (ptype: SafeReactPropType) =
 
-            let propTypeName = name |> String.capitalize
+            let propTypeName = name |> String.toPascalCase
 
             match ptype with
             | SafeReactPropType.Enum (_, Some cases) ->
@@ -270,7 +270,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     let recursiveTypes =
                         fields
                         |> List.choose (fun (pname, ptype) -> 
-                            generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.capitalize)) ptype)
+                            generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype)
                         |> List.concat
                 
                     // { AField: Option<bool>
@@ -283,11 +283,11 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |> List.map (fun (pname, ptype) -> 
                             let fieldTypeName =
                                 SafeReactPropType.tryGetFSharpTypeName ptype
-                                |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.capitalize)])
+                                |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
                             if (ptype |> SafeReactPropType.getProps).required = Some false then 
-                                simpleAppField (pname |> String.capitalize) [ yield "Option"; yield! fieldTypeName ]
+                                simpleAppField (pname |> String.toPascalCase) [ yield "Option"; yield! fieldTypeName ]
                             else
-                                simpleAppField (pname |> String.capitalize) fieldTypeName)
+                                simpleAppField (pname |> String.toPascalCase) fieldTypeName)
 
                     // override this.ToString() =
                     //     JsonSerializer.Serialize
@@ -305,10 +305,10 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                         if (ptype |> SafeReactPropType.getProps).required = Some false then 
                                             application
                                                 [ SynExpr.CreateIdentString "Some"
-                                                  SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.capitalize; "ToString"] )
+                                                  SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "ToString"] )
                                                   |> SynExpr.CreateParen ]
                                         else
-                                            SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.capitalize; "ToString"] )
+                                            SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "ToString"] )
                                             
                                     ( Ident.Create pname, jsonConversion ))
                                 |> anonRecord
@@ -364,7 +364,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 |> Option.map (fun ptype ->
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue ([pname |> String.capitalize])
+                        |> Option.defaultValue ([pname |> String.toPascalCase])
                     simpleUnionCase psafe [anonAppField propTypeName]))
             |> unionDefinition
 
@@ -456,7 +456,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 |> Option.map (fun ptype ->
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue ([pname |> String.capitalize])
+                        |> Option.defaultValue ([pname |> String.toPascalCase])
                     functionPattern pname [("p", appType propTypeName)]
                     |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen])
                     |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
