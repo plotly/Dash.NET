@@ -97,20 +97,30 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         generatePropTypes (sprintf "%sCase%dType" propTypeName i) case)
                     |> List.concat
 
-                // | CPropCase0 of CPropCase0Type
-                // | CPropCase1 of bool
-                //
-                /// Define the cases for the descriminated union
-                let duCases =
+                let cases =
                     utypes
                     |> List.indexed
                     |> List.map (fun (i, case) -> 
-                        let caseName = (sprintf "%sCase%d" propTypeName i)
                         let caseTypeName = 
                             case 
                             |> SafeReactPropType.tryGetFSharpTypeName
                             |> Option.defaultValue ([sprintf "%sCase%dType" propTypeName i])
 
+                        let caseName = 
+                            caseTypeName 
+                            |> List.rev
+                            |> List.map String.capitalize
+                            |> List.reduce (sprintf "%s%s")
+
+                        (caseTypeName, caseName))
+
+                // | CPropCase0 of CPropCase0Type
+                // | CPropCase1 of bool
+                //
+                /// Define the cases for the descriminated union
+                let duCases =
+                    cases
+                    |> List.map (fun (caseTypeName, caseName) ->
                         simpleUnionCase caseName [anonAppField caseTypeName])
 
                 // | CPropCase0 (v) -> v.ToString()
@@ -118,10 +128,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 //
                 /// Define the values for the cases
                 let caseValues =
-                    utypes
-                    |> List.indexed
-                    |> List.map (fun (i, _) -> 
-                        let caseName = (sprintf "%sCase%d" propTypeName i)
+                    cases
+                    |> List.map (fun (_, caseName) ->
                         simpleMatchClause caseName ["v"] None ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["v"; "ToString"]) ))
 
                 // override this.ToString() =
@@ -214,49 +222,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 |> Some
 
             | SafeReactPropType.ObjectOf (_, Some utype) -> 
-                let recursiveTypes = 
-                    generatePropTypes (sprintf "%sType" propTypeName) utype
-                    |> Option.defaultValue []
-
-                let caseInnerType = 
-                    utype 
-                    |> SafeReactPropType.tryGetFSharpTypeName
-                    |> Option.defaultValue ([sprintf "%sType" propTypeName])
-
-                // | EProp of bool
-                //
-                /// Create single case DU case
-                let singeCaseUnion =
-                    [ anonAppField caseInnerType ]
-                    |> simpleUnionCase propTypeName
-                    |> List.singleton
-
-                // override this.ToString() =
-                //     match this with
-                //     | EProp (v) -> v.ToString()
-                //
-                /// Define the json conversion
-                let toCaseValueDefinition =
-                    let matchCase =
-                        SynExpr.CreateIdentString "this"
-                        |> matchStatement 
-                            [ simpleMatchClause propTypeName ["v"] None ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["v"; "ToString"]) ) ]
-                    functionPatternThunk "this.ToString"
-                    |> binding matchCase
-                    |> SynMemberDefn.CreateOverrideMember
-
-                // type EProp =
-                //
-                /// Create the union definition
-                let unionDefinition =
-                    propTypeName
-                    |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                    |> simpleTypeDeclaration
-                        (singeCaseUnion |> unionDefinition)
-                        [ toCaseValueDefinition ]
-
-                (unionDefinition :: recursiveTypes)
+                generatePropTypes propTypeName utype
+                |> Option.defaultValue []
                 |> Some
 
             | SafeReactPropType.Shape (_, Some values) 
