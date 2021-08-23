@@ -32,6 +32,7 @@
     <Compile Include="DashComponents\ComponentBase.fs" />
     <None Include="DashComponents\HTMLComponents\Readme.md" />
     <Compile Include="DashComponents\HTMLComponents\Html.fs" />
+    <Compile Include="DashComponents\CoreComponents\Slider.fs" />
     <Compile Include="DashComponents\CoreComponents\RadioItems.fs" />
     <Compile Include="DashComponents\CoreComponents\Dropdown.fs" />
     <Compile Include="DashComponents\CoreComponents\Graph.fs" />
