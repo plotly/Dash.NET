@@ -109,7 +109,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         let caseName = 
                             caseTypeName 
                             |> List.rev
-                            |> List.map String.capitalize
+                            |> List.map String.toPascalCase
                             |> List.reduce (sprintf "%s%s")
 
                         (caseTypeName, caseName))
@@ -307,11 +307,11 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             // Other types dont need definitions
             | _ -> None
 
-        (parameters.PropertyNames, parameters.PropertyTypes)
+        (parameters.PropertyTypeNames, parameters.PropertyTypes)
         ||> List.zip 
-        |> List.choose (fun (pname, ptype) -> 
+        |> List.choose (fun (ptname, ptype) -> 
             ptype.propType
-            |> Option.bind (generatePropTypes pname))
+            |> Option.bind (generatePropTypes ptname))
         |> List.concat
         |> List.rev
 
@@ -324,14 +324,13 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         //
         /// Define the cases for the descriminated union
         let componentPropertyDUCases =
-            (parameters.DUSafePropertyNames, parameters.PropertyNames, parameters.PropertyTypes)
-            |||> List.zip3 
-            |> List.choose (fun (psafe, pname, prop) -> 
+            List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+            |> List.choose (fun (psafe, pname, prop, ptname) -> 
                 prop.propType
                 |> Option.map (fun ptype ->
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue ([pname |> String.toPascalCase])
+                        |> Option.defaultValue ([ptname])
                     simpleUnionCase psafe [anonAppField propTypeName]))
             |> unionDefinition
 
@@ -416,14 +415,13 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         //
         /// Create Feliz style attribute constructors for properties
         let componentPropertyConstructorDeclarations =
-            (parameters.DUSafePropertyNames, parameters.PropertyNames, parameters.PropertyTypes)
-            |||> List.zip3
-            |> List.choose (fun (psafe, pname, prop) ->
+            List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+            |> List.choose (fun (psafe, pname, prop, ptname) ->
                 prop.propType
                 |> Option.map (fun ptype ->
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue ([pname |> String.toPascalCase])
+                        |> Option.defaultValue ([ptname])
                     functionPattern pname [("p", appType propTypeName)]
                     |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen])
                     |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)

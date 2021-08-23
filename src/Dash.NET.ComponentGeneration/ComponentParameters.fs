@@ -20,6 +20,7 @@ type ComponentParameters =
         ComponentDescription:           string option
         PropertyNames:                  string list
         DUSafePropertyNames:            string list
+        PropertyTypeNames:              string list
         PropertyTypes:                  SafeReactProp list
         Metadata:                       SafeReactComponent
     }
@@ -45,6 +46,7 @@ type ComponentParameters =
             ComponentDescription            = componentMetadata.description
             PropertyNames                   = pnames
             DUSafePropertyNames             = pnames |> List.map String.toValidDULabel
+            PropertyTypeNames               = pnames |> List.map String.toPascalCase |> List.map (sprintf "%sType")
             PropertyTypes                   = pvals
             Metadata                        = componentMetadata
         }

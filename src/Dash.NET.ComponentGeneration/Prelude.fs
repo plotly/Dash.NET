@@ -70,3 +70,10 @@ module String =
 
     let matches (reg: string) (s: string) = Regex.IsMatch(s, reg)
 
+module List =
+    let zip4 l1 l2 l3 l4 =
+        (List.zip l1 l2, List.zip l3 l4)
+        ||> List.zip
+        |> List.map (fun ((a1,a2),(a3,a4)) -> (a1,a2,a3,a4))
+
+
