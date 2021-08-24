@@ -4,6 +4,7 @@ open Dash.NET
 open System
 open Plotly.NET
 open Newtonsoft.Json
+open System.Collections.Generic
 open ComponentPropTypes
 
 ///<summary>
@@ -16,7 +17,7 @@ module Slider =
     ///</summary>
     type PersistedPropsTypeType =
         | Value
-        override this.ToString() =
+        member this.Convert() =
             match this with
             | Value -> "value"
 
@@ -25,10 +26,9 @@ module Slider =
     ///</summary>
     type PersistedPropsType =
         | PersistedPropsType of list<PersistedPropsTypeType>
-        override this.ToString() =
+        member this.Convert() =
             match this with
-            | PersistedPropsType (v) ->
-                JsonConvert.SerializeObject(List.map (fun (i: PersistedPropsTypeType) -> i.ToString()) v)
+            | PersistedPropsType (v) -> List.map (fun (i: PersistedPropsTypeType) -> box (i.Convert())) v
 
     ///<summary>
     ///boolean | string | number
@@ -37,11 +37,11 @@ module Slider =
         | Bool of bool
         | String of string
         | IConvertible of IConvertible
-        override this.ToString() =
+        member this.Convert() =
             match this with
-            | Bool (v) -> v.ToString()
-            | String (v) -> v.ToString()
-            | IConvertible (v) -> v.ToString()
+            | Bool (v) -> box v
+            | String (v) -> box v
+            | IConvertible (v) -> box v
 
     ///<summary>
     ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
@@ -50,11 +50,11 @@ module Slider =
         { IsLoading: Option<bool>
           PropName: Option<string>
           ComponentName: Option<string> }
-        override this.ToString() =
-            JsonConvert.SerializeObject
-                {| is_loading = Some(this.IsLoading.ToString())
-                   prop_name = Some(this.PropName.ToString())
-                   component_name = Some(this.ComponentName.ToString()) |}
+        member this.Convert() =
+            box
+                {| is_loading = this.IsLoading
+                   prop_name = this.PropName
+                   component_name = this.ComponentName |}
 
     ///<summary>
     ///value equal to: 'mouseup', 'drag'
@@ -62,7 +62,7 @@ module Slider =
     type UpdateModeType =
         | Mouseup
         | Drag
-        override this.ToString() =
+        member this.Convert() =
             match this with
             | Mouseup -> "mouseup"
             | Drag -> "drag"
@@ -75,7 +75,7 @@ module Slider =
     ///top/bottom{*} sets the _origin_ of the tooltip, so e.g. &#96;topLeft&#96;
     ///will in reality appear to be on the top right of the handle
     ///</summary>
-    type TooltipPlacement =
+    type TooltipPlacementType =
         | Left
         | Right
         | Top
@@ -84,7 +84,7 @@ module Slider =
         | TopRight
         | BottomLeft
         | BottomRight
-        override this.ToString() =
+        member this.Convert() =
             match this with
             | Left -> "left"
             | Right -> "right"
@@ -100,36 +100,46 @@ module Slider =
     ///</summary>
     type TooltipType =
         { AlwaysVisible: Option<bool>
-          Placement: Option<TooltipPlacement> }
-        override this.ToString() =
-            JsonConvert.SerializeObject
-                {| always_visible = Some(this.AlwaysVisible.ToString())
-                   placement = Some(this.Placement.ToString()) |}
+          Placement: Option<TooltipPlacementType> }
+        member this.Convert() =
+            box
+                {| always_visible = this.AlwaysVisible
+                   placement = (this.Placement |> Option.map (fun v -> v.Convert())) |}
 
     ///<summary>
     ///record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarksWithStyle =
+    type MarkWithStyle =
         { Label: Option<string>
           Style: Option<obj> }
-        override this.ToString() =
-            JsonConvert.SerializeObject
-                {| label = Some(this.Label.ToString())
-                   style = Some(this.Style.ToString()) |}
+        member this.Convert() =
+            box
+                {| label = this.Label
+                   style = this.Style |}
 
     ///<summary>
     ///string | record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarksType =
+    type MarksTypeValue =
         | String of string
-        | MarksWithStyle of MarksWithStyle
-        override this.ToString() =
+        | MarkWithStyle of MarkWithStyle
+        member this.Convert() =
             match this with
-            | String (v) -> v.ToString()
-            | MarksWithStyle (v) -> v.ToString()
+            | String (v) -> box v
+            | MarkWithStyle (v) -> box (v.Convert())
 
     ///<summary>
-    ///• marks (string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
+    ///dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)'
+    ///</summary>
+    type MarksType =
+        | MarksType of Dictionary<string, MarksTypeValue>
+        member this.Convert() =
+            match this with
+            | MarksType (v) ->
+                (v.Keys, v.Values |> Seq.map (fun p -> box (p.Convert()))) ||> Seq.zip |> Seq.map KeyValuePair |> Dictionary
+
+    ///<summary>
+    ///• marks (dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
     ///The key determines the position (a number),
     ///and the value determines what will show.
     ///If you want to set the style of a specific mark point,
@@ -211,7 +221,7 @@ module Slider =
         | PersistenceType of PersistenceTypeOptions
         static member toDynamicMemberDef(prop: Prop) =
             match prop with
-            | Marks (p) -> "marks", box (p.ToString())
+            | Marks (p) -> "marks", box (p.Convert())
             | Value (p) -> "value", box p
             | DragValue (p) -> "drag_value", box p
             | ClassName (p) -> "className", box p
@@ -220,15 +230,15 @@ module Slider =
             | Included (p) -> "included", box p
             | Min (p) -> "min", box p
             | Max (p) -> "max", box p
-            | Tooltip (p) -> "tooltip", box (p.ToString())
+            | Tooltip (p) -> "tooltip", box (p.Convert())
             | Step (p) -> "step", box p
             | Vertical (p) -> "vertical", box p
             | VerticalHeight (p) -> "verticalHeight", box p
-            | UpdateMode (p) -> "updatemode", box (p.ToString())
-            | LoadingState (p) -> "loading_state", box (p.ToString())
-            | Persistence (p) -> "persistence", box (p.ToString())
-            | PersistedProps (p) -> "persisted_props", box (p.ToString())
-            | PersistenceType (p) -> "persistence_type", box (p.ToString())
+            | UpdateMode (p) -> "updatemode", box (p.Convert())
+            | LoadingState (p) -> "loading_state", box (p.Convert())
+            | Persistence (p) -> "persistence", box (p.Convert())
+            | PersistedProps (p) -> "persisted_props", box (p.Convert())
+            | PersistenceType (p) -> "persistence_type", PersistenceTypeOptions.convert p
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -244,18 +254,7 @@ module Slider =
         ///the value should be an object which
         ///contains style and label properties.
         ///</summary>
-        static member marks(p: string) = Prop(Marks(MarksType.String p))
-        ///<summary>
-        ///Marks on the slider.
-        ///The key determines the position (a number),
-        ///and the value determines what will show.
-        ///If you want to set the style of a specific mark point,
-        ///the value should be an object which
-        ///contains style and label properties.
-        ///</summary>
-        static member marks(p: MarksWithStyle) =
-            Prop(Marks(MarksType.MarksWithStyle p))
-
+        static member marks(p: MarksType) = Prop(Marks p)
         ///<summary>
         ///The value of the input
         ///</summary>
@@ -507,7 +506,7 @@ module Slider =
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
     ///&#10;
-    ///• marks (string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
+    ///• marks (dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
     ///The key determines the position (a number),
     ///and the value determines what will show.
     ///If you want to set the style of a specific mark point,
