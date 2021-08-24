@@ -4,6 +4,7 @@ open Dash.NET
 open System
 open Plotly.NET
 open Newtonsoft.Json
+open ComponentPropTypes
 
 ///<summary>
 ///A slider component with a single handle.
@@ -11,22 +12,9 @@ open Newtonsoft.Json
 [<RequireQualifiedAccess>]
 module Slider =
     ///<summary>
-    ///value equal to: 'local', 'session', 'memory'
-    ///</summary>
-    type PersistenceType =
-        | Local
-        | Session
-        | Memory
-        override this.ToString() =
-            match this with
-            | Local -> "local"
-            | Session -> "session"
-            | Memory -> "memory"
-
-    ///<summary>
     ///value equal to: 'value'
     ///</summary>
-    type PersistedPropsType =
+    type PersistedPropsTypeType =
         | Value
         override this.ToString() =
             match this with
@@ -35,30 +23,30 @@ module Slider =
     ///<summary>
     ///list with values of type: value equal to: 'value'
     ///</summary>
-    type PersistedProps =
-        | PersistedProps of list<PersistedPropsType>
+    type PersistedPropsType =
+        | PersistedPropsType of list<PersistedPropsTypeType>
         override this.ToString() =
             match this with
-            | PersistedProps (v) ->
-                JsonConvert.SerializeObject(List.map (fun (i: PersistedPropsType) -> i.ToString()) v)
+            | PersistedPropsType (v) ->
+                JsonConvert.SerializeObject(List.map (fun (i: PersistedPropsTypeType) -> i.ToString()) v)
 
     ///<summary>
     ///boolean | string | number
     ///</summary>
-    type Persistence =
-        | PersistenceCase0 of bool
-        | PersistenceCase1 of string
-        | PersistenceCase2 of IConvertible
+    type PersistenceType =
+        | Bool of bool
+        | String of string
+        | IConvertible of IConvertible
         override this.ToString() =
             match this with
-            | PersistenceCase0 (v) -> v.ToString()
-            | PersistenceCase1 (v) -> v.ToString()
-            | PersistenceCase2 (v) -> v.ToString()
+            | Bool (v) -> v.ToString()
+            | String (v) -> v.ToString()
+            | IConvertible (v) -> v.ToString()
 
     ///<summary>
     ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
     ///</summary>
-    type LoadingState =
+    type LoadingStateType =
         { IsLoading: Option<bool>
           PropName: Option<string>
           ComponentName: Option<string> }
@@ -71,7 +59,7 @@ module Slider =
     ///<summary>
     ///value equal to: 'mouseup', 'drag'
     ///</summary>
-    type Updatemode =
+    type UpdateModeType =
         | Mouseup
         | Drag
         override this.ToString() =
@@ -87,7 +75,7 @@ module Slider =
     ///top/bottom{*} sets the _origin_ of the tooltip, so e.g. &#96;topLeft&#96;
     ///will in reality appear to be on the top right of the handle
     ///</summary>
-    type TooltipPlacementType =
+    type TooltipPlacement =
         | Left
         | Right
         | Top
@@ -110,9 +98,9 @@ module Slider =
     ///<summary>
     ///record with the fields: 'always_visible: boolean (optional)', 'placement: value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight' (optional)'
     ///</summary>
-    type Tooltip =
+    type TooltipType =
         { AlwaysVisible: Option<bool>
-          Placement: Option<TooltipPlacementType> }
+          Placement: Option<TooltipPlacement> }
         override this.ToString() =
             JsonConvert.SerializeObject
                 {| always_visible = Some(this.AlwaysVisible.ToString())
@@ -121,7 +109,7 @@ module Slider =
     ///<summary>
     ///record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarksTypeCase1Type =
+    type MarksWithStyle =
         { Label: Option<string>
           Style: Option<obj> }
         override this.ToString() =
@@ -133,21 +121,12 @@ module Slider =
     ///string | record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
     type MarksType =
-        | MarksTypeCase0 of string
-        | MarksTypeCase1 of MarksTypeCase1Type
+        | String of string
+        | MarksWithStyle of MarksWithStyle
         override this.ToString() =
             match this with
-            | MarksTypeCase0 (v) -> v.ToString()
-            | MarksTypeCase1 (v) -> v.ToString()
-
-    ///<summary>
-    ///string | record with the fields: 'label: string (optional)', 'style: record (optional)'
-    ///</summary>
-    type Marks =
-        | Marks of MarksType
-        override this.ToString() =
-            match this with
-            | Marks (v) -> v.ToString()
+            | String (v) -> v.ToString()
+            | MarksWithStyle (v) -> v.ToString()
 
     ///<summary>
     ///• marks (string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
@@ -212,7 +191,7 @@ module Slider =
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
     type Prop =
-        | Marks of Marks
+        | Marks of MarksType
         | Value of IConvertible
         | DragValue of IConvertible
         | ClassName of string
@@ -221,15 +200,15 @@ module Slider =
         | Included of bool
         | Min of IConvertible
         | Max of IConvertible
-        | Tooltip of Tooltip
+        | Tooltip of TooltipType
         | Step of IConvertible
         | Vertical of bool
         | VerticalHeight of IConvertible
-        | Updatemode of Updatemode
-        | LoadingState of LoadingState
-        | Persistence of Persistence
-        | PersistedProps of PersistedProps
-        | PersistenceType of PersistenceType
+        | UpdateMode of UpdateModeType
+        | LoadingState of LoadingStateType
+        | Persistence of PersistenceType
+        | PersistedProps of PersistedPropsType
+        | PersistenceType of PersistenceTypeOptions
         static member toDynamicMemberDef(prop: Prop) =
             match prop with
             | Marks (p) -> "marks", box (p.ToString())
@@ -245,7 +224,7 @@ module Slider =
             | Step (p) -> "step", box p
             | Vertical (p) -> "vertical", box p
             | VerticalHeight (p) -> "verticalHeight", box p
-            | Updatemode (p) -> "updatemode", box (p.ToString())
+            | UpdateMode (p) -> "updatemode", box (p.ToString())
             | LoadingState (p) -> "loading_state", box (p.ToString())
             | Persistence (p) -> "persistence", box (p.ToString())
             | PersistedProps (p) -> "persisted_props", box (p.ToString())
@@ -265,7 +244,18 @@ module Slider =
         ///the value should be an object which
         ///contains style and label properties.
         ///</summary>
-        static member marks(p: Marks) = Prop(Marks p)
+        static member marks(p: string) = Prop(Marks(MarksType.String p))
+        ///<summary>
+        ///Marks on the slider.
+        ///The key determines the position (a number),
+        ///and the value determines what will show.
+        ///If you want to set the style of a specific mark point,
+        ///the value should be an object which
+        ///contains style and label properties.
+        ///</summary>
+        static member marks(p: MarksWithStyle) =
+            Prop(Marks(MarksType.MarksWithStyle p))
+
         ///<summary>
         ///The value of the input
         ///</summary>
@@ -273,7 +263,7 @@ module Slider =
         ///<summary>
         ///The value of the input during a drag
         ///</summary>
-        static member drag_value(p: IConvertible) = Prop(DragValue p)
+        static member dragValue(p: IConvertible) = Prop(DragValue p)
         ///<summary>
         ///Additional CSS class for the root DOM node
         ///</summary>
@@ -304,7 +294,7 @@ module Slider =
         ///<summary>
         ///Configuration for tooltips describing the current slider value
         ///</summary>
-        static member tooltip(p: Tooltip) = Prop(Tooltip p)
+        static member tooltip(p: TooltipType) = Prop(Tooltip p)
         ///<summary>
         ///Value by which increments or decrements are made
         ///</summary>
@@ -327,11 +317,11 @@ module Slider =
         ///leave &#96;updatemode&#96; as &#96;mouseup&#96; and use &#96;drag_value&#96;
         ///for the continuously updating value.
         ///</summary>
-        static member updatemode(p: Updatemode) = Prop(Updatemode p)
+        static member updateMode(p: UpdateModeType) = Prop(UpdateMode p)
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loading_state(p: LoadingState) = Prop(LoadingState p)
+        static member loadingState(p: LoadingStateType) = Prop(LoadingState p)
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -340,20 +330,44 @@ module Slider =
         ///the new &#96;value&#96; also matches what was given originally.
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
-        static member persistence(p: Persistence) = Prop(Persistence p)
+        static member persistence(p: bool) =
+            Prop(Persistence(PersistenceType.Bool p))
+
+        ///<summary>
+        ///Used to allow user interactions in this component to be persisted when
+        ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
+        ///hasn't changed from its previous value, a &#96;value&#96; that the user has
+        ///changed while using the app will keep that change, as long as
+        ///the new &#96;value&#96; also matches what was given originally.
+        ///Used in conjunction with &#96;persistence_type&#96;.
+        ///</summary>
+        static member persistence(p: string) =
+            Prop(Persistence(PersistenceType.String p))
+
+        ///<summary>
+        ///Used to allow user interactions in this component to be persisted when
+        ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
+        ///hasn't changed from its previous value, a &#96;value&#96; that the user has
+        ///changed while using the app will keep that change, as long as
+        ///the new &#96;value&#96; also matches what was given originally.
+        ///Used in conjunction with &#96;persistence_type&#96;.
+        ///</summary>
+        static member persistence(p: IConvertible) =
+            Prop(Persistence(PersistenceType.IConvertible p))
+
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persisted_props(p: PersistedProps) = Prop(PersistedProps p)
+        static member persistedProps(p: PersistedPropsType) = Prop(PersistedProps p)
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistence_type(p: PersistenceType) = Prop(PersistenceType p)
+        static member persistenceType(p: PersistenceTypeOptions) = Prop(PersistenceType p)
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -579,5 +593,3 @@ module Slider =
 
         DynObj.setValue t "props" componentProps
         t :> DashComponent
-
-
