@@ -273,6 +273,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             application
                               [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Seq"; "map"]) 
                                 SynExpr.CreateIdentString "KeyValuePair" ]
+                            SynExpr.CreateIdentString "|>"
+                            SynExpr.CreateIdentString "Dictionary"
                           ]
 
                     simpleMatchClause propTypeName ["v"] None convertDict
