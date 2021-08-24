@@ -125,6 +125,29 @@ type SafeReactPropType =
 
     // A type we can't process
     | Other of name: string * props: SafeReactPropProps * value: string option
+
+    static member needsConvert (from: SafeReactPropType) = 
+        match from with
+        | Array _ 
+        | Bool _ 
+        | Number _ 
+        | String _ 
+        | Object _ 
+        | Any _
+        | Element _ 
+        | Node _ -> false
+
+        | Enum _
+        | Union _
+        | ArrayOf _
+        | ObjectOf _
+        | Shape _
+        | Exact _
+        | FlowUnion _
+        | FlowArray _
+        | FlowObject _ -> true
+
+        | Other _ -> false
     
     static member tryGetFSharpTypeName (from: SafeReactPropType) =
         match from with

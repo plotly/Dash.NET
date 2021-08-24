@@ -66,11 +66,11 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     //
                     /// Define the json conversion
                     let toCaseValueDefinition =
-                        functionPatternThunk "this.ToString"
-                        |> binding  
+                        functionPatternThunk "this.Convert"
+                        |> memberBinding  
                           ( SynExpr.CreateIdentString "this"
                             |> matchStatement caseValues )
-                        |> SynMemberDefn.CreateOverrideMember
+                        |> SynMemberDefn.CreateMember
                  
                     // type CPropCase0Type =
                     //
@@ -112,7 +112,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             |> List.map String.toPascalCase
                             |> List.reduce (sprintf "%s%s")
 
-                        (caseTypeName, caseName))
+                        (case, caseTypeName, caseName))
 
                 // | CPropCase0 of CPropCase0Type
                 // | CPropCase1 of bool
@@ -120,28 +120,34 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 /// Define the cases for the descriminated union
                 let duCases =
                     cases
-                    |> List.map (fun (caseTypeName, caseName) ->
+                    |> List.map (fun (_, caseTypeName, caseName) ->
                         simpleUnionCase caseName [anonAppField caseTypeName])
 
-                // | CPropCase0 (v) -> v.ToString()
-                // | CPropCase1 (v) -> v.ToString()
+                // | CPropCase0 (v) -> box v
+                // | CPropCase1 (v) -> box v
                 //
                 /// Define the values for the cases
                 let caseValues =
                     cases
-                    |> List.map (fun (_, caseName) ->
-                        simpleMatchClause caseName ["v"] None ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["v"; "ToString"]) ))
+                    |> List.map (fun (utype, _, caseName) ->
+                        let boxable =
+                            if SafeReactPropType.needsConvert utype then 
+                                SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["v"; "Convert"] )
+                                |> SynExpr.CreateParen
+                            else
+                                SynExpr.CreateIdentString "v"
+                        simpleMatchClause caseName ["v"] None ( application [ SynExpr.CreateIdentString "box"; boxable ] ))
 
-                // override this.ToString() =
+                // override this.Convert() =
                 //     match this with
                 //
                 /// Define the json conversion
                 let toCaseValueDefinition =
-                    functionPatternThunk "this.ToString"
-                    |> binding  
+                    functionPatternThunk "this.Convert"
+                    |> memberBinding  
                         ( SynExpr.CreateIdentString "this"
                         |> matchStatement caseValues )
-                    |> SynMemberDefn.CreateOverrideMember
+                    |> SynMemberDefn.CreateMember
 
                 if duCases.Length > 0 then
                     // type CProp =
@@ -181,31 +187,34 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     |> simpleUnionCase propTypeName
                     |> List.singleton
 
-                // override this.ToString() =
+                // override this.Convert() =
                 //     match this with
-                //     | DProp (v) -> JsonSerializer.Serialize(List.map (fun (i: string) -> i.ToString()) v)
+                //     | DProp (v) -> List.map (fun (i: string) -> box i) v
                 //
                 /// Define the json conversion
                 let toCaseValueDefinition =
                     let matchResult =
-                        let mapStrings =
-                            application
-                                [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
-                                  SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["i"; "ToString"])
-                                  |> typedLambdaStatement false [("i", appType caseInnerType)]
-                                  |> SynExpr.CreateParen
-                                  SynExpr.CreateIdentString "v"]
-                            |> SynExpr.CreateParen
-                        SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], mapStrings)
+                        application
+                            [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
+                              application 
+                                [ SynExpr.CreateIdentString "box"
+                                  if SafeReactPropType.needsConvert utype then 
+                                      SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["i"; "Convert"] )
+                                      |> SynExpr.CreateParen
+                                  else
+                                      SynExpr.CreateIdentString "i" ]
+                              |> typedLambdaStatement false [("i", appType caseInnerType)]
+                              |> SynExpr.CreateParen
+                              SynExpr.CreateIdentString "v"]
 
                     let matchCase =
                         SynExpr.CreateIdentString "this"
                         |> matchStatement 
                             [ simpleMatchClause propTypeName ["v"] None matchResult ]
 
-                    functionPatternThunk "this.ToString"
-                    |> binding matchCase
-                    |> SynMemberDefn.CreateOverrideMember
+                    functionPatternThunk "this.Convert"
+                    |> memberBinding matchCase
+                    |> SynMemberDefn.CreateMember
 
                 // type DProp =
                 //
@@ -221,7 +230,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 (unionDefinition :: recursiveTypes)
                 |> Some
 
-            | SafeReactPropType.ObjectOf (_, Some utype) -> 
+            | SafeReactPropType.ObjectOf (_, Some utype) -> //TODO
                 let recursiveTypes = 
                     generatePropTypes (sprintf "%sType" propTypeName) utype
                     |> Option.defaultValue []
@@ -275,8 +284,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             else
                                 simpleAppField (pname |> String.toPascalCase) fieldTypeName)
 
-                    // override this.ToString() =
-                    //     JsonSerializer.Serialize
+                    // override this.Convert() =
+                    //     box
                     //         {| aField = Some(this.AField.ToString())
                     //            bField = Some(this.BField.ToString())
                     //            cField = this.CField.ToString() |}
@@ -288,22 +297,33 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 fields
                                 |> List.map (fun (pname, ptype) -> 
                                     let jsonConversion =
-                                        if (ptype |> SafeReactPropType.getProps).required = Some false then 
-                                            application
-                                                [ SynExpr.CreateIdentString "Some"
-                                                  SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "ToString"] )
-                                                  |> SynExpr.CreateParen ]
-                                        else
-                                            SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "ToString"] )
+                                        let converted =
+                                            if SafeReactPropType.needsConvert ptype then 
+                                                if (ptype |> SafeReactPropType.getProps).required = Some false then 
+                                                    application 
+                                                      [ SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
+                                                        SynExpr.CreateIdentString "|>"
+                                                        SynExpr.CreateLongIdent( LongIdentWithDots.Create ["Option"; "map"] )
+                                                        SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["v"; "Convert"] )
+                                                        |> simpleLambdaStatement false ["v"] 
+                                                        |> SynExpr.CreateParen ]
+                                                    |> SynExpr.CreateParen
+                                                else
+                                                    SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "Convert"] )
+                                                    |> SynExpr.CreateParen
+                                            else
+                                                SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
+
+                                        converted
                                             
                                     ( Ident.Create pname, jsonConversion ))
                                 |> anonRecord
 
-                            SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], serializable)
+                            application [ SynExpr.CreateIdentString "box"; serializable ]
 
-                        functionPatternThunk "this.ToString"
-                        |> binding toString
-                        |> SynMemberDefn.CreateOverrideMember
+                        functionPatternThunk "this.Convert"
+                        |> memberBinding toString
+                        |> SynMemberDefn.CreateMember
 
                     // type BProp =
                     // 
@@ -369,36 +389,10 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |||> List.zip3
                         |> List.map (fun (psafe, pname, prop) -> 
                             let pConvert =
-                                match prop.propType with 
-                                | Some (Array _)
-                                | Some (Bool _)
-                                | Some (Number _)
-                                | Some (String _) -> 
-                                    SynExpr.CreateIdentString "p"
-
-                                | Some (Object _)
-                                | Some (Any _)
-                                | Some (Element _)
-                                | Some (Node _) 
-                                | Some (ObjectOf _) -> 
-                                    SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], SynExpr.CreateIdentString "p")
+                                if prop.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
+                                    SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["p"; "Convert"])
                                     |> SynExpr.CreateParen
-
-                                // Special cases, each type has a custom ToString
-                                | Some (Enum _)
-                                | Some (Union _)
-                                | Some (ArrayOf _)
-                                | Some (Shape _)
-                                | Some (Exact _)
-                                | Some (FlowUnion _)
-                                | Some (FlowArray _)
-                                | Some (FlowObject _) -> 
-                                    SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["p"; "ToString"])
-                                    |> SynExpr.CreateParen
-
-                                // A type we can't process
-                                | Some (Other _)
-                                | None -> 
+                                else
                                     SynExpr.CreateIdentString "p"
                             simpleMatchClause psafe ["p"] None 
                               ( SynExpr.CreateTuple 
