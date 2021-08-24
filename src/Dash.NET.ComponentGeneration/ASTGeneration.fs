@@ -138,7 +138,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 SynExpr.CreateIdentString "v"
                         simpleMatchClause caseName ["v"] None ( application [ SynExpr.CreateIdentString "box"; boxable ] ))
 
-                // override this.Convert() =
+                // member this.Convert() =
                 //     match this with
                 //
                 /// Define the json conversion
@@ -187,7 +187,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     |> simpleUnionCase propTypeName
                     |> List.singleton
 
-                // override this.Convert() =
+                // member this.Convert() =
                 //     match this with
                 //     | DProp (v) -> List.map (fun (i: string) -> box i) v
                 //
@@ -232,13 +232,61 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
 
             | SafeReactPropType.ObjectOf (_, Some utype) -> //TODO
                 let recursiveTypes = 
-                    generatePropTypes (sprintf "%sType" propTypeName) utype
+                    generatePropTypes (sprintf "%sValue" propTypeName) utype
                     |> Option.defaultValue []
                 
                 let caseInnerType = 
                     utype 
                     |> SafeReactPropType.tryGetFSharpTypeName
-                    |> Option.defaultValue ([sprintf "%sType" propTypeName])
+                    |> Option.defaultValue ([sprintf "%sValue" propTypeName])
+
+                //  | MarksType (v) ->
+                //      (v.Keys, v.Values |> Seq.map (fun p -> box (p.Convert()))) ||> Seq.zip |> Seq.map KeyValuePair
+                //
+                /// Define the values for the cases
+                let caseValue =
+                    let boxable =
+                        if SafeReactPropType.needsConvert utype then 
+                            SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["p"; "Convert"] )
+                            |> SynExpr.CreateParen
+                        else
+                            SynExpr.CreateIdentString "p"
+
+                    let valueConvert =
+                        application [ SynExpr.CreateIdentString "box"; boxable ]
+                        |> simpleLambdaStatement false ["p"]
+                        |> SynExpr.CreateParen
+
+                    let convertDict =
+                        application
+                          [ SynExpr.CreateParenedTuple 
+                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["v"; "Keys"])
+                                application
+                                  [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["v"; "Values"])
+                                    SynExpr.CreateIdentString "|>" 
+                                    application
+                                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Seq"; "map"]) 
+                                        valueConvert ] ] ] 
+                            SynExpr.CreateIdentString "||>"
+                            SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Seq"; "zip"])
+                            SynExpr.CreateIdentString "|>"
+                            application
+                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Seq"; "map"]) 
+                                SynExpr.CreateIdentString "KeyValuePair" ]
+                          ]
+
+                    simpleMatchClause propTypeName ["v"] None convertDict
+
+                // member this.Convert() =
+                //     match this with
+                //
+                /// Define the json conversion
+                let toCaseValueDefinition =
+                    functionPatternThunk "this.Convert"
+                    |> memberBinding  
+                        ( SynExpr.CreateIdentString "this"
+                        |> matchStatement [caseValue] )
+                    |> SynMemberDefn.CreateMember
 
                 // type MarksType = Dictionary<string, MarksTypeType>
                 //
@@ -248,8 +296,13 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     |> componentInfo
                     |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
                     |> simpleTypeDeclaration
-                        (SynType.CreateApp (SynType.Create "Dictionary", [SynType.Create "string"; appType caseInnerType])  |> typeAbbreviationDefinition)
-                        [ ]
+                      ( SynType.CreateApp (SynType.Create "Dictionary", [SynType.Create "string"; appType caseInnerType]) 
+                        |> anonTypeField 
+                        |> List.singleton
+                        |> simpleUnionCase propTypeName
+                        |> List.singleton
+                        |> unionDefinition )
+                        [ toCaseValueDefinition ]
 
                 (aliasDefinition :: recursiveTypes)
                 |> Some
@@ -284,7 +337,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             else
                                 simpleAppField (pname |> String.toPascalCase) fieldTypeName)
 
-                    // override this.Convert() =
+                    // member this.Convert() =
                     //     box
                     //         {| aField = Some(this.AField.ToString())
                     //            bField = Some(this.BField.ToString())

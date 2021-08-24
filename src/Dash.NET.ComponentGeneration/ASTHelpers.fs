@@ -109,6 +109,9 @@ let simpleAppField (fname:string) (funApp: string list) =
 let anonAppField (funApp: string list) =
     { (SynFieldRcd.Create (Ident.Create "", appType funApp)) with Id = None }
 
+let anonTypeField (ftype: SynType) =
+    { (SynFieldRcd.Create (Ident.Create "", ftype)) with Id = None }
+
 // Function pattern
 // ------------------------------------------
 let functionPattern (fname: string) (args: (string*SynType) list) =
