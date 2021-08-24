@@ -440,7 +440,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 |> List.map String.toPascalCase
                                 |> List.reduce (sprintf "%s%s")
 
-                            functionPattern pname [("p", appType caseTypeName)]
+                            functionPattern (pname |> String.toPascalCase |> String.decapitalize) [("p", appType caseTypeName)]
                             |> binding
                               ( application
                                   [ SynExpr.CreateIdentString "Prop"
@@ -453,7 +453,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             |> SynMemberDefn.CreateStaticMember)
                         
                     | _ ->
-                        functionPattern pname [("p", appType propTypeName)]
+                        functionPattern (pname |> String.toPascalCase |> String.decapitalize) [("p", appType propTypeName)]
                         |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen ])
                         |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
                         |> SynMemberDefn.CreateStaticMember
