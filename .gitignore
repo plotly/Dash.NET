@@ -364,3 +364,6 @@ tmp/watch
 .fsdocs/cache
 output/
 /temp
+
+# JetBrains Rider working folder
+.idea
