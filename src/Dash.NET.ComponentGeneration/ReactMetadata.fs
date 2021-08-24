@@ -125,14 +125,9 @@ type SafeReactPropType =
 
     // A type we can't process
     | Other of name: string * props: SafeReactPropProps * value: string option
-
-    static member unwrapObjectOf (from: SafeReactPropType) =
-        match from with
-        | ObjectOf (_, Some newFrom) -> newFrom
-        | _ -> from
     
     static member tryGetFSharpTypeName (from: SafeReactPropType) =
-        match from |> SafeReactPropType.unwrapObjectOf with
+        match from with
         | Array _ -> Some ["list"; "obj"]
         | Bool _ -> Some ["bool"]
         | Number _ -> Some ["IConvertible"]

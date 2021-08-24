@@ -222,8 +222,27 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 |> Some
 
             | SafeReactPropType.ObjectOf (_, Some utype) -> 
-                generatePropTypes propTypeName utype
-                |> Option.defaultValue []
+                let recursiveTypes = 
+                    generatePropTypes (sprintf "%sType" propTypeName) utype
+                    |> Option.defaultValue []
+                
+                let caseInnerType = 
+                    utype 
+                    |> SafeReactPropType.tryGetFSharpTypeName
+                    |> Option.defaultValue ([sprintf "%sType" propTypeName])
+
+                // type MarksType = Dictionary<string, MarksTypeType>
+                //
+                /// Create the alias definition
+                let aliasDefinition =
+                    propTypeName
+                    |> componentInfo
+                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
+                    |> simpleTypeDeclaration
+                        (SynType.CreateApp (SynType.Create "Dictionary", [SynType.Create "string"; appType caseInnerType])  |> typeAbbreviationDefinition)
+                        [ ]
+
+                (aliasDefinition :: recursiveTypes)
                 |> Some
 
             | SafeReactPropType.Shape (_, Some values) 
@@ -350,7 +369,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |||> List.zip3
                         |> List.map (fun (psafe, pname, prop) -> 
                             let pConvert =
-                                match prop.propType |> Option.map SafeReactPropType.unwrapObjectOf with 
+                                match prop.propType with 
                                 | Some (Array _)
                                 | Some (Bool _)
                                 | Some (Number _)
@@ -360,7 +379,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 | Some (Object _)
                                 | Some (Any _)
                                 | Some (Element _)
-                                | Some (Node _) -> 
+                                | Some (Node _) 
+                                | Some (ObjectOf _) -> 
                                     SynExpr.CreateInstanceMethodCall(LongIdentWithDots.Create ["JsonConvert"; "SerializeObject"], SynExpr.CreateIdentString "p")
                                     |> SynExpr.CreateParen
 
@@ -368,7 +388,6 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                 | Some (Enum _)
                                 | Some (Union _)
                                 | Some (ArrayOf _)
-                                | Some (ObjectOf _)
                                 | Some (Shape _)
                                 | Some (Exact _)
                                 | Some (FlowUnion _)
@@ -423,7 +442,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         SafeReactPropType.tryGetFSharpTypeName ptype
                         |> Option.defaultValue ([ptname])
 
-                    match ptype |> SafeReactPropType.unwrapObjectOf with 
+                    match ptype with 
                     | Union (_, Some utypes)
                     | FlowUnion (_, Some utypes) ->
                         utypes
@@ -711,6 +730,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
               SynModuleDecl.CreateOpen "System"
               SynModuleDecl.CreateOpen "Plotly.NET"
               SynModuleDecl.CreateOpen "Newtonsoft.Json"
+              SynModuleDecl.CreateOpen "System.Collections.Generic"
               moduleDeclaration ] 
 
     // Create the file

@@ -78,7 +78,9 @@ let rec getTypePropDocumentation (ptype: SafeReactPropType) =
         |> Option.map (sprintf "list with values of type: %s")
 
     | ObjectOf (_, Some value) -> 
-        getTypePropDocumentation value
+        value
+        |> getTypePropDocumentation
+        |> Option.map (sprintf "dict with values of type: %s")
 
     | Shape (_, Some dict)
     | Exact (_, Some dict) -> 

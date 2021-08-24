@@ -80,6 +80,13 @@ let typeInherit (itype: SynExpr) =
 let simpleTypeDeclaration (tSimpleDef: SynTypeDefnSimpleReprRcd) (tDef: SynMemberDefns)  (tInfo: SynComponentInfoRcd) = 
     SynModuleDecl.CreateSimpleType(tInfo, tSimpleDef, tDef)
 
+// Abbrev
+// ------------------------------------------
+let typeAbbreviationDefinition (atype: SynType) =
+    { ParseDetail = ParserDetail.Ok
+      Type = atype
+      Range = range.Zero } |> SynTypeDefnSimpleReprRcd.TypeAbbrev
+
 // Union
 // ------------------------------------------
 let unionDefinition (cases: SynUnionCaseRcd list) =
@@ -91,10 +98,6 @@ let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
 // ------------------------------------------
 let recordDefinition (cases: SynFieldRcd list) =
     cases |> SynTypeDefnSimpleReprRecordRcd.Create |> SynTypeDefnSimpleReprRcd.Record
-let typeAbbreviationDefinition (atype: SynType) =
-    { ParseDetail = ParserDetail.Ok
-      Type = atype
-      Range = range.Zero } |> SynTypeDefnSimpleReprRcd.TypeAbbrev
 
 let simpleField (fname:string) (ftype: string) =
     SynFieldRcd.Create (fname, LongIdentWithDots.CreateString ftype) 
