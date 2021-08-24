@@ -350,11 +350,11 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |||> List.zip3
                         |> List.map (fun (psafe, pname, prop) -> 
                             let pConvert =
-                                match prop.propType with 
+                                match prop.propType |> Option.map SafeReactPropType.unwrapObjectOf with 
                                 | Some (Array _)
                                 | Some (Bool _)
                                 | Some (Number _)
-                                | Some (String _)-> 
+                                | Some (String _) -> 
                                     SynExpr.CreateIdentString "p"
 
                                 | Some (Object _)
@@ -422,10 +422,43 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
                         |> Option.defaultValue ([ptname])
-                    functionPattern pname [("p", appType propTypeName)]
-                    |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen])
-                    |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
-                    |> SynMemberDefn.CreateStaticMember))
+
+                    match ptype |> SafeReactPropType.unwrapObjectOf with 
+                    | Union (_, Some utypes)
+                    | FlowUnion (_, Some utypes) ->
+                        utypes
+                        |> List.indexed
+                        |> List.map (fun (i, case) -> 
+                            let caseTypeName = 
+                                case 
+                                |> SafeReactPropType.tryGetFSharpTypeName
+                                |> Option.defaultValue ([sprintf "%sCase%dType" ptname i])
+
+                            let caseName = 
+                                caseTypeName 
+                                |> List.rev
+                                |> List.map String.toPascalCase
+                                |> List.reduce (sprintf "%s%s")
+
+                            functionPattern pname [("p", appType caseTypeName)]
+                            |> binding
+                              ( application
+                                  [ SynExpr.CreateIdentString "Prop"
+                                    application
+                                        [ SynExpr.CreateIdentString psafe
+                                          application
+                                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create [ ptname; caseName ])
+                                                SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen ] |> SynExpr.CreateParen ])
+                            |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
+                            |> SynMemberDefn.CreateStaticMember)
+                        
+                    | _ ->
+                        functionPattern pname [("p", appType propTypeName)]
+                        |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen ])
+                        |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
+                        |> SynMemberDefn.CreateStaticMember
+                        |> List.singleton))
+            |> List.concat
 
         //  static member children(value: int) = Children([ Html.Html.text value ])
         //  static member children(value: string) = Children([ Html.Html.text value ])
