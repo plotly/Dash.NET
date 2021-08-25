@@ -70,7 +70,7 @@ let myLayout4 =
         Attr.children [
             Html.h1 [ Attr.children "Hello world from Dash.NET!"]
             Html.h2 [ Attr.children "Take a look at this graph:"]
-            Graph.graph "my-ghraph-id" [Graph.Figure (myGraph |> GenericChart.toFigure)] []
+            Graph.graph "my-ghraph-id" [Graph.Attr.figure (myGraph |> GenericChart.toFigure)]
         ]
     ]
 
@@ -89,7 +89,7 @@ let myLayout5 =
         Attr.children [
             Html.h1 [Attr.children "Hello world from Dash.NET!"]
             Html.h2 [Attr.children "Tell us something!"]
-            Input.input "test-input" [Input.Type InputType.Text] []
+            Input.input "test-input" [Input.Attr.inputType InputType.Text]
             Html.h2 [Attr.children "test-output"] 
         ]
     ]
@@ -139,8 +139,8 @@ let testLayout =
     Html.div [
         Attr.children [
             Html.h1 [Attr.children "Hello world from Dash.NET!"]
-            Input.input "test-input1" [Input.Type InputType.Number; Input.Value 2.] []
-            Input.input "test-input2" [Input.Type InputType.Number; Input.Value 3.] []
+            Input.input "test-input1" [Input.Attr.inputType InputType.Number; Input.Attr.value 2.]
+            Input.input "test-input2" [Input.Attr.inputType InputType.Number; Input.Attr.value 3.]
             Html.h2 [Attr.children "first number times 2 is:"]
             Html.div [Attr.children "test-output1"] 
             Html.h2 [Attr.children "first number times squared is:"]
@@ -207,9 +207,9 @@ let myLayout6 =
         Attr.children [
             Html.h1 [Attr.children "Hello world from Dash.NET!"]
             Html.h2 [Attr.children "Tell us something!"]
-            Input.input "test-input" [Input.Type InputType.Text] []
+            Input.input "test-input" [Input.Attr.inputType InputType.Text]
             Html.h3 [Attr.children "Input below will not trigger the callback"]
-            Input.input "test-input-state" [Input.Type InputType.Text] []
+            Input.input "test-input-state" [Input.Attr.inputType InputType.Text]
             Html.h2 [Attr.children "test-output"]
         ]
     ]
