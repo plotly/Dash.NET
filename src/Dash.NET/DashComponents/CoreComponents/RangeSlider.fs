@@ -174,17 +174,13 @@ namespace Dash.NET.DCC
 //    ///dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)'
 //    ///</summary>
 //    type MarksType =
-//        | MarksType of Dictionary<string, MarksTypeValue>
+//        | MarksType of Map<string, MarksTypeValue>
 //        member this.Convert() =
 //            match this with
 //            | MarksType (v) ->
-//                (v.Keys, v.Values |> Seq.map (fun p -> box (p.Convert())))
-//                    ||>
-//                    Seq.zip
-//                    |>
-//                    Seq.map KeyValuePair
-//                    |>
-//                    Dictionary
+                //v
+                //|> Map.map (fun _ v -> box (v |> MarkValue.convert))
+                //|> box
 
 //    ///<summary>
 //    ///• marks (dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.

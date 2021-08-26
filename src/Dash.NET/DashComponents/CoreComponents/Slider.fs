@@ -90,14 +90,12 @@ module Slider =
     ///dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
     type MarksType =
-        | MarksType of Dictionary<string, MarkValue>
+        | MarksType of Map<string, MarkValue>
         static member convert this = 
             match this with
             | MarksType (v) ->
-                (v.Keys, v.Values |> Seq.map (fun p -> box (p |> MarkValue.convert))) 
-                ||> Seq.zip 
-                |> Seq.map KeyValuePair
-                |> Dictionary
+                v
+                |> Map.map (fun _ v -> box (v |> MarkValue.convert))
                 |> box
 
     ///<summary>
