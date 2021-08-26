@@ -95,7 +95,7 @@ module RadioItems =
         ///<summary>
         ///The style of the container (div)
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///The class of the container (div)
         ///</summary>
@@ -103,7 +103,7 @@ module RadioItems =
         ///<summary>
         ///The style of the &lt;input&gt; radio element
         ///</summary>
-        static member inputStyle(p: DashComponentStyle) = Prop(InputStyle p)
+        static member inputStyle(p: seq<Css.Style>) = Prop(InputStyle(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///The class of the &lt;input&gt; radio element
         ///</summary>
@@ -112,7 +112,7 @@ module RadioItems =
         ///The style of the &lt;label&gt; that wraps the radio input
         /// and the option's label
         ///</summary>
-        static member labelStyle(p: DashComponentStyle) = Prop(LabelStyle p)
+        static member labelStyle(p: seq<Css.Style>) = Prop(LabelStyle(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///The class of the &lt;label&gt; that wraps the radio input
         /// and the option's label

@@ -32,6 +32,7 @@
     <Compile Include="DashComponents\ComponentBase.fs" />
     <None Include="DashComponents\HTMLComponents\Readme.md" />
     <Compile Include="DashComponents\HTMLComponents\Html.fs" />
+    <Compile Include="DashComponents\ComponentStyle.fs" />
     <Compile Include="DashComponents\CoreComponents\Checklist.fs" />
     <Compile Include="DashComponents\CoreComponents\ConfirmDialog.fs" />
     <Compile Include="DashComponents\CoreComponents\ConfirmDialogProvider.fs" />

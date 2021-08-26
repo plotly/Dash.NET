@@ -219,7 +219,7 @@ module Graph =
         ///<summary>
         ///Generic style overrides on the plot div
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///className of the parent div
         ///</summary>

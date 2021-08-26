@@ -120,15 +120,15 @@ module Tabs =
         ///<summary>
         ///Appends (inline) styles to the Tabs container holding the individual Tab components.
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///Appends (inline) styles to the top-level parent container holding both the Tabs container and the content container.
         ///</summary>
-        static member parentStyle(p: DashComponentStyle) = Prop(ParentStyle p)
+        static member parentStyle(p: seq<Css.Style>) = Prop(ParentStyle(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///Appends (inline) styles to the tab content container holding the children of the Tab that is selected.
         ///</summary>
-        static member contentStyle(p: DashComponentStyle) = Prop(ContentStyle p)
+        static member contentStyle(p: seq<Css.Style>) = Prop(ContentStyle(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///Renders the tabs vertically (on the side)
         ///</summary>

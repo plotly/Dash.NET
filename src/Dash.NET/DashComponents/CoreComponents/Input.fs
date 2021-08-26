@@ -197,7 +197,7 @@ module Input =
         ///<summary>
         ///The input's inline styles
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///The class of the input element
         ///</summary>

@@ -177,7 +177,7 @@ module Dropdown =
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
 
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer

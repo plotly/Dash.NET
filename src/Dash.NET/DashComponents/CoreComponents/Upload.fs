@@ -202,7 +202,7 @@ module Upload =
         ///<summary>
         ///CSS styles to apply
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///CSS styles to apply while active
         ///</summary>

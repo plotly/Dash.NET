@@ -81,7 +81,7 @@ module Tab =
         ///<summary>
         ///Overrides the default (inline) styles when disabled
         ///</summary>
-        static member disabledStyle(p: DashComponentStyle) = Prop(DisabledStyle p)
+        static member disabledStyle(p: seq<Css.Style>) = Prop(DisabledStyle(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///Appends a class to the Tab component when it is disabled.
         ///</summary>
@@ -97,7 +97,7 @@ module Tab =
         ///<summary>
         ///Overrides the default (inline) styles for the Tab component.
         ///</summary>
-        static member style(p: DashComponentStyle) = Prop(Style p)
+        static member style(p: seq<Css.Style>) = Prop(Style(DashComponentStyle.fromCssStyle p))
         ///<summary>
         ///Overrides the default (inline) styles for the Tab component when it is selected.
         ///</summary>

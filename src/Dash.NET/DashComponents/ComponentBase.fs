@@ -29,8 +29,6 @@ type DashComponent
                 box comp 
         )
 
-type DashComponentStyle() = inherit DynamicObj()
-
 type DashComponentProps() = inherit DynamicObj()
 
 [<AutoOpen>]
