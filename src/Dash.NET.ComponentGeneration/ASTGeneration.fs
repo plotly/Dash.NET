@@ -61,15 +61,16 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             None)
 
                 if duCases.Length > 0 then
-                    // override this.ToString() =
+                    // override this.Convert() =
                     //     match this with
                     //
                     /// Define the json conversion
                     let toCaseValueDefinition =
                         functionPatternThunk "this.Convert"
                         |> memberBinding  
-                          ( SynExpr.CreateIdentString "this"
-                            |> matchStatement caseValues )
+                          ( application 
+                              [ SynExpr.CreateIdentString "box"
+                                SynExpr.CreateIdentString "this" |> matchStatement caseValues |> SynExpr.CreateParen ] )
                         |> SynMemberDefn.CreateMember
                  
                     // type CPropCase0Type =
@@ -212,8 +213,13 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |> matchStatement 
                             [ simpleMatchClause propTypeName ["v"] None matchResult ]
 
+                    let objectBox =
+                        application 
+                          [ SynExpr.CreateIdentString "box"
+                            matchCase |> SynExpr.CreateParen ]
+
                     functionPatternThunk "this.Convert"
-                    |> memberBinding matchCase
+                    |> memberBinding objectBox
                     |> SynMemberDefn.CreateMember
 
                 // type DProp =
@@ -286,8 +292,9 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 let toCaseValueDefinition =
                     functionPatternThunk "this.Convert"
                     |> memberBinding  
-                        ( SynExpr.CreateIdentString "this"
-                        |> matchStatement [caseValue] )
+                      ( application 
+                          [ SynExpr.CreateIdentString "box"
+                            SynExpr.CreateIdentString "this" |> matchStatement [caseValue] |> SynExpr.CreateParen ] )
                     |> SynMemberDefn.CreateMember
 
                 // type MarksType = Dictionary<string, MarksTypeType>
