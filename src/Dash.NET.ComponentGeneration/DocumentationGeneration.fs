@@ -183,6 +183,7 @@ let toXMLDoc (inner: string list) =
     let modInner =
         inner
         |> List.filter (String.length >> (<) 0)
+        |> List.map (String.replace "&" "&amp;")
         |> List.indexed
         //adding "&#10;" is the best way I could find to allow fantomas to add newlines to xml docs
         |> List.fold (fun acc (i, s) -> if i = 0 then s::acc else s::"&#10;"::acc) []
