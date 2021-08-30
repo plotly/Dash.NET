@@ -447,13 +447,12 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                       [ SynExpr.CreateIdentString "p"
                                         SynExpr.CreateIdentString "|>" 
                                         SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"]) ]
-                                    |> SynExpr.CreateParen
                                 else
-                                    SynExpr.CreateIdentString "p"
+                                    application [ SynExpr.CreateIdentString "box"; SynExpr.CreateIdentString "p" ]
                             simpleMatchClause psafe ["p"] None 
                               ( SynExpr.CreateTuple 
                                     [ SynExpr.CreateConstString pname
-                                      application [ SynExpr.CreateIdentString "box"; pConvert ] ] )) ) )
+                                      pConvert ] )) ) )
             
             |> SynMemberDefn.CreateStaticMember
 
@@ -574,13 +573,21 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             //     id: string,
             //     children: seq<DashComponent>,
             //     ?aProp: string,
-            //     ?bProp: string,
-            //     ?cProp: string
+            //     ?bProp: BProp,
+            //     ?cProp: bool
             // ) =
             memberFunctionPattern "applyMembers" 
                 [ yield ("id", SynType.Create "string", true)
                   yield ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true) 
-                  yield! parameters.PropertyNames |> List.map (fun prop -> prop, SynType.Create "string", false) ]
+                  yield! 
+                      List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                      |> List.map (fun (prop, ptype, ptname) -> 
+                          let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                          let propTypeName = 
+                              ptype.propType
+                              |> Option.bind SafeReactPropType.tryGetFSharpTypeName
+                              |> Option.defaultValue ([ptname])
+                          camelCaseName, appType propTypeName, false) ]
             |> binding  
               ( expressionSequence
                     [ // let props = DashComponentProps()
@@ -590,13 +597,30 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                       yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString "id"; SynExpr.CreateIdentString "id"] |> Expression
                       yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString "children"; SynExpr.CreateIdentString "children"] |> Expression
                       
-                      // DynObj.setValueOpt props "aProp" aProp
-                      // DynObj.setValueOpt props "bProp" bProp
-                      // DynObj.setValueOpt props "cProp" cProp
-                      yield! parameters.PropertyNames 
-                             |> List.map (fun prop -> 
-                                application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValueOpt"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString prop; SynExpr.CreateIdentString prop] |> Expression)
+                      // DynObj.setValueOpt props "aProp" (aProp |> Option.map box)
+                      // DynObj.setValueOpt props "bProp" (bProp |> Option.map BProp.convert)
+                      // DynObj.setValueOpt props "cProp" (cProp |> Option.map box)
+                      yield! 
+                          List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                          |> List.map (fun (prop, ptype, ptname) -> 
+                              let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                              let pConvert =
+                                  if ptype.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
+                                      application
+                                        [ SynExpr.CreateIdentString camelCaseName
+                                          SynExpr.CreateIdentString "|>" 
+                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
+                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"]) ]
+                                  else
+                                      application 
+                                        [ SynExpr.CreateIdentString camelCaseName
+                                          SynExpr.CreateIdentString "|>"
+                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
+                                          SynExpr.CreateIdentString "box" ]
+                                  |> SynExpr.CreateParen
 
+                              application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValueOpt"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString camelCaseName; pConvert] |> Expression)
+                    
                       // DynObj.setValue t "namespace" "TestNamespace"
                       // DynObj.setValue t "props" props
                       // DynObj.setValue t "type" "TestType"
@@ -621,7 +645,15 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             memberFunctionPattern "init" 
                 [ ("id", SynType.Create "string", true)
                   ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true)
-                  yield! parameters.PropertyNames |> List.map (fun prop -> prop, SynType.Create "string", false) ]
+                  yield! 
+                      List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                      |> List.map (fun (prop, ptype, ptname) -> 
+                          let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                          let propTypeName = 
+                              ptype.propType
+                              |> Option.bind SafeReactPropType.tryGetFSharpTypeName
+                              |> Option.defaultValue ([ptname])
+                          camelCaseName, appType propTypeName, false) ]
             |> binding
               ( application
                     [ SynExpr.CreateLongIdent (LongIdentWithDots.Create [parameters.ComponentName; "applyMembers"])
@@ -630,7 +662,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                           yield SynExpr.CreateIdentString "children"
                           yield! parameters.PropertyNames 
                                  |> List.map (fun prop -> 
-                                    application [SynExpr.CreateLongIdent (true, LongIdentWithDots.CreateString prop, None); SynExpr.CreateIdentString "="; SynExpr.CreateIdentString prop]) ]
+                                    let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                                    application [SynExpr.CreateLongIdent (true, LongIdentWithDots.CreateString camelCaseName, None); SynExpr.CreateIdentString "="; SynExpr.CreateIdentString camelCaseName]) ]
                       application [SynExpr.CreateIdentString parameters.ComponentName; SynExpr.CreateUnit] |> SynExpr.CreateParen ] )
 
             |> SynMemberDefn.CreateStaticMember
