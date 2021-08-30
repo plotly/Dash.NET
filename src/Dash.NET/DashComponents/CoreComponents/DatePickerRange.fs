@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////DatePickerRange is a tailor made component designed for selecting
@@ -24,11 +23,13 @@ namespace Dash.NET.DCC
 //        | Local
 //        | Session
 //        | Memory
-//        member this.Convert() =
-//            match this with
-//            | Local -> "local"
-//            | Session -> "session"
-//            | Memory -> "memory"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Local -> "local"
+//                | Session -> "session"
+//                | Memory -> "memory"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'start_date', 'end_date'
@@ -36,19 +37,24 @@ namespace Dash.NET.DCC
 //    type PersistedPropsTypeType =
 //        | StartDate
 //        | EndDate
-//        member this.Convert() =
-//            match this with
-//            | StartDate -> "start_date"
-//            | EndDate -> "end_date"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | StartDate -> "start_date"
+//                | EndDate -> "end_date"
+//            )
 
 //    ///<summary>
 //    ///list with values of type: value equal to: 'start_date', 'end_date'
 //    ///</summary>
 //    type PersistedPropsType =
 //        | PersistedPropsType of list<PersistedPropsTypeType>
-//        member this.Convert() =
-//            match this with
-//            | PersistedPropsType (v) -> List.map (fun (i: PersistedPropsTypeType) -> box (i.Convert())) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | PersistedPropsType (v) ->
+//                    List.map (fun (i: PersistedPropsTypeType) -> box (i |> PersistedPropsTypeType.convert)) v
+//            )
 
 //    ///<summary>
 //    ///boolean | string | number
@@ -57,7 +63,7 @@ namespace Dash.NET.DCC
 //        | Bool of bool
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | Bool (v) -> box v
 //            | String (v) -> box v
@@ -67,10 +73,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -82,10 +88,12 @@ namespace Dash.NET.DCC
 //    type UpdatemodeType =
 //        | Singledate
 //        | Bothdates
-//        member this.Convert() =
-//            match this with
-//            | Singledate -> "singledate"
-//            | Bothdates -> "bothdates"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Singledate -> "singledate"
+//                | Bothdates -> "bothdates"
+//            )
 
 //    ///<summary>
 //    ///value equal to: '0', '1', '2', '3', '4', '5', '6'
@@ -98,15 +106,17 @@ namespace Dash.NET.DCC
 //        | Prop4
 //        | Prop5
 //        | Prop6
-//        member this.Convert() =
-//            match this with
-//            | Prop0 -> "0"
-//            | Prop1 -> "1"
-//            | Prop2 -> "2"
-//            | Prop3 -> "3"
-//            | Prop4 -> "4"
-//            | Prop5 -> "5"
-//            | Prop6 -> "6"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Prop0 -> "0"
+//                | Prop1 -> "1"
+//                | Prop2 -> "2"
+//                | Prop3 -> "3"
+//                | Prop4 -> "4"
+//                | Prop5 -> "5"
+//                | Prop6 -> "6"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'vertical', 'horizontal'
@@ -114,10 +124,12 @@ namespace Dash.NET.DCC
 //    type CalendarOrientationType =
 //        | Vertical
 //        | Horizontal
-//        member this.Convert() =
-//            match this with
-//            | Vertical -> "vertical"
-//            | Horizontal -> "horizontal"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Vertical -> "vertical"
+//                | Horizontal -> "horizontal"
+//            )
 
 //    ///<summary>
 //    ///• start_date (string) - Specifies the starting date for the component.
@@ -275,13 +287,13 @@ namespace Dash.NET.DCC
 //            | StartDatePlaceholderText (p) -> "start_date_placeholder_text", box p
 //            | EndDatePlaceholderText (p) -> "end_date_placeholder_text", box p
 //            | DaySize (p) -> "day_size", box p
-//            | CalendarOrientation (p) -> "calendar_orientation", box (p.Convert())
+//            | CalendarOrientation (p) -> "calendar_orientation", p |> CalendarOrientationType.convert
 //            | IsRTL (p) -> "is_RTL", box p
 //            | ReopenCalendarOnClear (p) -> "reopen_calendar_on_clear", box p
 //            | NumberOfMonthsShown (p) -> "number_of_months_shown", box p
 //            | WithPortal (p) -> "with_portal", box p
 //            | WithFullScreenPortal (p) -> "with_full_screen_portal", box p
-//            | FirstDayOfWeek (p) -> "first_day_of_week", box (p.Convert())
+//            | FirstDayOfWeek (p) -> "first_day_of_week", p |> FirstDayOfWeekType.convert
 //            | MinimumNights (p) -> "minimum_nights", box p
 //            | StayOpenOnSelect (p) -> "stay_open_on_select", box p
 //            | ShowOutsideDays (p) -> "show_outside_days", box p
@@ -291,11 +303,11 @@ namespace Dash.NET.DCC
 //            | Clearable (p) -> "clearable", box p
 //            | Style (p) -> "style", box p
 //            | ClassName (p) -> "className", box p
-//            | Updatemode (p) -> "updatemode", box (p.Convert())
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
-//            | Persistence (p) -> "persistence", box (p.Convert())
-//            | PersistedProps (p) -> "persisted_props", box (p.Convert())
-//            | PersistenceType (p) -> "persistence_type", box (p.Convert())
+//            | Updatemode (p) -> "updatemode", p |> UpdatemodeType.convert
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
+//            | Persistence (p) -> "persistence", p |> PersistenceType.convert
+//            | PersistedProps (p) -> "persisted_props", p |> PersistedPropsType.convert
+//            | PersistenceType (p) -> "persistence_type", p |> PersistenceTypeType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -544,73 +556,77 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?start_date: string,
-//                ?start_date_id: string,
-//                ?end_date_id: string,
-//                ?end_date: string,
-//                ?min_date_allowed: string,
-//                ?max_date_allowed: string,
-//                ?initial_visible_month: string,
-//                ?start_date_placeholder_text: string,
-//                ?end_date_placeholder_text: string,
-//                ?day_size: string,
-//                ?calendar_orientation: string,
-//                ?is_RTL: string,
-//                ?reopen_calendar_on_clear: string,
-//                ?number_of_months_shown: string,
-//                ?with_portal: string,
-//                ?with_full_screen_portal: string,
-//                ?first_day_of_week: string,
-//                ?minimum_nights: string,
-//                ?stay_open_on_select: string,
-//                ?show_outside_days: string,
-//                ?month_format: string,
-//                ?display_format: string,
-//                ?disabled: string,
-//                ?clearable: string,
-//                ?style: string,
+//                ?startDate: string,
+//                ?startDateId: string,
+//                ?endDateId: string,
+//                ?endDate: string,
+//                ?minDateAllowed: string,
+//                ?maxDateAllowed: string,
+//                ?initialVisibleMonth: string,
+//                ?startDatePlaceholderText: string,
+//                ?endDatePlaceholderText: string,
+//                ?daySize: IConvertible,
+//                ?calendarOrientation: CalendarOrientationType,
+//                ?isRTL: bool,
+//                ?reopenCalendarOnClear: bool,
+//                ?numberOfMonthsShown: IConvertible,
+//                ?withPortal: bool,
+//                ?withFullScreenPortal: bool,
+//                ?firstDayOfWeek: FirstDayOfWeekType,
+//                ?minimumNights: IConvertible,
+//                ?stayOpenOnSelect: bool,
+//                ?showOutsideDays: bool,
+//                ?monthFormat: string,
+//                ?displayFormat: string,
+//                ?disabled: bool,
+//                ?clearable: bool,
+//                ?style: obj,
 //                ?className: string,
-//                ?updatemode: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?updatemode: UpdatemodeType,
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            (fun (t: DatePickerRange) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "start_date" start_date
-//                DynObj.setValueOpt props "start_date_id" start_date_id
-//                DynObj.setValueOpt props "end_date_id" end_date_id
-//                DynObj.setValueOpt props "end_date" end_date
-//                DynObj.setValueOpt props "min_date_allowed" min_date_allowed
-//                DynObj.setValueOpt props "max_date_allowed" max_date_allowed
-//                DynObj.setValueOpt props "initial_visible_month" initial_visible_month
-//                DynObj.setValueOpt props "start_date_placeholder_text" start_date_placeholder_text
-//                DynObj.setValueOpt props "end_date_placeholder_text" end_date_placeholder_text
-//                DynObj.setValueOpt props "day_size" day_size
-//                DynObj.setValueOpt props "calendar_orientation" calendar_orientation
-//                DynObj.setValueOpt props "is_RTL" is_RTL
-//                DynObj.setValueOpt props "reopen_calendar_on_clear" reopen_calendar_on_clear
-//                DynObj.setValueOpt props "number_of_months_shown" number_of_months_shown
-//                DynObj.setValueOpt props "with_portal" with_portal
-//                DynObj.setValueOpt props "with_full_screen_portal" with_full_screen_portal
-//                DynObj.setValueOpt props "first_day_of_week" first_day_of_week
-//                DynObj.setValueOpt props "minimum_nights" minimum_nights
-//                DynObj.setValueOpt props "stay_open_on_select" stay_open_on_select
-//                DynObj.setValueOpt props "show_outside_days" show_outside_days
-//                DynObj.setValueOpt props "month_format" month_format
-//                DynObj.setValueOpt props "display_format" display_format
-//                DynObj.setValueOpt props "disabled" disabled
-//                DynObj.setValueOpt props "clearable" clearable
-//                DynObj.setValueOpt props "style" style
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "updatemode" updatemode
-//                DynObj.setValueOpt props "loading_state" loading_state
-//                DynObj.setValueOpt props "persistence" persistence
-//                DynObj.setValueOpt props "persisted_props" persisted_props
-//                DynObj.setValueOpt props "persistence_type" persistence_type
+//                DynObj.setValueOpt props "startDate" (startDate |> Option.map box)
+//                DynObj.setValueOpt props "startDateId" (startDateId |> Option.map box)
+//                DynObj.setValueOpt props "endDateId" (endDateId |> Option.map box)
+//                DynObj.setValueOpt props "endDate" (endDate |> Option.map box)
+//                DynObj.setValueOpt props "minDateAllowed" (minDateAllowed |> Option.map box)
+//                DynObj.setValueOpt props "maxDateAllowed" (maxDateAllowed |> Option.map box)
+//                DynObj.setValueOpt props "initialVisibleMonth" (initialVisibleMonth |> Option.map box)
+//                DynObj.setValueOpt props "startDatePlaceholderText" (startDatePlaceholderText |> Option.map box)
+//                DynObj.setValueOpt props "endDatePlaceholderText" (endDatePlaceholderText |> Option.map box)
+//                DynObj.setValueOpt props "daySize" (daySize |> Option.map box)
+//                DynObj.setValueOpt
+//                    props
+//                    "calendarOrientation"
+//                    (calendarOrientation |> Option.map CalendarOrientationType.convert)
+
+//                DynObj.setValueOpt props "isRTL" (isRTL |> Option.map box)
+//                DynObj.setValueOpt props "reopenCalendarOnClear" (reopenCalendarOnClear |> Option.map box)
+//                DynObj.setValueOpt props "numberOfMonthsShown" (numberOfMonthsShown |> Option.map box)
+//                DynObj.setValueOpt props "withPortal" (withPortal |> Option.map box)
+//                DynObj.setValueOpt props "withFullScreenPortal" (withFullScreenPortal |> Option.map box)
+//                DynObj.setValueOpt props "firstDayOfWeek" (firstDayOfWeek |> Option.map FirstDayOfWeekType.convert)
+//                DynObj.setValueOpt props "minimumNights" (minimumNights |> Option.map box)
+//                DynObj.setValueOpt props "stayOpenOnSelect" (stayOpenOnSelect |> Option.map box)
+//                DynObj.setValueOpt props "showOutsideDays" (showOutsideDays |> Option.map box)
+//                DynObj.setValueOpt props "monthFormat" (monthFormat |> Option.map box)
+//                DynObj.setValueOpt props "displayFormat" (displayFormat |> Option.map box)
+//                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+//                DynObj.setValueOpt props "clearable" (clearable |> Option.map box)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "updatemode" (updatemode |> Option.map UpdatemodeType.convert)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
+//                DynObj.setValueOpt props "persistence" (persistence |> Option.map PersistenceType.convert)
+//                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map PersistedPropsType.convert)
+//                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "DatePickerRange"
@@ -620,72 +636,72 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?start_date: string,
-//                ?start_date_id: string,
-//                ?end_date_id: string,
-//                ?end_date: string,
-//                ?min_date_allowed: string,
-//                ?max_date_allowed: string,
-//                ?initial_visible_month: string,
-//                ?start_date_placeholder_text: string,
-//                ?end_date_placeholder_text: string,
-//                ?day_size: string,
-//                ?calendar_orientation: string,
-//                ?is_RTL: string,
-//                ?reopen_calendar_on_clear: string,
-//                ?number_of_months_shown: string,
-//                ?with_portal: string,
-//                ?with_full_screen_portal: string,
-//                ?first_day_of_week: string,
-//                ?minimum_nights: string,
-//                ?stay_open_on_select: string,
-//                ?show_outside_days: string,
-//                ?month_format: string,
-//                ?display_format: string,
-//                ?disabled: string,
-//                ?clearable: string,
-//                ?style: string,
+//                ?startDate: string,
+//                ?startDateId: string,
+//                ?endDateId: string,
+//                ?endDate: string,
+//                ?minDateAllowed: string,
+//                ?maxDateAllowed: string,
+//                ?initialVisibleMonth: string,
+//                ?startDatePlaceholderText: string,
+//                ?endDatePlaceholderText: string,
+//                ?daySize: IConvertible,
+//                ?calendarOrientation: CalendarOrientationType,
+//                ?isRTL: bool,
+//                ?reopenCalendarOnClear: bool,
+//                ?numberOfMonthsShown: IConvertible,
+//                ?withPortal: bool,
+//                ?withFullScreenPortal: bool,
+//                ?firstDayOfWeek: FirstDayOfWeekType,
+//                ?minimumNights: IConvertible,
+//                ?stayOpenOnSelect: bool,
+//                ?showOutsideDays: bool,
+//                ?monthFormat: string,
+//                ?displayFormat: string,
+//                ?disabled: bool,
+//                ?clearable: bool,
+//                ?style: obj,
 //                ?className: string,
-//                ?updatemode: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?updatemode: UpdatemodeType,
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            DatePickerRange.applyMembers
 //                (id,
 //                 children,
-//                 ?start_date = start_date,
-//                 ?start_date_id = start_date_id,
-//                 ?end_date_id = end_date_id,
-//                 ?end_date = end_date,
-//                 ?min_date_allowed = min_date_allowed,
-//                 ?max_date_allowed = max_date_allowed,
-//                 ?initial_visible_month = initial_visible_month,
-//                 ?start_date_placeholder_text = start_date_placeholder_text,
-//                 ?end_date_placeholder_text = end_date_placeholder_text,
-//                 ?day_size = day_size,
-//                 ?calendar_orientation = calendar_orientation,
-//                 ?is_RTL = is_RTL,
-//                 ?reopen_calendar_on_clear = reopen_calendar_on_clear,
-//                 ?number_of_months_shown = number_of_months_shown,
-//                 ?with_portal = with_portal,
-//                 ?with_full_screen_portal = with_full_screen_portal,
-//                 ?first_day_of_week = first_day_of_week,
-//                 ?minimum_nights = minimum_nights,
-//                 ?stay_open_on_select = stay_open_on_select,
-//                 ?show_outside_days = show_outside_days,
-//                 ?month_format = month_format,
-//                 ?display_format = display_format,
+//                 ?startDate = startDate,
+//                 ?startDateId = startDateId,
+//                 ?endDateId = endDateId,
+//                 ?endDate = endDate,
+//                 ?minDateAllowed = minDateAllowed,
+//                 ?maxDateAllowed = maxDateAllowed,
+//                 ?initialVisibleMonth = initialVisibleMonth,
+//                 ?startDatePlaceholderText = startDatePlaceholderText,
+//                 ?endDatePlaceholderText = endDatePlaceholderText,
+//                 ?daySize = daySize,
+//                 ?calendarOrientation = calendarOrientation,
+//                 ?isRTL = isRTL,
+//                 ?reopenCalendarOnClear = reopenCalendarOnClear,
+//                 ?numberOfMonthsShown = numberOfMonthsShown,
+//                 ?withPortal = withPortal,
+//                 ?withFullScreenPortal = withFullScreenPortal,
+//                 ?firstDayOfWeek = firstDayOfWeek,
+//                 ?minimumNights = minimumNights,
+//                 ?stayOpenOnSelect = stayOpenOnSelect,
+//                 ?showOutsideDays = showOutsideDays,
+//                 ?monthFormat = monthFormat,
+//                 ?displayFormat = displayFormat,
 //                 ?disabled = disabled,
 //                 ?clearable = clearable,
 //                 ?style = style,
 //                 ?className = className,
 //                 ?updatemode = updatemode,
-//                 ?loading_state = loading_state,
+//                 ?loadingState = loadingState,
 //                 ?persistence = persistence,
-//                 ?persisted_props = persisted_props,
-//                 ?persistence_type = persistence_type)
+//                 ?persistedProps = persistedProps,
+//                 ?persistenceType = persistenceType)
 //                (DatePickerRange())
 
 //    ///<summary>

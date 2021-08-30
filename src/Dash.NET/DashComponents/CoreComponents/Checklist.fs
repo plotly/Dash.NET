@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////Checklist is a component that encapsulates several checkboxes.
@@ -21,29 +20,36 @@ namespace Dash.NET.DCC
 //        | Local
 //        | Session
 //        | Memory
-//        member this.Convert() =
-//            match this with
-//            | Local -> "local"
-//            | Session -> "session"
-//            | Memory -> "memory"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Local -> "local"
+//                | Session -> "session"
+//                | Memory -> "memory"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'value'
 //    ///</summary>
 //    type PersistedPropsTypeType =
 //        | Value
-//        member this.Convert() =
-//            match this with
-//            | Value -> "value"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Value -> "value"
+//            )
 
 //    ///<summary>
 //    ///list with values of type: value equal to: 'value'
 //    ///</summary>
 //    type PersistedPropsType =
 //        | PersistedPropsType of list<PersistedPropsTypeType>
-//        member this.Convert() =
-//            match this with
-//            | PersistedPropsType (v) -> List.map (fun (i: PersistedPropsTypeType) -> box (i.Convert())) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | PersistedPropsType (v) ->
+//                    List.map (fun (i: PersistedPropsTypeType) -> box (i |> PersistedPropsTypeType.convert)) v
+//            )
 
 //    ///<summary>
 //    ///boolean | string | number
@@ -52,7 +58,7 @@ namespace Dash.NET.DCC
 //        | Bool of bool
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | Bool (v) -> box v
 //            | String (v) -> box v
@@ -62,10 +68,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -77,7 +83,7 @@ namespace Dash.NET.DCC
 //    type ValueTypeType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -87,9 +93,11 @@ namespace Dash.NET.DCC
 //    ///</summary>
 //    type ValueType =
 //        | ValueType of list<ValueTypeType>
-//        member this.Convert() =
-//            match this with
-//            | ValueType (v) -> List.map (fun (i: ValueTypeType) -> box (i.Convert())) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | ValueType (v) -> List.map (fun (i: ValueTypeType) -> box (i |> ValueTypeType.convert)) v
+//            )
 
 //    ///<summary>
 //    ///string | number
@@ -101,7 +109,7 @@ namespace Dash.NET.DCC
 //    type OptionsTypeTypeValueType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -114,7 +122,7 @@ namespace Dash.NET.DCC
 //    type OptionsTypeTypeLabelType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -125,11 +133,11 @@ namespace Dash.NET.DCC
 //    type OptionsTypeType =
 //        { Label: OptionsTypeTypeLabelType
 //          Value: OptionsTypeTypeValueType
-//          Disabled: Option<bool> }
-//        member this.Convert() =
+//          Disabled: bool }
+//        static member convert(this) =
 //            box
-//                {| label = (this.Label.Convert())
-//                   value = (this.Value.Convert())
+//                {| label = (this.Label |> OptionsTypeTypeLabelType.convert)
+//                   value = (this.Value |> OptionsTypeTypeValueType.convert)
 //                   disabled = this.Disabled |}
 
 //    ///<summary>
@@ -137,9 +145,11 @@ namespace Dash.NET.DCC
 //    ///</summary>
 //    type OptionsType =
 //        | OptionsType of list<OptionsTypeType>
-//        member this.Convert() =
-//            match this with
-//            | OptionsType (v) -> List.map (fun (i: OptionsTypeType) -> box (i.Convert())) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | OptionsType (v) -> List.map (fun (i: OptionsTypeType) -> box (i |> OptionsTypeType.convert)) v
+//            )
 
 //    ///<summary>
 //    ///• options (list with values of type: record with the fields: 'label: string | number (required)', 'value: string | number (required)', 'disabled: boolean (optional)'; default []) - An array of options
@@ -193,18 +203,18 @@ namespace Dash.NET.DCC
 //        | PersistenceType of PersistenceTypeType
 //        static member toDynamicMemberDef(prop: Prop) =
 //            match prop with
-//            | Options (p) -> "options", box (p.Convert())
-//            | Value (p) -> "value", box (p.Convert())
+//            | Options (p) -> "options", p |> OptionsType.convert
+//            | Value (p) -> "value", p |> ValueType.convert
 //            | ClassName (p) -> "className", box p
 //            | Style (p) -> "style", box p
 //            | InputStyle (p) -> "inputStyle", box p
 //            | InputClassName (p) -> "inputClassName", box p
 //            | LabelStyle (p) -> "labelStyle", box p
 //            | LabelClassName (p) -> "labelClassName", box p
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
-//            | Persistence (p) -> "persistence", box (p.Convert())
-//            | PersistedProps (p) -> "persisted_props", box (p.Convert())
-//            | PersistenceType (p) -> "persistence_type", box (p.Convert())
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
+//            | Persistence (p) -> "persistence", p |> PersistenceType.convert
+//            | PersistedProps (p) -> "persisted_props", p |> PersistedPropsType.convert
+//            | PersistenceType (p) -> "persistence_type", p |> PersistenceTypeType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -337,35 +347,35 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?options: string,
-//                ?value: string,
+//                ?options: OptionsType,
+//                ?value: ValueType,
 //                ?className: string,
-//                ?style: string,
-//                ?inputStyle: string,
+//                ?style: obj,
+//                ?inputStyle: obj,
 //                ?inputClassName: string,
-//                ?labelStyle: string,
+//                ?labelStyle: obj,
 //                ?labelClassName: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            (fun (t: Checklist) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "options" options
-//                DynObj.setValueOpt props "value" value
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "style" style
-//                DynObj.setValueOpt props "inputStyle" inputStyle
-//                DynObj.setValueOpt props "inputClassName" inputClassName
-//                DynObj.setValueOpt props "labelStyle" labelStyle
-//                DynObj.setValueOpt props "labelClassName" labelClassName
-//                DynObj.setValueOpt props "loading_state" loading_state
-//                DynObj.setValueOpt props "persistence" persistence
-//                DynObj.setValueOpt props "persisted_props" persisted_props
-//                DynObj.setValueOpt props "persistence_type" persistence_type
+//                DynObj.setValueOpt props "options" (options |> Option.map OptionsType.convert)
+//                DynObj.setValueOpt props "value" (value |> Option.map ValueType.convert)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
+//                DynObj.setValueOpt props "inputStyle" (inputStyle |> Option.map box)
+//                DynObj.setValueOpt props "inputClassName" (inputClassName |> Option.map box)
+//                DynObj.setValueOpt props "labelStyle" (labelStyle |> Option.map box)
+//                DynObj.setValueOpt props "labelClassName" (labelClassName |> Option.map box)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
+//                DynObj.setValueOpt props "persistence" (persistence |> Option.map PersistenceType.convert)
+//                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map PersistedPropsType.convert)
+//                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "Checklist"
@@ -375,18 +385,18 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?options: string,
-//                ?value: string,
+//                ?options: OptionsType,
+//                ?value: ValueType,
 //                ?className: string,
-//                ?style: string,
-//                ?inputStyle: string,
+//                ?style: obj,
+//                ?inputStyle: obj,
 //                ?inputClassName: string,
-//                ?labelStyle: string,
+//                ?labelStyle: obj,
 //                ?labelClassName: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            Checklist.applyMembers
 //                (id,
@@ -399,10 +409,10 @@ namespace Dash.NET.DCC
 //                 ?inputClassName = inputClassName,
 //                 ?labelStyle = labelStyle,
 //                 ?labelClassName = labelClassName,
-//                 ?loading_state = loading_state,
+//                 ?loadingState = loadingState,
 //                 ?persistence = persistence,
-//                 ?persisted_props = persisted_props,
-//                 ?persistence_type = persistence_type)
+//                 ?persistedProps = persistedProps,
+//                 ?persistenceType = persistenceType)
 //                (Checklist())
 
 //    ///<summary>

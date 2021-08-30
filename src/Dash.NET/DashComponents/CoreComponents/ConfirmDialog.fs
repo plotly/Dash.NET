@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////ConfirmDialog is used to display the browser's native "confirm" modal,
@@ -115,22 +114,22 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?message: string,
-//                ?submit_n_clicks: string,
-//                ?submit_n_clicks_timestamp: string,
-//                ?cancel_n_clicks: string,
-//                ?cancel_n_clicks_timestamp: string,
-//                ?displayed: string
+//                ?submitNClicks: IConvertible,
+//                ?submitNClicksTimestamp: IConvertible,
+//                ?cancelNClicks: IConvertible,
+//                ?cancelNClicksTimestamp: IConvertible,
+//                ?displayed: bool
 //            ) =
 //            (fun (t: ConfirmDialog) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "message" message
-//                DynObj.setValueOpt props "submit_n_clicks" submit_n_clicks
-//                DynObj.setValueOpt props "submit_n_clicks_timestamp" submit_n_clicks_timestamp
-//                DynObj.setValueOpt props "cancel_n_clicks" cancel_n_clicks
-//                DynObj.setValueOpt props "cancel_n_clicks_timestamp" cancel_n_clicks_timestamp
-//                DynObj.setValueOpt props "displayed" displayed
+//                DynObj.setValueOpt props "message" (message |> Option.map box)
+//                DynObj.setValueOpt props "submitNClicks" (submitNClicks |> Option.map box)
+//                DynObj.setValueOpt props "submitNClicksTimestamp" (submitNClicksTimestamp |> Option.map box)
+//                DynObj.setValueOpt props "cancelNClicks" (cancelNClicks |> Option.map box)
+//                DynObj.setValueOpt props "cancelNClicksTimestamp" (cancelNClicksTimestamp |> Option.map box)
+//                DynObj.setValueOpt props "displayed" (displayed |> Option.map box)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "ConfirmDialog"
@@ -141,20 +140,20 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?message: string,
-//                ?submit_n_clicks: string,
-//                ?submit_n_clicks_timestamp: string,
-//                ?cancel_n_clicks: string,
-//                ?cancel_n_clicks_timestamp: string,
-//                ?displayed: string
+//                ?submitNClicks: IConvertible,
+//                ?submitNClicksTimestamp: IConvertible,
+//                ?cancelNClicks: IConvertible,
+//                ?cancelNClicksTimestamp: IConvertible,
+//                ?displayed: bool
 //            ) =
 //            ConfirmDialog.applyMembers
 //                (id,
 //                 children,
 //                 ?message = message,
-//                 ?submit_n_clicks = submit_n_clicks,
-//                 ?submit_n_clicks_timestamp = submit_n_clicks_timestamp,
-//                 ?cancel_n_clicks = cancel_n_clicks,
-//                 ?cancel_n_clicks_timestamp = cancel_n_clicks_timestamp,
+//                 ?submitNClicks = submitNClicks,
+//                 ?submitNClicksTimestamp = submitNClicksTimestamp,
+//                 ?cancelNClicks = cancelNClicks,
+//                 ?cancelNClicksTimestamp = cancelNClicksTimestamp,
 //                 ?displayed = displayed)
 //                (ConfirmDialog())
 

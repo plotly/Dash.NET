@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////A double slider with two handles.
@@ -19,29 +18,36 @@ namespace Dash.NET.DCC
 //        | Local
 //        | Session
 //        | Memory
-//        member this.Convert() =
-//            match this with
-//            | Local -> "local"
-//            | Session -> "session"
-//            | Memory -> "memory"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Local -> "local"
+//                | Session -> "session"
+//                | Memory -> "memory"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'value'
 //    ///</summary>
 //    type PersistedPropsTypeType =
 //        | Value
-//        member this.Convert() =
-//            match this with
-//            | Value -> "value"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Value -> "value"
+//            )
 
 //    ///<summary>
 //    ///list with values of type: value equal to: 'value'
 //    ///</summary>
 //    type PersistedPropsType =
 //        | PersistedPropsType of list<PersistedPropsTypeType>
-//        member this.Convert() =
-//            match this with
-//            | PersistedPropsType (v) -> List.map (fun (i: PersistedPropsTypeType) -> box (i.Convert())) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | PersistedPropsType (v) ->
+//                    List.map (fun (i: PersistedPropsTypeType) -> box (i |> PersistedPropsTypeType.convert)) v
+//            )
 
 //    ///<summary>
 //    ///boolean | string | number
@@ -50,7 +56,7 @@ namespace Dash.NET.DCC
 //        | Bool of bool
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | Bool (v) -> box v
 //            | String (v) -> box v
@@ -60,10 +66,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -75,10 +81,12 @@ namespace Dash.NET.DCC
 //    type UpdatemodeType =
 //        | Mouseup
 //        | Drag
-//        member this.Convert() =
-//            match this with
-//            | Mouseup -> "mouseup"
-//            | Drag -> "drag"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Mouseup -> "mouseup"
+//                | Drag -> "drag"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'
@@ -97,27 +105,29 @@ namespace Dash.NET.DCC
 //        | TopRight
 //        | BottomLeft
 //        | BottomRight
-//        member this.Convert() =
-//            match this with
-//            | Left -> "left"
-//            | Right -> "right"
-//            | Top -> "top"
-//            | Bottom -> "bottom"
-//            | TopLeft -> "topLeft"
-//            | TopRight -> "topRight"
-//            | BottomLeft -> "bottomLeft"
-//            | BottomRight -> "bottomRight"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Left -> "left"
+//                | Right -> "right"
+//                | Top -> "top"
+//                | Bottom -> "bottom"
+//                | TopLeft -> "topLeft"
+//                | TopRight -> "topRight"
+//                | BottomLeft -> "bottomLeft"
+//                | BottomRight -> "bottomRight"
+//            )
 
 //    ///<summary>
 //    ///record with the fields: 'always_visible: boolean (optional)', 'placement: value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight' (optional)'
 //    ///</summary>
 //    type TooltipType =
-//        { AlwaysVisible: Option<bool>
-//          Placement: Option<TooltipTypePlacementType> }
-//        member this.Convert() =
+//        { AlwaysVisible: bool
+//          Placement: TooltipTypePlacementType }
+//        static member convert(this) =
 //            box
 //                {| always_visible = this.AlwaysVisible
-//                   placement = (this.Placement |> Option.map (fun v -> v.Convert())) |}
+//                   placement = (this.Placement |> TooltipTypePlacementType.convert) |}
 
 //    ///<summary>
 //    ///boolean | number
@@ -125,7 +135,7 @@ namespace Dash.NET.DCC
 //    type PushableType =
 //        | Bool of bool
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | Bool (v) -> box v
 //            | IConvertible (v) -> box v
@@ -135,26 +145,30 @@ namespace Dash.NET.DCC
 //    ///</summary>
 //    type DragValueType =
 //        | DragValueType of list<IConvertible>
-//        member this.Convert() =
-//            match this with
-//            | DragValueType (v) -> List.map (fun (i: IConvertible) -> box i) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | DragValueType (v) -> List.map (fun (i: IConvertible) -> box i) v
+//            )
 
 //    ///<summary>
 //    ///list with values of type: number
 //    ///</summary>
 //    type ValueType =
 //        | ValueType of list<IConvertible>
-//        member this.Convert() =
-//            match this with
-//            | ValueType (v) -> List.map (fun (i: IConvertible) -> box i) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | ValueType (v) -> List.map (fun (i: IConvertible) -> box i) v
+//            )
 
 //    ///<summary>
 //    ///record with the fields: 'label: string (optional)', 'style: record (optional)'
 //    ///</summary>
 //    type MarksTypeValueCase1Type =
-//        { Label: Option<string>
-//          Style: Option<obj> }
-//        member this.Convert() =
+//        { Label: string
+//          Style: obj }
+//        static member convert(this) =
 //            box
 //                {| label = this.Label
 //                   style = this.Style |}
@@ -165,22 +179,21 @@ namespace Dash.NET.DCC
 //    type MarksTypeValue =
 //        | String of string
 //        | MarksTypeValueCase1Type of MarksTypeValueCase1Type
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
-//            | MarksTypeValueCase1Type (v) -> box (v.Convert())
+//            | MarksTypeValueCase1Type (v) -> box (v |> MarksTypeValueCase1Type.convert)
 
 //    ///<summary>
 //    ///dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)'
 //    ///</summary>
 //    type MarksType =
 //        | MarksType of Map<string, MarksTypeValue>
-//        member this.Convert() =
-//            match this with
-//            | MarksType (v) ->
-                //v
-                //|> Map.map (fun _ v -> box (v |> MarkValue.convert))
-                //|> box
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | MarksType (v) -> v |> Map.map (fun k p -> box (p |> MarksTypeValue.convert))
+//            )
 
 //    ///<summary>
 //    ///• marks (dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
@@ -277,9 +290,9 @@ namespace Dash.NET.DCC
 //        | PersistenceType of PersistenceTypeType
 //        static member toDynamicMemberDef(prop: Prop) =
 //            match prop with
-//            | Marks (p) -> "marks", box (p.Convert())
-//            | Value (p) -> "value", box (p.Convert())
-//            | DragValue (p) -> "drag_value", box (p.Convert())
+//            | Marks (p) -> "marks", p |> MarksType.convert
+//            | Value (p) -> "value", p |> ValueType.convert
+//            | DragValue (p) -> "drag_value", p |> DragValueType.convert
 //            | AllowCross (p) -> "allowCross", box p
 //            | ClassName (p) -> "className", box p
 //            | Count (p) -> "count", box p
@@ -288,16 +301,16 @@ namespace Dash.NET.DCC
 //            | Included (p) -> "included", box p
 //            | Min (p) -> "min", box p
 //            | Max (p) -> "max", box p
-//            | Pushable (p) -> "pushable", box (p.Convert())
-//            | Tooltip (p) -> "tooltip", box (p.Convert())
+//            | Pushable (p) -> "pushable", p |> PushableType.convert
+//            | Tooltip (p) -> "tooltip", p |> TooltipType.convert
 //            | Step (p) -> "step", box p
 //            | Vertical (p) -> "vertical", box p
 //            | VerticalHeight (p) -> "verticalHeight", box p
-//            | Updatemode (p) -> "updatemode", box (p.Convert())
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
-//            | Persistence (p) -> "persistence", box (p.Convert())
-//            | PersistedProps (p) -> "persisted_props", box (p.Convert())
-//            | PersistenceType (p) -> "persistence_type", box (p.Convert())
+//            | Updatemode (p) -> "updatemode", p |> UpdatemodeType.convert
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
+//            | Persistence (p) -> "persistence", p |> PersistenceType.convert
+//            | PersistedProps (p) -> "persisted_props", p |> PersistedPropsType.convert
+//            | PersistenceType (p) -> "persistence_type", p |> PersistenceTypeType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -489,53 +502,53 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?marks: string,
-//                ?value: string,
-//                ?drag_value: string,
-//                ?allowCross: string,
+//                ?marks: MarksType,
+//                ?value: ValueType,
+//                ?dragValue: DragValueType,
+//                ?allowCross: bool,
 //                ?className: string,
-//                ?count: string,
-//                ?disabled: string,
-//                ?dots: string,
-//                ?included: string,
-//                ?min: string,
-//                ?max: string,
-//                ?pushable: string,
-//                ?tooltip: string,
-//                ?step: string,
-//                ?vertical: string,
-//                ?verticalHeight: string,
-//                ?updatemode: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?count: IConvertible,
+//                ?disabled: bool,
+//                ?dots: bool,
+//                ?included: bool,
+//                ?min: IConvertible,
+//                ?max: IConvertible,
+//                ?pushable: PushableType,
+//                ?tooltip: TooltipType,
+//                ?step: IConvertible,
+//                ?vertical: bool,
+//                ?verticalHeight: IConvertible,
+//                ?updatemode: UpdatemodeType,
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            (fun (t: RangeSlider) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "marks" marks
-//                DynObj.setValueOpt props "value" value
-//                DynObj.setValueOpt props "drag_value" drag_value
-//                DynObj.setValueOpt props "allowCross" allowCross
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "count" count
-//                DynObj.setValueOpt props "disabled" disabled
-//                DynObj.setValueOpt props "dots" dots
-//                DynObj.setValueOpt props "included" included
-//                DynObj.setValueOpt props "min" min
-//                DynObj.setValueOpt props "max" max
-//                DynObj.setValueOpt props "pushable" pushable
-//                DynObj.setValueOpt props "tooltip" tooltip
-//                DynObj.setValueOpt props "step" step
-//                DynObj.setValueOpt props "vertical" vertical
-//                DynObj.setValueOpt props "verticalHeight" verticalHeight
-//                DynObj.setValueOpt props "updatemode" updatemode
-//                DynObj.setValueOpt props "loading_state" loading_state
-//                DynObj.setValueOpt props "persistence" persistence
-//                DynObj.setValueOpt props "persisted_props" persisted_props
-//                DynObj.setValueOpt props "persistence_type" persistence_type
+//                DynObj.setValueOpt props "marks" (marks |> Option.map MarksType.convert)
+//                DynObj.setValueOpt props "value" (value |> Option.map ValueType.convert)
+//                DynObj.setValueOpt props "dragValue" (dragValue |> Option.map DragValueType.convert)
+//                DynObj.setValueOpt props "allowCross" (allowCross |> Option.map box)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "count" (count |> Option.map box)
+//                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+//                DynObj.setValueOpt props "dots" (dots |> Option.map box)
+//                DynObj.setValueOpt props "included" (included |> Option.map box)
+//                DynObj.setValueOpt props "min" (min |> Option.map box)
+//                DynObj.setValueOpt props "max" (max |> Option.map box)
+//                DynObj.setValueOpt props "pushable" (pushable |> Option.map PushableType.convert)
+//                DynObj.setValueOpt props "tooltip" (tooltip |> Option.map TooltipType.convert)
+//                DynObj.setValueOpt props "step" (step |> Option.map box)
+//                DynObj.setValueOpt props "vertical" (vertical |> Option.map box)
+//                DynObj.setValueOpt props "verticalHeight" (verticalHeight |> Option.map box)
+//                DynObj.setValueOpt props "updatemode" (updatemode |> Option.map UpdatemodeType.convert)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
+//                DynObj.setValueOpt props "persistence" (persistence |> Option.map PersistenceType.convert)
+//                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map PersistedPropsType.convert)
+//                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "RangeSlider"
@@ -545,34 +558,34 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?marks: string,
-//                ?value: string,
-//                ?drag_value: string,
-//                ?allowCross: string,
+//                ?marks: MarksType,
+//                ?value: ValueType,
+//                ?dragValue: DragValueType,
+//                ?allowCross: bool,
 //                ?className: string,
-//                ?count: string,
-//                ?disabled: string,
-//                ?dots: string,
-//                ?included: string,
-//                ?min: string,
-//                ?max: string,
-//                ?pushable: string,
-//                ?tooltip: string,
-//                ?step: string,
-//                ?vertical: string,
-//                ?verticalHeight: string,
-//                ?updatemode: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?count: IConvertible,
+//                ?disabled: bool,
+//                ?dots: bool,
+//                ?included: bool,
+//                ?min: IConvertible,
+//                ?max: IConvertible,
+//                ?pushable: PushableType,
+//                ?tooltip: TooltipType,
+//                ?step: IConvertible,
+//                ?vertical: bool,
+//                ?verticalHeight: IConvertible,
+//                ?updatemode: UpdatemodeType,
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            RangeSlider.applyMembers
 //                (id,
 //                 children,
 //                 ?marks = marks,
 //                 ?value = value,
-//                 ?drag_value = drag_value,
+//                 ?dragValue = dragValue,
 //                 ?allowCross = allowCross,
 //                 ?className = className,
 //                 ?count = count,
@@ -587,10 +600,10 @@ namespace Dash.NET.DCC
 //                 ?vertical = vertical,
 //                 ?verticalHeight = verticalHeight,
 //                 ?updatemode = updatemode,
-//                 ?loading_state = loading_state,
+//                 ?loadingState = loadingState,
 //                 ?persistence = persistence,
-//                 ?persisted_props = persisted_props,
-//                 ?persistence_type = persistence_type)
+//                 ?persistedProps = persistedProps,
+//                 ?persistenceType = persistenceType)
 //                (RangeSlider())
 
 //    ///<summary>

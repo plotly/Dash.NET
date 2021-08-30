@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////A component that renders Markdown text as specified by the
@@ -17,10 +16,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -34,18 +33,20 @@ namespace Dash.NET.DCC
 //    type HighlightConfigTypeThemeType =
 //        | Dark
 //        | Light
-//        member this.Convert() =
-//            match this with
-//            | Dark -> "dark"
-//            | Light -> "light"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Dark -> "dark"
+//                | Light -> "light"
+//            )
 
 //    ///<summary>
 //    ///record with the field: 'theme: value equal to: 'dark', 'light' (optional)'
 //    ///</summary>
 //    type HighlightConfigType =
-//        { Theme: Option<HighlightConfigTypeThemeType> }
-//        member this.Convert() =
-//            box {| theme = (this.Theme |> Option.map (fun v -> v.Convert())) |}
+//        { Theme: HighlightConfigTypeThemeType }
+//        static member convert(this) =
+//            box {| theme = (this.Theme |> HighlightConfigTypeThemeType.convert) |}
 
 //    ///<summary>
 //    ///• className (string) - Class name of the container element
@@ -80,8 +81,8 @@ namespace Dash.NET.DCC
 //            | ClassName (p) -> "className", box p
 //            | DangerouslyAllowHtml (p) -> "dangerously_allow_html", box p
 //            | Dedent (p) -> "dedent", box p
-//            | HighlightConfig (p) -> "highlight_config", box (p.Convert())
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
+//            | HighlightConfig (p) -> "highlight_config", p |> HighlightConfigType.convert
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
 //            | Style (p) -> "style", box p
 
 //    ///<summary>
@@ -161,22 +162,22 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?className: string,
-//                ?dangerously_allow_html: string,
-//                ?dedent: string,
-//                ?highlight_config: string,
-//                ?loading_state: string,
-//                ?style: string
+//                ?dangerouslyAllowHtml: bool,
+//                ?dedent: bool,
+//                ?highlightConfig: HighlightConfigType,
+//                ?loadingState: LoadingStateType,
+//                ?style: obj
 //            ) =
 //            (fun (t: DashMarkdown) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "dangerously_allow_html" dangerously_allow_html
-//                DynObj.setValueOpt props "dedent" dedent
-//                DynObj.setValueOpt props "highlight_config" highlight_config
-//                DynObj.setValueOpt props "loading_state" loading_state
-//                DynObj.setValueOpt props "style" style
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "dangerouslyAllowHtml" (dangerouslyAllowHtml |> Option.map box)
+//                DynObj.setValueOpt props "dedent" (dedent |> Option.map box)
+//                DynObj.setValueOpt props "highlightConfig" (highlightConfig |> Option.map HighlightConfigType.convert)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "DashMarkdown"
@@ -187,20 +188,20 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?className: string,
-//                ?dangerously_allow_html: string,
-//                ?dedent: string,
-//                ?highlight_config: string,
-//                ?loading_state: string,
-//                ?style: string
+//                ?dangerouslyAllowHtml: bool,
+//                ?dedent: bool,
+//                ?highlightConfig: HighlightConfigType,
+//                ?loadingState: LoadingStateType,
+//                ?style: obj
 //            ) =
 //            DashMarkdown.applyMembers
 //                (id,
 //                 children,
 //                 ?className = className,
-//                 ?dangerously_allow_html = dangerously_allow_html,
+//                 ?dangerouslyAllowHtml = dangerouslyAllowHtml,
 //                 ?dedent = dedent,
-//                 ?highlight_config = highlight_config,
-//                 ?loading_state = loading_state,
+//                 ?highlightConfig = highlightConfig,
+//                 ?loadingState = loadingState,
 //                 ?style = style)
 //                (DashMarkdown())
 

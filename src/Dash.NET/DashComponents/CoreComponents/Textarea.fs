@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////A basic HTML textarea for entering multiline text.
@@ -18,29 +17,36 @@ namespace Dash.NET.DCC
 //        | Local
 //        | Session
 //        | Memory
-//        member this.Convert() =
-//            match this with
-//            | Local -> "local"
-//            | Session -> "session"
-//            | Memory -> "memory"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Local -> "local"
+//                | Session -> "session"
+//                | Memory -> "memory"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'value'
 //    ///</summary>
 //    type PersistedPropsTypeType =
 //        | Value
-//        member this.Convert() =
-//            match this with
-//            | Value -> "value"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Value -> "value"
+//            )
 
 //    ///<summary>
 //    ///list with values of type: value equal to: 'value'
 //    ///</summary>
 //    type PersistedPropsType =
 //        | PersistedPropsType of list<PersistedPropsTypeType>
-//        member this.Convert() =
-//            match this with
-//            | PersistedPropsType (v) -> List.map (fun (i: PersistedPropsTypeType) -> box (i.Convert())) v
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | PersistedPropsType (v) ->
+//                    List.map (fun (i: PersistedPropsTypeType) -> box (i |> PersistedPropsTypeType.convert)) v
+//            )
 
 //    ///<summary>
 //    ///boolean | string | number
@@ -49,7 +55,7 @@ namespace Dash.NET.DCC
 //        | Bool of bool
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | Bool (v) -> box v
 //            | String (v) -> box v
@@ -59,10 +65,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -74,7 +80,7 @@ namespace Dash.NET.DCC
 //    type TabIndexType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -85,10 +91,12 @@ namespace Dash.NET.DCC
 //    type SpellCheckTypeCase0Type =
 //        | True
 //        | False
-//        member this.Convert() =
-//            match this with
-//            | True -> "true"
-//            | False -> "false"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | True -> "true"
+//                | False -> "false"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'true', 'false' | boolean
@@ -96,9 +104,9 @@ namespace Dash.NET.DCC
 //    type SpellCheckType =
 //        | SpellCheckTypeCase0Type of SpellCheckTypeCase0Type
 //        | Bool of bool
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
-//            | SpellCheckTypeCase0Type (v) -> box (v.Convert())
+//            | SpellCheckTypeCase0Type (v) -> box (v |> SpellCheckTypeCase0Type.convert)
 //            | Bool (v) -> box v
 
 //    ///<summary>
@@ -107,10 +115,12 @@ namespace Dash.NET.DCC
 //    type DraggableTypeCase0Type =
 //        | True
 //        | False
-//        member this.Convert() =
-//            match this with
-//            | True -> "true"
-//            | False -> "false"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | True -> "true"
+//                | False -> "false"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'true', 'false' | boolean
@@ -118,9 +128,9 @@ namespace Dash.NET.DCC
 //    type DraggableType =
 //        | DraggableTypeCase0Type of DraggableTypeCase0Type
 //        | Bool of bool
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
-//            | DraggableTypeCase0Type (v) -> box (v.Convert())
+//            | DraggableTypeCase0Type (v) -> box (v |> DraggableTypeCase0Type.convert)
 //            | Bool (v) -> box v
 
 //    ///<summary>
@@ -129,7 +139,7 @@ namespace Dash.NET.DCC
 //    type ContentEditableType =
 //        | String of string
 //        | Bool of bool
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | Bool (v) -> box v
@@ -140,7 +150,7 @@ namespace Dash.NET.DCC
 //    type RowsType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -151,10 +161,12 @@ namespace Dash.NET.DCC
 //    type RequiredTypeCase0Type =
 //        | Required
 //        | REQUIRED
-//        member this.Convert() =
-//            match this with
-//            | Required -> "required"
-//            | REQUIRED -> "REQUIRED"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Required -> "required"
+//                | REQUIRED -> "REQUIRED"
+//            )
 
 //    ///<summary>
 //    ///value equal to: 'required', 'REQUIRED' | boolean
@@ -162,9 +174,9 @@ namespace Dash.NET.DCC
 //    type RequiredType =
 //        | RequiredTypeCase0Type of RequiredTypeCase0Type
 //        | Bool of bool
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
-//            | RequiredTypeCase0Type (v) -> box (v.Convert())
+//            | RequiredTypeCase0Type (v) -> box (v |> RequiredTypeCase0Type.convert)
 //            | Bool (v) -> box v
 
 //    ///<summary>
@@ -174,11 +186,13 @@ namespace Dash.NET.DCC
 //        | ReadOnly
 //        | Readonly
 //        | READONLY
-//        member this.Convert() =
-//            match this with
-//            | ReadOnly -> "readOnly"
-//            | Readonly -> "readonly"
-//            | READONLY -> "READONLY"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | ReadOnly -> "readOnly"
+//                | Readonly -> "readonly"
+//                | READONLY -> "READONLY"
+//            )
 
 //    ///<summary>
 //    ///boolean | value equal to: 'readOnly', 'readonly', 'READONLY'
@@ -186,10 +200,10 @@ namespace Dash.NET.DCC
 //    type ReadOnlyType =
 //        | Bool of bool
 //        | ReadOnlyTypeCase1Type of ReadOnlyTypeCase1Type
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | Bool (v) -> box v
-//            | ReadOnlyTypeCase1Type (v) -> box (v.Convert())
+//            | ReadOnlyTypeCase1Type (v) -> box (v |> ReadOnlyTypeCase1Type.convert)
 
 //    ///<summary>
 //    ///string | number
@@ -197,7 +211,7 @@ namespace Dash.NET.DCC
 //    type MinLengthType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -208,7 +222,7 @@ namespace Dash.NET.DCC
 //    type MaxLengthType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -219,7 +233,7 @@ namespace Dash.NET.DCC
 //    type DisabledType =
 //        | String of string
 //        | Bool of bool
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | Bool (v) -> box v
@@ -230,7 +244,7 @@ namespace Dash.NET.DCC
 //    type ColsType =
 //        | String of string
 //        | IConvertible of IConvertible
-//        member this.Convert() =
+//        static member convert(this) =
 //            match this with
 //            | String (v) -> box v
 //            | IConvertible (v) -> box v
@@ -356,37 +370,37 @@ namespace Dash.NET.DCC
 //            match prop with
 //            | Value (p) -> "value", box p
 //            | AutoFocus (p) -> "autoFocus", box p
-//            | Cols (p) -> "cols", box (p.Convert())
-//            | Disabled (p) -> "disabled", box (p.Convert())
+//            | Cols (p) -> "cols", p |> ColsType.convert
+//            | Disabled (p) -> "disabled", p |> DisabledType.convert
 //            | Form (p) -> "form", box p
-//            | MaxLength (p) -> "maxLength", box (p.Convert())
-//            | MinLength (p) -> "minLength", box (p.Convert())
+//            | MaxLength (p) -> "maxLength", p |> MaxLengthType.convert
+//            | MinLength (p) -> "minLength", p |> MinLengthType.convert
 //            | Name (p) -> "name", box p
 //            | Placeholder (p) -> "placeholder", box p
-//            | ReadOnly (p) -> "readOnly", box (p.Convert())
-//            | Required (p) -> "required", box (p.Convert())
-//            | Rows (p) -> "rows", box (p.Convert())
+//            | ReadOnly (p) -> "readOnly", p |> ReadOnlyType.convert
+//            | Required (p) -> "required", p |> RequiredType.convert
+//            | Rows (p) -> "rows", p |> RowsType.convert
 //            | Wrap (p) -> "wrap", box p
 //            | AccessKey (p) -> "accessKey", box p
 //            | ClassName (p) -> "className", box p
-//            | ContentEditable (p) -> "contentEditable", box (p.Convert())
+//            | ContentEditable (p) -> "contentEditable", p |> ContentEditableType.convert
 //            | ContextMenu (p) -> "contextMenu", box p
 //            | Dir (p) -> "dir", box p
-//            | Draggable (p) -> "draggable", box (p.Convert())
+//            | Draggable (p) -> "draggable", p |> DraggableType.convert
 //            | Hidden (p) -> "hidden", box p
 //            | Lang (p) -> "lang", box p
-//            | SpellCheck (p) -> "spellCheck", box (p.Convert())
+//            | SpellCheck (p) -> "spellCheck", p |> SpellCheckType.convert
 //            | Style (p) -> "style", box p
-//            | TabIndex (p) -> "tabIndex", box (p.Convert())
+//            | TabIndex (p) -> "tabIndex", p |> TabIndexType.convert
 //            | Title (p) -> "title", box p
 //            | NBlur (p) -> "n_blur", box p
 //            | NBlurTimestamp (p) -> "n_blur_timestamp", box p
 //            | NClicks (p) -> "n_clicks", box p
 //            | NClicksTimestamp (p) -> "n_clicks_timestamp", box p
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
-//            | Persistence (p) -> "persistence", box (p.Convert())
-//            | PersistedProps (p) -> "persisted_props", box (p.Convert())
-//            | PersistenceType (p) -> "persistence_type", box (p.Convert())
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
+//            | Persistence (p) -> "persistence", p |> PersistenceType.convert
+//            | PersistedProps (p) -> "persisted_props", p |> PersistedPropsType.convert
+//            | PersistenceType (p) -> "persistence_type", p |> PersistenceTypeType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -674,75 +688,75 @@ namespace Dash.NET.DCC
 //                children: seq<DashComponent>,
 //                ?value: string,
 //                ?autoFocus: string,
-//                ?cols: string,
-//                ?disabled: string,
+//                ?cols: ColsType,
+//                ?disabled: DisabledType,
 //                ?form: string,
-//                ?maxLength: string,
-//                ?minLength: string,
+//                ?maxLength: MaxLengthType,
+//                ?minLength: MinLengthType,
 //                ?name: string,
 //                ?placeholder: string,
-//                ?readOnly: string,
-//                ?required: string,
-//                ?rows: string,
+//                ?readOnly: ReadOnlyType,
+//                ?required: RequiredType,
+//                ?rows: RowsType,
 //                ?wrap: string,
 //                ?accessKey: string,
 //                ?className: string,
-//                ?contentEditable: string,
+//                ?contentEditable: ContentEditableType,
 //                ?contextMenu: string,
 //                ?dir: string,
-//                ?draggable: string,
+//                ?draggable: DraggableType,
 //                ?hidden: string,
 //                ?lang: string,
-//                ?spellCheck: string,
-//                ?style: string,
-//                ?tabIndex: string,
+//                ?spellCheck: SpellCheckType,
+//                ?style: obj,
+//                ?tabIndex: TabIndexType,
 //                ?title: string,
-//                ?n_blur: string,
-//                ?n_blur_timestamp: string,
-//                ?n_clicks: string,
-//                ?n_clicks_timestamp: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?nBlur: IConvertible,
+//                ?nBlurTimestamp: IConvertible,
+//                ?nClicks: IConvertible,
+//                ?nClicksTimestamp: IConvertible,
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            (fun (t: Textarea) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "value" value
-//                DynObj.setValueOpt props "autoFocus" autoFocus
-//                DynObj.setValueOpt props "cols" cols
-//                DynObj.setValueOpt props "disabled" disabled
-//                DynObj.setValueOpt props "form" form
-//                DynObj.setValueOpt props "maxLength" maxLength
-//                DynObj.setValueOpt props "minLength" minLength
-//                DynObj.setValueOpt props "name" name
-//                DynObj.setValueOpt props "placeholder" placeholder
-//                DynObj.setValueOpt props "readOnly" readOnly
-//                DynObj.setValueOpt props "required" required
-//                DynObj.setValueOpt props "rows" rows
-//                DynObj.setValueOpt props "wrap" wrap
-//                DynObj.setValueOpt props "accessKey" accessKey
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "contentEditable" contentEditable
-//                DynObj.setValueOpt props "contextMenu" contextMenu
-//                DynObj.setValueOpt props "dir" dir
-//                DynObj.setValueOpt props "draggable" draggable
-//                DynObj.setValueOpt props "hidden" hidden
-//                DynObj.setValueOpt props "lang" lang
-//                DynObj.setValueOpt props "spellCheck" spellCheck
-//                DynObj.setValueOpt props "style" style
-//                DynObj.setValueOpt props "tabIndex" tabIndex
-//                DynObj.setValueOpt props "title" title
-//                DynObj.setValueOpt props "n_blur" n_blur
-//                DynObj.setValueOpt props "n_blur_timestamp" n_blur_timestamp
-//                DynObj.setValueOpt props "n_clicks" n_clicks
-//                DynObj.setValueOpt props "n_clicks_timestamp" n_clicks_timestamp
-//                DynObj.setValueOpt props "loading_state" loading_state
-//                DynObj.setValueOpt props "persistence" persistence
-//                DynObj.setValueOpt props "persisted_props" persisted_props
-//                DynObj.setValueOpt props "persistence_type" persistence_type
+//                DynObj.setValueOpt props "value" (value |> Option.map box)
+//                DynObj.setValueOpt props "autoFocus" (autoFocus |> Option.map box)
+//                DynObj.setValueOpt props "cols" (cols |> Option.map ColsType.convert)
+//                DynObj.setValueOpt props "disabled" (disabled |> Option.map DisabledType.convert)
+//                DynObj.setValueOpt props "form" (form |> Option.map box)
+//                DynObj.setValueOpt props "maxLength" (maxLength |> Option.map MaxLengthType.convert)
+//                DynObj.setValueOpt props "minLength" (minLength |> Option.map MinLengthType.convert)
+//                DynObj.setValueOpt props "name" (name |> Option.map box)
+//                DynObj.setValueOpt props "placeholder" (placeholder |> Option.map box)
+//                DynObj.setValueOpt props "readOnly" (readOnly |> Option.map ReadOnlyType.convert)
+//                DynObj.setValueOpt props "required" (required |> Option.map RequiredType.convert)
+//                DynObj.setValueOpt props "rows" (rows |> Option.map RowsType.convert)
+//                DynObj.setValueOpt props "wrap" (wrap |> Option.map box)
+//                DynObj.setValueOpt props "accessKey" (accessKey |> Option.map box)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "contentEditable" (contentEditable |> Option.map ContentEditableType.convert)
+//                DynObj.setValueOpt props "contextMenu" (contextMenu |> Option.map box)
+//                DynObj.setValueOpt props "dir" (dir |> Option.map box)
+//                DynObj.setValueOpt props "draggable" (draggable |> Option.map DraggableType.convert)
+//                DynObj.setValueOpt props "hidden" (hidden |> Option.map box)
+//                DynObj.setValueOpt props "lang" (lang |> Option.map box)
+//                DynObj.setValueOpt props "spellCheck" (spellCheck |> Option.map SpellCheckType.convert)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
+//                DynObj.setValueOpt props "tabIndex" (tabIndex |> Option.map TabIndexType.convert)
+//                DynObj.setValueOpt props "title" (title |> Option.map box)
+//                DynObj.setValueOpt props "nBlur" (nBlur |> Option.map box)
+//                DynObj.setValueOpt props "nBlurTimestamp" (nBlurTimestamp |> Option.map box)
+//                DynObj.setValueOpt props "nClicks" (nClicks |> Option.map box)
+//                DynObj.setValueOpt props "nClicksTimestamp" (nClicksTimestamp |> Option.map box)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
+//                DynObj.setValueOpt props "persistence" (persistence |> Option.map PersistenceType.convert)
+//                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map PersistedPropsType.convert)
+//                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "Textarea"
@@ -754,37 +768,37 @@ namespace Dash.NET.DCC
 //                children: seq<DashComponent>,
 //                ?value: string,
 //                ?autoFocus: string,
-//                ?cols: string,
-//                ?disabled: string,
+//                ?cols: ColsType,
+//                ?disabled: DisabledType,
 //                ?form: string,
-//                ?maxLength: string,
-//                ?minLength: string,
+//                ?maxLength: MaxLengthType,
+//                ?minLength: MinLengthType,
 //                ?name: string,
 //                ?placeholder: string,
-//                ?readOnly: string,
-//                ?required: string,
-//                ?rows: string,
+//                ?readOnly: ReadOnlyType,
+//                ?required: RequiredType,
+//                ?rows: RowsType,
 //                ?wrap: string,
 //                ?accessKey: string,
 //                ?className: string,
-//                ?contentEditable: string,
+//                ?contentEditable: ContentEditableType,
 //                ?contextMenu: string,
 //                ?dir: string,
-//                ?draggable: string,
+//                ?draggable: DraggableType,
 //                ?hidden: string,
 //                ?lang: string,
-//                ?spellCheck: string,
-//                ?style: string,
-//                ?tabIndex: string,
+//                ?spellCheck: SpellCheckType,
+//                ?style: obj,
+//                ?tabIndex: TabIndexType,
 //                ?title: string,
-//                ?n_blur: string,
-//                ?n_blur_timestamp: string,
-//                ?n_clicks: string,
-//                ?n_clicks_timestamp: string,
-//                ?loading_state: string,
-//                ?persistence: string,
-//                ?persisted_props: string,
-//                ?persistence_type: string
+//                ?nBlur: IConvertible,
+//                ?nBlurTimestamp: IConvertible,
+//                ?nClicks: IConvertible,
+//                ?nClicksTimestamp: IConvertible,
+//                ?loadingState: LoadingStateType,
+//                ?persistence: PersistenceType,
+//                ?persistedProps: PersistedPropsType,
+//                ?persistenceType: PersistenceTypeType
 //            ) =
 //            Textarea.applyMembers
 //                (id,
@@ -814,14 +828,14 @@ namespace Dash.NET.DCC
 //                 ?style = style,
 //                 ?tabIndex = tabIndex,
 //                 ?title = title,
-//                 ?n_blur = n_blur,
-//                 ?n_blur_timestamp = n_blur_timestamp,
-//                 ?n_clicks = n_clicks,
-//                 ?n_clicks_timestamp = n_clicks_timestamp,
-//                 ?loading_state = loading_state,
+//                 ?nBlur = nBlur,
+//                 ?nBlurTimestamp = nBlurTimestamp,
+//                 ?nClicks = nClicks,
+//                 ?nClicksTimestamp = nClicksTimestamp,
+//                 ?loadingState = loadingState,
 //                 ?persistence = persistence,
-//                 ?persisted_props = persisted_props,
-//                 ?persistence_type = persistence_type)
+//                 ?persistedProps = persistedProps,
+//                 ?persistenceType = persistenceType)
 //                (Textarea())
 
 //    ///<summary>

@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////A component that repeatedly increments a counter &#96;n_intervals&#96;
@@ -104,19 +103,19 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?interval: string,
-//                ?disabled: string,
-//                ?n_intervals: string,
-//                ?max_intervals: string
+//                ?interval: IConvertible,
+//                ?disabled: bool,
+//                ?nIntervals: IConvertible,
+//                ?maxIntervals: IConvertible
 //            ) =
 //            (fun (t: Interval) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "interval" interval
-//                DynObj.setValueOpt props "disabled" disabled
-//                DynObj.setValueOpt props "n_intervals" n_intervals
-//                DynObj.setValueOpt props "max_intervals" max_intervals
+//                DynObj.setValueOpt props "interval" (interval |> Option.map box)
+//                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+//                DynObj.setValueOpt props "nIntervals" (nIntervals |> Option.map box)
+//                DynObj.setValueOpt props "maxIntervals" (maxIntervals |> Option.map box)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "Interval"
@@ -126,18 +125,18 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?interval: string,
-//                ?disabled: string,
-//                ?n_intervals: string,
-//                ?max_intervals: string
+//                ?interval: IConvertible,
+//                ?disabled: bool,
+//                ?nIntervals: IConvertible,
+//                ?maxIntervals: IConvertible
 //            ) =
 //            Interval.applyMembers
 //                (id,
 //                 children,
 //                 ?interval = interval,
 //                 ?disabled = disabled,
-//                 ?n_intervals = n_intervals,
-//                 ?max_intervals = max_intervals)
+//                 ?nIntervals = nIntervals,
+//                 ?maxIntervals = maxIntervals)
 //                (Interval())
 
 //    ///<summary>
@@ -188,3 +187,4 @@ namespace Dash.NET.DCC
 
 //        DynObj.setValue t "props" componentProps
 //        t :> DashComponent
+

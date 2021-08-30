@@ -188,35 +188,35 @@ module RadioItems =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?options: string,
-                ?value: string,
-                ?style: string,
+                ?options: seq<RadioItemsOption>,
+                ?value: IConvertible,
+                ?style: DashComponentStyle,
                 ?className: string,
-                ?inputStyle: string,
+                ?inputStyle: DashComponentStyle,
                 ?inputClassName: string,
-                ?labelStyle: string,
+                ?labelStyle: DashComponentStyle,
                 ?labelClassName: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             (fun (t: RadioItems) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "options" options
-                DynObj.setValueOpt props "value" value
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "inputStyle" inputStyle
-                DynObj.setValueOpt props "inputClassName" inputClassName
-                DynObj.setValueOpt props "labelStyle" labelStyle
-                DynObj.setValueOpt props "labelClassName" labelClassName
-                DynObj.setValueOpt props "loading_state" loading_state
-                DynObj.setValueOpt props "persistence" persistence
-                DynObj.setValueOpt props "persisted_props" persisted_props
-                DynObj.setValueOpt props "persistence_type" persistence_type
+                DynObj.setValueOpt props "options" (options |> Option.map box)
+                DynObj.setValueOpt props "value" (value |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "inputStyle" (inputStyle |> Option.map box)
+                DynObj.setValueOpt props "inputClassName" (inputClassName |> Option.map box)
+                DynObj.setValueOpt props "labelStyle" (labelStyle |> Option.map box)
+                DynObj.setValueOpt props "labelClassName" (labelClassName |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
+                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
+                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "RadioItems"
@@ -226,18 +226,18 @@ module RadioItems =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?options: string,
-                ?value: string,
-                ?style: string,
+                ?options: seq<RadioItemsOption>,
+                ?value: IConvertible,
+                ?style: DashComponentStyle,
                 ?className: string,
-                ?inputStyle: string,
+                ?inputStyle: DashComponentStyle,
                 ?inputClassName: string,
-                ?labelStyle: string,
+                ?labelStyle: DashComponentStyle,
                 ?labelClassName: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             RadioItems.applyMembers
                 (id,
@@ -250,10 +250,10 @@ module RadioItems =
                  ?inputClassName = inputClassName,
                  ?labelStyle = labelStyle,
                  ?labelClassName = labelClassName,
-                 ?loading_state = loading_state,
+                 ?loadingState = loadingState,
                  ?persistence = persistence,
-                 ?persisted_props = persisted_props,
-                 ?persistence_type = persistence_type)
+                 ?persistedProps = persistedProps,
+                 ?persistenceType = persistenceType)
                 (RadioItems())
 
     ///<summary>

@@ -402,79 +402,81 @@ module Input =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?value: string,
-                ?style: string,
+                ?value: IConvertible,
+                ?style: DashComponentStyle,
                 ?className: string,
-                ?debounce: string,
-                ?``type``: string,
+                ?debounce: bool,
+                ?inputType: InputType,
                 ?autoComplete: string,
-                ?autoFocus: string,
-                ?disabled: string,
-                ?inputMode: string,
+                ?autoFocus: bool,
+                ?disabled: bool,
+                ?inputMode: InputMode,
                 ?list: string,
-                ?max: string,
-                ?maxLength: string,
-                ?min: string,
-                ?minLength: string,
-                ?multiple: string,
+                ?max: IConvertible,
+                ?maxLength: IConvertible,
+                ?min: IConvertible,
+                ?minLength: IConvertible,
+                ?multiple: bool,
                 ?name: string,
                 ?pattern: string,
-                ?placeholder: string,
-                ?readOnly: string,
-                ?required: string,
+                ?placeholder: IConvertible,
+                ?readOnly: bool,
+                ?required: bool,
                 ?selectionDirection: string,
                 ?selectionEnd: string,
                 ?selectionStart: string,
                 ?size: string,
-                ?spellCheck: string,
-                ?step: string,
-                ?n_submit: string,
-                ?n_submit_timestamp: string,
-                ?n_blur: string,
-                ?n_blur_timestamp: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?spellCheck: SpellCheckOptions,
+                ?step: IConvertible,
+                ?nSubmit: IConvertible,
+                ?nSubmitTimestamp: IConvertible,
+                ?nBlur: IConvertible,
+                ?nBlurTimestamp: IConvertible,
+                ?setProps: obj,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             (fun (t: Input) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "value" value
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "debounce" debounce
-                DynObj.setValueOpt props "type" ``type``
-                DynObj.setValueOpt props "autoComplete" autoComplete
-                DynObj.setValueOpt props "autoFocus" autoFocus
-                DynObj.setValueOpt props "disabled" disabled
-                DynObj.setValueOpt props "inputMode" inputMode
-                DynObj.setValueOpt props "list" list
-                DynObj.setValueOpt props "max" max
-                DynObj.setValueOpt props "maxLength" maxLength
-                DynObj.setValueOpt props "min" min
-                DynObj.setValueOpt props "minLength" minLength
-                DynObj.setValueOpt props "multiple" multiple
-                DynObj.setValueOpt props "name" name
-                DynObj.setValueOpt props "pattern" pattern
-                DynObj.setValueOpt props "placeholder" placeholder
-                DynObj.setValueOpt props "readOnly" readOnly
-                DynObj.setValueOpt props "required" required
-                DynObj.setValueOpt props "selectionDirection" selectionDirection
-                DynObj.setValueOpt props "selectionEnd" selectionEnd
-                DynObj.setValueOpt props "selectionStart" selectionStart
-                DynObj.setValueOpt props "size" size
-                DynObj.setValueOpt props "spellCheck" spellCheck
-                DynObj.setValueOpt props "step" step
-                DynObj.setValueOpt props "n_submit" n_submit
-                DynObj.setValueOpt props "n_submit_timestamp" n_submit_timestamp
-                DynObj.setValueOpt props "n_blur" n_blur
-                DynObj.setValueOpt props "n_blur_timestamp" n_blur_timestamp
-                DynObj.setValueOpt props "loading_state" loading_state
-                DynObj.setValueOpt props "persistence" persistence
-                DynObj.setValueOpt props "persisted_props" persisted_props
-                DynObj.setValueOpt props "persistence_type" persistence_type
+                DynObj.setValueOpt props "value" (value |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "debounce" (debounce |> Option.map box)
+                DynObj.setValueOpt props "type" (inputType |> Option.map InputType.convert)
+                DynObj.setValueOpt props "autoComplete" (autoComplete |> Option.map box)
+                DynObj.setValueOpt props "autoFocus" (autoFocus |> Option.map box)
+                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+                DynObj.setValueOpt props "inputMode" (inputMode |> Option.map InputMode.convert)
+                DynObj.setValueOpt props "list" (list |> Option.map box)
+                DynObj.setValueOpt props "max" (max |> Option.map box)
+                DynObj.setValueOpt props "maxLength" (maxLength |> Option.map box)
+                DynObj.setValueOpt props "min" (min |> Option.map box)
+                DynObj.setValueOpt props "minLength" (minLength |> Option.map box)
+                DynObj.setValueOpt props "multiple" (multiple |> Option.map box)
+                DynObj.setValueOpt props "name" (name |> Option.map box)
+                DynObj.setValueOpt props "pattern" (pattern |> Option.map box)
+                DynObj.setValueOpt props "placeholder" (placeholder |> Option.map box)
+                DynObj.setValueOpt props "readOnly" (readOnly |> Option.map box)
+                DynObj.setValueOpt props "required" (required |> Option.map box)
+                DynObj.setValueOpt props "selectionDirection" (selectionDirection |> Option.map box)
+                DynObj.setValueOpt props "selectionEnd" (selectionEnd |> Option.map box)
+                DynObj.setValueOpt props "selectionStart" (selectionStart |> Option.map box)
+                DynObj.setValueOpt props "size" (size |> Option.map box)
+                DynObj.setValueOpt props "spellCheck" (spellCheck |> Option.map SpellCheckOptions.convert)
+                DynObj.setValueOpt props "step" (step |> Option.map box)
+                DynObj.setValueOpt props "nSubmit" (nSubmit |> Option.map box)
+                DynObj.setValueOpt props "nSubmitTimestamp" (nSubmitTimestamp |> Option.map box)
+                DynObj.setValueOpt props "nBlur" (nBlur |> Option.map box)
+                DynObj.setValueOpt props "nBlurTimestamp" (nBlurTimestamp |> Option.map box)
+                DynObj.setValueOpt props "setProps" (setProps |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
+                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
+                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Input"
@@ -484,40 +486,41 @@ module Input =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?value: string,
-                ?style: string,
+                ?value: IConvertible,
+                ?style: DashComponentStyle,
                 ?className: string,
-                ?debounce: string,
-                ?``type``: string,
+                ?debounce: bool,
+                ?inputType: InputType,
                 ?autoComplete: string,
-                ?autoFocus: string,
-                ?disabled: string,
-                ?inputMode: string,
+                ?autoFocus: bool,
+                ?disabled: bool,
+                ?inputMode: InputMode,
                 ?list: string,
-                ?max: string,
-                ?maxLength: string,
-                ?min: string,
-                ?minLength: string,
-                ?multiple: string,
+                ?max: IConvertible,
+                ?maxLength: IConvertible,
+                ?min: IConvertible,
+                ?minLength: IConvertible,
+                ?multiple: bool,
                 ?name: string,
                 ?pattern: string,
-                ?placeholder: string,
-                ?readOnly: string,
-                ?required: string,
+                ?placeholder: IConvertible,
+                ?readOnly: bool,
+                ?required: bool,
                 ?selectionDirection: string,
                 ?selectionEnd: string,
                 ?selectionStart: string,
                 ?size: string,
-                ?spellCheck: string,
-                ?step: string,
-                ?n_submit: string,
-                ?n_submit_timestamp: string,
-                ?n_blur: string,
-                ?n_blur_timestamp: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?spellCheck: SpellCheckOptions,
+                ?step: IConvertible,
+                ?nSubmit: IConvertible,
+                ?nSubmitTimestamp: IConvertible,
+                ?nBlur: IConvertible,
+                ?nBlurTimestamp: IConvertible,
+                ?setProps: obj,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             Input.applyMembers
                 (id,
@@ -526,7 +529,7 @@ module Input =
                  ?style = style,
                  ?className = className,
                  ?debounce = debounce,
-                 ?``type`` = ``type``,
+                 ?inputType = inputType,
                  ?autoComplete = autoComplete,
                  ?autoFocus = autoFocus,
                  ?disabled = disabled,
@@ -548,14 +551,15 @@ module Input =
                  ?size = size,
                  ?spellCheck = spellCheck,
                  ?step = step,
-                 ?n_submit = n_submit,
-                 ?n_submit_timestamp = n_submit_timestamp,
-                 ?n_blur = n_blur,
-                 ?n_blur_timestamp = n_blur_timestamp,
-                 ?loading_state = loading_state,
+                 ?nSubmit = nSubmit,
+                 ?nSubmitTimestamp = nSubmitTimestamp,
+                 ?nBlur = nBlur,
+                 ?nBlurTimestamp = nBlurTimestamp,
+                 ?setProps = setProps,
+                 ?loadingState = loadingState,
                  ?persistence = persistence,
-                 ?persisted_props = persisted_props,
-                 ?persistence_type = persistence_type)
+                 ?persistedProps = persistedProps,
+                 ?persistenceType = persistenceType)
                 (Input())
 
     ///<summary>

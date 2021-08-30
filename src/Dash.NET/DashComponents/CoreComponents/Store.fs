@@ -102,19 +102,19 @@ module Store =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?storage_type: string,
+                ?storageType: PersistenceTypeOptions,
                 ?data: string,
-                ?clear_data: string,
-                ?modified_timestamp: string
+                ?clearData: bool,
+                ?modifiedTimestamp: int
             ) =
             (fun (t: Store) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "storage_type" storage_type
-                DynObj.setValueOpt props "data" data
-                DynObj.setValueOpt props "clear_data" clear_data
-                DynObj.setValueOpt props "modified_timestamp" modified_timestamp
+                DynObj.setValueOpt props "storageType" (storageType |> Option.map PersistenceTypeOptions.convert)
+                DynObj.setValueOpt props "data" (data |> Option.map box)
+                DynObj.setValueOpt props "clearData" (clearData |> Option.map box)
+                DynObj.setValueOpt props "modifiedTimestamp" (modifiedTimestamp |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Store"
@@ -124,18 +124,18 @@ module Store =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?storage_type: string,
+                ?storageType: PersistenceTypeOptions,
                 ?data: string,
-                ?clear_data: string,
-                ?modified_timestamp: string
+                ?clearData: bool,
+                ?modifiedTimestamp: int
             ) =
             Store.applyMembers
                 (id,
                  children,
-                 ?storage_type = storage_type,
+                 ?storageType = storageType,
                  ?data = data,
-                 ?clear_data = clear_data,
-                 ?modified_timestamp = modified_timestamp)
+                 ?clearData = clearData,
+                 ?modifiedTimestamp = modifiedTimestamp)
                 (Store())
 
     ///<summary>

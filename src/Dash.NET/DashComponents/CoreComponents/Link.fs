@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////Link allows you to create a clickable link within a multi-page app.
@@ -17,10 +16,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -60,7 +59,7 @@ namespace Dash.NET.DCC
 //            | Style (p) -> "style", box p
 //            | Title (p) -> "title", box p
 //            | Target (p) -> "target", box p
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -138,24 +137,24 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?href: string,
-//                ?refresh: string,
+//                ?refresh: bool,
 //                ?className: string,
-//                ?style: string,
+//                ?style: obj,
 //                ?title: string,
 //                ?target: string,
-//                ?loading_state: string
+//                ?loadingState: LoadingStateType
 //            ) =
 //            (fun (t: Link) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "href" href
-//                DynObj.setValueOpt props "refresh" refresh
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "style" style
-//                DynObj.setValueOpt props "title" title
-//                DynObj.setValueOpt props "target" target
-//                DynObj.setValueOpt props "loading_state" loading_state
+//                DynObj.setValueOpt props "href" (href |> Option.map box)
+//                DynObj.setValueOpt props "refresh" (refresh |> Option.map box)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
+//                DynObj.setValueOpt props "title" (title |> Option.map box)
+//                DynObj.setValueOpt props "target" (target |> Option.map box)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "Link"
@@ -166,12 +165,12 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?href: string,
-//                ?refresh: string,
+//                ?refresh: bool,
 //                ?className: string,
-//                ?style: string,
+//                ?style: obj,
 //                ?title: string,
 //                ?target: string,
-//                ?loading_state: string
+//                ?loadingState: LoadingStateType
 //            ) =
 //            Link.applyMembers
 //                (id,
@@ -182,7 +181,7 @@ namespace Dash.NET.DCC
 //                 ?style = style,
 //                 ?title = title,
 //                 ?target = target,
-//                 ?loading_state = loading_state)
+//                 ?loadingState = loadingState)
 //                (Link())
 
 //    ///<summary>

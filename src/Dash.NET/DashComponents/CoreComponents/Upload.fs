@@ -257,47 +257,47 @@ module Upload =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?contents: string,
-                ?filename: string,
-                ?last_modified: string,
+                ?contents: UploadContents,
+                ?filename: UploadFileName,
+                ?lastModified: UploadLastModified,
                 ?accept: string,
-                ?disabled: string,
-                ?disable_click: string,
-                ?max_size: string,
-                ?min_size: string,
-                ?multiple: string,
+                ?disabled: bool,
+                ?disableClick: bool,
+                ?maxSize: int,
+                ?minSize: int,
+                ?multiple: bool,
                 ?className: string,
-                ?className_active: string,
-                ?className_reject: string,
-                ?className_disabled: string,
-                ?style: string,
-                ?style_active: string,
-                ?style_reject: string,
-                ?style_disabled: string,
-                ?loading_state: string
+                ?classNameActive: string,
+                ?classNameReject: string,
+                ?classNameDisabled: string,
+                ?style: DashComponentStyle,
+                ?styleActive: obj,
+                ?styleReject: obj,
+                ?styleDisabled: obj,
+                ?loadingState: LoadingState
             ) =
             (fun (t: Upload) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "contents" contents
-                DynObj.setValueOpt props "filename" filename
-                DynObj.setValueOpt props "last_modified" last_modified
-                DynObj.setValueOpt props "accept" accept
-                DynObj.setValueOpt props "disabled" disabled
-                DynObj.setValueOpt props "disable_click" disable_click
-                DynObj.setValueOpt props "max_size" max_size
-                DynObj.setValueOpt props "min_size" min_size
-                DynObj.setValueOpt props "multiple" multiple
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "className_active" className_active
-                DynObj.setValueOpt props "className_reject" className_reject
-                DynObj.setValueOpt props "className_disabled" className_disabled
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "style_active" style_active
-                DynObj.setValueOpt props "style_reject" style_reject
-                DynObj.setValueOpt props "style_disabled" style_disabled
-                DynObj.setValueOpt props "loading_state" loading_state
+                DynObj.setValueOpt props "contents" (contents |> Option.map UploadContents.convert)
+                DynObj.setValueOpt props "filename" (filename |> Option.map UploadFileName.convert)
+                DynObj.setValueOpt props "lastModified" (lastModified |> Option.map UploadLastModified.convert)
+                DynObj.setValueOpt props "accept" (accept |> Option.map box)
+                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+                DynObj.setValueOpt props "disableClick" (disableClick |> Option.map box)
+                DynObj.setValueOpt props "maxSize" (maxSize |> Option.map box)
+                DynObj.setValueOpt props "minSize" (minSize |> Option.map box)
+                DynObj.setValueOpt props "multiple" (multiple |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "classNameActive" (classNameActive |> Option.map box)
+                DynObj.setValueOpt props "classNameReject" (classNameReject |> Option.map box)
+                DynObj.setValueOpt props "classNameDisabled" (classNameDisabled |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "styleActive" (styleActive |> Option.map box)
+                DynObj.setValueOpt props "styleReject" (styleReject |> Option.map box)
+                DynObj.setValueOpt props "styleDisabled" (styleDisabled |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Upload"
@@ -307,46 +307,46 @@ module Upload =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?contents: string,
-                ?filename: string,
-                ?last_modified: string,
+                ?contents: UploadContents,
+                ?filename: UploadFileName,
+                ?lastModified: UploadLastModified,
                 ?accept: string,
-                ?disabled: string,
-                ?disable_click: string,
-                ?max_size: string,
-                ?min_size: string,
-                ?multiple: string,
+                ?disabled: bool,
+                ?disableClick: bool,
+                ?maxSize: int,
+                ?minSize: int,
+                ?multiple: bool,
                 ?className: string,
-                ?className_active: string,
-                ?className_reject: string,
-                ?className_disabled: string,
-                ?style: string,
-                ?style_active: string,
-                ?style_reject: string,
-                ?style_disabled: string,
-                ?loading_state: string
+                ?classNameActive: string,
+                ?classNameReject: string,
+                ?classNameDisabled: string,
+                ?style: DashComponentStyle,
+                ?styleActive: obj,
+                ?styleReject: obj,
+                ?styleDisabled: obj,
+                ?loadingState: LoadingState
             ) =
             Upload.applyMembers
                 (id,
                  children,
                  ?contents = contents,
                  ?filename = filename,
-                 ?last_modified = last_modified,
+                 ?lastModified = lastModified,
                  ?accept = accept,
                  ?disabled = disabled,
-                 ?disable_click = disable_click,
-                 ?max_size = max_size,
-                 ?min_size = min_size,
+                 ?disableClick = disableClick,
+                 ?maxSize = maxSize,
+                 ?minSize = minSize,
                  ?multiple = multiple,
                  ?className = className,
-                 ?className_active = className_active,
-                 ?className_reject = className_reject,
-                 ?className_disabled = className_disabled,
+                 ?classNameActive = classNameActive,
+                 ?classNameReject = classNameReject,
+                 ?classNameDisabled = classNameDisabled,
                  ?style = style,
-                 ?style_active = style_active,
-                 ?style_reject = style_reject,
-                 ?style_disabled = style_disabled,
-                 ?loading_state = loading_state)
+                 ?styleActive = styleActive,
+                 ?styleReject = styleReject,
+                 ?styleDisabled = styleDisabled,
+                 ?loadingState = loadingState)
                 (Upload())
 
     ///<summary>

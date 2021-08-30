@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////Logout button to submit a form post request to the &#96;logout_url&#96; prop.
@@ -29,10 +28,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -65,7 +64,7 @@ namespace Dash.NET.DCC
 //            | Style (p) -> "style", box p
 //            | Method (p) -> "method", box p
 //            | ClassName (p) -> "className", box p
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -150,22 +149,22 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?label: string,
-//                ?logout_url: string,
-//                ?style: string,
+//                ?logoutUrl: string,
+//                ?style: obj,
 //                ?method: string,
 //                ?className: string,
-//                ?loading_state: string
+//                ?loadingState: LoadingStateType
 //            ) =
 //            (fun (t: LogoutButton) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "label" label
-//                DynObj.setValueOpt props "logout_url" logout_url
-//                DynObj.setValueOpt props "style" style
-//                DynObj.setValueOpt props "method" method
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "loading_state" loading_state
+//                DynObj.setValueOpt props "label" (label |> Option.map box)
+//                DynObj.setValueOpt props "logoutUrl" (logoutUrl |> Option.map box)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
+//                DynObj.setValueOpt props "method" (method |> Option.map box)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "LogoutButton"
@@ -176,21 +175,21 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?label: string,
-//                ?logout_url: string,
-//                ?style: string,
+//                ?logoutUrl: string,
+//                ?style: obj,
 //                ?method: string,
 //                ?className: string,
-//                ?loading_state: string
+//                ?loadingState: LoadingStateType
 //            ) =
 //            LogoutButton.applyMembers
 //                (id,
 //                 children,
 //                 ?label = label,
-//                 ?logout_url = logout_url,
+//                 ?logoutUrl = logoutUrl,
 //                 ?style = style,
 //                 ?method = method,
 //                 ?className = className,
-//                 ?loading_state = loading_state)
+//                 ?loadingState = loadingState)
 //                (LogoutButton())
 
 //    ///<summary>

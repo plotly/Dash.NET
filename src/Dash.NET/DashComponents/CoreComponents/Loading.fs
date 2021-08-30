@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////A Loading component that wraps any other component and displays a spinner until the wrapped component has rendered.
@@ -15,10 +14,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -33,13 +32,15 @@ namespace Dash.NET.DCC
 //        | Circle
 //        | Dot
 //        | Default
-//        member this.Convert() =
-//            match this with
-//            | Graph -> "graph"
-//            | Cube -> "cube"
-//            | Circle -> "circle"
-//            | Dot -> "dot"
-//            | Default -> "default"
+//        static member convert(this) =
+//            box (
+//                match this with
+//                | Graph -> "graph"
+//                | Cube -> "cube"
+//                | Circle -> "circle"
+//                | Dot -> "dot"
+//                | Default -> "default"
+//            )
 
 //    ///<summary>
 //    ///• children (list with values of type: a list of or a singular dash component, string or number | a list of or a singular dash component, string or number) - Array that holds components to render
@@ -76,7 +77,7 @@ namespace Dash.NET.DCC
 //        | LoadingState of LoadingStateType
 //        static member toDynamicMemberDef(prop: Prop) =
 //            match prop with
-//            | Type (p) -> "type", box (p.Convert())
+//            | Type (p) -> "type", p |> TypeType.convert
 //            | Fullscreen (p) -> "fullscreen", box p
 //            | Debug (p) -> "debug", box p
 //            | ClassName (p) -> "className", box p
@@ -84,7 +85,7 @@ namespace Dash.NET.DCC
 //            | Style (p) -> "style", box p
 //            | ParentStyle (p) -> "parent_style", box p
 //            | Color (p) -> "color", box p
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -168,29 +169,29 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?``type``: string,
-//                ?fullscreen: string,
-//                ?debug: string,
+//                ?``type``: TypeType,
+//                ?fullscreen: bool,
+//                ?debug: bool,
 //                ?className: string,
-//                ?parent_className: string,
-//                ?style: string,
-//                ?parent_style: string,
+//                ?parentClassName: string,
+//                ?style: obj,
+//                ?parentStyle: obj,
 //                ?color: string,
-//                ?loading_state: string
+//                ?loadingState: LoadingStateType
 //            ) =
 //            (fun (t: Loading) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "type" ``type``
-//                DynObj.setValueOpt props "fullscreen" fullscreen
-//                DynObj.setValueOpt props "debug" debug
-//                DynObj.setValueOpt props "className" className
-//                DynObj.setValueOpt props "parent_className" parent_className
-//                DynObj.setValueOpt props "style" style
-//                DynObj.setValueOpt props "parent_style" parent_style
-//                DynObj.setValueOpt props "color" color
-//                DynObj.setValueOpt props "loading_state" loading_state
+//                DynObj.setValueOpt props "type" (``type`` |> Option.map TypeType.convert)
+//                DynObj.setValueOpt props "fullscreen" (fullscreen |> Option.map box)
+//                DynObj.setValueOpt props "debug" (debug |> Option.map box)
+//                DynObj.setValueOpt props "className" (className |> Option.map box)
+//                DynObj.setValueOpt props "parentClassName" (parentClassName |> Option.map box)
+//                DynObj.setValueOpt props "style" (style |> Option.map box)
+//                DynObj.setValueOpt props "parentStyle" (parentStyle |> Option.map box)
+//                DynObj.setValueOpt props "color" (color |> Option.map box)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "Loading"
@@ -200,15 +201,15 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?``type``: string,
-//                ?fullscreen: string,
-//                ?debug: string,
+//                ?``type``: TypeType,
+//                ?fullscreen: bool,
+//                ?debug: bool,
 //                ?className: string,
-//                ?parent_className: string,
-//                ?style: string,
-//                ?parent_style: string,
+//                ?parentClassName: string,
+//                ?style: obj,
+//                ?parentStyle: obj,
 //                ?color: string,
-//                ?loading_state: string
+//                ?loadingState: LoadingStateType
 //            ) =
 //            Loading.applyMembers
 //                (id,
@@ -217,11 +218,11 @@ namespace Dash.NET.DCC
 //                 ?fullscreen = fullscreen,
 //                 ?debug = debug,
 //                 ?className = className,
-//                 ?parent_className = parent_className,
+//                 ?parentClassName = parentClassName,
 //                 ?style = style,
-//                 ?parent_style = parent_style,
+//                 ?parentStyle = parentStyle,
 //                 ?color = color,
-//                 ?loading_state = loading_state)
+//                 ?loadingState = loadingState)
 //                (Loading())
 
 //    ///<summary>

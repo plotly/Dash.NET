@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////The Download component opens a download dialog when the data property changes.
@@ -17,9 +16,9 @@ namespace Dash.NET.DCC
 //    type DataType =
 //        { Filename: string
 //          Content: string
-//          Base64: Option<bool>
-//          Type: Option<string> }
-//        member this.Convert() =
+//          Base64: bool
+//          Type: string }
+//        static member convert(this) =
 //            box
 //                {| filename = this.Filename
 //                   content = this.Content
@@ -39,7 +38,7 @@ namespace Dash.NET.DCC
 //        | Type of string
 //        static member toDynamicMemberDef(prop: Prop) =
 //            match prop with
-//            | Data (p) -> "data", box (p.Convert())
+//            | Data (p) -> "data", p |> DataType.convert
 //            | Base64 (p) -> "base64", box p
 //            | Type (p) -> "type", box p
 
@@ -99,17 +98,17 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?data: string,
-//                ?base64: string,
+//                ?data: DataType,
+//                ?base64: bool,
 //                ?``type``: string
 //            ) =
 //            (fun (t: Download) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "data" data
-//                DynObj.setValueOpt props "base64" base64
-//                DynObj.setValueOpt props "type" ``type``
+//                DynObj.setValueOpt props "data" (data |> Option.map DataType.convert)
+//                DynObj.setValueOpt props "base64" (base64 |> Option.map box)
+//                DynObj.setValueOpt props "type" (``type`` |> Option.map box)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "Download"
@@ -119,8 +118,8 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?data: string,
-//                ?base64: string,
+//                ?data: DataType,
+//                ?base64: bool,
 //                ?``type``: string
 //            ) =
 //            Download.applyMembers (id, children, ?data = data, ?base64 = base64, ?``type`` = ``type``) (Download())

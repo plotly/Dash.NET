@@ -284,80 +284,76 @@ module Graph =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?responsive: string,
-                ?clickData: string,
-                ?clickAnnotationData: string,
-                ?hoverData: string,
-                ?clear_on_unhover: string,
-                ?selectedData: string,
-                ?relayoutData: string,
-                ?extendData: string,
-                ?prependData: string,
-                ?restyleData: string,
-                ?figure: string,
-                ?style: string,
+                ?clickData: obj,
+                ?clickAnnotationData: obj,
+                ?hoverData: obj,
+                ?clearOnUnhover: bool,
+                ?selectedData: obj,
+                ?relayoutData: obj,
+                ?extendData: obj,
+                ?prependData: obj,
+                ?restyleData: obj,
+                ?figure: Plotly.NET.GenericChart.Figure,
+                ?style: DashComponentStyle,
                 ?className: string,
-                ?animate: string,
-                ?animation_options: string,
-                ?config: string,
-                ?loading_state: string
+                ?animate: bool,
+                ?animationOptions: obj,
+                ?config: Plotly.NET.Config,
+                ?loadingState: LoadingState
             ) =
             (fun (t: Graph) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "responsive" responsive
-                DynObj.setValueOpt props "clickData" clickData
-                DynObj.setValueOpt props "clickAnnotationData" clickAnnotationData
-                DynObj.setValueOpt props "hoverData" hoverData
-                DynObj.setValueOpt props "clear_on_unhover" clear_on_unhover
-                DynObj.setValueOpt props "selectedData" selectedData
-                DynObj.setValueOpt props "relayoutData" relayoutData
-                DynObj.setValueOpt props "extendData" extendData
-                DynObj.setValueOpt props "prependData" prependData
-                DynObj.setValueOpt props "restyleData" restyleData
-                DynObj.setValueOpt props "figure" figure
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "animate" animate
-                DynObj.setValueOpt props "animation_options" animation_options
-                DynObj.setValueOpt props "config" config
-                DynObj.setValueOpt props "loading_state" loading_state
+                DynObj.setValueOpt props "clickData" (clickData |> Option.map box)
+                DynObj.setValueOpt props "clickAnnotationData" (clickAnnotationData |> Option.map box)
+                DynObj.setValueOpt props "hoverData" (hoverData |> Option.map box)
+                DynObj.setValueOpt props "clearOnUnhover" (clearOnUnhover |> Option.map box)
+                DynObj.setValueOpt props "selectedData" (selectedData |> Option.map box)
+                DynObj.setValueOpt props "relayoutData" (relayoutData |> Option.map box)
+                DynObj.setValueOpt props "extendData" (extendData |> Option.map box)
+                DynObj.setValueOpt props "prependData" (prependData |> Option.map box)
+                DynObj.setValueOpt props "restyleData" (restyleData |> Option.map box)
+                DynObj.setValueOpt props "figure" (figure |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "animate" (animate |> Option.map box)
+                DynObj.setValueOpt props "animationOptions" (animationOptions |> Option.map box)
+                DynObj.setValueOpt props "config" (config |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
-                DynObj.setValue t "type" "Graph"
+                DynObj.setValue t "type" "PlotlyGraph"
                 t)
 
         static member init
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?responsive: string,
-                ?clickData: string,
-                ?clickAnnotationData: string,
-                ?hoverData: string,
-                ?clear_on_unhover: string,
-                ?selectedData: string,
-                ?relayoutData: string,
-                ?extendData: string,
-                ?prependData: string,
-                ?restyleData: string,
-                ?figure: string,
-                ?style: string,
+                ?clickData: obj,
+                ?clickAnnotationData: obj,
+                ?hoverData: obj,
+                ?clearOnUnhover: bool,
+                ?selectedData: obj,
+                ?relayoutData: obj,
+                ?extendData: obj,
+                ?prependData: obj,
+                ?restyleData: obj,
+                ?figure: Plotly.NET.GenericChart.Figure,
+                ?style: DashComponentStyle,
                 ?className: string,
-                ?animate: string,
-                ?animation_options: string,
-                ?config: string,
-                ?loading_state: string
+                ?animate: bool,
+                ?animationOptions: obj,
+                ?config: Plotly.NET.Config,
+                ?loadingState: LoadingState
             ) =
             Graph.applyMembers
                 (id,
                  children,
-                 ?responsive = responsive,
                  ?clickData = clickData,
                  ?clickAnnotationData = clickAnnotationData,
                  ?hoverData = hoverData,
-                 ?clear_on_unhover = clear_on_unhover,
+                 ?clearOnUnhover = clearOnUnhover,
                  ?selectedData = selectedData,
                  ?relayoutData = relayoutData,
                  ?extendData = extendData,
@@ -367,9 +363,9 @@ module Graph =
                  ?style = style,
                  ?className = className,
                  ?animate = animate,
-                 ?animation_options = animation_options,
+                 ?animationOptions = animationOptions,
                  ?config = config,
-                 ?loading_state = loading_state)
+                 ?loadingState = loadingState)
                 (Graph())
 
     ///<summary>

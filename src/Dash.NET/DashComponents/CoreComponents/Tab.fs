@@ -147,29 +147,29 @@ module Tab =
                 children: seq<DashComponent>,
                 ?label: string,
                 ?value: string,
-                ?disabled: string,
-                ?disabled_style: string,
-                ?disabled_className: string,
+                ?disabled: bool,
+                ?disabledStyle: DashComponentStyle,
+                ?disabledClassName: string,
                 ?className: string,
-                ?selected_className: string,
-                ?style: string,
-                ?selected_style: string,
-                ?loading_state: string
+                ?selectedClassName: string,
+                ?style: DashComponentStyle,
+                ?selectedStyle: string,
+                ?loadingState: LoadingState
             ) =
             (fun (t: Tab) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "label" label
-                DynObj.setValueOpt props "value" value
-                DynObj.setValueOpt props "disabled" disabled
-                DynObj.setValueOpt props "disabled_style" disabled_style
-                DynObj.setValueOpt props "disabled_className" disabled_className
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "selected_className" selected_className
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "selected_style" selected_style
-                DynObj.setValueOpt props "loading_state" loading_state
+                DynObj.setValueOpt props "label" (label |> Option.map box)
+                DynObj.setValueOpt props "value" (value |> Option.map box)
+                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+                DynObj.setValueOpt props "disabledStyle" (disabledStyle |> Option.map box)
+                DynObj.setValueOpt props "disabledClassName" (disabledClassName |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "selectedClassName" (selectedClassName |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "selectedStyle" (selectedStyle |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Tab"
@@ -181,14 +181,14 @@ module Tab =
                 children: seq<DashComponent>,
                 ?label: string,
                 ?value: string,
-                ?disabled: string,
-                ?disabled_style: string,
-                ?disabled_className: string,
+                ?disabled: bool,
+                ?disabledStyle: DashComponentStyle,
+                ?disabledClassName: string,
                 ?className: string,
-                ?selected_className: string,
-                ?style: string,
-                ?selected_style: string,
-                ?loading_state: string
+                ?selectedClassName: string,
+                ?style: DashComponentStyle,
+                ?selectedStyle: string,
+                ?loadingState: LoadingState
             ) =
             Tab.applyMembers
                 (id,
@@ -196,13 +196,13 @@ module Tab =
                  ?label = label,
                  ?value = value,
                  ?disabled = disabled,
-                 ?disabled_style = disabled_style,
-                 ?disabled_className = disabled_className,
+                 ?disabledStyle = disabledStyle,
+                 ?disabledClassName = disabledClassName,
                  ?className = className,
-                 ?selected_className = selected_className,
+                 ?selectedClassName = selectedClassName,
                  ?style = style,
-                 ?selected_style = selected_style,
-                 ?loading_state = loading_state)
+                 ?selectedStyle = selectedStyle,
+                 ?loadingState = loadingState)
                 (Tab())
 
     ///<summary>

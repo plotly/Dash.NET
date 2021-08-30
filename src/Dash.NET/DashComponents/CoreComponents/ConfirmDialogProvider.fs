@@ -4,7 +4,6 @@ namespace Dash.NET.DCC
 //open System
 //open Plotly.NET
 //open Newtonsoft.Json
-//open System.Collections.Generic
 
 /////<summary>
 /////A wrapper component that will display a confirmation dialog
@@ -23,10 +22,10 @@ namespace Dash.NET.DCC
 //    ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
 //    ///</summary>
 //    type LoadingStateType =
-//        { IsLoading: Option<bool>
-//          PropName: Option<string>
-//          ComponentName: Option<string> }
-//        member this.Convert() =
+//        { IsLoading: bool
+//          PropName: string
+//          ComponentName: string }
+//        static member convert(this) =
 //            box
 //                {| is_loading = this.IsLoading
 //                   prop_name = this.PropName
@@ -65,7 +64,7 @@ namespace Dash.NET.DCC
 //            | CancelNClicks (p) -> "cancel_n_clicks", box p
 //            | CancelNClicksTimestamp (p) -> "cancel_n_clicks_timestamp", box p
 //            | Displayed (p) -> "displayed", box p
-//            | LoadingState (p) -> "loading_state", box (p.Convert())
+//            | LoadingState (p) -> "loading_state", p |> LoadingStateType.convert
 
 //    ///<summary>
 //    ///A list of children or a property for this dash component
@@ -148,24 +147,24 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?message: string,
-//                ?submit_n_clicks: string,
-//                ?submit_n_clicks_timestamp: string,
-//                ?cancel_n_clicks: string,
-//                ?cancel_n_clicks_timestamp: string,
-//                ?displayed: string,
-//                ?loading_state: string
+//                ?submitNClicks: IConvertible,
+//                ?submitNClicksTimestamp: IConvertible,
+//                ?cancelNClicks: IConvertible,
+//                ?cancelNClicksTimestamp: IConvertible,
+//                ?displayed: bool,
+//                ?loadingState: LoadingStateType
 //            ) =
 //            (fun (t: ConfirmDialogProvider) ->
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "message" message
-//                DynObj.setValueOpt props "submit_n_clicks" submit_n_clicks
-//                DynObj.setValueOpt props "submit_n_clicks_timestamp" submit_n_clicks_timestamp
-//                DynObj.setValueOpt props "cancel_n_clicks" cancel_n_clicks
-//                DynObj.setValueOpt props "cancel_n_clicks_timestamp" cancel_n_clicks_timestamp
-//                DynObj.setValueOpt props "displayed" displayed
-//                DynObj.setValueOpt props "loading_state" loading_state
+//                DynObj.setValueOpt props "message" (message |> Option.map box)
+//                DynObj.setValueOpt props "submitNClicks" (submitNClicks |> Option.map box)
+//                DynObj.setValueOpt props "submitNClicksTimestamp" (submitNClicksTimestamp |> Option.map box)
+//                DynObj.setValueOpt props "cancelNClicks" (cancelNClicks |> Option.map box)
+//                DynObj.setValueOpt props "cancelNClicksTimestamp" (cancelNClicksTimestamp |> Option.map box)
+//                DynObj.setValueOpt props "displayed" (displayed |> Option.map box)
+//                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
 //                DynObj.setValue t "namespace" "dash_core_components"
 //                DynObj.setValue t "props" props
 //                DynObj.setValue t "type" "ConfirmDialogProvider"
@@ -176,23 +175,23 @@ namespace Dash.NET.DCC
 //                id: string,
 //                children: seq<DashComponent>,
 //                ?message: string,
-//                ?submit_n_clicks: string,
-//                ?submit_n_clicks_timestamp: string,
-//                ?cancel_n_clicks: string,
-//                ?cancel_n_clicks_timestamp: string,
-//                ?displayed: string,
-//                ?loading_state: string
+//                ?submitNClicks: IConvertible,
+//                ?submitNClicksTimestamp: IConvertible,
+//                ?cancelNClicks: IConvertible,
+//                ?cancelNClicksTimestamp: IConvertible,
+//                ?displayed: bool,
+//                ?loadingState: LoadingStateType
 //            ) =
 //            ConfirmDialogProvider.applyMembers
 //                (id,
 //                 children,
 //                 ?message = message,
-//                 ?submit_n_clicks = submit_n_clicks,
-//                 ?submit_n_clicks_timestamp = submit_n_clicks_timestamp,
-//                 ?cancel_n_clicks = cancel_n_clicks,
-//                 ?cancel_n_clicks_timestamp = cancel_n_clicks_timestamp,
+//                 ?submitNClicks = submitNClicks,
+//                 ?submitNClicksTimestamp = submitNClicksTimestamp,
+//                 ?cancelNClicks = cancelNClicks,
+//                 ?cancelNClicksTimestamp = cancelNClicksTimestamp,
 //                 ?displayed = displayed,
-//                 ?loading_state = loading_state)
+//                 ?loadingState = loadingState)
 //                (ConfirmDialogProvider())
 
 //    ///<summary>
@@ -254,3 +253,4 @@ namespace Dash.NET.DCC
 
 //        DynObj.setValue t "props" componentProps
 //        t :> DashComponent
+

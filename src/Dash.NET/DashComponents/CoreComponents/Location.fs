@@ -103,17 +103,17 @@ module Location =
                 ?search: string,
                 ?hash: string,
                 ?href: string,
-                ?refresh: string
+                ?refresh: bool
             ) =
             (fun (t: Location) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "pathname" pathname
-                DynObj.setValueOpt props "search" search
-                DynObj.setValueOpt props "hash" hash
-                DynObj.setValueOpt props "href" href
-                DynObj.setValueOpt props "refresh" refresh
+                DynObj.setValueOpt props "pathname" (pathname |> Option.map box)
+                DynObj.setValueOpt props "search" (search |> Option.map box)
+                DynObj.setValueOpt props "hash" (hash |> Option.map box)
+                DynObj.setValueOpt props "href" (href |> Option.map box)
+                DynObj.setValueOpt props "refresh" (refresh |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Location"
@@ -127,7 +127,7 @@ module Location =
                 ?search: string,
                 ?hash: string,
                 ?href: string,
-                ?refresh: string
+                ?refresh: bool
             ) =
             Location.applyMembers
                 (id, children, ?pathname = pathname, ?search = search, ?hash = hash, ?href = href, ?refresh = refresh)

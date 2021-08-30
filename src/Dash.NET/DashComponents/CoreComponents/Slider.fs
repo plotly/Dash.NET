@@ -343,47 +343,47 @@ module Slider =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?marks: string,
-                ?value: string,
-                ?drag_value: string,
+                ?marks: MarksType,
+                ?value: IConvertible,
+                ?dragValue: IConvertible,
                 ?className: string,
-                ?disabled: string,
-                ?dots: string,
-                ?included: string,
-                ?min: string,
-                ?max: string,
-                ?tooltip: string,
-                ?step: string,
-                ?vertical: string,
-                ?verticalHeight: string,
-                ?updatemode: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?disabled: bool,
+                ?dots: bool,
+                ?included: bool,
+                ?min: IConvertible,
+                ?max: IConvertible,
+                ?tooltip: Tooltip,
+                ?step: IConvertible,
+                ?vertical: bool,
+                ?verticalHeight: IConvertible,
+                ?updatemode: UpdateModeType,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             (fun (t: Slider) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "marks" marks
-                DynObj.setValueOpt props "value" value
-                DynObj.setValueOpt props "drag_value" drag_value
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "disabled" disabled
-                DynObj.setValueOpt props "dots" dots
-                DynObj.setValueOpt props "included" included
-                DynObj.setValueOpt props "min" min
-                DynObj.setValueOpt props "max" max
-                DynObj.setValueOpt props "tooltip" tooltip
-                DynObj.setValueOpt props "step" step
-                DynObj.setValueOpt props "vertical" vertical
-                DynObj.setValueOpt props "verticalHeight" verticalHeight
-                DynObj.setValueOpt props "updatemode" updatemode
-                DynObj.setValueOpt props "loading_state" loading_state
-                DynObj.setValueOpt props "persistence" persistence
-                DynObj.setValueOpt props "persisted_props" persisted_props
-                DynObj.setValueOpt props "persistence_type" persistence_type
+                DynObj.setValueOpt props "marks" (marks |> Option.map MarksType.convert)
+                DynObj.setValueOpt props "value" (value |> Option.map box)
+                DynObj.setValueOpt props "dragValue" (dragValue |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+                DynObj.setValueOpt props "dots" (dots |> Option.map box)
+                DynObj.setValueOpt props "included" (included |> Option.map box)
+                DynObj.setValueOpt props "min" (min |> Option.map box)
+                DynObj.setValueOpt props "max" (max |> Option.map box)
+                DynObj.setValueOpt props "tooltip" (tooltip |> Option.map Tooltip.convert)
+                DynObj.setValueOpt props "step" (step |> Option.map box)
+                DynObj.setValueOpt props "vertical" (vertical |> Option.map box)
+                DynObj.setValueOpt props "verticalHeight" (verticalHeight |> Option.map box)
+                DynObj.setValueOpt props "updatemode" (updatemode |> Option.map UpdateModeType.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
+                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
+                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Slider"
@@ -393,31 +393,31 @@ module Slider =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?marks: string,
-                ?value: string,
-                ?drag_value: string,
+                ?marks: MarksType,
+                ?value: IConvertible,
+                ?dragValue: IConvertible,
                 ?className: string,
-                ?disabled: string,
-                ?dots: string,
-                ?included: string,
-                ?min: string,
-                ?max: string,
-                ?tooltip: string,
-                ?step: string,
-                ?vertical: string,
-                ?verticalHeight: string,
-                ?updatemode: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?disabled: bool,
+                ?dots: bool,
+                ?included: bool,
+                ?min: IConvertible,
+                ?max: IConvertible,
+                ?tooltip: Tooltip,
+                ?step: IConvertible,
+                ?vertical: bool,
+                ?verticalHeight: IConvertible,
+                ?updatemode: UpdateModeType,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             Slider.applyMembers
                 (id,
                  children,
                  ?marks = marks,
                  ?value = value,
-                 ?drag_value = drag_value,
+                 ?dragValue = dragValue,
                  ?className = className,
                  ?disabled = disabled,
                  ?dots = dots,
@@ -429,10 +429,10 @@ module Slider =
                  ?vertical = vertical,
                  ?verticalHeight = verticalHeight,
                  ?updatemode = updatemode,
-                 ?loading_state = loading_state,
+                 ?loadingState = loadingState,
                  ?persistence = persistence,
-                 ?persisted_props = persisted_props,
-                 ?persistence_type = persistence_type)
+                 ?persistedProps = persistedProps,
+                 ?persistenceType = persistenceType)
                 (Slider())
 
     ///<summary>

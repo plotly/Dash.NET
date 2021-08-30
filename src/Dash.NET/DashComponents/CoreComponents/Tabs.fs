@@ -216,37 +216,37 @@ module Tabs =
                 children: seq<DashComponent>,
                 ?value: string,
                 ?className: string,
-                ?content_className: string,
-                ?parent_className: string,
-                ?style: string,
-                ?parent_style: string,
-                ?content_style: string,
-                ?vertical: string,
-                ?mobile_breakpoint: string,
-                ?colors: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?contentClassName: string,
+                ?parentClassName: string,
+                ?style: DashComponentStyle,
+                ?parentStyle: DashComponentStyle,
+                ?contentStyle: DashComponentStyle,
+                ?vertical: bool,
+                ?mobileBreakpoint: float,
+                ?colors: TabColors,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             (fun (t: Tabs) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "value" value
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "content_className" content_className
-                DynObj.setValueOpt props "parent_className" parent_className
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "parent_style" parent_style
-                DynObj.setValueOpt props "content_style" content_style
-                DynObj.setValueOpt props "vertical" vertical
-                DynObj.setValueOpt props "mobile_breakpoint" mobile_breakpoint
-                DynObj.setValueOpt props "colors" colors
-                DynObj.setValueOpt props "loading_state" loading_state
-                DynObj.setValueOpt props "persistence" persistence
-                DynObj.setValueOpt props "persisted_props" persisted_props
-                DynObj.setValueOpt props "persistence_type" persistence_type
+                DynObj.setValueOpt props "value" (value |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "contentClassName" (contentClassName |> Option.map box)
+                DynObj.setValueOpt props "parentClassName" (parentClassName |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "parentStyle" (parentStyle |> Option.map box)
+                DynObj.setValueOpt props "contentStyle" (contentStyle |> Option.map box)
+                DynObj.setValueOpt props "vertical" (vertical |> Option.map box)
+                DynObj.setValueOpt props "mobileBreakpoint" (mobileBreakpoint |> Option.map box)
+                DynObj.setValueOpt props "colors" (colors |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
+                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
+                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Tabs"
@@ -258,36 +258,36 @@ module Tabs =
                 children: seq<DashComponent>,
                 ?value: string,
                 ?className: string,
-                ?content_className: string,
-                ?parent_className: string,
-                ?style: string,
-                ?parent_style: string,
-                ?content_style: string,
-                ?vertical: string,
-                ?mobile_breakpoint: string,
-                ?colors: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?contentClassName: string,
+                ?parentClassName: string,
+                ?style: DashComponentStyle,
+                ?parentStyle: DashComponentStyle,
+                ?contentStyle: DashComponentStyle,
+                ?vertical: bool,
+                ?mobileBreakpoint: float,
+                ?colors: TabColors,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             Tabs.applyMembers
                 (id,
                  children,
                  ?value = value,
                  ?className = className,
-                 ?content_className = content_className,
-                 ?parent_className = parent_className,
+                 ?contentClassName = contentClassName,
+                 ?parentClassName = parentClassName,
                  ?style = style,
-                 ?parent_style = parent_style,
-                 ?content_style = content_style,
+                 ?parentStyle = parentStyle,
+                 ?contentStyle = contentStyle,
                  ?vertical = vertical,
-                 ?mobile_breakpoint = mobile_breakpoint,
+                 ?mobileBreakpoint = mobileBreakpoint,
                  ?colors = colors,
-                 ?loading_state = loading_state,
+                 ?loadingState = loadingState,
                  ?persistence = persistence,
-                 ?persisted_props = persisted_props,
-                 ?persistence_type = persistence_type)
+                 ?persistedProps = persistedProps,
+                 ?persistenceType = persistenceType)
                 (Tabs())
 
     ///<summary>

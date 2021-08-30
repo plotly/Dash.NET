@@ -251,41 +251,41 @@ module Dropdown =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?options: string,
-                ?value: string,
-                ?optionHeight: string,
+                ?options: seq<DropdownOption>,
+                ?value: DropdownValue,
+                ?optionHeight: float,
                 ?className: string,
-                ?clearable: string,
-                ?disabled: string,
-                ?multi: string,
+                ?clearable: bool,
+                ?disabled: bool,
+                ?multi: bool,
                 ?placeholder: string,
-                ?searchable: string,
-                ?search_value: string,
-                ?style: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?searchable: bool,
+                ?searchValue: bool,
+                ?style: DashComponentStyle,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             (fun (t: Dropdown) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "options" options
-                DynObj.setValueOpt props "value" value
-                DynObj.setValueOpt props "optionHeight" optionHeight
-                DynObj.setValueOpt props "className" className
-                DynObj.setValueOpt props "clearable" clearable
-                DynObj.setValueOpt props "disabled" disabled
-                DynObj.setValueOpt props "multi" multi
-                DynObj.setValueOpt props "placeholder" placeholder
-                DynObj.setValueOpt props "searchable" searchable
-                DynObj.setValueOpt props "search_value" search_value
-                DynObj.setValueOpt props "style" style
-                DynObj.setValueOpt props "loading_state" loading_state
-                DynObj.setValueOpt props "persistence" persistence
-                DynObj.setValueOpt props "persisted_props" persisted_props
-                DynObj.setValueOpt props "persistence_type" persistence_type
+                DynObj.setValueOpt props "options" (options |> Option.map box)
+                DynObj.setValueOpt props "value" (value |> Option.map DropdownValue.convert)
+                DynObj.setValueOpt props "optionHeight" (optionHeight |> Option.map box)
+                DynObj.setValueOpt props "className" (className |> Option.map box)
+                DynObj.setValueOpt props "clearable" (clearable |> Option.map box)
+                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
+                DynObj.setValueOpt props "multi" (multi |> Option.map box)
+                DynObj.setValueOpt props "placeholder" (placeholder |> Option.map box)
+                DynObj.setValueOpt props "searchable" (searchable |> Option.map box)
+                DynObj.setValueOpt props "searchValue" (searchValue |> Option.map box)
+                DynObj.setValueOpt props "style" (style |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
+                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
+                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Dropdown"
@@ -295,21 +295,21 @@ module Dropdown =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?options: string,
-                ?value: string,
-                ?optionHeight: string,
+                ?options: seq<DropdownOption>,
+                ?value: DropdownValue,
+                ?optionHeight: float,
                 ?className: string,
-                ?clearable: string,
-                ?disabled: string,
-                ?multi: string,
+                ?clearable: bool,
+                ?disabled: bool,
+                ?multi: bool,
                 ?placeholder: string,
-                ?searchable: string,
-                ?search_value: string,
-                ?style: string,
-                ?loading_state: string,
-                ?persistence: string,
-                ?persisted_props: string,
-                ?persistence_type: string
+                ?searchable: bool,
+                ?searchValue: bool,
+                ?style: DashComponentStyle,
+                ?loadingState: LoadingState,
+                ?persistence: IConvertible,
+                ?persistedProps: string [],
+                ?persistenceType: PersistenceTypeOptions
             ) =
             Dropdown.applyMembers
                 (id,
@@ -323,12 +323,12 @@ module Dropdown =
                  ?multi = multi,
                  ?placeholder = placeholder,
                  ?searchable = searchable,
-                 ?search_value = search_value,
+                 ?searchValue = searchValue,
                  ?style = style,
-                 ?loading_state = loading_state,
+                 ?loadingState = loadingState,
                  ?persistence = persistence,
-                 ?persisted_props = persisted_props,
-                 ?persistence_type = persistence_type)
+                 ?persistedProps = persistedProps,
+                 ?persistenceType = persistenceType)
                 (Dropdown())
 
     ///<summary>
