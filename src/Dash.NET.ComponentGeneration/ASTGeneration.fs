@@ -330,8 +330,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype)
                         |> List.concat
                 
-                    // { AField: Option<bool>
-                    //   BField: Option<string>
+                    // { AField: bool
+                    //   BField: string
                     //   CField: string }
                     //
                     /// Define the fields for the record
@@ -341,16 +341,13 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             let fieldTypeName =
                                 SafeReactPropType.tryGetFSharpTypeName ptype
                                 |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
-                            if (ptype |> SafeReactPropType.getProps).required = Some false then 
-                                simpleAppField (pname |> String.toPascalCase) [ yield "Option"; yield! fieldTypeName ]
-                            else
-                                simpleAppField (pname |> String.toPascalCase) fieldTypeName)
+                            simpleAppField (pname |> String.toPascalCase) fieldTypeName)
 
                     // member this.Convert() =
                     //     box
-                    //         {| aField = Some(this.AField.ToString())
-                    //            bField = Some(this.BField.ToString())
-                    //            cField = this.CField.ToString() |}
+                    //         {| aField = this.AField.Convert()
+                    //            bField = this.BField.Convert()
+                    //            cField = this.CField |}
                     //
                     /// Define the json conversion
                     let toStringDefinition =
@@ -361,18 +358,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                                     let jsonConversion =
                                         let converted =
                                             if SafeReactPropType.needsConvert ptype then 
-                                                if (ptype |> SafeReactPropType.getProps).required = Some false then 
-                                                    application 
-                                                      [ SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
-                                                        SynExpr.CreateIdentString "|>"
-                                                        SynExpr.CreateLongIdent( LongIdentWithDots.Create ["Option"; "map"] )
-                                                        SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["v"; "Convert"] )
-                                                        |> simpleLambdaStatement false ["v"] 
-                                                        |> SynExpr.CreateParen ]
-                                                    |> SynExpr.CreateParen
-                                                else
-                                                    SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "Convert"] )
-                                                    |> SynExpr.CreateParen
+                                                SynExpr.CreateInstanceMethodCall( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase; "Convert"] )
+                                                |> SynExpr.CreateParen
                                             else
                                                 SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
 
