@@ -323,7 +323,7 @@ module Graph =
                 DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
-                DynObj.setValue t "type" "PlotlyGraph"
+                DynObj.setValue t "type" "Graph"
                 t)
 
         static member init

@@ -13,7 +13,7 @@ namespace Dash.NET.DCC
 //    ///<summary>
 //    ///record with the fields: 'filename: string (required)', 'content: string (required)', 'base64: boolean (optional)', 'type: string (optional)'
 //    ///</summary>
-//    type DataType =
+//    type DownloadData =
 //        { Filename: string
 //          Content: string
 //          Base64: bool
@@ -33,12 +33,12 @@ namespace Dash.NET.DCC
 //    ///• type (string; default text/plain) - Default value for type, used when not set as part of the data property.
 //    ///</summary>
 //    type Prop =
-//        | Data of DataType
+//        | Data of DownloadData
 //        | Base64 of bool
 //        | Type of string
 //        static member toDynamicMemberDef(prop: Prop) =
 //            match prop with
-//            | Data (p) -> "data", p |> DataType.convert
+//            | Data (p) -> "data", p |> DownloadData.convert
 //            | Base64 (p) -> "base64", box p
 //            | Type (p) -> "type", box p
 
@@ -51,7 +51,7 @@ namespace Dash.NET.DCC
 //        ///<summary>
 //        ///On change, a download is invoked.
 //        ///</summary>
-//        static member data(p: DataType) = Prop(Data p)
+//        static member data(p: DownloadData) = Prop(Data p)
 //        ///<summary>
 //        ///Default value for base64, used when not set as part of the data property.
 //        ///</summary>
@@ -98,7 +98,7 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?data: DataType,
+//                ?data: DownloadData,
 //                ?base64: bool,
 //                ?``type``: string
 //            ) =
@@ -106,7 +106,7 @@ namespace Dash.NET.DCC
 //                let props = DashComponentProps()
 //                DynObj.setValue props "id" id
 //                DynObj.setValue props "children" children
-//                DynObj.setValueOpt props "data" (data |> Option.map DataType.convert)
+//                DynObj.setValueOpt props "data" (data |> Option.map DownloadData.convert)
 //                DynObj.setValueOpt props "base64" (base64 |> Option.map box)
 //                DynObj.setValueOpt props "type" (``type`` |> Option.map box)
 //                DynObj.setValue t "namespace" "dash_core_components"
@@ -118,7 +118,7 @@ namespace Dash.NET.DCC
 //            (
 //                id: string,
 //                children: seq<DashComponent>,
-//                ?data: DataType,
+//                ?data: DownloadData,
 //                ?base64: bool,
 //                ?``type``: string
 //            ) =
