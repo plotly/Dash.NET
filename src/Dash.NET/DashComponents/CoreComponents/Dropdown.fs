@@ -85,7 +85,7 @@ module Dropdown =
         | Multi of bool
         | Placeholder of string
         | Searchable of bool
-        | SearchValue of bool
+        | SearchValue of string
         | Style of DashComponentStyle
         | LoadingState of LoadingState
         | Persistence of IConvertible
@@ -173,7 +173,7 @@ module Dropdown =
         ///<summary>
         ///The value typed in the DropDown for searching.
         ///</summary>
-        static member searchValue(p: bool) = Prop(SearchValue p)
+        static member searchValue(p: string) = Prop(SearchValue p)
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
@@ -260,7 +260,7 @@ module Dropdown =
                 ?multi: bool,
                 ?placeholder: string,
                 ?searchable: bool,
-                ?searchValue: bool,
+                ?searchValue: string,
                 ?style: DashComponentStyle,
                 ?loadingState: LoadingState,
                 ?persistence: IConvertible,
@@ -304,7 +304,7 @@ module Dropdown =
                 ?multi: bool,
                 ?placeholder: string,
                 ?searchable: bool,
-                ?searchValue: bool,
+                ?searchValue: string,
                 ?style: DashComponentStyle,
                 ?loadingState: LoadingState,
                 ?persistence: IConvertible,
