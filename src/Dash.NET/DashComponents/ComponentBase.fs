@@ -33,6 +33,7 @@ type DashComponentStyle() = inherit DynamicObj()
 
 type DashComponentProps() = inherit DynamicObj()
 
+[<AutoOpen>]
 module ComponentPropTypes = 
 
     type InputType =
