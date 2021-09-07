@@ -5,8 +5,17 @@ open Giraffe.ViewEngine
 open Views
 open Plotly.NET
 open System 
-open System.Collections.Generic
-open System.Runtime.InteropServices
+open System.IO
+
+open Microsoft.AspNetCore.Builder
+open Microsoft.AspNetCore.Cors.Infrastructure
+open Microsoft.AspNetCore.Hosting
+open Microsoft.Extensions.Hosting
+open Microsoft.Extensions.Logging
+open Microsoft.Extensions.DependencyInjection
+
+[<assembly:AutoOpen("Dash.NET.DCC")>]
+do ()
 
 type DashApp =
     {
@@ -153,3 +162,53 @@ type DashApp =
                 ]
             setStatusCode 404 >=> text "Not Found" 
         ]
+
+    static member run (args: string []) (app: DashApp) =
+        //TODO: make this customizable
+        let errorHandler (ex : Exception) (logger : ILogger) =
+            logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
+            clearResponse >=> setStatusCode 500 >=> (app.Config.ErrorHandler ex)
+        
+        let configureCors (builder : CorsPolicyBuilder) =
+            builder.WithOrigins(sprintf "http://%s:8080" app.Config.HostName)
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   |> ignore
+        
+        let configureApp (appBuilder : IApplicationBuilder) =
+            let env = appBuilder.ApplicationServices.GetService<IWebHostEnvironment>()
+            (match env.EnvironmentName with
+            | "Development" -> appBuilder.UseDeveloperExceptionPage()
+            | _ -> appBuilder.UseGiraffeErrorHandler(errorHandler))
+                .UseHttpsRedirection()
+                .UseCors(configureCors)
+                .UseStaticFiles()
+                .UseGiraffe(DashApp.toHttpHandler app)
+        
+        let configureServices (services : IServiceCollection) =
+            services.AddCors()    |> ignore
+            services.AddGiraffe() |> ignore
+        
+        let configureLogging (builder : ILoggingBuilder) =
+            builder.AddFilter(fun l -> l.Equals app.Config.LogLevel)
+                   .AddConsole()
+                   .AddDebug() |> ignore
+        
+        // This folder has to be "<path-to-exe>/WebRoot" for the way generated component javascript injection currently works
+        let contentRoot = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
+        let webRoot     = Path.Combine(contentRoot, "WebRoot")
+
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(
+                fun webHostBuilder ->
+                    webHostBuilder
+                        .UseContentRoot(contentRoot)
+                        .UseWebRoot(webRoot)
+                        .Configure(Action<IApplicationBuilder> configureApp)
+                        .ConfigureServices(configureServices)
+                        .ConfigureLogging(configureLogging)
+                        |> ignore)
+            .Build()
+            .Run()
+        
+        0

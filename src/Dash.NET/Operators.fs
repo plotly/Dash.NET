@@ -1,5 +1,6 @@
 ﻿namespace Dash.NET
 
+[<AutoOpen>]
 module Operators =
 
     /// Shorthand for creation of a dependency (binding of the property of a component)

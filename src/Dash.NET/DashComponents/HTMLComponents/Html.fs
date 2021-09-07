@@ -7,6 +7,7 @@ open Plotly.NET
 /// https://github.com/alfonsogarciacaro/Feliz.Engine
 /// and are available under the Dash.NET.Html module.
 
+[<AutoOpen>]
 module Css =
     type Style = StyleProperty of string * obj
 
@@ -14,6 +15,7 @@ module Css =
     let Css =
         Feliz.CssEngine(fun k v -> StyleProperty(k, v))
 
+[<AutoOpen>]
 module Html =
     open Css
 
