@@ -31,14 +31,14 @@ let dslLayout =
         Attr.className "section"
         Attr.children [ 
             Dropdown.dropdown "testInput1" [
-                Dropdown.Options [
+                Dropdown.Attr.options [
                     DropdownOption.create "1" "1" false "1"
                     DropdownOption.create 2 2 false "2"
                     DropdownOption.create 3L 3L false "3"
                     DropdownOption.create 4.1 4.1 false "4.1"
                 ]
-                Dropdown.Multi true
-            ] []
+                Dropdown.Attr.multi true
+            ]
             Html.br []
             Html.label [ Attr.children (Html.text "Selected values :") ]
             Html.br []
