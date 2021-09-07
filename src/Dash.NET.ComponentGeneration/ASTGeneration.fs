@@ -528,10 +528,10 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         |> List.singleton))
             |> List.concat
 
-        //  static member children(value: int) = Children([ Html.Html.text value ])
-        //  static member children(value: string) = Children([ Html.Html.text value ])
-        //  static member children(value: float) = Children([ Html.Html.text value ])
-        //  static member children(value: System.Guid) = Children([ Html.Html.text value ])
+        //  static member children(value: int) = Children([ Html.text value ])
+        //  static member children(value: string) = Children([ Html.text value ])
+        //  static member children(value: float) = Children([ Html.text value ])
+        //  static member children(value: System.Guid) = Children([ Html.text value ])
         //  static member children(value: DashComponent) = Children([ value ])
         //  static member children(value: list<DashComponent>) = Children(value)
         //  static member children(value: seq<DashComponent>) = Children(List.ofSeq value)
@@ -543,10 +543,10 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 |> binding (application [SynExpr.CreateIdentString "Children"; app |> SynExpr.CreateParen])
                 |> withXMLDocLet (["The child or children of this dash component"] |> toXMLDoc)
                 |> SynMemberDefn.CreateStaticMember
-            [ createCon (appType ["int"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ]) 
-              createCon (appType ["string"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
-              createCon (appType ["float"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
-              createCon (SynType.CreateLongIdent (LongIdentWithDots.Create ["System"; "Guid"]) ) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
+            [ createCon (appType ["int"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "text"]); SynExpr.CreateIdentString "value" ] ]) 
+              createCon (appType ["string"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
+              createCon (appType ["float"]) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
+              createCon (SynType.CreateLongIdent (LongIdentWithDots.Create ["System"; "Guid"]) ) (expressionList [ application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Html"; "text"]); SynExpr.CreateIdentString "value" ] ])
               createCon (appType ["DashComponent"]) (expressionList [ SynExpr.CreateIdentString "value" ])
               createCon (appType ["list"; "DashComponent"]) (SynExpr.CreateIdentString "value")
               createCon (appType ["seq"; "DashComponent"]) (application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "ofSeq"]); SynExpr.CreateIdentString "value" ]) ]
