@@ -99,19 +99,19 @@ namespace Dash.NET.DCC
 //        ///<summary>
 //        ///The child or children of this dash component
 //        ///</summary>
-//        static member children(value: int) = Children([ Html.Html.text value ])
+//        static member children(value: int) = Children([ Html.text value ])
 //        ///<summary>
 //        ///The child or children of this dash component
 //        ///</summary>
-//        static member children(value: string) = Children([ Html.Html.text value ])
+//        static member children(value: string) = Children([ Html.text value ])
 //        ///<summary>
 //        ///The child or children of this dash component
 //        ///</summary>
-//        static member children(value: float) = Children([ Html.Html.text value ])
+//        static member children(value: float) = Children([ Html.text value ])
 //        ///<summary>
 //        ///The child or children of this dash component
 //        ///</summary>
-//        static member children(value: System.Guid) = Children([ Html.Html.text value ])
+//        static member children(value: System.Guid) = Children([ Html.text value ])
 //        ///<summary>
 //        ///The child or children of this dash component
 //        ///</summary>
