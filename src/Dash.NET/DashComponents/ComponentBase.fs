@@ -5,6 +5,10 @@ open Plotly.NET
 open System.Runtime.InteropServices
 open System
 
+type LoadableComponentDefinition = 
+    { ComponentName: string
+      ComponentJavascript: string list }
+
 type DashComponent
     (
         [<Optional;DefaultParameterValue(false)>]IsRawString:bool

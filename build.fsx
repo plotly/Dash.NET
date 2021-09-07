@@ -65,6 +65,8 @@ module ProjectInfo =
 
     let testProject = "tests/Dash.NET.Tests/Dash.NET.Tests.fsproj"
 
+    let componentGenerationTestProject = "tests/Dash.NET.ComponentGeneration.Tests/Dash.NET.ComponentGeneration.Tests.fsproj"
+
     let summary = "F# interface to Dash- the most downloaded framework for building ML & data science web apps"
 
     let configuration = "Release"
@@ -126,6 +128,7 @@ module BasicTasks =
             !! "src/**/*.??proj"
             -- "src/**/*.shproj"
             |>  Seq.map (fun f -> ((Path.getDirectory f) </> "bin" </> configuration, "bin" </> (Path.GetFileNameWithoutExtension f)))
+            |>  Seq.filter (fun (fromDir, toDir) -> not (fromDir.Contains "template" || toDir.Contains "template"))
         for i in targets do printfn "%A" i
         targets
         |>  Seq.iter (fun (fromDir, toDir) -> Shell.copyDir toDir fromDir (fun _ -> true))
@@ -139,7 +142,7 @@ module TestTasks =
 
 
     let runTests = BuildTask.create "RunTests" [clean; build; copyBinaries] {
-        let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
+        //let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
         Fake.DotNet.DotNet.test(fun testParams ->
             {
                 testParams with
@@ -148,6 +151,15 @@ module TestTasks =
                     NoBuild = true
             }
         ) testProject
+
+        Fake.DotNet.DotNet.test(fun testParams ->
+            {
+                testParams with
+                    Logger = Some "console;verbosity=detailed"
+                    Configuration = DotNet.BuildConfiguration.fromString configuration
+                    NoBuild = true
+            }
+        ) componentGenerationTestProject
     }
 
     // to do: use this once we have actual tests
@@ -167,6 +179,21 @@ module TestTasks =
                     Logger = Some "console;verbosity=detailed"
             }
         ) testProject
+
+        Fake.DotNet.DotNet.test(fun testParams ->
+            {
+                testParams with
+                    MSBuildParams = {
+                        standardParams with
+                            Properties = [
+                                "AltCover","true"
+                                "AltCoverCobertura","../../codeCov.xml"
+                                "AltCoverForce","true"
+                            ]
+                    };
+                    Logger = Some "console;verbosity=detailed"
+            }
+        ) componentGenerationTestProject
     }
 
 /// Package creation

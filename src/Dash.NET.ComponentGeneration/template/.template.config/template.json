@@ -1,0 +1,43 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Joseph Roorda",
+  "classifications": [ "Common", "Dash", "F#" ],
+  "identity": "DashComponent.Empty",
+  "name": "Dash Component: Empty",
+  "shortName": "dashcomponent",
+  "sourceName": "TemplateDashComponent",
+  "tags": {
+    "language": "F#",
+    "type": "project"
+  },
+  "symbols": {
+    "componentVersion": {
+      "type": "parameter",
+      "replaces": "ComponentVersionPlaceholder",
+      "isRequired": true
+    },
+    "dashVersion": {
+      "type": "parameter",
+      "replaces": "DashVersionPlaceholder",
+      "isRequired": true
+    },
+    "description": {
+      "type": "parameter",
+      "replaces": "OptionalDescriptionPlaceholder",
+      "isRequired": false,
+      "defaultValue": ""
+    },
+    "authors": {
+      "type": "parameter",
+      "replaces": "OptionalAuthorsPlaceholder",
+      "isRequired": false,
+      "defaultValue": ""
+    },
+    "company": {
+      "type": "parameter",
+      "replaces": "OptionalCompanyPlaceholder",
+      "isRequired": false,
+      "defaultValue": ""
+    }
+  }
+}

@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <WarnOn>3390;$(WarnOn)</WarnOn>
+	<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	<EmbedUntrackedSources>true</EmbedUntrackedSources>
+	<IncludeSymbols>true</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+	<PackAsTool>true</PackAsTool>
+	<ToolCommandName>dash-component-generation</ToolCommandName>
+	<PackageOutputPath>./nupkg</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+  	<Folder Include="template\" />
+	<None Include="template\.template.config\template.json" />
+	<None Include="template\TemplateDashComponent.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="README.md" />
+	<Compile Include="Prelude.fs" />
+	<Compile Include="ReactMetadata.fs" />
+	<Compile Include="ComponentParameters.fs" />
+	<Compile Include="DocumentationGeneration.fs" />
+	<Compile Include="ASTHelpers.fs" />
+	<Compile Include="ASTGeneration.fs" />
+	<Compile Include="ProjectGeneration.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>  
+	
+  <ItemGroup>
+    <PackageReference Include="Argu" Version="6.1.1" />
+    <PackageReference Include="Fantomas" Version="4.4.0" />
+    <PackageReference Include="FsAst" Version="0.9.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+  </ItemGroup>
+
+  <Target Name="CopyTemplate" AfterTargets="AfterBuild">
+  	<Copy SourceFiles="template/TemplateDashComponent.fsproj" DestinationFolder="$(OutDir)/template" />
+  	<Copy SourceFiles="template/.template.config/template.json" DestinationFolder="$(OutDir)/template/.template.config" />
+  </Target>
+
+</Project>
