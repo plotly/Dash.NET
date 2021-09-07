@@ -39,12 +39,14 @@ let propertyCodeGenerationTest (prop: SafeReactProp) =
 
         let sourceInput =
             // these are reffering to the DLLs in the build output of this tests fsproj
-            [ "#r \"Dash.NET.dll\""
-              "#r \"System.Text.Json.dll\"" 
+            [ yield "#r \"Dash.NET.dll\""
+              yield "#r \"System.Text.Json.dll\"" 
+              // On linux this is required but it causes an error on windows
+              if System.OperatingSystem.IsLinux() then yield "#r \"System.Net.WebClient.dll\""
               // will through an error if we use the existing dll, we have to grab it from nuget
               // Error: "typecheck error The module/namespace 'System.Dynamic' from compilation unit 'System.Linq.Expressions' did not contain the namespace, module or type 'DynamicObject'"
               // TODO: figure out why this is happening, would be better to use Plotly.NET.dll here
-              "#r \"nuget: Plotly.NET, 2.0.0-preview.6\"" ]
+              yield "#r \"nuget: Plotly.NET, 2.0.0-preview.6\"" ]
             |> List.reduce (sprintf "%s\n%s")
             |> sprintf "%s\n%s" sourceText
             |> SourceText.ofString 
