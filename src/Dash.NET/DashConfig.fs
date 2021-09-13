@@ -1,11 +1,6 @@
 ﻿namespace Dash.NET
 
 open Newtonsoft.Json
-open Plotly.NET
-
-open System
-open Giraffe
-open Microsoft.Extensions.Logging
 
 type HotReloadSettings =
     {
@@ -37,12 +32,12 @@ type DashConfig =
         UpdateTitle: string
 
         //Giraffe, Logging and ASP.NET specific
-        [<JsonIgnore()>]
-        HostName: string
-        [<JsonIgnore()>]
-        LogLevel: LogLevel
-        [<JsonIgnore()>]
-        ErrorHandler: Exception -> HttpHandler
+        //[<JsonIgnore()>]
+        //HostName: string
+        //[<JsonIgnore()>]
+        //LogLevel: LogLevel
+        //[<JsonIgnore()>]
+        //ErrorHandler: Exception -> HttpHandler
     }
     static member create
         urlBasePathname
@@ -54,9 +49,9 @@ type DashConfig =
         suppressCallbackExceptions
         updateTitle
 
-        hostName
-        logLevel
-        errorHandler
+        //hostName
+        //logLevel
+        //errorHandler
         =
         {
             UrlBasePathname = urlBasePathname
@@ -69,9 +64,9 @@ type DashConfig =
             UpdateTitle = updateTitle
         //hot_reload                  = {Intervall = 3000; MaxRetry = 8}
 
-            HostName = hostName
-            LogLevel = logLevel
-            ErrorHandler = errorHandler
+            //HostName = hostName
+            //LogLevel = logLevel
+            //ErrorHandler = errorHandler
         }
 
     static member initDefault() =
@@ -84,8 +79,8 @@ type DashConfig =
             false 
             false 
             "Updating..."
-            "localhost"
-            LogLevel.Debug
-            ((fun ex ->  ex.Message) >> text)
+            //"localhost"
+            //LogLevel.Debug
+            //((fun ex ->  ex.Message) >> text)
 
     static member initDefaultWith(initializer: DashConfig -> DashConfig) = DashConfig.initDefault () |> initializer
