@@ -10,9 +10,12 @@ open Suave.Filters
 open System.Reflection
 open Dash.NET
 open Newtonsoft.Json
+open System.Threading
+open System
 
 module Util =
   let json o = JsonConvert.SerializeObject(o)
+  let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str)
 
 type DashApp =
   {
@@ -120,6 +123,25 @@ type DashApp =
 
   static member toWebPart (app:DashApp) : WebPart =
 
+    let handleCallbackRequest (cbRequest:CallbackRequest) =
+      let inputs = 
+        let inputs = cbRequest.Inputs |> Array.map (fun reqInput ->  reqInput.Value) //generate argument list for the callback
+        let states = 
+            //Yes, this is ugly. I currently cant find a way to deserialize an empty array directly when the state property is missing in the JSON, but that sounds like a problem that is solvable.
+            try
+                cbRequest.State |> Array.map (fun reqInput -> reqInput.Value)
+            with _ ->
+                [||]
+        Array.append inputs states
+    
+      printfn "Input Tokens: %A" inputs
+    
+      let result = 
+        app.Callbacks
+        |> CallbackMap.getPackedCallbackById (cbRequest.Output) //get the callback from then callback map
+        |> Callback.getResponseObject inputs//evaluate the handler function and get the response to send to the client
+      result
+
     choose [
       GET >=>
         choose [
@@ -136,27 +158,11 @@ type DashApp =
         choose [
           //Dash POST endpoints
           path "/_dash-update-component" //calls from callbacks come in here.
-            >=> Json.mapJson ( fun (cbRequest:CallbackRequest) -> 
-
-                let inputs = 
-                  let inputs = cbRequest.Inputs |> Array.map (fun reqInput ->  reqInput.Value) //generate argument list for the callback
-                  let states = 
-                      //Yes, this is ugly. I currently cant find a way to deserialize an empty array directly when the state property is missing in the JSON, but that sounds like a problem that is solvable.
-                      try
-                          cbRequest.State |> Array.map (fun reqInput -> reqInput.Value)
-                      with _ ->
-                          [||]
-                  Array.append inputs states
-
-                printfn "Input Tokens: %A" inputs
-
-                let result = 
-                  app.Callbacks
-                  |> CallbackMap.getPackedCallbackById (cbRequest.Output) //get the callback from then callback map
-                  |> Callback.getResponseObject inputs//evaluate the handler function and get the response to send to the client
-
-                // return serialized result of the handler function
-                Successful.OK(Util.json result) >=> Writers.setMimeType "application/json")
+            >=> request(fun r ->
+                  let ooo = Util.unjson<CallbackRequest> (System.Text.Encoding.UTF8.GetString r.rawForm)
+                  let result = handleCallbackRequest ooo
+                  // return serialized result of the handler function
+                  Successful.OK(Util.json result) >=> Writers.setMimeType "application/json")
         ]
       RequestErrors.NOT_FOUND "File not found" ]
 
@@ -203,12 +209,44 @@ type DashApp =
             innerApp, loaded
 
     let loadedApp =
-        Assembly.GetEntryAssembly().FullName
-        |> loadAssemblies (app, Set.empty)
-        |> fst
+      // GetEntryAssembly() not good because the entry assembly could be a bigger enclosing application like Visual Studio Code
+      // GetCallingAssembly() seems like a better compromise at the moment
+      Assembly.GetCallingAssembly().FullName 
+      |> loadAssemblies (app, Set.empty)
+      |> fst
 
     // This folder has to be "<path-to-exe>/WebRoot" for the way generated component javascript injection currently works
     //let contentRoot = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
     //let webRoot     = Path.Combine(contentRoot, "WebRoot")
 
-    startWebServer defaultConfig (DashApp.toWebPart loadedApp)
+    let cts = new CancellationTokenSource()
+    
+    let conf =
+        { defaultConfig with
+              cancellationToken = cts.Token
+              bindings = [ HttpBinding.createSimple HTTP "127.0.0.1" 0 ] }
+    
+    // Launch webserver on random ephemeral port
+    let listening, server =
+        startWebServerAsync conf  (DashApp.toWebPart loadedApp)
+
+    Async.Start(server, cts.Token)
+    printfn "Make requests now"
+
+    // Capture assigned port
+    let [| Some startData |] = Async.RunSynchronously listening
+    let port = startData.binding.port
+
+    let url = sprintf "http://localhost:%d" port
+
+    Console.WriteLine ("Opening: {0}", url)
+
+    // Open browser
+    let psi = new System.Diagnostics.ProcessStartInfo()
+    psi.UseShellExecute <- true
+    psi.FileName <- url
+    System.Diagnostics.Process.Start(psi) |> ignore
+
+    Console.WriteLine("Press any key to exit application")
+    Console.ReadKey true |> ignore
+    cts.Cancel()
