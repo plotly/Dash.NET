@@ -15,7 +15,7 @@ module Checklist =
     ///<summary>
     ///value equal to: 'local', 'session', 'memory'
     ///</summary>
-    type PersistenceTypeType =
+    type PersistenceType =
         | Local
         | Session
         | Memory
@@ -29,7 +29,7 @@ module Checklist =
     ///<summary>
     ///value equal to: 'value'
     ///</summary>
-    type PersistedPropsTypeType =
+    type PersistedPropsType =
         | Value
         static member convert =
             function
@@ -39,18 +39,18 @@ module Checklist =
     ///<summary>
     ///list with values of type: value equal to: 'value'
     ///</summary>
-    type PersistedPropsType =
-        | PersistedPropsType of list<PersistedPropsTypeType>
+    type PersistedProps =
+        | PersistedPropsType of list<PersistedPropsType>
         static member convert =
             function
             | PersistedPropsType v ->
-                List.map (fun (i: PersistedPropsTypeType) -> box (i |> PersistedPropsTypeType.convert)) v
+                List.map (fun (i: PersistedPropsType) -> box (i |> PersistedPropsType.convert)) v
             >> box
 
     ///<summary>
     ///boolean | string | number
     ///</summary>
-    type PersistenceType =
+    type Persistence =
         | Bool of bool
         | String of string
         | IConvertible of IConvertible
@@ -62,7 +62,7 @@ module Checklist =
     ///<summary>
     ///record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)'
     ///</summary>
-    type LoadingStateType =
+    type LoadingState =
         { IsLoading: bool
           PropName: string
           ComponentName: string }
@@ -118,10 +118,10 @@ module Checklist =
         | InputClassName of string
         | LabelStyle of DashComponentStyle
         | LabelClassName of string
-        | LoadingState of LoadingStateType
-        | Persistence of PersistenceType
-        | PersistedProps of PersistedPropsType
-        | PersistenceType of PersistenceTypeType
+        | LoadingState of LoadingState
+        | Persistence of Persistence
+        | PersistedProps of PersistedProps
+        | PersistenceType of PersistenceType
         static member toDynamicMemberDef(prop: Prop) =
             match prop with
             | Options p -> "options", box p
@@ -132,10 +132,10 @@ module Checklist =
             | InputClassName p -> "inputClassName", box p
             | LabelStyle p -> "labelStyle", box p
             | LabelClassName p -> "labelClassName", box p
-            | LoadingState p -> "loading_state", LoadingStateType.convert p
-            | Persistence p -> "persistence", PersistenceType.convert p
-            | PersistedProps p -> "persisted_props", PersistedPropsType.convert p
-            | PersistenceType p -> "persistence_type", PersistenceTypeType.convert p
+            | LoadingState p -> "loading_state", LoadingState.convert p
+            | Persistence p -> "persistence", Persistence.convert p
+            | PersistedProps p -> "persisted_props", PersistedProps.convert p
+            | PersistenceType p -> "persistence_type", PersistenceType.convert p
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -180,7 +180,7 @@ module Checklist =
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingStateType) = Prop(LoadingState p)
+        static member loadingState(p: LoadingState) = Prop(LoadingState p)
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -190,7 +190,7 @@ module Checklist =
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
         static member persistence(p: bool) =
-            Prop(Persistence(PersistenceType.Bool p))
+            Prop(Persistence(Persistence.Bool p))
 
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
@@ -201,7 +201,7 @@ module Checklist =
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
         static member persistence(p: string) =
-            Prop(Persistence(PersistenceType.String p))
+            Prop(Persistence(Persistence.String p))
 
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
@@ -212,21 +212,21 @@ module Checklist =
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
         static member persistence(p: IConvertible) =
-            Prop(Persistence(PersistenceType.IConvertible p))
+            Prop(Persistence(Persistence.IConvertible p))
 
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps(p: PersistedPropsType) = Prop(PersistedProps p)
+        static member persistedProps(p: PersistedProps) = Prop(PersistedProps p)
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistenceType(p: PersistenceTypeType) = Prop(PersistenceType p)
+        static member persistenceType(p: PersistenceType) = Prop(PersistenceType p)
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -276,10 +276,10 @@ module Checklist =
                 ?inputClassName: string,
                 ?labelStyle: DashComponentStyle,
                 ?labelClassName: string,
-                ?loadingState: LoadingStateType,
-                ?persistence: PersistenceType,
-                ?persistedProps: PersistedPropsType,
-                ?persistenceType: PersistenceTypeType
+                ?loadingState: LoadingState,
+                ?persistence: Persistence,
+                ?persistedProps: PersistedProps,
+                ?persistenceType: PersistenceType
             ) =
             (fun (t: Checklist) ->
                 let props = DashComponentProps()
@@ -293,10 +293,10 @@ module Checklist =
                 DynObj.setValueOpt props "inputClassName" (inputClassName |> Option.map box)
                 DynObj.setValueOpt props "labelStyle" (labelStyle |> Option.map box)
                 DynObj.setValueOpt props "labelClassName" (labelClassName |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingStateType.convert)
-                DynObj.setValueOpt props "persistence" (persistence |> Option.map PersistenceType.convert)
-                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map PersistedPropsType.convert)
-                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeType.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "persistence" (persistence |> Option.map Persistence.convert)
+                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map PersistedProps.convert)
+                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceType.convert)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Checklist"
@@ -314,10 +314,10 @@ module Checklist =
                 ?inputClassName: string,
                 ?labelStyle: DashComponentStyle,
                 ?labelClassName: string,
-                ?loadingState: LoadingStateType,
-                ?persistence: PersistenceType,
-                ?persistedProps: PersistedPropsType,
-                ?persistenceType: PersistenceTypeType
+                ?loadingState: LoadingState,
+                ?persistence: Persistence,
+                ?persistedProps: PersistedProps,
+                ?persistenceType: PersistenceType
             ) =
             Checklist.applyMembers
                 (id,
