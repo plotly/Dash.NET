@@ -137,6 +137,19 @@ module ComponentPropTypes =
         }
         static member create border primary background = {Border=border; Primary=primary; Background=background}
 
+    type ChecklistOption =
+        {
+            Label:IConvertible
+            Value:IConvertible
+            Disabled: bool
+        }
+        static member create label value disabled =
+            {
+                Label=label
+                Value=value
+                Disabled=disabled
+            }
+
 type ComponentProperty =
     | Children
     | Value
