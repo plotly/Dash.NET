@@ -8,11 +8,10 @@
 
   <ItemGroup>
     <Compile Include="Program.fs" />
-    <None Include="Script.fsx" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dash.NET.Suave\Dash.NET.Suave.fsproj" />
+    <ProjectReference Include="..\..\src\Dash.NET.Giraffe\Dash.NET.Giraffe.fsproj" />
   </ItemGroup>
 
 </Project>
