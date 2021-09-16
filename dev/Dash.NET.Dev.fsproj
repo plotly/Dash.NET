@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\Dash.NET.Giraffe\Dash.NET.Giraffe.fsproj" />
     <ProjectReference Include="..\src\Dash.NET\Dash.NET.fsproj" />
   </ItemGroup>
 </Project>
