@@ -10,7 +10,7 @@ open Dash.NET
 ///[react-markdown](https://remarkjs.github.io/react-markdown/) under the hood.
 ///</summary>
 [<RequireQualifiedAccess>]
-module DashMarkdown =
+module Markdown =
     ///<summary>
     ///value equal to: 'dark', 'light'
     ///&#10;
@@ -128,7 +128,7 @@ module DashMarkdown =
     ///GitHub Markdown spec. These component uses
     ///[react-markdown](https://remarkjs.github.io/react-markdown/) under the hood.
     ///</summary>
-    type DashMarkdown() =
+    type Markdown() =
         inherit DashComponent()
         static member applyMembers
             (
@@ -141,7 +141,7 @@ module DashMarkdown =
                 ?loadingState: LoadingState,
                 ?style: DashComponentStyle
             ) =
-            (fun (t: DashMarkdown) ->
+            (fun (t: Markdown) ->
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
@@ -167,7 +167,7 @@ module DashMarkdown =
                 ?loadingState: LoadingState,
                 ?style: DashComponentStyle
             ) =
-            DashMarkdown.applyMembers
+            Markdown.applyMembers
                 (id,
                  children,
                  ?className = className,
@@ -176,7 +176,7 @@ module DashMarkdown =
                  ?highlightConfig = highlightConfig,
                  ?loadingState = loadingState,
                  ?style = style)
-                (DashMarkdown())
+                (Markdown())
 
     ///<summary>
     ///A component that renders Markdown text as specified by the
@@ -209,7 +209,7 @@ module DashMarkdown =
     ///&#10;
     ///• style (record) - User-defined inline styles for the rendered Markdown
     ///</summary>
-    let dashMarkdown (id: string) (attrs: list<Attr>) =
+    let markdown (id: string) (attrs: list<Attr>) =
         let props, children =
             List.fold
                 (fun (props, children) (a: Attr) ->
@@ -219,7 +219,7 @@ module DashMarkdown =
                 ([], [])
                 attrs
 
-        let t = DashMarkdown.init (id, children)
+        let t = Markdown.init (id, children)
 
         let componentProps =
             match t.TryGetTypedValue<DashComponentProps> "props" with
