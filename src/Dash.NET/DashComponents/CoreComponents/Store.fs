@@ -27,14 +27,14 @@ module Store =
     type Prop =
         | ClearData         of bool
         | Data              of string
-        | ModifiedTimestamp of int
+        | ModifiedTimestamp of int64
         | StorageType       of PersistenceTypeOptions
         static member toDynamicMemberDef (prop:Prop) =
             match prop with
             | ClearData         p-> "clear_data"        , box p
             | Data              p-> "data"              , box p
             | ModifiedTimestamp p-> "modified_timestamp", box p
-            | StorageType       p-> "storage_type"      , box p
+            | StorageType       p-> "storage_type"      , p |> PersistenceTypeOptions.convert |> box
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -60,7 +60,7 @@ module Store =
         ///<summary>
         ///The last time the storage was modified.
         ///</summary>
-        static member modifiedTimestamp(p: int) = Prop(ModifiedTimestamp p)
+        static member modifiedTimestamp(p: int64) = Prop(ModifiedTimestamp p)
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -105,7 +105,7 @@ module Store =
                 ?storageType: PersistenceTypeOptions,
                 ?data: string,
                 ?clearData: bool,
-                ?modifiedTimestamp: int
+                ?modifiedTimestamp: int64
             ) =
             (fun (t: Store) ->
                 let props = DashComponentProps()
@@ -127,7 +127,7 @@ module Store =
                 ?storageType: PersistenceTypeOptions,
                 ?data: string,
                 ?clearData: bool,
-                ?modifiedTimestamp: int
+                ?modifiedTimestamp: int64
             ) =
             Store.applyMembers
                 (id,
