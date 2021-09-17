@@ -34,7 +34,7 @@ module Store =
             | ClearData         p-> "clear_data"        , box p
             | Data              p-> "data"              , box p
             | ModifiedTimestamp p-> "modified_timestamp", box p
-            | StorageType       p-> "storage_type"      , p |> PersistenceTypeOptions.convert |> box
+            | StorageType       p-> "storage_type"      , p |> PersistenceTypeOptions.convert
 
     ///<summary>
     ///A list of children or a property for this dash component
