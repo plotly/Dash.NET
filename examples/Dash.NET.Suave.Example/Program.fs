@@ -40,6 +40,10 @@ let dashApp =
   |> DashApp.withLayout myLayout
   |> DashApp.addCallback testCallback
 
-let config = { ip = "127.0.0.1"; port = 0; errorHandler = Suave.Web.defaultErrorHandler }
+let config = 
+  { hostname = "localhost"
+  ; ip = "127.0.0.1"
+  ; port = 0
+  ; errorHandler = Suave.Web.defaultErrorHandler }
 
 DashApp.run [||] config dashApp

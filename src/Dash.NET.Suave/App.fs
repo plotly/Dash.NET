@@ -17,7 +17,7 @@ module Util =
   let json o = JsonConvert.SerializeObject(o)
   let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str)
 
-type DashSuaveConfig = { ip: string; port : int; errorHandler : ErrorHandler }
+type DashSuaveConfig = { hostname: string; ip: string; port : int; errorHandler : ErrorHandler }
 
 type DashApp =
   {
@@ -228,10 +228,15 @@ type DashApp =
               cancellationToken = cts.Token
               bindings = [ HttpBinding.createSimple HTTP config.ip config.port ]
               errorHandler = config.errorHandler }
+
+    let setCORSHeaders =
+       Writers.addHeader "Access-Control-Allow-Origin" config.hostname
+       >=> Writers.addHeader "Access-Control-Allow-Headers" "*"
+       >=> Writers.addHeader "Access-Control-Allow-Methods" "*"
     
     // Launch webserver on random ephemeral port
     let listening, server =
-        startWebServerAsync conf (DashApp.toWebPart loadedApp)
+        startWebServerAsync conf (setCORSHeaders >=> DashApp.toWebPart loadedApp)
 
     Async.Start(server, cts.Token)
     printfn "Make requests now"
