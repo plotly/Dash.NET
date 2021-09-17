@@ -6,6 +6,8 @@ open Dash.NET.Html
 open Dash.NET.DCC
 open Plotly.NET
 open Dash.NET
+open System
+open System.Threading
 
 let myGraph = Chart.Line([(1,1);(2,2)])
 
@@ -43,7 +45,31 @@ let dashApp =
 let config = 
   { hostname = "localhost"
   ; ip = "127.0.0.1"
-  ; port = 0
+  ; port = 0 // Request the server to be launched on a random ephemeral port
   ; errorHandler = Suave.Web.defaultErrorHandler }
 
-DashApp.run [||] config dashApp
+let listening, server = DashApp.runAsync [||] config dashApp
+
+let cts = new CancellationTokenSource()
+
+Async.Start(server, cts.Token)
+
+printfn "Make requests now"
+
+// Capture assigned port
+let [| Some startData |] = Async.RunSynchronously listening
+let port = startData.binding.port
+
+let url = sprintf "http://%s:%d" config.ip port
+
+Console.WriteLine ("Opening: {0}", url)
+
+// Open browser
+let psi = new System.Diagnostics.ProcessStartInfo()
+psi.UseShellExecute <- true
+psi.FileName <- url
+System.Diagnostics.Process.Start(psi) |> ignore
+
+Console.WriteLine("Press any key to exit application")
+Console.ReadKey true |> ignore
+cts.Cancel()

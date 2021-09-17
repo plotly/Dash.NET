@@ -10,8 +10,6 @@ open Suave.Filters
 open System.Reflection
 open Dash.NET
 open Newtonsoft.Json
-open System.Threading
-open System
 
 module Util =
   let json o = JsonConvert.SerializeObject(o)
@@ -168,7 +166,8 @@ type DashApp =
         ]
       RequestErrors.NOT_FOUND "File not found" ]
 
-  static member run (args: string []) (config: DashSuaveConfig) (app: DashApp) =
+  static member runAsync (args: string []) (config: DashSuaveConfig) (app: DashApp) =
+
     //Go through an assembly and look for any types that inherit DashComponent
     //if one is found then look for the LoadableComponentDefinition and add its script
     let tryLoadComponents (innerApp: DashApp) (a: Assembly) =
@@ -221,40 +220,21 @@ type DashApp =
     //let contentRoot = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
     //let webRoot     = Path.Combine(contentRoot, "WebRoot")
 
-    let cts = new CancellationTokenSource()
-
     let conf =
-        { defaultConfig with
-              cancellationToken = cts.Token
-              bindings = [ HttpBinding.createSimple HTTP config.ip config.port ]
-              errorHandler = config.errorHandler }
+      { defaultConfig with
+          bindings = [ HttpBinding.createSimple HTTP config.ip config.port ]
+          errorHandler = config.errorHandler }
 
     let setCORSHeaders =
        Writers.addHeader "Access-Control-Allow-Origin" config.hostname
        >=> Writers.addHeader "Access-Control-Allow-Headers" "*"
        >=> Writers.addHeader "Access-Control-Allow-Methods" "*"
-    
-    // Launch webserver on random ephemeral port
-    let listening, server =
-        startWebServerAsync conf (setCORSHeaders >=> DashApp.toWebPart loadedApp)
 
-    Async.Start(server, cts.Token)
-    printfn "Make requests now"
+    startWebServerAsync conf (setCORSHeaders >=> DashApp.toWebPart loadedApp)
 
-    // Capture assigned port
-    let [| Some startData |] = Async.RunSynchronously listening
-    let port = startData.binding.port
+  static member run (args: string []) (config: DashSuaveConfig) (app: DashApp) =
 
-    let url = sprintf "http://%s:%d" config.ip port
+    let _, server = DashApp.runAsync args config app
 
-    Console.WriteLine ("Opening: {0}", url)
+    Async.Start(server, defaultConfig.cancellationToken)
 
-    // Open browser
-    let psi = new System.Diagnostics.ProcessStartInfo()
-    psi.UseShellExecute <- true
-    psi.FileName <- url
-    System.Diagnostics.Process.Start(psi) |> ignore
-
-    Console.WriteLine("Press any key to exit application")
-    Console.ReadKey true |> ignore
-    cts.Cancel()
