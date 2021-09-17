@@ -17,6 +17,8 @@ module Util =
   let json o = JsonConvert.SerializeObject(o)
   let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str)
 
+type DashSuaveConfig = { ip: string; port : int; errorHandler : ErrorHandler }
+
 type DashApp =
   {
     Index: IndexView
@@ -166,7 +168,7 @@ type DashApp =
         ]
       RequestErrors.NOT_FOUND "File not found" ]
 
-  static member run (args: string []) (app: DashApp) =
+  static member run (args: string []) (config: DashSuaveConfig) (app: DashApp) =
     //Go through an assembly and look for any types that inherit DashComponent
     //if one is found then look for the LoadableComponentDefinition and add its script
     let tryLoadComponents (innerApp: DashApp) (a: Assembly) =
@@ -220,15 +222,16 @@ type DashApp =
     //let webRoot     = Path.Combine(contentRoot, "WebRoot")
 
     let cts = new CancellationTokenSource()
-    
+
     let conf =
         { defaultConfig with
               cancellationToken = cts.Token
-              bindings = [ HttpBinding.createSimple HTTP "127.0.0.1" 0 ] }
+              bindings = [ HttpBinding.createSimple HTTP config.ip config.port ]
+              errorHandler = config.errorHandler }
     
     // Launch webserver on random ephemeral port
     let listening, server =
-        startWebServerAsync conf  (DashApp.toWebPart loadedApp)
+        startWebServerAsync conf (DashApp.toWebPart loadedApp)
 
     Async.Start(server, cts.Token)
     printfn "Make requests now"
@@ -237,7 +240,7 @@ type DashApp =
     let [| Some startData |] = Async.RunSynchronously listening
     let port = startData.binding.port
 
-    let url = sprintf "http://localhost:%d" port
+    let url = sprintf "http://%s:%d" config.ip port
 
     Console.WriteLine ("Opening: {0}", url)
 

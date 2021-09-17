@@ -5,6 +5,8 @@ open Dash.NET.Giraffe
 open Dash.NET.Html
 open Dash.NET.DCC
 open Plotly.NET
+open Microsoft.Extensions.Logging
+open Giraffe
 
 let myGraph = Chart.Line([(1,1);(2,2)])
 
@@ -26,4 +28,9 @@ let main argv =
     DashApp.initDefault()
     |> DashApp.withLayout myLayout
 
-  DashApp.run [| "localhost" |] dashApp
+  let config = 
+    { HostName = "localhost"
+    ; LogLevel = LogLevel.Debug
+    ; ErrorHandler = (fun ex -> text ex.Message) }
+
+  DashApp.run [||] config dashApp

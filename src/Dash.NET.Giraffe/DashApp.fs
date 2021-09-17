@@ -16,6 +16,13 @@ open Microsoft.Extensions.DependencyInjection
 open System.Reflection
 open Dash.NET
 
+//Giraffe, Logging and ASP.NET specific
+type DashGiraffeConfig = {
+  HostName: string
+  LogLevel: LogLevel
+  ErrorHandler: Exception -> HttpHandler
+}
+
 type DashApp =
     {
         Index: IndexView
@@ -162,7 +169,7 @@ type DashApp =
             setStatusCode 404 >=> text "Not Found" 
         ]
 
-    static member run (args: string []) (app: DashApp) =
+    static member run (args: string []) (config: DashGiraffeConfig) (app: DashApp) =
         //Go through an assembly and look for any types that inherit DashComponent
         //if one is found then look for the LoadableComponentDefinition and add its script
         let tryLoadComponents (innerApp: DashApp) (a: Assembly) =
@@ -212,10 +219,10 @@ type DashApp =
         //TODO: make this customizable
         let errorHandler (ex : Exception) (logger : ILogger) =
            logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
-           clearResponse >=> setStatusCode 500 >=> (text ex.Message)
+           clearResponse >=> setStatusCode 500 >=> (config.ErrorHandler ex)
 
         let configureCors (builder : CorsPolicyBuilder) =
-            builder.WithOrigins(sprintf "http://%s:5001" args.[0])
+            builder.WithOrigins(sprintf "http://%s:5001" config.HostName)
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    |> ignore
@@ -235,7 +242,7 @@ type DashApp =
             services.AddGiraffe() |> ignore
 
         let configureLogging (builder : ILoggingBuilder) =
-            builder.AddFilter(fun l -> l.Equals LogLevel.Debug)
+            builder.AddFilter(fun l -> l.Equals config.LogLevel)
                    .AddConsole()
                    .AddDebug() |> ignore
 

@@ -30,14 +30,6 @@ type DashConfig =
         SuppressCallbackExceptions: bool
         [<JsonProperty("update_title")>]
         UpdateTitle: string
-
-        //Giraffe, Logging and ASP.NET specific
-        //[<JsonIgnore()>]
-        //HostName: string
-        //[<JsonIgnore()>]
-        //LogLevel: LogLevel
-        //[<JsonIgnore()>]
-        //ErrorHandler: Exception -> HttpHandler
     }
     static member create
         urlBasePathname
