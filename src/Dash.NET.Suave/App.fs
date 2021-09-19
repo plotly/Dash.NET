@@ -10,10 +10,13 @@ open Suave.Filters
 open System.Reflection
 open Dash.NET
 open Newtonsoft.Json
+open Newtonsoft.Json.Serialization
 
 module Util =
-  let json o = JsonConvert.SerializeObject(o)
-  let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str)
+  let settings = new JsonSerializerSettings()
+  settings.ContractResolver <- CamelCasePropertyNamesContractResolver()
+  let json o = JsonConvert.SerializeObject(o, settings)
+  let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str,settings)
 
 type DashSuaveConfig = { hostname: string; ip: string; port : int; errorHandler : ErrorHandler }
 
