@@ -1,6 +1,7 @@
 ﻿module Docs
 
 open Dash.NET
+open Dash.NET.Giraffe
 
 // temporary workaround for checking correctness of the F# snippets in the documentation. 
 // the usual approach does not work here, because we cannot reference Asp.NetCore in a .fsx script.

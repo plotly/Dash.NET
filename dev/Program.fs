@@ -77,6 +77,7 @@ let dslLayout =
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open Dash.NET.Operators
+open Dash.NET.Giraffe
 
 let callbackArrayInput =
     Callback.multiOut(

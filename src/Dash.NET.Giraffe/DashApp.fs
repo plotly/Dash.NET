@@ -1,4 +1,4 @@
-﻿namespace Dash.NET
+﻿namespace Dash.NET.Giraffe
 
 open Giraffe
 open Giraffe.ViewEngine
@@ -14,9 +14,14 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open System.Reflection
+open Dash.NET
 
-[<assembly:AutoOpen("Dash.NET.DCC")>]
-do ()
+//Giraffe, Logging and ASP.NET specific
+type DashGiraffeConfig = {
+  HostName: string
+  LogLevel: LogLevel
+  ErrorHandler: Exception -> HttpHandler
+}
 
 type DashApp =
     {
@@ -164,7 +169,7 @@ type DashApp =
             setStatusCode 404 >=> text "Not Found" 
         ]
 
-    static member run (args: string []) (app: DashApp) =
+    static member run (args: string []) (config: DashGiraffeConfig) (app: DashApp) =
         //Go through an assembly and look for any types that inherit DashComponent
         //if one is found then look for the LoadableComponentDefinition and add its script
         let tryLoadComponents (innerApp: DashApp) (a: Assembly) =
@@ -213,34 +218,34 @@ type DashApp =
 
         //TODO: make this customizable
         let errorHandler (ex : Exception) (logger : ILogger) =
-            logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
-            clearResponse >=> setStatusCode 500 >=> (loadedApp.Config.ErrorHandler ex)
-        
+           logger.LogError(ex, "An unhandled exception has occurred while executing the request.")
+           clearResponse >=> setStatusCode 500 >=> (config.ErrorHandler ex)
+
         let configureCors (builder : CorsPolicyBuilder) =
-            builder.WithOrigins(sprintf "http://%s:8080" loadedApp.Config.HostName)
+            builder.WithOrigins(sprintf "http://%s:5001" config.HostName)
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    |> ignore
-        
+
         let configureApp (appBuilder : IApplicationBuilder) =
             let env = appBuilder.ApplicationServices.GetService<IWebHostEnvironment>()
             (match env.EnvironmentName with
             | "Development" -> appBuilder.UseDeveloperExceptionPage()
             | _ -> appBuilder.UseGiraffeErrorHandler(errorHandler))
-                .UseHttpsRedirection()
-                .UseCors(configureCors)
-                .UseStaticFiles()
-                .UseGiraffe(DashApp.toHttpHandler loadedApp)
-        
+                   .UseHttpsRedirection()
+                    .UseCors(configureCors)
+                    .UseStaticFiles()
+                    .UseGiraffe(DashApp.toHttpHandler loadedApp)
+
         let configureServices (services : IServiceCollection) =
             services.AddCors()    |> ignore
             services.AddGiraffe() |> ignore
-        
+
         let configureLogging (builder : ILoggingBuilder) =
-            builder.AddFilter(fun l -> l.Equals loadedApp.Config.LogLevel)
+            builder.AddFilter(fun l -> l.Equals config.LogLevel)
                    .AddConsole()
                    .AddDebug() |> ignore
-        
+
         // This folder has to be "<path-to-exe>/WebRoot" for the way generated component javascript injection currently works
         let contentRoot = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
         let webRoot     = Path.Combine(contentRoot, "WebRoot")
@@ -257,6 +262,5 @@ type DashApp =
                         |> ignore)
             .Build()
             .Run()
-        
         0
     

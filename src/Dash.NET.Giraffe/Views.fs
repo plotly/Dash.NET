@@ -1,6 +1,7 @@
-﻿namespace Dash.NET
+﻿namespace Dash.NET.Giraffe
 
 module Views =
+    open Dash.NET
     open Giraffe.ViewEngine
     
     let createConfigScript (config:DashConfig) =

@@ -62,13 +62,10 @@
     <Compile Include="Callback.fs" />
     <Compile Include="CallbackBuilder.fs" />
     <Compile Include="DashConfig.fs" />
-    <Compile Include="Views.fs" />
-    <Compile Include="DashApp.fs" />
     <Compile Include="Operators.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Giraffe" Version="5.0.0" />
     <PackageReference Include="Plotly.NET" Version="2.0.0-preview.2" />
     <PackageReference Include="Feliz.Engine" Version="1.0.0-beta-004" />
   </ItemGroup>
