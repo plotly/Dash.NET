@@ -15,6 +15,7 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open System.Reflection
 open Dash.NET
+open Newtonsoft.Json
 
 //Giraffe, Logging and ASP.NET specific
 type DashGiraffeConfig = {
@@ -241,6 +242,13 @@ type DashApp =
             services.AddCors()    |> ignore
             services.AddGiraffe() |> ignore
 
+            JsonSerializerSettings(
+                ContractResolver = Serialization.DefaultContractResolver(NamingStrategy = new Serialization.DefaultNamingStrategy())
+            )
+            |> NewtonsoftJson.Serializer
+            |> services.AddSingleton<Json.ISerializer>
+            |> ignore
+        
         let configureLogging (builder : ILoggingBuilder) =
             builder.AddFilter(fun l -> l.Equals config.LogLevel)
                    .AddConsole()
