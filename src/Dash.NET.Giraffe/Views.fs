@@ -38,6 +38,7 @@ module Views =
         script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/dash-core-components@1.11.0/dash_core_components/dash_core_components.min.js"] []
         script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.jsdelivr.net/npm/dash-html-components@1.1.0/dash_html_components/dash_html_components.min.js"] []
         script [_type "application/javascript"; _crossorigin " "; _src "https://cdn.plot.ly/plotly-latest.min.js"] []
+        script [_type "application/javascript"; _crossorigin " "; _src "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"] []
     ]
 
     let createIndex metas appTitle faviconPath css appEntry config scripts renderer = 
