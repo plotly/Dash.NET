@@ -101,6 +101,12 @@ module ComponentPropTypes =
             ComponentName : string
         }
         static member create isLoading propName componentName = {IsLoading=isLoading; PropName=propName; ComponentName=componentName}
+        static member convert this =
+            box {|
+                isLoading = this.IsLoading
+                propName = this.PropName
+                componentName = this.ComponentName
+            |}
 
     type PersistenceTypeOptions =
         | Local
@@ -120,6 +126,13 @@ module ComponentPropTypes =
             Title:string
         }
         static member create label value disabled title = {Label=label; Value=value; Disabled=disabled; Title=title}
+        static member convert this =
+            box {|
+                label = this.Label
+                value = this.Value
+                disabled = this.Disabled
+                title= this.Title
+            |}
 
     type RadioItemsOption = 
         {
@@ -128,14 +141,26 @@ module ComponentPropTypes =
             Disabled:bool
         }
         static member create label value disabled = {Label=label; Value=value; Disabled=disabled}
+        static member convert this =
+            box {|
+                label = this.Label
+                value = this.Value
+                disabled = this.Disabled
+            |}
 
-    type TabColors = 
+    type TabColors =
         {
             Border : string
             Primary : string
             Background : string
         }
         static member create border primary background = {Border=border; Primary=primary; Background=background}
+        static member convert this =
+            box {|
+                border = this.Border
+                primary = this.Primary
+                background = this.Background
+            |}
 
     type ChecklistOption =
         {
@@ -145,10 +170,16 @@ module ComponentPropTypes =
         }
         static member create label value disabled =
             {
-                Label=label
-                Value=value
-                Disabled=disabled
+                Label = label
+                Value = value
+                Disabled = disabled
             }
+        static member convert this =
+            box {|
+                label = this.Label
+                value = this.Value
+                disabled = this.Disabled
+            |}
 
 type ComponentProperty =
     | Children

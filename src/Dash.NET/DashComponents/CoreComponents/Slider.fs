@@ -62,6 +62,10 @@ module Slider =
             box
                 {| always_visible = this.AlwaysVisible
                    placement = this.Placement |}
+        static member convert2 this = 
+            box
+                {| always_visible = this.AlwaysVisible
+                   placement = this.Placement |> TooltipPlacement.convert |}
 
     ///<summary>
     ///record with the fields: 'label: string (optional)', 'style: record (optional)'
@@ -195,7 +199,7 @@ module Slider =
             | Vertical (p) -> "vertical", box p
             | VerticalHeight (p) -> "verticalHeight", box p
             | UpdateMode (p) -> "updatemode", UpdateModeType.convert p
-            | LoadingState (p) -> "loading_state", box p
+            | LoadingState (p) -> "loading_state", LoadingState.convert p
             | Persistence (p) -> "persistence", box p
             | PersistedProps (p) -> "persisted_props", box p
             | PersistenceType (p) -> "persistence_type", PersistenceTypeOptions.convert p
@@ -380,7 +384,7 @@ module Slider =
                 DynObj.setValueOpt props "vertical" (vertical |> Option.map box)
                 DynObj.setValueOpt props "verticalHeight" (verticalHeight |> Option.map box)
                 DynObj.setValueOpt props "updatemode" (updatemode |> Option.map UpdateModeType.convert)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)

@@ -179,7 +179,7 @@ module Input =
             | NBlur p               -> "n_blur", box p
             | NBlurTimestamp p      -> "n_blur_timestamp", box p
             | SetProps p            -> "setProps", box p
-            | LoadingState p        -> "loading_state", box p
+            | LoadingState p        -> "loading_state", LoadingState.convert p
             | Persistence p         -> "persistence", box p
             | PersistedProps p      -> "persisted_props", box p
             | PersistenceType p     -> "persistence_type", PersistenceTypeOptions.convert p
@@ -473,7 +473,7 @@ module Input =
                 DynObj.setValueOpt props "nBlur" (nBlur |> Option.map box)
                 DynObj.setValueOpt props "nBlurTimestamp" (nBlurTimestamp |> Option.map box)
                 DynObj.setValueOpt props "setProps" (setProps |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
