@@ -61,10 +61,6 @@ module Slider =
         static member convert this = 
             box
                 {| always_visible = this.AlwaysVisible
-                   placement = this.Placement |}
-        static member convert2 this = 
-            box
-                {| always_visible = this.AlwaysVisible
                    placement = this.Placement |> TooltipPlacement.convert |}
 
     ///<summary>
