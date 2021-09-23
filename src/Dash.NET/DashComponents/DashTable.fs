@@ -20,7 +20,7 @@ let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
 module DataTable =
     let inline convertOptional convert = function
         | Some v -> convert v
-        | Option.None -> null
+        | None -> null
 
     ///<summary>
     ///value equal to: 'first', 'last'
@@ -360,7 +360,6 @@ module DataTable =
     ///value equal to: 'custom', 'native', 'none' | record with the fields: 'type: value equal to: 'custom', 'native' (required)', 'operator: value equal to: 'and', 'or' (optional)'
     ///</summary>
     type FilterAction =
-        // TODO: Might be able to use Option type here: ActionType of FilterActionType option
         | Type of MaybeActionType
         | Conditional of ConditionalFilterAction
         static member convert =
@@ -412,8 +411,7 @@ module DataTable =
     ///<summary>
     ///value equal to: 'null' | string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
     ///</summary>
-    // TODO: Might be able to use Option type here: Tooltip option
-    type MaybeTooltipValue =
+    type MaybeTooltip =
         | Text of string
         | Value of TooltipValue
         | Null
@@ -421,7 +419,7 @@ module DataTable =
             function
             | Text v -> box v
             | Value v -> TooltipValue.convert v
-            | Null -> box "null"
+            | Null -> null
 
     ///<summary>
     ///string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)' | list with values of type: value equal to: 'null' | string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
@@ -429,13 +427,12 @@ module DataTable =
     type HeaderTooltip =
         | Text of string
         | Value of TooltipValue
-        // TODO: Might be able to use Option type here: Values of Tooltip option list
-        | Values of MaybeTooltipValue list
+        | Values of MaybeTooltip list
         static member convert =
             function
             | Text v -> box v
             | Value v -> TooltipValue.convert v
-            | Values v -> v |> List.map MaybeTooltipValue.convert |> box
+            | Values v -> v |> List.map MaybeTooltip.convert |> box
 
     ///<summary>
     ///string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
@@ -503,18 +500,6 @@ module DataTable =
                 ``type`` = convertOptional TooltipValueType.convert this.Type
             |}
 
-    // TODO: Might be able to use like this, to prevent duplication
-    //type ConditionalTooltip =
-    //    { If: TooltipConditionalIf
-    //      TooltipValue: TooltipValue }
-    //    static member convert this =
-    //        box
-    //            {| ``if`` = (this.If |> TooltipConditionalIf.convert)
-    //               value = this.TooltipValue.Value
-    //               delay = this.TooltipValue.Delay
-    //               duration = this.TooltipValue.Duration
-    //               ``type`` = (this.TooltipValue.Type |> TooltipValueType.convert) |}
-
     ///<summary>
     ///value equal to: 'both', 'data', 'header'
     ///&#10;
@@ -560,17 +545,6 @@ module DataTable =
                 delay = convertOptional box this.Delay
                 duration = convertOptional box this.Duration
             |}
-    // TODO: Might be able to use like this to prevent duplication
-    //type UseWithTooltipValue =
-    //    { UseWith: TooltipUseWith
-    //      TooltipValue: TooltipValue }
-    //    static member convert this =
-    //        box
-    //            {| delay = this.TooltipValue.Delay
-    //               duration = this.TooltipValue.Duration
-    //               ``type`` = (this.TooltipValue.Type |> TooltipValueType.convert)
-    //               use_with = (this.UseWith |> TooltipUseWith.convert)
-    //               value = this.TooltipValue.Value |}
 
     ///<summary>
     ///string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'use_with: value equal to: 'both', 'data', 'header' (optional)', 'value: string (required)'
@@ -721,7 +695,6 @@ module DataTable =
     ///<summary>
     ///value equal to: 'none', 'ids', 'names', 'display'
     ///</summary>
-    // TODO: Might be able to use Option type
     type MaybeExportHeaders =
         | None
         | Ids
@@ -738,7 +711,6 @@ module DataTable =
     ///<summary>
     ///value equal to: 'csv', 'xlsx', 'none'
     ///</summary>
-    // TODO: Might be able to use Option type
     type MaybeExportFormat =
         | Csv
         | Xlsx
@@ -919,13 +891,13 @@ module DataTable =
     ///</summary>
     type MaybeOnChangeAction =
         | Coerce
-        | Validate
         | None
+        | Validate
         static member convert =
             function
             | Coerce -> "coerce"
-            | Validate -> "validate"
             | None -> "none"
+            | Validate -> "validate"
             >> box
 
     ///<summary>
@@ -1674,7 +1646,6 @@ module DataTable =
         | EndCell of Cell
         | ExportColumns of ExportColumns
         | ExportFormat of MaybeExportFormat
-        // TODO: Might be able to use Option type: ExportHeaders of ExportHeaders option
         | ExportHeaders of MaybeExportHeaders
         | FillWidth of bool
         | HiddenColumns of seq<string>
@@ -1812,7 +1783,7 @@ module DataTable =
             | DerivedVirtualRowIds p -> box p
             | DerivedVirtualSelectedRows p -> box p
             | DerivedVirtualSelectedRowIds p -> box p
-            | LoadingState p -> box p
+            | LoadingState p -> LoadingState.convert p
             | Persistence p -> box p
             | PersistedProps p -> box p
             | PersistenceType p -> PersistenceTypeOptions.convert p
@@ -2537,88 +2508,89 @@ module DataTable =
     ///</summary>
     type DataTable() =
         inherit DashComponent()
+
         static member applyMembers
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?activeCell: ActiveCell,
-                ?columns: seq<Column>,
-                ?includeHeadersOnCopyPaste: bool,
-                ?localeFormat: LocaleFormat,
-                ?markdownOptions: MarkdownOptions,
-                ?css: seq<Css>,
-                ?data: seq<obj>,
-                ?dataPrevious: seq<obj>,
-                ?dataTimestamp: int64,
-                ?editable: bool,
-                ?endCell: Cell,
-                ?exportColumns: ExportColumns,
-                ?exportFormat: MaybeExportFormat,
-                ?exportHeaders: MaybeExportHeaders,
-                ?fillWidth: bool,
-                ?hiddenColumns: seq<string>,
-                ?isFocused: bool,
-                ?mergeDuplicateHeaders: bool,
-                ?fixedColumns: Fixed,
-                ?fixedRows: Fixed,
-                ?columnSelectable: Select,
-                ?rowDeletable: bool,
-                ?cellSelectable: bool,
-                ?rowSelectable: Select,
-                ?selectedCells: seq<Cell>,
-                ?selectedRows: seq<int>,
-                ?selectedColumns: seq<string>,
-                ?selectedRowIds: seq<IConvertible>,
-                ?startCell: Cell,
-                ?styleAsListView: bool,
-                ?pageAction: MaybeActionType,
-                ?pageCurrent: int,
-                ?pageCount: int,
-                ?pageSize: int,
-                ?dropdown: Map<string, Dropdown>,
-                ?dropdownConditional: seq<ConditionalDropdown>,
-                ?dropdownData: seq<Map<string, Dropdown>>,
-                ?tooltip: Map<string, Tooltip>,
-                ?tooltipConditional: seq<ConditionalTooltip>,
-                ?tooltipData: seq<Map<string, DataTooltip>>,
-                ?tooltipHeader: Map<string, HeaderTooltip>,
-                ?tooltipDelay: int,
-                ?tooltipDuration: int,
-                ?filterQuery: string,
-                ?filterAction: FilterAction,
-                ?filterOptions: FilterOption,
-                ?sortAction: MaybeActionType,
-                ?sortMode: SortMode,
-                ?sortBy: seq<SortBy>,
-                ?sortAsNull: seq<IConvertible>,
-                ?styleTable: DashComponentStyle,
-                ?styleCell: DashComponentStyle,
-                ?styleData: DashComponentStyle,
-                ?styleFilter: DashComponentStyle,
-                ?styleHeader: DashComponentStyle,
-                ?styleCellConditional: seq<ConditionalCellStyle>,
-                ?styleDataConditional: seq<ConditionalDataStyle>,
-                ?styleFilterConditional: seq<ConditionalFilterStyle>,
-                ?styleHeaderConditional: seq<ConditionalHeaderStyle>,
-                ?virtualization: bool,
-                ?derivedFilterQueryStructure: obj,
-                ?derivedViewportData: seq<obj>,
-                ?derivedViewportIndices: seq<int>,
-                ?derivedViewportRowIds: seq<IConvertible>,
-                ?derivedViewportSelectedColumns: seq<string>,
-                ?derivedViewportSelectedRows: seq<int>,
-                ?derivedViewportSelectedRowIds: seq<IConvertible>,
-                ?derivedVirtualData: seq<obj>,
-                ?derivedVirtualIndices: seq<int>,
-                ?derivedVirtualRowIds: seq<IConvertible>,
-                ?derivedVirtualSelectedRows: seq<int>,
-                ?derivedVirtualSelectedRowIds: seq<IConvertible>,
-                ?loadingState: LoadingState,
-                ?persistence: IConvertible,
-                ?persistedProps: string [],
-                ?persistenceType: PersistenceTypeOptions
+                ?activeCell,
+                ?columns,
+                ?includeHeadersOnCopyPaste,
+                ?localeFormat,
+                ?markdownOptions,
+                ?css,
+                ?data,
+                ?dataPrevious,
+                ?dataTimestamp,
+                ?editable,
+                ?endCell,
+                ?exportColumns,
+                ?exportFormat,
+                ?exportHeaders,
+                ?fillWidth,
+                ?hiddenColumns,
+                ?isFocused,
+                ?mergeDuplicateHeaders,
+                ?fixedColumns,
+                ?fixedRows,
+                ?columnSelectable,
+                ?rowDeletable,
+                ?cellSelectable,
+                ?rowSelectable,
+                ?selectedCells,
+                ?selectedRows,
+                ?selectedColumns,
+                ?selectedRowIds,
+                ?startCell,
+                ?styleAsListView,
+                ?pageAction,
+                ?pageCurrent,
+                ?pageCount,
+                ?pageSize,
+                ?dropdown,
+                ?dropdownConditional,
+                ?dropdownData,
+                ?tooltip,
+                ?tooltipConditional,
+                ?tooltipData,
+                ?tooltipHeader,
+                ?tooltipDelay,
+                ?tooltipDuration,
+                ?filterQuery,
+                ?filterAction,
+                ?filterOptions,
+                ?sortAction,
+                ?sortMode,
+                ?sortBy,
+                ?sortAsNull,
+                ?styleTable,
+                ?styleCell,
+                ?styleData,
+                ?styleFilter,
+                ?styleHeader,
+                ?styleCellConditional,
+                ?styleDataConditional,
+                ?styleFilterConditional,
+                ?styleHeaderConditional,
+                ?virtualization,
+                ?derivedFilterQueryStructure,
+                ?derivedViewportData,
+                ?derivedViewportIndices,
+                ?derivedViewportRowIds,
+                ?derivedViewportSelectedColumns,
+                ?derivedViewportSelectedRows,
+                ?derivedViewportSelectedRowIds,
+                ?derivedVirtualData,
+                ?derivedVirtualIndices,
+                ?derivedVirtualRowIds,
+                ?derivedVirtualSelectedRows,
+                ?derivedVirtualSelectedRowIds,
+                ?loadingState,
+                ?persistence,
+                ?persistedProps,
+                ?persistenceType
             ) =
-            (fun (t: DataTable) ->
+            fun (dataTable: DataTable) ->
                 let props = DashComponentProps()
 
                 DynObj.setValue props "id" id
@@ -2699,182 +2671,172 @@ module DataTable =
                 Prop.setValueOpt props Persistence "persistence" persistence
                 Prop.setValueOpt props PersistedProps "persistedProps" persistedProps
                 Prop.setValueOpt props PersistenceType "persistenceType" persistenceType
-                DynObj.setValue t "namespace" "dash_table"
-                DynObj.setValue t "props" props
-                DynObj.setValue t "type" "DataTable"
-                t)
+                DynObj.setValue dataTable "namespace" "dash_table"
+                DynObj.setValue dataTable "props" props
+                DynObj.setValue dataTable "type" "DataTable"
+                dataTable
 
         static member init
             (
-                id: string,
-                children: seq<DashComponent>,
-                ?activeCell: ActiveCell,
-                ?columns: seq<Column>,
-                ?includeHeadersOnCopyPaste: bool,
-                ?localeFormat: LocaleFormat,
-                ?markdownOptions: MarkdownOptions,
-                ?css: seq<Css>,
-                ?data: seq<obj>,
-                ?dataPrevious: seq<obj>,
-                ?dataTimestamp: int64,
-                ?editable: bool,
-                ?endCell: Cell,
-                ?exportColumns: ExportColumns,
-                ?exportFormat: MaybeExportFormat,
-                ?exportHeaders: MaybeExportHeaders,
-                ?fillWidth: bool,
-                ?hiddenColumns: seq<string>,
-                ?isFocused: bool,
-                ?mergeDuplicateHeaders: bool,
-                ?fixedColumns: Fixed,
-                ?fixedRows: Fixed,
-                ?columnSelectable: Select,
-                ?rowDeletable: bool,
-                ?cellSelectable: bool,
-                ?rowSelectable: Select,
-                ?selectedCells: seq<Cell>,
-                ?selectedRows: seq<int>,
-                ?selectedColumns: seq<string>,
-                ?selectedRowIds: seq<IConvertible>,
-                ?startCell: Cell,
-                ?styleAsListView: bool,
-                ?pageAction: MaybeActionType,
-                ?pageCurrent: int,
-                ?pageCount: int,
-                ?pageSize: int,
-                ?dropdown: Map<string, Dropdown>,
-                ?dropdownConditional: seq<ConditionalDropdown>,
-                ?dropdownData: seq<Map<string, Dropdown>>,
-                ?tooltip: Map<string, Tooltip>,
-                ?tooltipConditional: seq<ConditionalTooltip>,
-                ?tooltipData: seq<Map<string, DataTooltip>>,
-                ?tooltipHeader: Map<string, HeaderTooltip>,
-                ?tooltipDelay: int,
-                ?tooltipDuration: int,
-                ?filterQuery: string,
-                ?filterAction: FilterAction,
-                ?filterOptions: FilterOption,
-                ?sortAction: MaybeActionType,
-                ?sortMode: SortMode,
-                ?sortBy: seq<SortBy>,
-                ?sortAsNull: seq<IConvertible>,
-                ?styleTable: DashComponentStyle,
-                ?styleCell: DashComponentStyle,
-                ?styleData: DashComponentStyle,
-                ?styleFilter: DashComponentStyle,
-                ?styleHeader: DashComponentStyle,
-                ?styleCellConditional: seq<ConditionalCellStyle>,
-                ?styleDataConditional: seq<ConditionalDataStyle>,
-                ?styleFilterConditional: seq<ConditionalFilterStyle>,
-                ?styleHeaderConditional: seq<ConditionalHeaderStyle>,
-                ?virtualization: bool,
-                ?derivedFilterQueryStructure: obj,
-                ?derivedViewportData: seq<obj>,
-                ?derivedViewportIndices: seq<int>,
-                ?derivedViewportRowIds: seq<IConvertible>,
-                ?derivedViewportSelectedColumns: seq<string>,
-                ?derivedViewportSelectedRows: seq<int>,
-                ?derivedViewportSelectedRowIds: seq<IConvertible>,
-                ?derivedVirtualData: seq<obj>,
-                ?derivedVirtualIndices: seq<int>,
-                ?derivedVirtualRowIds: seq<IConvertible>,
-                ?derivedVirtualSelectedRows: seq<int>,
-                ?derivedVirtualSelectedRowIds: seq<IConvertible>,
-                ?loadingState: LoadingState,
-                ?persistence: IConvertible,
-                ?persistedProps: string [],
-                ?persistenceType: PersistenceTypeOptions
+                id,
+                children,
+                ?activeCell,
+                ?columns,
+                ?includeHeadersOnCopyPaste,
+                ?localeFormat,
+                ?markdownOptions,
+                ?css,
+                ?data,
+                ?dataPrevious,
+                ?dataTimestamp,
+                ?editable,
+                ?endCell,
+                ?exportColumns,
+                ?exportFormat,
+                ?exportHeaders,
+                ?fillWidth,
+                ?hiddenColumns,
+                ?isFocused,
+                ?mergeDuplicateHeaders,
+                ?fixedColumns,
+                ?fixedRows,
+                ?columnSelectable,
+                ?rowDeletable,
+                ?cellSelectable,
+                ?rowSelectable,
+                ?selectedCells,
+                ?selectedRows,
+                ?selectedColumns,
+                ?selectedRowIds,
+                ?startCell,
+                ?styleAsListView,
+                ?pageAction,
+                ?pageCurrent,
+                ?pageCount,
+                ?pageSize,
+                ?dropdown,
+                ?dropdownConditional,
+                ?dropdownData,
+                ?tooltip,
+                ?tooltipConditional,
+                ?tooltipData,
+                ?tooltipHeader,
+                ?tooltipDelay,
+                ?tooltipDuration,
+                ?filterQuery,
+                ?filterAction,
+                ?filterOptions,
+                ?sortAction,
+                ?sortMode,
+                ?sortBy,
+                ?sortAsNull,
+                ?styleTable,
+                ?styleCell,
+                ?styleData,
+                ?styleFilter,
+                ?styleHeader,
+                ?styleCellConditional,
+                ?styleDataConditional,
+                ?styleFilterConditional,
+                ?styleHeaderConditional,
+                ?virtualization,
+                ?derivedFilterQueryStructure,
+                ?derivedViewportData,
+                ?derivedViewportIndices,
+                ?derivedViewportRowIds,
+                ?derivedViewportSelectedColumns,
+                ?derivedViewportSelectedRows,
+                ?derivedViewportSelectedRowIds,
+                ?derivedVirtualData,
+                ?derivedVirtualIndices,
+                ?derivedVirtualRowIds,
+                ?derivedVirtualSelectedRows,
+                ?derivedVirtualSelectedRowIds,
+                ?loadingState,
+                ?persistence,
+                ?persistedProps,
+                ?persistenceType
             ) =
-            DataTable.applyMembers
-                (id,
-                 children,
-                 ?activeCell = activeCell,
-                 ?columns = columns,
-                 ?includeHeadersOnCopyPaste = includeHeadersOnCopyPaste,
-                 ?localeFormat = localeFormat,
-                 ?markdownOptions = markdownOptions,
-                 ?css = css,
-                 ?data = data,
-                 ?dataPrevious = dataPrevious,
-                 ?dataTimestamp = dataTimestamp,
-                 ?editable = editable,
-                 ?endCell = endCell,
-                 ?exportColumns = exportColumns,
-                 ?exportFormat = exportFormat,
-                 ?exportHeaders = exportHeaders,
-                 ?fillWidth = fillWidth,
-                 ?hiddenColumns = hiddenColumns,
-                 ?isFocused = isFocused,
-                 ?mergeDuplicateHeaders = mergeDuplicateHeaders,
-                 ?fixedColumns = fixedColumns,
-                 ?fixedRows = fixedRows,
-                 ?columnSelectable = columnSelectable,
-                 ?rowDeletable = rowDeletable,
-                 ?cellSelectable = cellSelectable,
-                 ?rowSelectable = rowSelectable,
-                 ?selectedCells = selectedCells,
-                 ?selectedRows = selectedRows,
-                 ?selectedColumns = selectedColumns,
-                 ?selectedRowIds = selectedRowIds,
-                 ?startCell = startCell,
-                 ?styleAsListView = styleAsListView,
-                 ?pageAction = pageAction,
-                 ?pageCurrent = pageCurrent,
-                 ?pageCount = pageCount,
-                 ?pageSize = pageSize,
-                 ?dropdown = dropdown,
-                 ?dropdownConditional = dropdownConditional,
-                 ?dropdownData = dropdownData,
-                 ?tooltip = tooltip,
-                 ?tooltipConditional = tooltipConditional,
-                 ?tooltipData = tooltipData,
-                 ?tooltipHeader = tooltipHeader,
-                 ?tooltipDelay = tooltipDelay,
-                 ?tooltipDuration = tooltipDuration,
-                 ?filterQuery = filterQuery,
-                 ?filterAction = filterAction,
-                 ?filterOptions = filterOptions,
-                 ?sortAction = sortAction,
-                 ?sortMode = sortMode,
-                 ?sortBy = sortBy,
-                 ?sortAsNull = sortAsNull,
-                 ?styleTable = styleTable,
-                 ?styleCell = styleCell,
-                 ?styleData = styleData,
-                 ?styleFilter = styleFilter,
-                 ?styleHeader = styleHeader,
-                 ?styleCellConditional = styleCellConditional,
-                 ?styleDataConditional = styleDataConditional,
-                 ?styleFilterConditional = styleFilterConditional,
-                 ?styleHeaderConditional = styleHeaderConditional,
-                 ?virtualization = virtualization,
-                 ?derivedFilterQueryStructure = derivedFilterQueryStructure,
-                 ?derivedViewportData = derivedViewportData,
-                 ?derivedViewportIndices = derivedViewportIndices,
-                 ?derivedViewportRowIds = derivedViewportRowIds,
-                 ?derivedViewportSelectedColumns = derivedViewportSelectedColumns,
-                 ?derivedViewportSelectedRows = derivedViewportSelectedRows,
-                 ?derivedViewportSelectedRowIds = derivedViewportSelectedRowIds,
-                 ?derivedVirtualData = derivedVirtualData,
-                 ?derivedVirtualIndices = derivedVirtualIndices,
-                 ?derivedVirtualRowIds = derivedVirtualRowIds,
-                 ?derivedVirtualSelectedRows = derivedVirtualSelectedRows,
-                 ?derivedVirtualSelectedRowIds = derivedVirtualSelectedRowIds,
-                 ?loadingState = loadingState,
-                 ?persistence = persistence,
-                 ?persistedProps = persistedProps,
-                 ?persistenceType = persistenceType)
-                (DataTable())
-
-        // TODO: Are these required?
-        //static member definition: LoadableComponentDefinition =
-        //    { ComponentName = "DataTable"
-        //      ComponentJavascript =
-        //          [ "components\\DashTable\\async-export.js"
-        //            "components\\DashTable\\async-highlight.js"
-        //            "components\\DashTable\\async-table.js"
-        //            "components\\DashTable\\bundle.js"
-        //            "components\\DashTable\\demo.js" ] }
+            DataTable.applyMembers (
+                id,
+                children,
+                ?activeCell = activeCell,
+                ?columns = columns,
+                ?includeHeadersOnCopyPaste = includeHeadersOnCopyPaste,
+                ?localeFormat = localeFormat,
+                ?markdownOptions = markdownOptions,
+                ?css = css,
+                ?data = data,
+                ?dataPrevious = dataPrevious,
+                ?dataTimestamp = dataTimestamp,
+                ?editable = editable,
+                ?endCell = endCell,
+                ?exportColumns = exportColumns,
+                ?exportFormat = exportFormat,
+                ?exportHeaders = exportHeaders,
+                ?fillWidth = fillWidth,
+                ?hiddenColumns = hiddenColumns,
+                ?isFocused = isFocused,
+                ?mergeDuplicateHeaders = mergeDuplicateHeaders,
+                ?fixedColumns = fixedColumns,
+                ?fixedRows = fixedRows,
+                ?columnSelectable = columnSelectable,
+                ?rowDeletable = rowDeletable,
+                ?cellSelectable = cellSelectable,
+                ?rowSelectable = rowSelectable,
+                ?selectedCells = selectedCells,
+                ?selectedRows = selectedRows,
+                ?selectedColumns = selectedColumns,
+                ?selectedRowIds = selectedRowIds,
+                ?startCell = startCell,
+                ?styleAsListView = styleAsListView,
+                ?pageAction = pageAction,
+                ?pageCurrent = pageCurrent,
+                ?pageCount = pageCount,
+                ?pageSize = pageSize,
+                ?dropdown = dropdown,
+                ?dropdownConditional = dropdownConditional,
+                ?dropdownData = dropdownData,
+                ?tooltip = tooltip,
+                ?tooltipConditional = tooltipConditional,
+                ?tooltipData = tooltipData,
+                ?tooltipHeader = tooltipHeader,
+                ?tooltipDelay = tooltipDelay,
+                ?tooltipDuration = tooltipDuration,
+                ?filterQuery = filterQuery,
+                ?filterAction = filterAction,
+                ?filterOptions = filterOptions,
+                ?sortAction = sortAction,
+                ?sortMode = sortMode,
+                ?sortBy = sortBy,
+                ?sortAsNull = sortAsNull,
+                ?styleTable = styleTable,
+                ?styleCell = styleCell,
+                ?styleData = styleData,
+                ?styleFilter = styleFilter,
+                ?styleHeader = styleHeader,
+                ?styleCellConditional = styleCellConditional,
+                ?styleDataConditional = styleDataConditional,
+                ?styleFilterConditional = styleFilterConditional,
+                ?styleHeaderConditional = styleHeaderConditional,
+                ?virtualization = virtualization,
+                ?derivedFilterQueryStructure = derivedFilterQueryStructure,
+                ?derivedViewportData = derivedViewportData,
+                ?derivedViewportIndices = derivedViewportIndices,
+                ?derivedViewportRowIds = derivedViewportRowIds,
+                ?derivedViewportSelectedColumns = derivedViewportSelectedColumns,
+                ?derivedViewportSelectedRows = derivedViewportSelectedRows,
+                ?derivedViewportSelectedRowIds = derivedViewportSelectedRowIds,
+                ?derivedVirtualData = derivedVirtualData,
+                ?derivedVirtualIndices = derivedVirtualIndices,
+                ?derivedVirtualRowIds = derivedVirtualRowIds,
+                ?derivedVirtualSelectedRows = derivedVirtualSelectedRows,
+                ?derivedVirtualSelectedRowIds = derivedVirtualSelectedRowIds,
+                ?loadingState = loadingState,
+                ?persistence = persistence,
+                ?persistedProps = persistedProps,
+                ?persistenceType = persistenceType
+            ) (DataTable())
 
     ///<summary>
     ///Dash DataTable is an interactive table component designed for
