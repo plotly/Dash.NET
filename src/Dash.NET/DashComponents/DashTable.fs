@@ -4,6 +4,9 @@ open System
 open Plotly.NET
 open Dash.NET
 
+[<Literal>]
+let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
+
 ///<summary>
 ///Dash DataTable is an interactive table component designed for
 ///designed for viewing, editing, and exploring large datasets.

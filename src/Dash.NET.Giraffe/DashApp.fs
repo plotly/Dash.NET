@@ -242,9 +242,7 @@ type DashApp =
             services.AddCors()    |> ignore
             services.AddGiraffe() |> ignore
 
-            JsonSerializerSettings(
-                ContractResolver = Serialization.DefaultContractResolver(NamingStrategy = new Serialization.DefaultNamingStrategy())
-            )
+            Common.Json.mkSerializerSettings()
             |> NewtonsoftJson.Serializer
             |> services.AddSingleton<Json.ISerializer>
             |> ignore
