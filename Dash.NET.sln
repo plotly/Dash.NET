@@ -66,6 +66,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Suave.Example", "e
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Giraffe.Example", "examples\Dash.NET.Giraffe.Example\Dash.NET.Giraffe.Example.fsproj", "{41D83E3B-EF7E-41F3-BB1C-CA963F172BB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dash.NET.Giraffe.CSharp.Example", "Dash.NET.Giraffe.CSharp.Example\Dash.NET.Giraffe.CSharp.Example.csproj", "{48116284-A49D-45FC-AB39-73BCF62E4CC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -184,6 +186,18 @@ Global
 		{41D83E3B-EF7E-41F3-BB1C-CA963F172BB2}.Release|x64.Build.0 = Release|Any CPU
 		{41D83E3B-EF7E-41F3-BB1C-CA963F172BB2}.Release|x86.ActiveCfg = Release|Any CPU
 		{41D83E3B-EF7E-41F3-BB1C-CA963F172BB2}.Release|x86.Build.0 = Release|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Debug|x64.Build.0 = Debug|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Debug|x86.Build.0 = Debug|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Release|x64.ActiveCfg = Release|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Release|x64.Build.0 = Release|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Release|x86.ActiveCfg = Release|Any CPU
+		{48116284-A49D-45FC-AB39-73BCF62E4CC5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

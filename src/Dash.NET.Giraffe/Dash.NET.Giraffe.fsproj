@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="Views.fs" />
     <Compile Include="DashApp.fs" />
+    <Compile Include="DashAppCSharp.fs" />
   </ItemGroup>
 
   <ItemGroup>
