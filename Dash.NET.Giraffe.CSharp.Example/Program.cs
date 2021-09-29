@@ -1,32 +1,38 @@
 ﻿using System;
 //using Dash.NET.Giraffe.CSharp;
-//using Dash.NET.CSharp.DCC;
+using Dash.NET.CSharp.DCC;
 using Plotly.NET;
 using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-//using static Dash.NET.CSharp.Html;
+using static Dash.NET.CSharp.Html;
 
-namespace Dash.NET.Giraffe.CSharp.Example
+// namespace Dash.NET.Giraffe.CSharp.Example // TODO : I changed the namespace here because it was automatically opening types from the Dash.NET namespace (while they should be hidden for C# users, who only go through Dash.NET.CSharp)
+namespace Dash.Giraffe.CSharp.Example
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var test = Html.Html;
-
             var myGraph = Plotly.NET.Chart.Line<int, int, int>(new List<Tuple<int, int>>() { Tuple.Create(1, 1), Tuple.Create(2, 2) });
 
             var layout =
                 Html.div(
-                    CAttr.children(
-                        CHtml.h1(
-                            CAttr.children("Hello world from Dash.NET and Giraffe!")
+                    Attr.children(
+                        Html.h1(
+                            Attr.children("Hello world from Dash.NET and Giraffe!")
                         ),
-                        CHtml.h2(
-                            CAttr.children("Take a look at this graph:")
+                        Html.h2(
+                            Attr.children("Take a look at this graph:")
                         ),
-                        Graph.Graph("my-ghraph-id", Graph.Attr.figure(GenericChart.toFigure(myGraph)))
+                        Graph.Graph(
+                            "my-ghraph-id",
+                            Graph.Attr.figure(GenericChart.toFigure(myGraph)),
+                            Graph.Attr.style(
+                                Style.StyleProperty("marginLeft", "12px"),
+                                Css.borderLeftWidth(2)
+                            )
+                        )
                     )
                 );
 

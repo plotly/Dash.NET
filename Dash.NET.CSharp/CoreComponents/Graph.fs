@@ -94,7 +94,7 @@ module Graph =
         ///<summary>
         ///Generic style overrides on the plot div
         ///</summary>
-        static member style(p: seq<Dash.NET.Css.Style>) = Dash.NET.DCC.Graph.Attr.style p |> Attr.Wrap // TODO : Style and seq
+        static member style([<ParamArray>] p: Dash.NET.CSharp.Html.Style array) = Dash.NET.DCC.Graph.Attr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap // TODO : Style and seq
         ///<summary>
         ///className of the parent div
         ///</summary>
@@ -148,5 +148,5 @@ module Graph =
         ///</summary>
         static member children([<ParamArray>] value: Dash.NET.DashComponent array) = Dash.NET.DCC.Graph.Attr.children value |> Attr.Wrap // TODO : Dash.NET namespace?
 
-    let Graph (id: string, [<ParamArray>] attrs : Attr array) = Dash.NET.DCC.Graph.graph id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let Graph (id: string, [<ParamArray>] attrs : Attr array) = Dash.NET.DCC.Graph.graph id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
 
