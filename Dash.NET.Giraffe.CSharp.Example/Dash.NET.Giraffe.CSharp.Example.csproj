@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Dash.NET.Giraffe\Dash.NET.Giraffe.fsproj" />
+    <ProjectReference Include="..\Dash.NET.CSharp.Giraffe\Dash.NET.CSharp.Giraffe.fsproj" />
+    <ProjectReference Include="..\Dash.NET.CSharp\Dash.NET.CSharp.fsproj" />
   </ItemGroup>
 
 </Project>

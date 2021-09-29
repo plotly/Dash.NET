@@ -1,18 +1,11 @@
 ﻿using System;
-//using Dash.NET.Giraffe;
-using Dash.NET.Giraffe.CSharp;
-//using Dash.NET.Html;
-using Dash.NET.DCC;
+//using Dash.NET.Giraffe.CSharp;
+//using Dash.NET.CSharp.DCC;
 using Plotly.NET;
-//using Microsoft.Extensions.Logging;
 using Giraffe;
 using System.Collections.Generic;
-using Microsoft.FSharp.Collections;
 using Microsoft.Extensions.Logging;
-using Microsoft.FSharp.Core;
-using static DashAppCSharp;
-//using Dash.NET;
-using static Dash.NET.HtmlCSharp;
+//using static Dash.NET.CSharp.Html;
 
 namespace Dash.NET.Giraffe.CSharp.Example
 {
@@ -20,10 +13,12 @@ namespace Dash.NET.Giraffe.CSharp.Example
     {
         static void Main(string[] args)
         {
+            var test = Html.Html;
+
             var myGraph = Plotly.NET.Chart.Line<int, int, int>(new List<Tuple<int, int>>() { Tuple.Create(1, 1), Tuple.Create(2, 2) });
 
             var layout =
-                CHtml.div(
+                Html.div(
                     CAttr.children(
                         CHtml.h1(
                             CAttr.children("Hello world from Dash.NET and Giraffe!")
@@ -31,7 +26,7 @@ namespace Dash.NET.Giraffe.CSharp.Example
                         CHtml.h2(
                             CAttr.children("Take a look at this graph:")
                         ),
-                        Graph.CGraph("my-ghraph-id", Graph.Attr.figure(GenericChart.toFigure(myGraph)))
+                        Graph.Graph("my-ghraph-id", Graph.Attr.figure(GenericChart.toFigure(myGraph)))
                     )
                 );
 

@@ -494,5 +494,3 @@ module Graph =
 
         DynObj.setValue t "props" componentProps
         t :> DashComponent
-
-    let CGraph (id: string, [<ParamArray>] attrs : Attr array) = graph id (List.ofArray attrs)
