@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ComponentPropTypes.fs" />
     <Compile Include="Html.fs" />
+    <Compile Include="ComponentStyle.fs" />
+    <Compile Include="CoreComponents\Checklist.fs" />
     <Compile Include="CoreComponents\Graph.fs" />
   </ItemGroup>
 
