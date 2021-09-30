@@ -6,6 +6,7 @@ using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Html;
+using static Dash.NET.CSharp.Giraffe.DashApp;
 
 // namespace Dash.NET.Giraffe.CSharp.Example // TODO : I changed the namespace here because it was automatically opening types from the Dash.NET namespace (while they should be hidden for C# users, who only go through Dash.NET.CSharp)
 namespace Dash.Giraffe.CSharp.Example
@@ -36,11 +37,11 @@ namespace Dash.Giraffe.CSharp.Example
                     )
                 );
 
-            var dashApp = DashAppCSharp.DashApp
+            var dashApp = DashApp
                 .initDefault()
                 .withLayout(layout);
 
-            var config = new DashAppCSharp.DashGiraffeConfig(
+            var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Debug,
                 errorHandler: (Exception err) => Core.text(err.Message)
