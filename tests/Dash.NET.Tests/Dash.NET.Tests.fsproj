@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Sample.fs" />
+    <Compile Include="SerializationTests\SerializationTestUtils.fs" />
+    <Compile Include="SerializationTests\ComponentPropTypes.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 
