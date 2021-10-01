@@ -5,54 +5,60 @@ open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
 // Original attr
-type internal OAttr = Dash.NET.DCC.Checklist.Attr
+type internal OAttr = Dash.NET.DCC.RadioItems.Attr
+
 
 ///<summary>
-///Checklist is a component that encapsulates several checkboxes.
-///The values and labels of the checklist are specified in the &#96;options&#96;
-///property and the checked items are specified with the &#96;value&#96; property.
-///Each checkbox is rendered as an input with a surrounding label.
+///RadioItems is a component that encapsulates several radio item inputs.
+///The values and labels of the RadioItems is specified in the &#96;options&#96;
+///property and the seleced item is specified with the &#96;value&#96; property.
+///Each radio item is rendered as an input with a surrounding label.
 ///</summary>
 [<RequireQualifiedAccess>]
-module Checklist =
-    type Attr = private WrappedAttr of Dash.NET.DCC.Checklist.Attr with
-        static member internal Wrap (attr : Dash.NET.DCC.Checklist.Attr) = Attr.WrappedAttr attr
+module RadioItems =
+
+    ///<summary>
+    ///A list of children or a property for this dash component
+    ///</summary>
+    type Attr = private WrappedAttr of Dash.NET.DCC.RadioItems.Attr with
+        static member internal Wrap (attr : Dash.NET.DCC.RadioItems.Attr) = Attr.WrappedAttr attr
         static member internal Unwrap (attr : Attr) = match attr with | Attr.WrappedAttr attr -> attr
 
         ///<summary>
         ///An array of options
         ///</summary>
-        static member options([<ParamArray>] p : ChecklistOption array) = OAttr.options (p |> Array.map ChecklistOption.Convert) |> Attr.Wrap
+        static member options([<ParamArray>] p: array<RadioItemsOption>) = OAttr.options (p |> Array.map RadioItemsOption.Convert) |> Attr.Wrap
         ///<summary>
         ///The currently selected value
         ///</summary>
-        static member value([<ParamArray>] p: IConvertible array) = OAttr.value (p |> List.ofArray) |> Attr.Wrap
+        static member value(p: IConvertible) = OAttr.value p |> Attr.Wrap
+        ///<summary>
+        ///The style of the container (div)
+        ///</summary>
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the container (div)
         ///</summary>
         static member className(p: string) = OAttr.className p |> Attr.Wrap
         ///<summary>
-        ///Defines CSS styles which will override styles previously set.
+        ///The style of the &lt;input&gt; radio element
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member inputStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.inputStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
-        ///The style of the &lt;input&gt; checkbox element
-        ///</summary>
-        static member inputStyle(p: DashComponentStyle) = OAttr.inputStyle (p |> DashComponentStyle.Unwrap) |> Attr.Wrap
-        ///<summary>
-        ///The class of the &lt;input&gt; checkbox element
+        ///The class of the &lt;input&gt; radio element
         ///</summary>
         static member inputClassName(p: string) = OAttr.inputClassName p |> Attr.Wrap
         ///<summary>
-        ///The style of the &lt;label&gt; that wraps the checkbox input
+        ///The style of the &lt;label&gt; that wraps the radio input
         /// and the option's label
         ///</summary>
-        static member labelStyle(p: DashComponentStyle) = OAttr.labelStyle (p |> DashComponentStyle.Unwrap) |> Attr.Wrap
+        static member labelStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.labelStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
-        ///The class of the &lt;label&gt; that wraps the checkbox input
+        ///The class of the &lt;label&gt; that wraps the radio input
         /// and the option's label
         ///</summary>
         static member labelClassName(p: string) = OAttr.labelClassName p |> Attr.Wrap
+
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
@@ -71,7 +77,7 @@ module Checklist =
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps([<ParamArray>]p: string array) = OAttr.persistedProps p |> Attr.Wrap
+        static member persistedProps([<ParamArray>] p: string []) = OAttr.persistedProps p |> Attr.Wrap
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
@@ -79,6 +85,7 @@ module Checklist =
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
         static member persistenceType(p: PersistenceTypeOptions) = OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
+
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -94,7 +101,7 @@ module Checklist =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -109,10 +116,10 @@ module Checklist =
         static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
-    ///Checklist is a component that encapsulates several checkboxes.
-    ///The values and labels of the checklist are specified in the &#96;options&#96;
-    ///property and the checked items are specified with the &#96;value&#96; property.
-    ///Each checkbox is rendered as an input with a surrounding label.
+    ///RadioItems is a component that encapsulates several radio item inputs.
+    ///The values and labels of the RadioItems is specified in the &#96;options&#96;
+    ///property and the seleced item is specified with the &#96;value&#96; property.
+    ///Each radio item is rendered as an input with a surrounding label.
     ///&#10;
     ///Properties:
     ///&#10;
@@ -122,20 +129,20 @@ module Checklist =
     ///&#10;
     ///• options (list with values of type: record with the fields: 'label: string | number (required)', 'value: string | number (required)', 'disabled: boolean (optional)'; default []) - An array of options
     ///&#10;
-    ///• value (list with values of type: string | number; default []) - The currently selected value
-    ///&#10;
-    ///• className (string) - The class of the container (div)
+    ///• value (string | number) - The currently selected value
     ///&#10;
     ///• style (record) - The style of the container (div)
     ///&#10;
-    ///• inputStyle (record; default {}) - The style of the &lt;input&gt; checkbox element
+    ///• className (string) - The class of the container (div)
     ///&#10;
-    ///• inputClassName (string; default ) - The class of the &lt;input&gt; checkbox element
+    ///• inputStyle (record; default {}) - The style of the &lt;input&gt; radio element
     ///&#10;
-    ///• labelStyle (record; default {}) - The style of the &lt;label&gt; that wraps the checkbox input
+    ///• inputClassName (string; default ) - The class of the &lt;input&gt; radio element
+    ///&#10;
+    ///• labelStyle (record; default {}) - The style of the &lt;label&gt; that wraps the radio input
     /// and the option's label
     ///&#10;
-    ///• labelClassName (string; default ) - The class of the &lt;label&gt; that wraps the checkbox input
+    ///• labelClassName (string; default ) - The class of the &lt;label&gt; that wraps the radio input
     /// and the option's label
     ///&#10;
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
@@ -156,4 +163,4 @@ module Checklist =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let checklist (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Checklist.checklist id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.RadioItems.radioItems id (attrs |> List.ofArray |> List.map Attr.Unwrap)

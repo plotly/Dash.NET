@@ -10,6 +10,11 @@
     <Compile Include="Html.fs" />
     <Compile Include="ComponentStyle.fs" />
     <Compile Include="CoreComponents\Checklist.fs" />
+    <Compile Include="CoreComponents\Markdown.fs" />
+    <Compile Include="CoreComponents\Dropdown.fs" />
+    <Compile Include="CoreComponents\Input.fs" />
+    <Compile Include="CoreComponents\Interval.fs" />
+    <Compile Include="CoreComponents\Location.fs" />
     <Compile Include="CoreComponents\Graph.fs" />
   </ItemGroup>
 
