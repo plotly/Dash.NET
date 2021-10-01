@@ -56,6 +56,7 @@
     <Compile Include="DashComponents\CoreComponents\Textarea.fs" />
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DashComponents\CoreComponents\Slider.fs" />
+    <Compile Include="DashComponents\DashTable.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Dependency.fs" />
     <Compile Include="CallbackBinding.fs" />
@@ -63,6 +64,7 @@
     <Compile Include="CallbackBuilder.fs" />
     <Compile Include="DashConfig.fs" />
     <Compile Include="Operators.fs" />
+    <Compile Include="Common.fs" />
   </ItemGroup>
 
   <ItemGroup>

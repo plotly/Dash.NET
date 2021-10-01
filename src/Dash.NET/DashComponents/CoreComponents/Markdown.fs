@@ -67,7 +67,7 @@ module Markdown =
             | DangerouslyAllowHtml (p) -> "dangerously_allow_html", box p
             | Dedent (p) -> "dedent", box p
             | HighlightConfig (p) -> "highlight_config", HighlightConfig.convert p
-            | LoadingState (p) -> "loading_state", box p
+            | LoadingState (p) -> "loading_state", LoadingState.convert p
             | Style (p) -> "style", box p
 
     ///<summary>
@@ -149,7 +149,7 @@ module Markdown =
                 DynObj.setValueOpt props "dangerouslyAllowHtml" (dangerouslyAllowHtml |> Option.map box)
                 DynObj.setValueOpt props "dedent" (dedent |> Option.map box)
                 DynObj.setValueOpt props "highlightConfig" (highlightConfig |> Option.map HighlightConfig.convert)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
                 DynObj.setValueOpt props "style" (style |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
