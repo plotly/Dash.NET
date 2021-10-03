@@ -1,9 +1,9 @@
 ﻿namespace Dash.NET
 
 open Newtonsoft.Json
-open Plotly.NET
 open System.Runtime.InteropServices
 open System
+open DynamicObj
 
 type LoadableComponentDefinition = 
     { ComponentName: string
@@ -117,6 +117,41 @@ module ComponentPropTypes =
             | Session   -> "session"
             | Memory    -> "memory"
         static member convert = PersistenceTypeOptions.toString >> box
+
+    //type LoadingState () =
+    //    inherit DynamicObj()
+    //    static member create 
+    //        (
+    //            isLoading       : bool,
+    //            ?PropName       : string,
+    //            ?ComponentName  : string
+    //        ) =
+    //            let ls = LoadingState()
+
+    //            isLoading       |> DynObj.setValue ls "isLoading"
+    //            PropName        |> DynObj.setValueOpt ls "propName"
+    //            ComponentName   |> DynObj.setValueOpt ls "componentName"
+
+    //            ls
+       
+
+    //type DropdownOption () =
+    //    inherit DynamicObj()
+    //    static member create 
+    //        (
+    //            label:IConvertible,
+    //            value:IConvertible,
+    //            ?Disabled:bool,
+    //            ?Title:string
+    //        ) =
+    //            let dro = DropdownOption()
+
+    //            label   |> DynObj.setValue dro "label"
+    //            value   |> DynObj.setValue dro "value"
+    //            Disabled|> DynObj.setValueOpt dro "disabled"
+    //            Title   |> DynObj.setValueOpt dro "title"
+
+    //            dro
 
     type DropdownOption = 
         {

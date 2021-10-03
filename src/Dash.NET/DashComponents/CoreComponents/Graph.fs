@@ -3,6 +3,7 @@ namespace Dash.NET.DCC
 open Dash.NET
 open System
 open Plotly.NET
+open DynamicObj
 open ComponentPropTypes
 
 ///<summary>

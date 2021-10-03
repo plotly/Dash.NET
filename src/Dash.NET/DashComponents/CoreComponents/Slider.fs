@@ -2,7 +2,7 @@
 
 open Dash.NET
 open System
-open Plotly.NET
+open DynamicObj
 open System.Collections.Generic
 open ComponentPropTypes
 
