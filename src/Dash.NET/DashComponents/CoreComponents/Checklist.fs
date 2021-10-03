@@ -64,7 +64,7 @@ module Checklist =
         | PersistenceType of PersistenceTypeOptions
         static member toDynamicMemberDef(prop: Prop) =
             match prop with
-            | Options p -> "options", p |> Seq.map ChecklistOption.convert |> box
+            | Options p -> "options", box p
             | Value p -> "value", box p
             | ClassName p -> "className", box p
             | Style p -> "style", box p
@@ -72,7 +72,7 @@ module Checklist =
             | InputClassName p -> "inputClassName", box p
             | LabelStyle p -> "labelStyle", box p
             | LabelClassName p -> "labelClassName", box p
-            | LoadingState p -> "loading_state", LoadingState.convert p
+            | LoadingState p -> "loading_state", box p
             | Persistence p -> "persistence", box p
             | PersistedProps p -> "persisted_props", box p
             | PersistenceType p -> "persistence_type", PersistenceTypeOptions.convert p
@@ -201,7 +201,7 @@ module Checklist =
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "options" (options |> Option.map (Seq.map ChecklistOption.convert >> box))
+                DynObj.setValueOpt props "options" (options |> Option.map box)
                 DynObj.setValueOpt props "value" (value |> Option.map box)
                 DynObj.setValueOpt props "className" (className |> Option.map box)
                 DynObj.setValueOpt props "style" (style |> Option.map box)
@@ -209,7 +209,7 @@ module Checklist =
                 DynObj.setValueOpt props "inputClassName" (inputClassName |> Option.map box)
                 DynObj.setValueOpt props "labelStyle" (labelStyle |> Option.map box)
                 DynObj.setValueOpt props "labelClassName" (labelClassName |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)

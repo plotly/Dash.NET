@@ -58,7 +58,7 @@ module Tab =
             | DisabledClassName p   -> "disabled_className", box p
             | SelectedClassName p   -> "selected_className", box p
             | SelectedStyle p       -> "selected_style", box p
-            | LoadingState p        -> "loading_state", LoadingState.convert p
+            | LoadingState p        -> "loading_state", box p
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -169,7 +169,7 @@ module Tab =
                 DynObj.setValueOpt props "selectedClassName" (selectedClassName |> Option.map box)
                 DynObj.setValueOpt props "style" (style |> Option.map box)
                 DynObj.setValueOpt props "selectedStyle" (selectedStyle |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Tab"

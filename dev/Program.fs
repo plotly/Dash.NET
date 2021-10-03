@@ -32,10 +32,10 @@ let dslLayout =
         Attr.children [ 
             Dropdown.dropdown "testInput1" [
                 Dropdown.Attr.options [
-                    DropdownOption.create "1" "1" false "1"
-                    DropdownOption.create 2 2 false "2"
-                    DropdownOption.create 3L 3L false "3"
-                    DropdownOption.create 4.1 4.1 false "4.1"
+                    DropdownOption.create("1", "1")
+                    DropdownOption.create(2, 2)
+                    DropdownOption.create(3L, 3L)
+                    DropdownOption.create(4.1, 4.1)
                 ]
                 Dropdown.Attr.multi true
             ]

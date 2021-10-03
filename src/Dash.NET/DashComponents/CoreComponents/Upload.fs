@@ -127,7 +127,7 @@ module Upload =
             | StyleActive p          -> "style_active"       , box p
             | StyleReject p          -> "style_reject"       , box p
             | StyleDisabled p        -> "style_disabled"     , box p
-            | LoadingState p         -> "loading_state"      , LoadingState.convert p
+            | LoadingState p         -> "loading_state"      , box p
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -297,7 +297,7 @@ module Upload =
                 DynObj.setValueOpt props "styleActive" (styleActive |> Option.map box)
                 DynObj.setValueOpt props "styleReject" (styleReject |> Option.map box)
                 DynObj.setValueOpt props "styleDisabled" (styleDisabled |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Upload"

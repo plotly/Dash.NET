@@ -67,13 +67,13 @@ module RadioItems =
             match prop with
             | ClassName         p   -> "className"          , box p
             | Style             p   -> "style"              , box p
-            | Options           p   -> "options"            , p |> Seq.map RadioItemsOption.convert |> box
+            | Options           p   -> "options"            , box p
             | Value             p   -> "value"              , box p
             | InputClassName    p   -> "inputClassName"     , box p
             | InputStyle        p   -> "inputStyle"         , box p
             | LabelClassName    p   -> "labelClassName"     , box p
             | LabelStyle        p   -> "labelStyle"         , box p
-            | LoadingState      p   -> "loading_state"      , LoadingState.convert p
+            | LoadingState      p   -> "loading_state"      , box p
             | Persistence       p   -> "persistence"        , box p
             | PersistedProps    p   -> "persisted_props"    , box p
             | PersistenceType   p   -> "persistence_type"   , PersistenceTypeOptions.convert p
@@ -205,7 +205,7 @@ module RadioItems =
                 let props = DashComponentProps()
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "options" (options |> Option.map (Seq.map RadioItemsOption.convert >> box))
+                DynObj.setValueOpt props "options" (options |> Option.map box)
                 DynObj.setValueOpt props "value" (value |> Option.map box)
                 DynObj.setValueOpt props "style" (style |> Option.map box)
                 DynObj.setValueOpt props "className" (className |> Option.map box)
@@ -213,7 +213,7 @@ module RadioItems =
                 DynObj.setValueOpt props "inputClassName" (inputClassName |> Option.map box)
                 DynObj.setValueOpt props "labelStyle" (labelStyle |> Option.map box)
                 DynObj.setValueOpt props "labelClassName" (labelClassName |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
