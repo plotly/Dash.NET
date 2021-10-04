@@ -3,6 +3,7 @@
 open System
 open Plotly.NET
 open Dash.NET
+open Dash.NET.Common
 open Newtonsoft.Json
 
 [<Literal>]
@@ -19,46 +20,11 @@ let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
 ///</summary>
 [<RequireQualifiedAccess>]
 module DataTable =
-    let private extractName prop =
-        prop
-        |> sprintf "%O"
-        |> fun s -> s.Replace('\n', ' ').Split(' ')
-        |> Array.head
-
-    let private toCase (ns: Serialization.NamingStrategy) name =
-        ns.GetPropertyName(name, false)
-
-    let private toSnakeCase name = toCase (Serialization.SnakeCaseNamingStrategy()) name
-    let private toCamelCase name = toCase (Serialization.CamelCaseNamingStrategy()) name
-    let private toKebabCase name = toCase (Serialization.KebabCaseNamingStrategy()) name
-
-    let private duToCasedName du =
-        let s = du |> sprintf "%A"
-        let ss = s.Split(' ')
-        let rss = ss |> Array.rev
-        let h = rss |> Array.head
-        let k = h |> toKebabCase
-        k
-
-    let private convertDu du =
-        du 
-        |> duToCasedName
-        |> box
-
-    let private mappedDuToCaseName dus =
-        dus
-        |> Map.map (fun _ -> duToCasedName)
-
-    let private convertMappedDu dus =
-        dus
-        |> mappedDuToCaseName
-        |> box
-
     type DUConverter () =
         inherit JsonConverter ()
         override _.WriteJson(writer, value, serializer) =
             if isNull value then writer.WriteNull()
-            else serializer.Serialize(writer, duToCasedName value);
+            else serializer.Serialize(writer, NameCase.fromDiscriminatedUnion value);
 
         override _.ReadJson(reader, objectType, existingValue, serializer) =
             let duConverter = new Converters.DiscriminatedUnionConverter()
@@ -1299,43 +1265,43 @@ module DataTable =
             | DataTimestamp p -> box p
             | Editable p -> box p
             | EndCell p -> box p
-            | ExportColumns p -> convertDu p
-            | ExportFormat p -> convertDu p
-            | ExportHeaders p -> convertDu p
+            | ExportColumns p -> Convert.fromDiscriminatedUnion p
+            | ExportFormat p -> Convert.fromDiscriminatedUnion p
+            | ExportHeaders p -> Convert.fromDiscriminatedUnion p
             | FillWidth p -> box p
             | HiddenColumns p -> box p
             | IsFocused p -> box p
             | MergeDuplicateHeaders p -> box p
             | FixedColumns p -> box p
             | FixedRows p -> box p
-            | ColumnSelectable p -> convertDu p
+            | ColumnSelectable p -> Convert.fromDiscriminatedUnion p
             | RowDeletable p -> box p
             | CellSelectable p -> box p
-            | RowSelectable p -> convertDu p
+            | RowSelectable p -> Convert.fromDiscriminatedUnion p
             | SelectedCells p -> box p
             | SelectedRows p -> box p
             | SelectedColumns p -> box p
             | SelectedRowIds p -> box p
             | StartCell p -> box p
             | StyleAsListView p -> box p
-            | PageAction p -> convertDu p
+            | PageAction p -> Convert.fromDiscriminatedUnion p
             | PageCurrent p -> box p
             | PageCount p -> box p
             | PageSize p -> box p
             | Dropdown p -> box p
             | DropdownConditional p -> box p
             | DropdownData p -> box p
-            | Tooltip p -> convertMappedDu p
+            | Tooltip p -> Convert.fromMappedDiscriminatedUnions p
             | TooltipConditional p -> box p
-            | TooltipData p -> p |> Seq.map mappedDuToCaseName |> box
-            | TooltipHeader p -> convertMappedDu p
+            | TooltipData p -> p |> Seq.map Convert.fromMappedDiscriminatedUnions |> box
+            | TooltipHeader p -> Convert.fromMappedDiscriminatedUnions p
             | TooltipDelay p -> box p
             | TooltipDuration p -> box p
             | FilterQuery p -> box p
-            | FilterAction p -> convertDu p
+            | FilterAction p -> Convert.fromDiscriminatedUnion p
             | FilterOptions p ->  box p
-            | SortAction p -> convertDu p
-            | SortMode p -> convertDu p
+            | SortAction p -> Convert.fromDiscriminatedUnion p
+            | SortMode p -> Convert.fromDiscriminatedUnion p
             | SortBy p -> box p
             | SortAsNull p -> box p
             | StyleTable p -> box p
@@ -1363,13 +1329,10 @@ module DataTable =
             | LoadingState p -> box p
             | Persistence p -> box p
             | PersistedProps p -> box p
-            | PersistenceType p -> convertDu p
-
-        static member toNameOf : Prop -> string =
-            extractName >> toSnakeCase
+            | PersistenceType p -> Convert.fromDiscriminatedUnion p
 
         static member toDynamicMemberDef(prop: Prop) =
-            prop |> Prop.toNameOf, prop |> Prop.convert
+            prop |> Prop.toDynamicMemberPropName, Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -2090,15 +2053,8 @@ module DataTable =
             ) =
             fun (dataTable: DataTable) ->
                 let props = DashComponentProps()
-                let inline mkPropName prop =
-                    prop |> extractName |> toCamelCase
-                let inline setValueOpt prop maybeValue =
-                    prop
-                    |> mkPropName
-                    |> fun propName ->
-                        maybeValue
-                        |> Option.map (prop >> Prop.convert)
-                        |> DynObj.setValueOpt props propName
+                let inline setValueOpt prop =
+                    DynObj.setValueOpt props prop Prop.convert
 
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
