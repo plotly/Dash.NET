@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Include="..\..\docs\img\logo.png" Pack="true" PackagePath="\" />
+    <Compile Include="Common.fs" />
     <None Include="DashComponents\htmlComponentBackbone.template" />
     <None Include="DashComponents\componentBackbone.template" />
     <None Include="DashComponents\Readme.md" />
@@ -64,7 +65,6 @@
     <Compile Include="CallbackBuilder.fs" />
     <Compile Include="DashConfig.fs" />
     <Compile Include="Operators.fs" />
-    <Compile Include="Common.fs" />
   </ItemGroup>
 
   <ItemGroup>
