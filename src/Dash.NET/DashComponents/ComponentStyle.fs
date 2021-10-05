@@ -1,6 +1,6 @@
 ﻿namespace Dash.NET
 
-open Plotly.NET
+open DynamicObj
 
 type DashComponentStyle() = 
     inherit DynamicObj()

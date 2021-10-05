@@ -1,7 +1,7 @@
 namespace Dash.NET.DCC
 
 open Dash.NET
-open Plotly.NET
+open DynamicObj
 
 ///<summary>
 ///Update and track the current window.location object through the window.history state.
