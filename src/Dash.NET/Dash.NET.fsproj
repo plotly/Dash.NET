@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Kevin Schneider</Authors>
+    <Authors>Plotly</Authors>
     <Description>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F# </Description>
     <Summary>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F# </Summary>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -21,6 +21,9 @@
     <RepositoryType>git</RepositoryType>
     <FsDocsLicenseLink>https://github.com/plotly/Dash.NET/blob/dev/LICENSE</FsDocsLicenseLink>
     <FsDocsReleaseNotesLink>https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md</FsDocsReleaseNotesLink>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Plotly</Company>
   </PropertyGroup>
 
   <ItemGroup>
