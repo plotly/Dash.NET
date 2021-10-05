@@ -106,7 +106,7 @@ module ComponentPropTypes =
 
     type LoadingState () =
         inherit DynamicObj()
-        static member create 
+        static member init 
             (
                 isLoading       : bool,
                 ?PropName       : string,
@@ -123,7 +123,7 @@ module ComponentPropTypes =
 
     type DropdownOption () =
         inherit DynamicObj()
-        static member create 
+        static member init 
             (
                 label:IConvertible,
                 value:IConvertible,
@@ -141,7 +141,7 @@ module ComponentPropTypes =
 
     type RadioItemsOption () =
         inherit DynamicObj()
-        static member create 
+        static member init 
             (
                 label:IConvertible,
                 value:IConvertible,
@@ -157,7 +157,7 @@ module ComponentPropTypes =
 
     type TabColors () =
         inherit DynamicObj()
-        static member create 
+        static member init 
             (
                 ?Border      :string,
                 ?Primary     :string,
