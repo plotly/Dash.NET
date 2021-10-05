@@ -6,6 +6,21 @@
     <WarnOn>3390;$(WarnOn)</WarnOn>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>Plotly</Authors>
+    <Description>Giraffe backend implementation for Dash.NET</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://plotly.github.io/Dash.NET/</PackageProjectUrl>
+    <PackageTags>fsharp csharp dotnet dash plotly data-visualization datascience</PackageTags>
+    <RepositoryUrl>https://github.com/plotly/Dash.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <FsDocsLicenseLink>https://github.com/plotly/Dash.NET/blob/dev/LICENSE</FsDocsLicenseLink>
+    <FsDocsReleaseNotesLink>https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md</FsDocsReleaseNotesLink>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Plotly</Company>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Include="Views.fs" />
     <Compile Include="DashApp.fs" />

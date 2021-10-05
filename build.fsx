@@ -213,7 +213,6 @@ module PackageTasks =
         if promptYesNo (sprintf "package tag will be %s OK?" prereleaseTag )
             then 
                 !! "src/**/*.*proj"
-                //-- "src/**/Plotly.NET.Interactive.fsproj"
                 |> Seq.iter (Fake.DotNet.DotNet.pack (fun p ->
                             let msBuildParams =
                                 {p.MSBuildParams with 
