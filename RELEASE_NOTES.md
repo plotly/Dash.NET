@@ -1,4 +1,5 @@
 ## Version 0.1.0 - (tbd)
+ * [Add DashTable (Known issue with deserializing properties)](https://github.com/plotly/Dash.NET/commit/bd453994192b219c397f35afd221b1994b46c2c2)
  * [Add Suave web server support]()
  * [Add Markdown core component](https://github.com/plotly/Dash.NET/commit/cd9fe348b7a3e5f7e92ddd513531139c097a5eda)
  * [Add Checklist core component](https://github.com/plotly/Dash.NET/commit/d7860b4e968506d14f694cf927115a17debc7783)
