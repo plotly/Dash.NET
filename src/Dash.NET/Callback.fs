@@ -1,6 +1,6 @@
 ﻿namespace Dash.NET
 
-open Plotly.NET
+open DynamicObj
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open System

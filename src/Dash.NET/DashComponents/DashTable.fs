@@ -1,7 +1,7 @@
 ﻿module Dash.NET.DashTable
 
 open System
-open Plotly.NET
+open DynamicObj
 open Dash.NET
 open Dash.NET.Common
 open Newtonsoft.Json

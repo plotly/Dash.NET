@@ -68,7 +68,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Plotly.NET" Version="2.0.0-preview.2" />
+    <PackageReference Include="DynamicObj" Version="0.2.0" />
+    <PackageReference Include="Plotly.NET" Version="2.0.0-preview.9" />
     <PackageReference Include="Feliz.Engine" Version="1.0.0-beta-004" />
   </ItemGroup>
 

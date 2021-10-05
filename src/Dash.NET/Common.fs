@@ -18,6 +18,7 @@ module Json =
 
     let mkSerializerSettings () =
         JsonSerializerSettings(
-            ContractResolver = DefaultContractResolver(NamingStrategy = new DefaultNamingStrategy())
+            ContractResolver = DefaultContractResolver(NamingStrategy = new DefaultNamingStrategy()),
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         )
 
