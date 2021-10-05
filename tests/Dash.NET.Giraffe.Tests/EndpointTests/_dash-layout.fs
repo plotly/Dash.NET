@@ -25,5 +25,6 @@ let endpointTests =
         |> generateLayoutEndpointTest 
             "DCC Graph component" 
             "Incorrect layout JSON"
-            """{"namespace":"dash_core_components","props":{"id":"test-graph","children":[],"figure":{"data":[{"type":"scatter","x":[1],"y":[2],"mode":"markers","marker":{}}],"layout":{},"frames":[]}},"type":"Graph"}"""
+            """{"namespace":"dash_core_components","props":{"id":"test-graph","children":[],"figure":{"data":[{"type":"scatter","mode":"markers","x":[1],"y":[2]}],"frames":[]}},"type":"Graph"}"""
+
     ]
