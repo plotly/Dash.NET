@@ -803,6 +803,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
     //  open Dash.NET
     //  open System
     //  open Plotly.NET
+    //  open DynamicObj
     //
     /// Define the component namespace
     let namespaceDeclaration =
@@ -812,6 +813,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             [ SynModuleDecl.CreateOpen "Dash.NET" 
               SynModuleDecl.CreateOpen "System"
               SynModuleDecl.CreateOpen "Plotly.NET"
+              SynModuleDecl.CreateOpen "DynamicObj"
               SynModuleDecl.CreateOpen "Newtonsoft.Json"
               moduleDeclaration ] 
 

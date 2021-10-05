@@ -1,7 +1,7 @@
 namespace Dash.NET.DCC
 
 open System
-open Plotly.NET
+open DynamicObj
 open Dash.NET
 
 ///<summary>

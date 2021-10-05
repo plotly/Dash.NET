@@ -13,8 +13,7 @@ open Newtonsoft.Json
 open Newtonsoft.Json.Serialization
 
 module Util =
-  let settings = new JsonSerializerSettings()
-  settings.ContractResolver <- CamelCasePropertyNamesContractResolver()
+  let settings = Common.Json.mkSerializerSettings()
   let json o = JsonConvert.SerializeObject(o, settings)
   let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str,settings)
 

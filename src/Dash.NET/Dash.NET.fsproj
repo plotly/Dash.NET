@@ -82,6 +82,7 @@
     <Compile Include="DashComponents\CoreComponents\Textarea.fs" />
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DashComponents\CoreComponents\Slider.fs" />
+    <Compile Include="DashComponents\DashTable.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Dependency.fs" />
     <Compile Include="CallbackBinding.fs" />
@@ -89,10 +90,12 @@
     <Compile Include="CallbackBuilder.fs" />
     <Compile Include="DashConfig.fs" />
     <Compile Include="Operators.fs" />
+    <Compile Include="Common.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Plotly.NET" Version="2.0.0-preview.2" />
+    <PackageReference Include="DynamicObj" Version="0.2.0" />
+    <PackageReference Include="Plotly.NET" Version="2.0.0-preview.9" />
     <PackageReference Include="Feliz.Engine" Version="1.0.0-beta-004" />
   </ItemGroup>
 
