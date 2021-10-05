@@ -1,4 +1,4 @@
-## Version 0.1.0 - (tbd)
+## Version 0.2.0 - (tbd)
 
 The Dash.NET backend has been separated into a core project and 2 backend implementations for Giraffe (Dash.NET.Giraffe) and Suave (Dash.NET.Suave)
 
