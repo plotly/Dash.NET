@@ -17,6 +17,7 @@
 
   <PropertyGroup>
     <Authors>Plotly</Authors>
+    <Summary>A dotnet cli tool for generating dash component bindings for Dash.NET</Summary>
     <Description>A dotnet cli tool for generating dash component bindings for Dash.NET</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://plotly.github.io/Dash.NET/</PackageProjectUrl>

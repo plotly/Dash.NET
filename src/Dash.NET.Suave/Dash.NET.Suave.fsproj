@@ -9,6 +9,7 @@
   <PropertyGroup>
     <Authors>Plotly</Authors>
     <Description>A Suave backend implementation for Dash.NET</Description>
+    <Summary>A Suave backend implementation for Dash.NET</Summary>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://plotly.github.io/Dash.NET/</PackageProjectUrl>
     <PackageTags>fsharp csharp dotnet dash plotly data-visualization datascience</PackageTags>
