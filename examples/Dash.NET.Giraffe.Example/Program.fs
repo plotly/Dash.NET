@@ -16,11 +16,11 @@ let myLayout =
         Attr.children [
             Html.h1 [ Attr.children "Dropdown Component Test:" ];
             Dropdown.dropdown "dropdown" [
-                Dropdown.Attr.loadingState (LoadingState.create(true))
+                Dropdown.Attr.loadingState (LoadingState.init(true))
                 Dropdown.Attr.options [
-                    DropdownOption.create ("1", 1, false, "3")
-                    DropdownOption.create ("2", 2, true)
-                    DropdownOption.create ("3", 3)
+                    DropdownOption.init ("1", 1, false, "3")
+                    DropdownOption.init ("2", 2, true)
+                    DropdownOption.init ("3", 3)
                 ]
             ]
             Html.h1 [ Attr.children "Component Test:" ];
