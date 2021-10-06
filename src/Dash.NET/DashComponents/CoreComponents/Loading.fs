@@ -1,7 +1,7 @@
 namespace Dash.NET.DCC
 
 open System
-open Plotly.NET
+open DynamicObj
 open Dash.NET
 open Dash.NET.Common
 
@@ -63,7 +63,7 @@ module Loading =
             | Style p -> box p
             | ParentStyle p -> box p
             | Color p -> box p
-            | LoadingState p -> LoadingState.convert p
+            | LoadingState p -> box p
 
         static member toDynamicMemberDef(prop: Prop) =
             prop |> Prop.toDynamicMemberPropName, Prop.convert prop
@@ -127,7 +127,7 @@ module Loading =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = Children([ Html.text value ])
+        static member children(value: Guid) = Children([ Html.text value ])
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -150,7 +150,7 @@ module Loading =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?``type``: LoadingType,
+                ?loadingType: LoadingType,
                 ?fullscreen,
                 ?debug,
                 ?className,
@@ -162,20 +162,20 @@ module Loading =
             ) =
             (fun (t: Loading) ->
                 let props = DashComponentProps()
-                let inline setValueOpt prop =
-                    DynObj.setValueOpt props prop Prop.convert
+                let inline setPropValueOpt prop =
+                    DynObj.setPropValueOpt props prop Prop.convert
 
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                setValueOpt Type ``type``
-                setValueOpt Fullscreen fullscreen
-                setValueOpt Debug debug
-                setValueOpt ClassName className
-                setValueOpt ParentClassName parentClassName
-                setValueOpt Style style
-                setValueOpt ParentStyle parentStyle
-                setValueOpt Color color
-                setValueOpt LoadingState loadingState
+                setPropValueOpt Type loadingType
+                setPropValueOpt Fullscreen fullscreen
+                setPropValueOpt Debug debug
+                setPropValueOpt ClassName className
+                setPropValueOpt ParentClassName parentClassName
+                setPropValueOpt Style style
+                setPropValueOpt ParentStyle parentStyle
+                setPropValueOpt Color color
+                setPropValueOpt LoadingState loadingState
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Loading"
@@ -185,7 +185,7 @@ module Loading =
             (
                 id,
                 children,
-                ?``type``,
+                ?loadingType,
                 ?fullscreen,
                 ?debug,
                 ?className,
@@ -198,7 +198,7 @@ module Loading =
             Loading.applyMembers
                 (id,
                  children,
-                 ?``type`` = ``type``,
+                 ?loadingType = loadingType,
                  ?fullscreen = fullscreen,
                  ?debug = debug,
                  ?className = className,

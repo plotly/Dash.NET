@@ -71,14 +71,14 @@ module Convert =
 
 [<RequireQualifiedAccess>]
 module DynObj =
-    open Plotly.NET
+    open DynamicObj
 
     let private toPropName prop =
         prop
         |> NameCase.fromProp
         |> NameCase.toCamelCase
 
-    let setValueOpt props prop convert maybeValue =
+    let setPropValueOpt props prop convert maybeValue =
         prop
         |> toPropName
         |> fun propName ->
