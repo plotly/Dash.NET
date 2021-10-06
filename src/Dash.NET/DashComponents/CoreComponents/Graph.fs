@@ -3,6 +3,7 @@ namespace Dash.NET.DCC
 open Dash.NET
 open System
 open Plotly.NET
+open DynamicObj
 open ComponentPropTypes
 
 ///<summary>
@@ -137,7 +138,7 @@ module Graph =
             | Animate             p -> "animate"            , box p
             | AnimationOptions    p -> "animation_options"  , box p
             | Config              p -> "config"             , box p
-            | LoadingState        p -> "loading_state"      , LoadingState.convert p
+            | LoadingState        p -> "loading_state"      , box p
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -320,7 +321,7 @@ module Graph =
                 DynObj.setValueOpt props "animate" (animate |> Option.map box)
                 DynObj.setValueOpt props "animationOptions" (animationOptions |> Option.map box)
                 DynObj.setValueOpt props "config" (config |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Graph"

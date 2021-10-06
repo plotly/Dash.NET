@@ -1,7 +1,7 @@
 ﻿module Dash.NET.DashTable
 
 open System
-open Plotly.NET
+open DynamicObj
 open Dash.NET
 open Dash.NET.Common
 open Newtonsoft.Json
@@ -33,15 +33,6 @@ module DataTable =
         override _.CanConvert(objectType) =
             let duConverter = new Converters.DiscriminatedUnionConverter()
             duConverter.CanConvert(objectType)
-
-    type OptionConverter<'T> () =
-        inherit JsonConverter<'T option> ()
-        override _.WriteJson(writer: JsonWriter, value: 'T option, serializer: JsonSerializer) =
-            match value with
-            | Some v -> serializer.Serialize(writer, v);
-            | None -> writer.WriteNull()
-        override _.ReadJson(reader: JsonReader, objectType: Type, existingValue: 'T option, _ : bool, serializer: JsonSerializer) =
-            raise <| new NotImplementedException()
 
     ///<summary>
     ///value equal to: 'first', 'last'
@@ -112,7 +103,7 @@ module DataTable =
             [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
             [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
             [<JsonProperty("header_index"); JsonConverter(typeof<DUConverter>)>] HeaderIndex: SelectRowBy option
-            [<JsonProperty("column_editable"); JsonConverter(typeof<OptionConverter<bool>>)>] ColumnEditable: bool option
+            [<JsonProperty("column_editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] ColumnEditable: bool option
         }
 
     ///<summary>
@@ -122,7 +113,7 @@ module DataTable =
         {
             [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
             [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
-            [<JsonProperty("column_editable"); JsonConverter(typeof<OptionConverter<bool>>)>] ColumnEditable: bool option
+            [<JsonProperty("column_editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] ColumnEditable: bool option
         }
 
     ///<summary>
@@ -139,10 +130,10 @@ module DataTable =
         {
             [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
             [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
-            [<JsonProperty("filter_query"); JsonConverter(typeof<OptionConverter<string>>)>] FilterQuery: string option
+            [<JsonProperty("filter_query"); JsonConverter(typeof<Json.OptionConverter<string>>)>] FilterQuery: string option
             [<JsonProperty("state"); JsonConverter(typeof<DUConverter>)>] State: DataStyleState option
             [<JsonProperty("row_index"); JsonConverter(typeof<DUConverter>)>] RowIndex: SelectRowBy option
-            [<JsonProperty("column_editable"); JsonConverter(typeof<OptionConverter<bool>>)>] ColumnEditable: bool option
+            [<JsonProperty("column_editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] ColumnEditable: bool option
         }
 
     ///<summary>
@@ -249,8 +240,8 @@ module DataTable =
         {
             [<JsonProperty("value")>] Value: string
             [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: TooltipValueType option
-            [<JsonProperty("delay"); JsonConverter(typeof<OptionConverter<int>>)>] Delay: int option
-            [<JsonProperty("duration"); JsonConverter(typeof<OptionConverter<int>>)>] Duration: int option
+            [<JsonProperty("delay"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Delay: int option
+            [<JsonProperty("duration"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Duration: int option
         }
 
     ///<summary>
@@ -286,8 +277,8 @@ module DataTable =
     ///</summary>
     type TooltipCondition =
         {
-            [<JsonProperty("column_id"); JsonConverter(typeof<OptionConverter<string>>)>] ColumnId: string option
-            [<JsonProperty("filter_query"); JsonConverter(typeof<OptionConverter<string>>)>] FilterQuery: string option
+            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
+            [<JsonProperty("filter_query"); JsonConverter(typeof<Json.OptionConverter<string>>)>] FilterQuery: string option
             [<JsonProperty("row_index"); JsonConverter(typeof<DUConverter>)>] RowIndex: SelectRowBy option
         }
 
@@ -297,10 +288,10 @@ module DataTable =
     type ConditionalTooltip =
         {
             [<JsonProperty("value")>] Value: string
-            [<JsonProperty("if"); JsonConverter(typeof<OptionConverter<TooltipCondition>>)>] If: TooltipCondition option
+            [<JsonProperty("if"); JsonConverter(typeof<Json.OptionConverter<TooltipCondition>>)>] If: TooltipCondition option
             [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: TooltipValueType option
-            [<JsonProperty("delay"); JsonConverter(typeof<OptionConverter<int>>)>] Delay: int option
-            [<JsonProperty("duration"); JsonConverter(typeof<OptionConverter<int>>)>] Duration: int option
+            [<JsonProperty("delay"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Delay: int option
+            [<JsonProperty("duration"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Duration: int option
         }
 
     ///<summary>
@@ -323,8 +314,8 @@ module DataTable =
             [<JsonProperty("value")>] Value: string
             [<JsonProperty("use_with"); JsonConverter(typeof<DUConverter>)>] UseWith: TooltipUseWith option
             [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: TooltipValueType option
-            [<JsonProperty("delay"); JsonConverter(typeof<OptionConverter<int>>)>] Delay: int option
-            [<JsonProperty("duration"); JsonConverter(typeof<OptionConverter<int>>)>] Duration: int option
+            [<JsonProperty("delay"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Delay: int option
+            [<JsonProperty("duration"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Duration: int option
         }
 
     ///<summary>
@@ -339,8 +330,8 @@ module DataTable =
     ///</summary>
     type DropdownCondition =
         {
-            [<JsonProperty("column_id"); JsonConverter(typeof<OptionConverter<string>>)>] ColumnId: string option
-            [<JsonProperty("filter_query"); JsonConverter(typeof<OptionConverter<string>>)>] FilterQuery: string option
+            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
+            [<JsonProperty("filter_query"); JsonConverter(typeof<Json.OptionConverter<string>>)>] FilterQuery: string option
         }
 
     ///<summary>
@@ -358,7 +349,7 @@ module DataTable =
     type Dropdown =
         {
             [<JsonProperty("options")>] Options: DropdownOption list
-            [<JsonProperty("clearable"); JsonConverter(typeof<OptionConverter<bool>>)>] Clearable: bool option
+            [<JsonProperty("clearable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Clearable: bool option
         }
 
     ///<summary>
@@ -366,9 +357,9 @@ module DataTable =
     ///</summary>
     type ConditionalDropdown =
         {
-            [<JsonProperty("clearable"); JsonConverter(typeof<OptionConverter<bool>>)>] Clearable: bool option
-            [<JsonProperty("if"); JsonConverter(typeof<OptionConverter<DropdownCondition>>)>] If: DropdownCondition option
-            [<JsonProperty("options"); JsonConverter(typeof<OptionConverter<DropdownOption>>)>] Options: DropdownOption list
+            [<JsonProperty("clearable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Clearable: bool option
+            [<JsonProperty("if"); JsonConverter(typeof<Json.OptionConverter<DropdownCondition>>)>] If: DropdownCondition option
+            [<JsonProperty("options"); JsonConverter(typeof<Json.OptionConverter<DropdownOption>>)>] Options: DropdownOption list
         }
 
     ///<summary>
@@ -376,10 +367,10 @@ module DataTable =
     ///</summary>
     type Cell =
         {
-            [<JsonProperty("row"); JsonConverter(typeof<OptionConverter<int>>)>] Row: int option
-            [<JsonProperty("column"); JsonConverter(typeof<OptionConverter<int>>)>] Column: int option
-            [<JsonProperty("row_id"); JsonConverter(typeof<OptionConverter<IConvertible>>)>] RowId: IConvertible option
-            [<JsonProperty("column_id"); JsonConverter(typeof<OptionConverter<string>>)>] ColumnId: string option
+            [<JsonProperty("row"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Row: int option
+            [<JsonProperty("column"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Column: int option
+            [<JsonProperty("row_id"); JsonConverter(typeof<Json.OptionConverter<IConvertible>>)>] RowId: IConvertible option
+            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
         }
 
     ///<summary>
@@ -393,8 +384,8 @@ module DataTable =
     ///• fixed_columns/fixed_headers (record with the fields: 'data: value equal to: '0' (optional)', 'headers: value equal to: 'false' (optional)' | record with the fields: 'data: number (optional)', 'headers: value equal to: 'true' (required)'; default {
     type Fixed =
         {
-            [<JsonProperty("data"); JsonConverter(typeof<OptionConverter<uint>>)>] Data: uint option
-            [<JsonProperty("headers"); JsonConverter(typeof<OptionConverter<bool>>)>] Headers: bool option
+            [<JsonProperty("data"); JsonConverter(typeof<Json.OptionConverter<uint>>)>] Data: uint option
+            [<JsonProperty("headers"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Headers: bool option
         }
 
     ///<summary>
@@ -456,7 +447,7 @@ module DataTable =
     type MarkdownOptions =
         {
             [<JsonProperty("link_target"); JsonConverter(typeof<DUConverter>)>] LinkTarget: LinkTarget option
-            [<JsonProperty("html"); JsonConverter(typeof<OptionConverter<bool>>)>] Html: bool option
+            [<JsonProperty("html"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Html: bool option
         }
 
     ///<summary>
@@ -464,13 +455,13 @@ module DataTable =
     ///</summary>
     type LocaleFormat =
         {
-            [<JsonProperty("symbol"); JsonConverter(typeof<OptionConverter<string list>>)>] Symbol: string list option
-            [<JsonProperty("decimal"); JsonConverter(typeof<OptionConverter<string>>)>] Decimal: string option
-            [<JsonProperty("group"); JsonConverter(typeof<OptionConverter<string>>)>] Group: string option
-            [<JsonProperty("grouping"); JsonConverter(typeof<OptionConverter<int>>)>] Grouping: int list option
-            [<JsonProperty("numerals"); JsonConverter(typeof<OptionConverter<string list>>)>] Numerals: string list option
-            [<JsonProperty("percent"); JsonConverter(typeof<OptionConverter<string>>)>] Percent: string option
-            [<JsonProperty("separate_4digits"); JsonConverter(typeof<OptionConverter<bool>>)>] Separate4digits: bool option
+            [<JsonProperty("symbol"); JsonConverter(typeof<Json.OptionConverter<string list>>)>] Symbol: string list option
+            [<JsonProperty("decimal"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Decimal: string option
+            [<JsonProperty("group"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Group: string option
+            [<JsonProperty("grouping"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Grouping: int list option
+            [<JsonProperty("numerals"); JsonConverter(typeof<Json.OptionConverter<string list>>)>] Numerals: string list option
+            [<JsonProperty("percent"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Percent: string option
+            [<JsonProperty("separate_4digits"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Separate4digits: bool option
         }
 
     ///<summary>
@@ -481,9 +472,9 @@ module DataTable =
     ///</summary>
     type ColumnValidation =
         {
-            [<JsonProperty("allow_null"); JsonConverter(typeof<OptionConverter<bool>>)>] AllowNull: bool option
-            [<JsonProperty("default"); JsonConverter(typeof<OptionConverter<obj>>)>] Default: obj option
-            [<JsonProperty("allow_YY"); JsonConverter(typeof<OptionConverter<bool>>)>] AllowYY: bool option
+            [<JsonProperty("allow_null"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] AllowNull: bool option
+            [<JsonProperty("default"); JsonConverter(typeof<Json.OptionConverter<obj>>)>] Default: obj option
+            [<JsonProperty("allow_YY"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] AllowYY: bool option
         }
 
     ///<summary>
@@ -545,10 +536,10 @@ module DataTable =
     ///</summary>
     type ColumnFormat =
         {
-            [<JsonProperty("locale"); JsonConverter(typeof<OptionConverter<LocaleFormat>>)>] Locale: LocaleFormat option
-            [<JsonProperty("nully"); JsonConverter(typeof<OptionConverter<obj>>)>] Nully: obj option
-            [<JsonProperty("prefix"); JsonConverter(typeof<OptionConverter<int>>)>] Prefix: int option
-            [<JsonProperty("specifier"); JsonConverter(typeof<OptionConverter<string>>)>] Specifier: string option
+            [<JsonProperty("locale"); JsonConverter(typeof<Json.OptionConverter<LocaleFormat>>)>] Locale: LocaleFormat option
+            [<JsonProperty("nully"); JsonConverter(typeof<Json.OptionConverter<obj>>)>] Nully: obj option
+            [<JsonProperty("prefix"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Prefix: int option
+            [<JsonProperty("specifier"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Specifier: string option
         }
 
     ///<summary>
@@ -686,16 +677,16 @@ module DataTable =
             [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: ColumnType option
             [<JsonProperty("clearable"); JsonConverter(typeof<DUConverter>)>] Clearable: ColumnClearable option
             [<JsonProperty("deletable"); JsonConverter(typeof<DUConverter>)>] Deletable: ColumnDeletable option
-            [<JsonProperty("editable"); JsonConverter(typeof<OptionConverter<bool>>)>] Editable: bool option
-            [<JsonProperty("filter_options"); JsonConverter(typeof<OptionConverter<ColumnFilterOption>>)>] FilterOptions: ColumnFilterOption option
+            [<JsonProperty("editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Editable: bool option
+            [<JsonProperty("filter_options"); JsonConverter(typeof<Json.OptionConverter<ColumnFilterOption>>)>] FilterOptions: ColumnFilterOption option
             [<JsonProperty("hideable"); JsonConverter(typeof<DUConverter>)>] Hideable: ColumnHideable option
             [<JsonProperty("renamable"); JsonConverter(typeof<DUConverter>)>] Renamable: ColumnRenamable option
             [<JsonProperty("selectable"); JsonConverter(typeof<DUConverter>)>] Selectable: ColumnSelectable option
-            [<JsonProperty("format"); JsonConverter(typeof<OptionConverter<ColumnFormat>>)>] Format: ColumnFormat option
-            [<JsonProperty("presentation"); JsonConverter(typeof<OptionConverter<ColumnPresentation>>)>] Presentation: ColumnPresentation option
-            [<JsonProperty("on_change"); JsonConverter(typeof<OptionConverter<ColumnOnChange>>)>] OnChange: ColumnOnChange option
-            [<JsonProperty("sort_as_null"); JsonConverter(typeof<OptionConverter<IConvertible list>>)>] SortAsNull: IConvertible list option
-            [<JsonProperty("validation"); JsonConverter(typeof<OptionConverter<ColumnValidation>>)>] Validation: ColumnValidation option
+            [<JsonProperty("format"); JsonConverter(typeof<Json.OptionConverter<ColumnFormat>>)>] Format: ColumnFormat option
+            [<JsonProperty("presentation"); JsonConverter(typeof<Json.OptionConverter<ColumnPresentation>>)>] Presentation: ColumnPresentation option
+            [<JsonProperty("on_change"); JsonConverter(typeof<Json.OptionConverter<ColumnOnChange>>)>] OnChange: ColumnOnChange option
+            [<JsonProperty("sort_as_null"); JsonConverter(typeof<Json.OptionConverter<IConvertible list>>)>] SortAsNull: IConvertible list option
+            [<JsonProperty("validation"); JsonConverter(typeof<Json.OptionConverter<ColumnValidation>>)>] Validation: ColumnValidation option
         }
         static member create name id =
             {
@@ -721,10 +712,10 @@ module DataTable =
     ///</summary>
     type ActiveCell =
         {
-            [<JsonProperty("row"); JsonConverter(typeof<OptionConverter<int>>)>] Row: int option
-            [<JsonProperty("column"); JsonConverter(typeof<OptionConverter<int>>)>] Column: int option
-            [<JsonProperty("row_id"); JsonConverter(typeof<OptionConverter<IConvertible>>)>] RowId: IConvertible option
-            [<JsonProperty("column_id"); JsonConverter(typeof<OptionConverter<string>>)>] ColumnId: string option
+            [<JsonProperty("row"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Row: int option
+            [<JsonProperty("column"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Column: int option
+            [<JsonProperty("row_id"); JsonConverter(typeof<Json.OptionConverter<IConvertible>>)>] RowId: IConvertible option
+            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
         }
 
     ///<summary>
