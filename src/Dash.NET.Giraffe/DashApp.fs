@@ -18,13 +18,32 @@ open Dash.NET
 open Newtonsoft.Json
 
 //Giraffe, Logging and ASP.NET specific
-type DashGiraffeConfig = {
-  HostName: string
-  IpAddress: string
-  Port : int
-  LogLevel: LogLevel
-  ErrorHandler: Exception -> HttpHandler
-}
+type DashGiraffeConfig = 
+    {
+        HostName: string
+        LogLevel: LogLevel
+        IpAddress: string
+        Port : int
+        ErrorHandler: Exception -> HttpHandler
+    }
+
+    static member initDefault hostname = 
+        {
+            HostName = hostname
+            IpAddress = "127.0.0.1"
+            Port = "5001"
+            LogLevel = LogLevel.Information
+            ErrorHandler = ((fun ex ->  ex.Message) >> text)
+        }
+
+    static member initDebug hostname = 
+        {
+            HostName = hostname
+            IpAddress = "127.0.0.1"
+            Port = "5001"
+            LogLevel = LogLevel.Debug
+            ErrorHandler = ((fun ex ->  ex.Message) >> text)
+        }
 
 type DashApp =
     {
