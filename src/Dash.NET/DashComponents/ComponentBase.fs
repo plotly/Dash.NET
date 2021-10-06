@@ -1,9 +1,9 @@
 ﻿namespace Dash.NET
 
 open Newtonsoft.Json
-open Plotly.NET
 open System.Runtime.InteropServices
 open System
+open DynamicObj
 
 type LoadableComponentDefinition = 
     { ComponentName: string
@@ -94,20 +94,6 @@ module ComponentPropTypes =
             | False -> "false"
         static member convert = SpellCheckOptions.toString >> box
 
-    type LoadingState = 
-        {
-            IsLoading : bool
-            PropName : string
-            ComponentName : string
-        }
-        static member create isLoading propName componentName = {IsLoading=isLoading; PropName=propName; ComponentName=componentName}
-        static member convert this =
-            box {|
-                isLoading = this.IsLoading
-                propName = this.PropName
-                componentName = this.ComponentName
-            |}
-
     type PersistenceTypeOptions =
         | Local
         | Session
@@ -118,68 +104,75 @@ module ComponentPropTypes =
             | Memory    -> "memory"
         static member convert = PersistenceTypeOptions.toString >> box
 
-    type DropdownOption = 
-        {
-            Label:IConvertible
-            Value:IConvertible
-            Disabled:bool
-            Title:string
-        }
-        static member create label value disabled title = {Label=label; Value=value; Disabled=disabled; Title=title}
-        static member convert this =
-            box {|
-                label = this.Label
-                value = this.Value
-                disabled = this.Disabled
-                title= this.Title
-            |}
+    type LoadingState () =
+        inherit DynamicObj()
+        static member init 
+            (
+                isLoading       : bool,
+                ?PropName       : string,
+                ?ComponentName  : string
+            ) =
+                let ls = LoadingState()
 
-    type RadioItemsOption = 
-        {
-            Label:IConvertible
-            Value:IConvertible
-            Disabled:bool
-        }
-        static member create label value disabled = {Label=label; Value=value; Disabled=disabled}
-        static member convert this =
-            box {|
-                label = this.Label
-                value = this.Value
-                disabled = this.Disabled
-            |}
+                isLoading       |> DynObj.setValue ls "isLoading"
+                PropName        |> DynObj.setValueOpt ls "propName"
+                ComponentName   |> DynObj.setValueOpt ls "componentName"
 
-    type TabColors =
-        {
-            Border : string
-            Primary : string
-            Background : string
-        }
-        static member create border primary background = {Border=border; Primary=primary; Background=background}
-        static member convert this =
-            box {|
-                border = this.Border
-                primary = this.Primary
-                background = this.Background
-            |}
+                ls
+       
 
-    type ChecklistOption =
-        {
-            Label:IConvertible
-            Value:IConvertible
-            Disabled: bool
-        }
-        static member create label value disabled =
-            {
-                Label = label
-                Value = value
-                Disabled = disabled
-            }
-        static member convert this =
-            box {|
-                label = this.Label
-                value = this.Value
-                disabled = this.Disabled
-            |}
+    type DropdownOption () =
+        inherit DynamicObj()
+        static member init 
+            (
+                label:IConvertible,
+                value:IConvertible,
+                ?Disabled:bool,
+                ?Title:string
+            ) =
+                let dro = DropdownOption()
+
+                label   |> DynObj.setValue dro "label"
+                value   |> DynObj.setValue dro "value"
+                Disabled|> DynObj.setValueOpt dro "disabled"
+                Title   |> DynObj.setValueOpt dro "title"
+
+                dro
+
+    type RadioItemsOption () =
+        inherit DynamicObj()
+        static member init 
+            (
+                label:IConvertible,
+                value:IConvertible,
+                ?Disabled:bool
+            ) =
+                let dro = DropdownOption()
+
+                label   |> DynObj.setValue dro "label"
+                value   |> DynObj.setValue dro "value"
+                Disabled|> DynObj.setValueOpt dro "disabled"
+
+                dro
+
+    type TabColors () =
+        inherit DynamicObj()
+        static member init 
+            (
+                ?Border      :string,
+                ?Primary     :string,
+                ?Background  :string
+            ) =
+                let tc = DropdownOption()
+
+                Border    |> DynObj.setValueOpt tc "border"
+                Primary   |> DynObj.setValueOpt tc "primary"
+                Background|> DynObj.setValueOpt tc "background"
+
+                tc
+      
+
+    type ChecklistOption = RadioItemsOption
 
 type ComponentProperty =
     | Children

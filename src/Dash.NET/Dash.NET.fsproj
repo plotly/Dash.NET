@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Kevin Schneider</Authors>
-    <Description>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F# </Description>
-    <Summary>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F# </Summary>
+    <Authors>Plotly</Authors>
+    <Summary>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F#. This package contains the core implementation of dash for .NET such as callbacks, html and core components.</Summary>
+    <Description>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F#. This package contains the core implementation of dash for .NET such as callbacks, html and core components.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://plotly.github.io/Dash.NET/</PackageProjectUrl>
     <PackageIcon>logo.png</PackageIcon>
@@ -21,6 +21,9 @@
     <RepositoryType>git</RepositoryType>
     <FsDocsLicenseLink>https://github.com/plotly/Dash.NET/blob/dev/LICENSE</FsDocsLicenseLink>
     <FsDocsReleaseNotesLink>https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md</FsDocsReleaseNotesLink>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Plotly</Company>
   </PropertyGroup>
 
   <ItemGroup>
@@ -68,7 +71,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Plotly.NET" Version="2.0.0-preview.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="DynamicObj" Version="0.2.0" />
+    <PackageReference Include="Plotly.NET" Version="2.0.0-preview.9" />
     <PackageReference Include="Feliz.Engine" Version="1.0.0-beta-004" />
   </ItemGroup>
 

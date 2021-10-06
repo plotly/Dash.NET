@@ -2,6 +2,8 @@
 
 open Views
 
+open System.IO
+
 open Suave.Html
 open Suave
 open Suave.Operators
@@ -10,7 +12,6 @@ open Suave.Filters
 open System.Reflection
 open Dash.NET
 open Newtonsoft.Json
-open Newtonsoft.Json.Serialization
 
 module Util =
   let settings = Common.Json.mkSerializerSettings()
@@ -166,6 +167,9 @@ type DashApp =
                   // return serialized result of the handler function
                   Successful.OK(Util.json result) >=> Writers.setMimeType "application/json")
         ]
+
+      GET >=> Files.browseHome
+
       RequestErrors.NOT_FOUND "File not found" ]
 
   static member runAsync (args: string []) (config: DashSuaveConfig) (app: DashApp) =
@@ -219,11 +223,12 @@ type DashApp =
       |> fst
 
     // This folder has to be "<path-to-exe>/WebRoot" for the way generated component javascript injection currently works
-    //let contentRoot = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
-    //let webRoot     = Path.Combine(contentRoot, "WebRoot")
+    let contentRoot = Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
+    let webRoot     = Path.Combine(contentRoot, "WebRoot")
 
     let conf =
       { defaultConfig with
+          homeFolder = Some webRoot
           bindings = [ HttpBinding.createSimple HTTP config.ip config.port ]
           errorHandler = config.errorHandler }
 
