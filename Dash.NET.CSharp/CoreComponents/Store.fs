@@ -4,10 +4,6 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.Store.Attr
-
-
 ///<summary>
 ///Easily keep data on the client side with this component.
 ///The data is not inserted in the DOM.
@@ -16,6 +12,10 @@ type internal OAttr = Dash.NET.DCC.Store.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module Store =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Store.Attr
+
     
     ///<summary>
     ///A list of children or a property for this dash component
@@ -30,47 +30,71 @@ module Store =
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member storageType(p: PersistenceTypeOptions) = OAttr.storageType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
+        static member storageType(p: PersistenceTypeOptions) = 
+            guardAgainstNull "p" p
+            OAttr.storageType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The stored data for the id.
         ///</summary>
-        static member data(p: string) = OAttr.data p |> Attr.Wrap
+        static member data(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.data p |> Attr.Wrap
         ///<summary>
         ///Set to true to remove the data contained in &#96;data_key&#96;.
         ///</summary>
-        static member clearData(p: bool) = OAttr.clearData p |> Attr.Wrap
+        static member clearData(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.clearData p |> Attr.Wrap
         ///<summary>
         ///The last time the storage was modified.
         ///</summary>
-        static member modifiedTimestamp(p: int64) = OAttr.modifiedTimestamp p |> Attr.Wrap
+        static member modifiedTimestamp(p: int64) = 
+            guardAgainstNull "p" p
+            OAttr.modifiedTimestamp p |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Easily keep data on the client side with this component.

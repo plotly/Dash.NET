@@ -16,7 +16,7 @@ module DashApp =
         {
             HostName: string
             LogLevel: LogLevel
-            ErrorHandler: System.Func<System.Exception,HttpHandler>
+            ErrorHandler: System.Func<System.Exception,HttpHandler> // TODO : HttpHandler type from C# is not very usable
         }
 
     let private convertConfig (config : DashGiraffeConfig) : Dash.NET.Giraffe.DashGiraffeConfig =

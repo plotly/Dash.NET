@@ -4,10 +4,6 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.Tabs.Attr
-
-
 ///<summary>
 ///A Dash component that lets you render pages with tabs - the Tabs component's children
 ///can be dcc.Tab components, which can hold a label that will be displayed as a tab, and can in turn hold
@@ -15,6 +11,11 @@ type internal OAttr = Dash.NET.DCC.Tabs.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module Tabs =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Tabs.Attr
+
+
     ///<summary>
     ///A list of children or a property for this dash component
     ///</summary>
@@ -25,39 +26,60 @@ module Tabs =
         ///<summary>
         ///The value of the currently selected Tab
         ///</summary>
-        static member value(p: string) = OAttr.value p
+        static member value(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.value p
         ///<summary>
         ///Appends a class to the Tabs container holding the individual Tab components.
         ///</summary>
-        static member className(p: string) = OAttr.className p
+        static member className(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.className p
         ///<summary>
         ///Appends a class to the Tab content container holding the children of the Tab that is selected.
         ///</summary>
-        static member contentClassName(p: string) = OAttr.contentClassName p
+        static member contentClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.contentClassName p
         ///<summary>
         ///Appends a class to the top-level parent container holding both the Tabs container and the content container.
         ///</summary>
-        static member parentClassName(p: string) = OAttr.parentClassName p
+        static member parentClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.parentClassName p
         ///<summary>
         ///Appends (inline) styles to the Tabs container holding the individual Tab components.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Appends (inline) styles to the top-level parent container holding both the Tabs container and the content container.
         ///</summary>
-        static member parentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.parentStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member parentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.parentStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Appends (inline) styles to the tab content container holding the children of the Tab that is selected.
         ///</summary>
-        static member contentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.contentStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member contentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.contentStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Renders the tabs vertically (on the side)
         ///</summary>
-        static member vertical(p: bool) = OAttr.vertical p
+        static member vertical(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.vertical p
         ///<summary>
         ///Breakpoint at which tabs are rendered full width (can be 0 if you don't want full width tabs on mobile)
         ///</summary>
-        static member mobileBreakpoint(p: float) = OAttr.mobileBreakpoint p
+        static member mobileBreakpoint(p: float) = 
+            guardAgainstNull "p" p
+            OAttr.mobileBreakpoint p
         ///<summary>
         ///Holds the colors used by the Tabs and Tab components. If you set these, you should specify colors for all properties, so:
         ///colors: {
@@ -66,11 +88,15 @@ module Tabs =
         ///   background: '#f9f9f9'
         /// }
         ///</summary>
-        static member colors(p: TabColors) = OAttr.colors (p |> TabColors.Convert)
+        static member colors(p: TabColors) = 
+            guardAgainstNull "p" p
+            OAttr.colors (p |> TabColors.Convert)
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert)
+        static member loadingState(p: LoadingState) = 
+            guardAgainstNull "p" p
+            OAttr.loadingState (p |> LoadingState.Convert)
 
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
@@ -80,49 +106,72 @@ module Tabs =
         ///the new &#96;value&#96; also matches what was given originally.
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
-        static member persistence(p: IConvertible) = OAttr.persistence p
+        static member persistence(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.persistence p
 
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps([<ParamArray>] p: string []) = OAttr.persistedProps p
+        static member persistedProps([<ParamArray>] p: string []) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.persistedProps p
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistenceType(p: PersistenceTypeOptions) = OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap)
+        static member persistenceType(p: PersistenceTypeOptions) = 
+            guardAgainstNull "p" p
+            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap)
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value
+        static member children(value: Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
 
     ///<summary>

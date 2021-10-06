@@ -4,16 +4,16 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.Tab.Attr
-
-
 ///<summary>
 ///Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
 ///Its children will be set as the content of that tab, which if clicked will become visible.
 ///</summary>
 [<RequireQualifiedAccess>]
 module Tab =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Tab.Attr
+
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -25,71 +25,109 @@ module Tab =
         ///<summary>
         ///The tab's label
         ///</summary>
-        static member label(p: string) = OAttr.label p |> Attr.Wrap
+        static member label(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.label p |> Attr.Wrap
         ///<summary>
         ///Value for determining which Tab is currently selected
         ///</summary>
-        static member value(p: string) = OAttr.value p |> Attr.Wrap
+        static member value(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.value p |> Attr.Wrap
         ///<summary>
         ///Determines if tab is disabled or not - defaults to false
         ///</summary>
-        static member disabled(p: bool) = OAttr.disabled p |> Attr.Wrap
+        static member disabled(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.disabled p |> Attr.Wrap
         ///<summary>
         ///Overrides the default (inline) styles when disabled
         ///</summary>
-        static member disabledStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.disabledStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member disabledStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.disabledStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Appends a class to the Tab component when it is disabled.
         ///</summary>
-        static member disabledClassName(p: string) = OAttr.disabledClassName p |> Attr.Wrap
+        static member disabledClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.disabledClassName p |> Attr.Wrap
         ///<summary>
         ///Appends a class to the Tab component.
         ///</summary>
-        static member className(p: string) = OAttr.className p |> Attr.Wrap
+        static member className(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.className p |> Attr.Wrap
         ///<summary>
         ///Appends a class to the Tab component when it is selected.
         ///</summary>
-        static member selectedClassName(p: string) = OAttr.selectedClassName p |> Attr.Wrap
+        static member selectedClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.selectedClassName p |> Attr.Wrap
         ///<summary>
         ///Overrides the default (inline) styles for the Tab component.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Overrides the default (inline) styles for the Tab component when it is selected.
         ///</summary>
-        static member selectedStyle(p: string) = OAttr.selectedStyle p |> Attr.Wrap
+        static member selectedStyle(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.selectedStyle p |> Attr.Wrap
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+        static member loadingState(p: LoadingState) = 
+            guardAgainstNull "p" p
+            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.

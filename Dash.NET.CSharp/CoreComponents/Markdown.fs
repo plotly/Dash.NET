@@ -4,9 +4,6 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.Markdown.Attr
-
 ///<summary>
 ///A component that renders Markdown text as specified by the
 ///GitHub Markdown spec. These component uses
@@ -14,6 +11,10 @@ type internal OAttr = Dash.NET.DCC.Markdown.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module Markdown =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Markdown.Attr
+
 
     ///<summary>
     ///value equal to: 'dark', 'light'
@@ -46,49 +47,70 @@ module Markdown =
         ///<summary>
         ///Class name of the container element
         ///</summary>
-        static member className(p: string) = OAttr.className p |> Attr.Wrap
+        static member className(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.className p |> Attr.Wrap
         ///<summary>
         ///A boolean to control raw HTML escaping.
         ///Setting HTML from code is risky because it's easy to
         ///inadvertently expose your users to a cross-site scripting (XSS)
         ///(https://en.wikipedia.org/wiki/Cross-site_scripting) attack.
         ///</summary>
-        static member dangerouslyAllowHtml(p: bool) = OAttr.dangerouslyAllowHtml p |> Attr.Wrap
+        static member dangerouslyAllowHtml(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.dangerouslyAllowHtml p |> Attr.Wrap
         ///<summary>
         ///Remove matching leading whitespace from all lines.
         ///Lines that are empty, or contain *only* whitespace, are ignored.
         ///Both spaces and tab characters are removed, but only if they match;
         ///we will not convert tabs to spaces or vice versa.
         ///</summary>
-        static member dedent(p: bool) = OAttr.dedent p |> Attr.Wrap
+        static member dedent(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.dedent p |> Attr.Wrap
         ///<summary>
         ///Config options for syntax highlighting.
         ///</summary>
-        static member highlightConfig(p: HighlightConfig) = OAttr.highlightConfig (p |> HighlightConfig.Convert) |> Attr.Wrap
+        static member highlightConfig(p: HighlightConfig) = 
+            guardAgainstNull "p" p
+            OAttr.highlightConfig (p |> HighlightConfig.Convert) |> Attr.Wrap
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+        static member loadingState(p: LoadingState) = 
+            guardAgainstNull "p" p
+            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: System.Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
 
     ///<summary>
     ///A component that renders Markdown text as specified by the

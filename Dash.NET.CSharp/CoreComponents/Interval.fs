@@ -4,10 +4,6 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.Interval.Attr
-
-
 ///<summary>
 ///A component that repeatedly increments a counter &#96;n_intervals&#96;
 ///with a fixed time delay between each increment.
@@ -16,6 +12,10 @@ type internal OAttr = Dash.NET.DCC.Interval.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module Interval =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Interval.Attr
+
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -28,49 +28,73 @@ module Interval =
         ///This component will increment the counter &#96;n_intervals&#96; every
         ///&#96;interval&#96; milliseconds
         ///</summary>
-        static member interval(p: IConvertible) = OAttr.interval p |> Attr.Wrap
+        static member interval(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.interval p |> Attr.Wrap
         ///<summary>
         ///If True, the counter will no longer update
         ///</summary>
-        static member disabled(p: bool) = OAttr.disabled p |> Attr.Wrap
+        static member disabled(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.disabled p |> Attr.Wrap
         ///<summary>
         ///Number of times the interval has passed
         ///</summary>
-        static member nIntervals(p: IConvertible) = OAttr.nIntervals p |> Attr.Wrap
+        static member nIntervals(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.nIntervals p |> Attr.Wrap
         ///<summary>
         ///Number of times the interval will be fired.
         ///If -1, then the interval has no limit (the default)
         ///and if 0 then the interval stops running.
         ///</summary>
-        static member maxIntervals(p: IConvertible) = OAttr.maxIntervals p |> Attr.Wrap
+        static member maxIntervals(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.maxIntervals p |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///A component that repeatedly increments a counter &#96;n_intervals&#96;

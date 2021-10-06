@@ -3,10 +3,6 @@
 open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
-
-// Original attr
-type internal OAttr = Dash.NET.DCC.Checklist.Attr
-
 ///<summary>
 ///Checklist is a component that encapsulates several checkboxes.
 ///The values and labels of the checklist are specified in the &#96;options&#96;
@@ -15,6 +11,10 @@ type internal OAttr = Dash.NET.DCC.Checklist.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module Checklist =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Checklist.Attr
+
     type Attr = private WrappedAttr of Dash.NET.DCC.Checklist.Attr with
         static member internal Wrap (attr : Dash.NET.DCC.Checklist.Attr) = Attr.WrappedAttr attr
         static member internal Unwrap (attr : Attr) = match attr with | Attr.WrappedAttr attr -> attr
@@ -22,41 +22,62 @@ module Checklist =
         ///<summary>
         ///An array of options
         ///</summary>
-        static member options([<ParamArray>] p : ChecklistOption array) = OAttr.options (p |> Array.map ChecklistOption.Convert) |> Attr.Wrap
+        static member options([<ParamArray>] p : ChecklistOption array) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.options (p |> Array.map ChecklistOption.Convert) |> Attr.Wrap
         ///<summary>
         ///The currently selected value
         ///</summary>
-        static member value([<ParamArray>] p: IConvertible array) = OAttr.value (p |> List.ofArray) |> Attr.Wrap
+        static member value([<ParamArray>] p: IConvertible array) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.value (p |> List.ofArray) |> Attr.Wrap
         ///<summary>
         ///The class of the container (div)
         ///</summary>
-        static member className(p: string) = OAttr.className p |> Attr.Wrap
+        static member className(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.className p |> Attr.Wrap
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The style of the &lt;input&gt; checkbox element
         ///</summary>
-        static member inputStyle(p: DashComponentStyle) = OAttr.inputStyle (p |> DashComponentStyle.Unwrap) |> Attr.Wrap
+        static member inputStyle(p: DashComponentStyle) = 
+            guardAgainstNull "p" p
+            OAttr.inputStyle (p |> DashComponentStyle.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the &lt;input&gt; checkbox element
         ///</summary>
-        static member inputClassName(p: string) = OAttr.inputClassName p |> Attr.Wrap
+        static member inputClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.inputClassName p |> Attr.Wrap
         ///<summary>
         ///The style of the &lt;label&gt; that wraps the checkbox input
         /// and the option's label
         ///</summary>
-        static member labelStyle(p: DashComponentStyle) = OAttr.labelStyle (p |> DashComponentStyle.Unwrap) |> Attr.Wrap
+        static member labelStyle(p: DashComponentStyle) = 
+            guardAgainstNull "p" p
+            OAttr.labelStyle (p |> DashComponentStyle.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the &lt;label&gt; that wraps the checkbox input
         /// and the option's label
         ///</summary>
-        static member labelClassName(p: string) = OAttr.labelClassName p |> Attr.Wrap
+        static member labelClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.labelClassName p |> Attr.Wrap
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+        static member loadingState(p: LoadingState) = 
+            guardAgainstNull "p" p
+            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -65,48 +86,71 @@ module Checklist =
         ///the new &#96;value&#96; also matches what was given originally.
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
-        static member persistence(p: IConvertible) = OAttr.persistence p |> Attr.Wrap
+        static member persistence(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.persistence p |> Attr.Wrap
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps([<ParamArray>]p: string array) = OAttr.persistedProps p |> Attr.Wrap
+        static member persistedProps([<ParamArray>]p: string array) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.persistedProps p |> Attr.Wrap
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistenceType(p: PersistenceTypeOptions) = OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
+        static member persistenceType(p: PersistenceTypeOptions) = 
+            guardAgainstNull "p" p
+            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Checklist is a component that encapsulates several checkboxes.

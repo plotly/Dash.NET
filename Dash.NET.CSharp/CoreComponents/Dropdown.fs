@@ -4,9 +4,6 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.Dropdown.Attr
-
 ///<summary>
 ///Dropdown is an interactive dropdown element for selecting one or more
 ///items.
@@ -18,6 +15,10 @@ type internal OAttr = Dash.NET.DCC.Dropdown.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module Dropdown =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.Dropdown.Attr
+
     ///<summary>
     ///string | number | list with values of type: string | number
     ///</summary>
@@ -36,7 +37,10 @@ module Dropdown =
         ///An array of options {label: [string|number], value: [string|number]},
         ///an optional disabled field can be used for each option
         ///</summary>
-        static member options(p: seq<DropdownOption>) = OAttr.options (p |> Seq.map DropdownOption.Convert) |> Attr.Wrap
+        static member options(p: seq<DropdownOption>) = 
+            guardAgainstNull "p" p
+            p |> Seq.iter (guardAgainstNull "p")
+            OAttr.options (p |> Seq.map DropdownOption.Convert) |> Attr.Wrap
         ///<summary>
         ///The value of the input. If &#96;multi&#96; is false (the default)
         ///then value is just a string that corresponds to the values
@@ -45,7 +49,9 @@ module Dropdown =
         ///array of items with values corresponding to those in the
         ///&#96;options&#96; prop.
         ///</summary>
-        static member value(p: IConvertible) = OAttr.value p |> Attr.Wrap
+        static member value(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.value p |> Attr.Wrap
         ///<summary>
         ///The value of the input. If &#96;multi&#96; is false (the default)
         ///then value is just a string that corresponds to the values
@@ -54,51 +60,75 @@ module Dropdown =
         ///array of items with values corresponding to those in the
         ///&#96;options&#96; prop.
         ///</summary>
-        static member value([<ParamArray>] p: IConvertible array) = OAttr.value (p |> List.ofArray) |> Attr.Wrap
+        static member value([<ParamArray>] p: IConvertible array) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.value (p |> List.ofArray) |> Attr.Wrap
 
         ///<summary>
         ///height of each option. Can be increased when label lengths would wrap around
         ///</summary>
-        static member optionHeight(p: float) = OAttr.optionHeight p |> Attr.Wrap
+        static member optionHeight(p: float) = 
+            guardAgainstNull "p" p
+            OAttr.optionHeight p |> Attr.Wrap
         ///<summary>
         ///className of the dropdown element
         ///</summary>
-        static member className(p: string) = OAttr.className p |> Attr.Wrap
+        static member className(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.className p |> Attr.Wrap
         ///<summary>
         ///Whether or not the dropdown is "clearable", that is, whether or
         ///not a small "x" appears on the right of the dropdown that removes
         ///the selected value.
         ///</summary>
-        static member clearable(p: bool) = OAttr.clearable p |> Attr.Wrap
+        static member clearable(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.clearable p |> Attr.Wrap
         ///<summary>
         ///If true, this dropdown is disabled and the selection cannot be changed.
         ///</summary>
-        static member disabled(p: bool) = OAttr.disabled p |> Attr.Wrap
+        static member disabled(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.disabled p |> Attr.Wrap
         ///<summary>
         ///If true, the user can select multiple values
         ///</summary>
-        static member multi(p: bool) = OAttr.multi p |> Attr.Wrap
+        static member multi(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.multi p |> Attr.Wrap
         ///<summary>
         ///The grey, default text shown when no option is selected
         ///</summary>
-        static member placeholder(p: string) = OAttr.placeholder p |> Attr.Wrap
+        static member placeholder(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.placeholder p |> Attr.Wrap
         ///<summary>
         ///Whether to enable the searching feature or not
         ///</summary>
-        static member searchable(p: bool) = OAttr.searchable p |> Attr.Wrap
+        static member searchable(p: bool) = 
+            guardAgainstNull "p" p
+            OAttr.searchable p |> Attr.Wrap
         ///<summary>
         ///The value typed in the DropDown for searching.
         ///</summary>
-        static member searchValue(p: string) = OAttr.searchValue p |> Attr.Wrap
+        static member searchValue(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.searchValue p |> Attr.Wrap
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
 
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+        static member loadingState(p: LoadingState) = 
+            guardAgainstNull "p" p
+            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -107,49 +137,72 @@ module Dropdown =
         ///the new &#96;value&#96; also matches what was given originally.
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
-        static member persistence(p: IConvertible) = OAttr.persistence p |> Attr.Wrap
+        static member persistence(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.persistence p |> Attr.Wrap
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps([<ParamArray>] p: string array) = OAttr.persistedProps p |> Attr.Wrap
+        static member persistedProps([<ParamArray>] p: string array) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.persistedProps p |> Attr.Wrap
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistenceType(p: PersistenceTypeOptions) = OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
+        static member persistenceType(p: PersistenceTypeOptions) =
+            guardAgainstNull "p" p
+            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
 
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: System.Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Dropdown is an interactive dropdown element for selecting one or more

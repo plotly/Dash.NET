@@ -4,10 +4,6 @@ open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
-// Original attr
-type internal OAttr = Dash.NET.DCC.RadioItems.Attr
-
-
 ///<summary>
 ///RadioItems is a component that encapsulates several radio item inputs.
 ///The values and labels of the RadioItems is specified in the &#96;options&#96;
@@ -16,6 +12,10 @@ type internal OAttr = Dash.NET.DCC.RadioItems.Attr
 ///</summary>
 [<RequireQualifiedAccess>]
 module RadioItems =
+
+    // Original attr
+    type internal OAttr = Dash.NET.DCC.RadioItems.Attr
+
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -27,42 +27,64 @@ module RadioItems =
         ///<summary>
         ///An array of options
         ///</summary>
-        static member options([<ParamArray>] p: array<RadioItemsOption>) = OAttr.options (p |> Array.map RadioItemsOption.Convert) |> Attr.Wrap
+        static member options([<ParamArray>] p: array<RadioItemsOption>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.options (p |> Array.map RadioItemsOption.Convert) |> Attr.Wrap
         ///<summary>
         ///The currently selected value
         ///</summary>
-        static member value(p: IConvertible) = OAttr.value p |> Attr.Wrap
+        static member value(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.value p |> Attr.Wrap
         ///<summary>
         ///The style of the container (div)
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the container (div)
         ///</summary>
-        static member className(p: string) = OAttr.className p |> Attr.Wrap
+        static member className(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.className p |> Attr.Wrap
         ///<summary>
         ///The style of the &lt;input&gt; radio element
         ///</summary>
-        static member inputStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.inputStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member inputStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.inputStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the &lt;input&gt; radio element
         ///</summary>
-        static member inputClassName(p: string) = OAttr.inputClassName p |> Attr.Wrap
+        static member inputClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.inputClassName p |> Attr.Wrap
         ///<summary>
         ///The style of the &lt;label&gt; that wraps the radio input
         /// and the option's label
         ///</summary>
-        static member labelStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = OAttr.labelStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+        static member labelStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.labelStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the &lt;label&gt; that wraps the radio input
         /// and the option's label
         ///</summary>
-        static member labelClassName(p: string) = OAttr.labelClassName p |> Attr.Wrap
+        static member labelClassName(p: string) = 
+            guardAgainstNull "p" p
+            OAttr.labelClassName p |> Attr.Wrap
 
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+        static member loadingState(p: LoadingState) = 
+            guardAgainstNull "p" p
+            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -71,49 +93,72 @@ module RadioItems =
         ///the new &#96;value&#96; also matches what was given originally.
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
-        static member persistence(p: IConvertible) = OAttr.persistence p |> Attr.Wrap
+        static member persistence(p: IConvertible) = 
+            guardAgainstNull "p" p
+            OAttr.persistence p |> Attr.Wrap
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps([<ParamArray>] p: string []) = OAttr.persistedProps p |> Attr.Wrap
+        static member persistedProps([<ParamArray>] p: string []) = 
+            guardAgainstNull "p" p
+            p |> Array.iter (guardAgainstNull "p")
+            OAttr.persistedProps p |> Attr.Wrap
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistenceType(p: PersistenceTypeOptions) = OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
+        static member persistenceType(p: PersistenceTypeOptions) = 
+            guardAgainstNull "p" p
+            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
 
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: int) = OAttr.children value |> Attr.Wrap
+        static member children(value: int) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: string) = OAttr.children value |> Attr.Wrap
+        static member children(value: string) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: float) = OAttr.children value |> Attr.Wrap
+        static member children(value: float) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = OAttr.children value |> Attr.Wrap
+        static member children(value: Guid) = 
+            guardAgainstNull "value" value
+            OAttr.children value |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+            guardAgainstNull "value" value
+            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Array.iter (guardAgainstNull "value")
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+            guardAgainstNull "value" value
+            value |> Seq.iter (guardAgainstNull "value")
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///RadioItems is a component that encapsulates several radio item inputs.
