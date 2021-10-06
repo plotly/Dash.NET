@@ -2,7 +2,6 @@
 
 [<RequireQualifiedAccess>]
 module Json =
-
     open System
     open Newtonsoft.Json
     open Newtonsoft.Json.Serialization
