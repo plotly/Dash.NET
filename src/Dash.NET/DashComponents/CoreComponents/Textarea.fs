@@ -1,7 +1,7 @@
 namespace Dash.NET.DCC
 
 open System
-open Plotly.NET
+open DynamicObj
 open Dash.NET
 
 ///<summary>
@@ -157,7 +157,7 @@ module Textarea =
             | NBlurTimestamp (p) -> "n_blur_timestamp", box p
             | NClicks (p) -> "n_clicks", box p
             | NClicksTimestamp (p) -> "n_clicks_timestamp", box p
-            | LoadingState (p) -> "loading_state", p |> LoadingState.convert
+            | LoadingState (p) -> "loading_state", box p
             | Persistence (p) -> "persistence", box p
             | PersistedProps (p) -> "persisted_props", box p
             | PersistenceType p -> "persistence_type", PersistenceTypeOptions.convert p
@@ -445,7 +445,7 @@ module Textarea =
                 DynObj.setValueOpt props "nBlurTimestamp" (nBlurTimestamp |> Option.map box)
                 DynObj.setValueOpt props "nClicks" (nClicks |> Option.map box)
                 DynObj.setValueOpt props "nClicksTimestamp" (nClicksTimestamp |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
