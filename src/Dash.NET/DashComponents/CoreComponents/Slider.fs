@@ -2,7 +2,7 @@
 
 open Dash.NET
 open System
-open Plotly.NET
+open DynamicObj
 open System.Collections.Generic
 open ComponentPropTypes
 
@@ -195,7 +195,7 @@ module Slider =
             | Vertical (p) -> "vertical", box p
             | VerticalHeight (p) -> "verticalHeight", box p
             | UpdateMode (p) -> "updatemode", UpdateModeType.convert p
-            | LoadingState (p) -> "loading_state", LoadingState.convert p
+            | LoadingState (p) -> "loading_state", box p
             | Persistence (p) -> "persistence", box p
             | PersistedProps (p) -> "persisted_props", box p
             | PersistenceType (p) -> "persistence_type", PersistenceTypeOptions.convert p
@@ -380,7 +380,7 @@ module Slider =
                 DynObj.setValueOpt props "vertical" (vertical |> Option.map box)
                 DynObj.setValueOpt props "verticalHeight" (verticalHeight |> Option.map box)
                 DynObj.setValueOpt props "updatemode" (updatemode |> Option.map UpdateModeType.convert)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)

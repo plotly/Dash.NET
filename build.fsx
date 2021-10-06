@@ -63,9 +63,11 @@ module ProjectInfo =
 
     let solutionFile  = "Dash.NET.sln"
 
-    let testProject = "tests/Dash.NET.Tests/Dash.NET.Tests.fsproj"
-
-    let componentGenerationTestProject = "tests/Dash.NET.ComponentGeneration.Tests/Dash.NET.ComponentGeneration.Tests.fsproj"
+    let testProjects = [
+        "tests/Dash.NET.Tests/Dash.NET.Tests.fsproj"
+        "tests/Dash.NET.Giraffe.Tests/Dash.NET.Giraffe.Tests.fsproj"
+        "tests/Dash.NET.ComponentGeneration.Tests/Dash.NET.ComponentGeneration.Tests.fsproj"
+    ]
 
     let summary = "F# interface to Dash- the most downloaded framework for building ML & data science web apps"
 
@@ -143,57 +145,39 @@ module TestTasks =
 
     let runTests = BuildTask.create "RunTests" [clean; build; copyBinaries] {
         //let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
-        Fake.DotNet.DotNet.test(fun testParams ->
-            {
-                testParams with
-                    Logger = Some "console;verbosity=detailed"
-                    Configuration = DotNet.BuildConfiguration.fromString configuration
-                    NoBuild = true
-            }
-        ) testProject
-
-        Fake.DotNet.DotNet.test(fun testParams ->
-            {
-                testParams with
-                    Logger = Some "console;verbosity=detailed"
-                    Configuration = DotNet.BuildConfiguration.fromString configuration
-                    NoBuild = true
-            }
-        ) componentGenerationTestProject
+        testProjects
+        |> Seq.iter(fun p ->
+            Fake.DotNet.DotNet.test(fun testParams ->
+                {
+                    testParams with
+                        Logger = Some "console;verbosity=detailed"
+                        Configuration = DotNet.BuildConfiguration.fromString configuration
+                        NoBuild = true
+                }
+            ) p
+        )
     }
 
     // to do: use this once we have actual tests
     let runTestsWithCodeCov = BuildTask.create "RunTestsWithCodeCov" [clean; build; copyBinaries] {
         let standardParams = Fake.DotNet.MSBuild.CliArguments.Create ()
-        Fake.DotNet.DotNet.test(fun testParams ->
-            {
-                testParams with
-                    MSBuildParams = {
-                        standardParams with
-                            Properties = [
-                                "AltCover","true"
-                                "AltCoverCobertura","../../codeCov.xml"
-                                "AltCoverForce","true"
-                            ]
-                    };
-                    Logger = Some "console;verbosity=detailed"
-            }
-        ) testProject
-
-        Fake.DotNet.DotNet.test(fun testParams ->
-            {
-                testParams with
-                    MSBuildParams = {
-                        standardParams with
-                            Properties = [
-                                "AltCover","true"
-                                "AltCoverCobertura","../../codeCov.xml"
-                                "AltCoverForce","true"
-                            ]
-                    };
-                    Logger = Some "console;verbosity=detailed"
-            }
-        ) componentGenerationTestProject
+        testProjects
+        |> Seq.iter(fun p ->
+            Fake.DotNet.DotNet.test(fun testParams ->
+                {
+                    testParams with
+                        MSBuildParams = {
+                            standardParams with
+                                Properties = [
+                                    "AltCover","true"
+                                    "AltCoverCobertura","../../codeCov.xml"
+                                    "AltCoverForce","true"
+                                ]
+                        };
+                        Logger = Some "console;verbosity=detailed"
+                }
+            ) p
+        )
     }
 
 /// Package creation
@@ -229,7 +213,6 @@ module PackageTasks =
         if promptYesNo (sprintf "package tag will be %s OK?" prereleaseTag )
             then 
                 !! "src/**/*.*proj"
-                //-- "src/**/Plotly.NET.Interactive.fsproj"
                 |> Seq.iter (Fake.DotNet.DotNet.pack (fun p ->
                             let msBuildParams =
                                 {p.MSBuildParams with 

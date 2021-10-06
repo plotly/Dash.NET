@@ -2,7 +2,7 @@ namespace Dash.NET.DCC
 
 open Dash.NET
 open System
-open Plotly.NET
+open DynamicObj
 open ComponentPropTypes
 
 ///<summary>
@@ -95,7 +95,7 @@ module Dropdown =
         static member toDynamicMemberDef (prop:Prop) =
             match prop with
             | ClassName p       -> "className", box p
-            | Options p         -> "options", p |> Seq.map DropdownOption.convert |> box
+            | Options p         -> "options", box p
             | Value p           -> "value", p |> DropdownValue.convert
             | OptionHeight p    -> "optionHeight", box p
             | Clearable p       -> "clearable", box p
@@ -105,7 +105,7 @@ module Dropdown =
             | Searchable p      -> "searchable", box p
             | SearchValue p     -> "search_value", box p
             | Style p           -> "style", box p
-            | LoadingState p    -> "loading_state", LoadingState.convert p
+            | LoadingState p    -> "loading_state", box p
             | Persistence p     -> "persistence", box p
             | PersistedProps p  -> "persisted_props", box p
             | PersistenceType p -> "persistence_type", PersistenceTypeOptions.convert p
@@ -282,7 +282,7 @@ module Dropdown =
                 DynObj.setValueOpt props "searchable" (searchable |> Option.map box)
                 DynObj.setValueOpt props "searchValue" (searchValue |> Option.map box)
                 DynObj.setValueOpt props "style" (style |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map LoadingState.convert)
+                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
                 DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
                 DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
                 DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
