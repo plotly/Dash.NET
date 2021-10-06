@@ -373,7 +373,13 @@ type Callback<'Function>
                 |> Seq.map (fun (argument,targetType) -> 
                     //printfn "JsonType: %A;      ArgType:%A" argument.Type targetType
                     // it may be necessary to inspect the JToken when the input is an object/higher kinded type
-                    argument.ToObject(targetType))
+                    if not <| isNull argument then
+                        argument.ToObject(targetType)
+                    else
+                        //F# can handle a non-nullable type being null, it just might throw an exception if you try to use it
+                        //you can get around this with Nullable<...> 
+                        null
+                )
             else
                 failwithf "handler function arguments and targetTypes have different lenght: args:%i vs. types:%i" callbackHandlerFunctionRange.Length (Seq.length args)
 
