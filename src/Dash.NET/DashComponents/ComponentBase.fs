@@ -147,7 +147,7 @@ module ComponentPropTypes =
                 value:IConvertible,
                 ?Disabled:bool
             ) =
-                let dro = DropdownOption()
+                let dro = RadioItemsOption()
 
                 label   |> DynObj.setValue dro "label"
                 value   |> DynObj.setValue dro "value"
@@ -163,7 +163,7 @@ module ComponentPropTypes =
                 ?Primary     :string,
                 ?Background  :string
             ) =
-                let tc = DropdownOption()
+                let tc = TabColors()
 
                 Border    |> DynObj.setValueOpt tc "border"
                 Primary   |> DynObj.setValueOpt tc "primary"
