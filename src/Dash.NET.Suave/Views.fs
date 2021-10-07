@@ -38,24 +38,6 @@ module Views =
       script ["type", "application/javascript"; "crossorigin", " "; "src", DashTable.CdnLink ] []
   ]
 
-  let createIndex metas appTitle faviconPath css appEntry config scripts renderer = 
-      html [] [
-          head [] [
-              yield! metas
-              title [] appTitle
-              createFaviconLink faviconPath
-              yield! css
-          ]
-          body [] [
-              appEntry
-              div [] [
-                  createConfigScript config
-                  yield! scripts
-                  createRendererScript defaultRenderer
-              ]
-          ]
-      ]
-
   type IndexView =
       {
           Metas : seq<Node>

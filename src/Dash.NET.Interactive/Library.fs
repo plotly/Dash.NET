@@ -3,7 +3,6 @@
 open Microsoft.DotNet.Interactive
 open Microsoft.DotNet.Interactive.Formatting
 open Dash.NET.Suave
-open System
 open System.Threading
 open System.Net
 open System.IO
@@ -38,8 +37,6 @@ module Util =
 
     let html = new HtmlString(str) :> IHtmlContent
     html.WriteTo(writer, HtmlEncoder.Default)
-
-  let action = Action<DashApp,TextWriter>(formatter)
 
 type DashInteractiveExtension () = 
 
