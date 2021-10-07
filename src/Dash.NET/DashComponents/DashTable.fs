@@ -20,46 +20,11 @@ let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
 ///</summary>
 [<RequireQualifiedAccess>]
 module DataTable =
-    let private extractName prop =
-        prop
-        |> sprintf "%O"
-        |> fun s -> s.Replace('\n', ' ').Split(' ')
-        |> Array.head
-
-    let private toCase (ns: Serialization.NamingStrategy) name =
-        ns.GetPropertyName(name, false)
-
-    let private toSnakeCase name = toCase (Serialization.SnakeCaseNamingStrategy()) name
-    let private toCamelCase name = toCase (Serialization.CamelCaseNamingStrategy()) name
-    let private toKebabCase name = toCase (Serialization.KebabCaseNamingStrategy()) name
-
-    let private duToCasedName du =
-        let s = du |> sprintf "%A"
-        let ss = s.Split(' ')
-        let rss = ss |> Array.rev
-        let h = rss |> Array.head
-        let k = h |> toKebabCase
-        k
-
-    let private convertDu du =
-        du 
-        |> duToCasedName
-        |> box
-
-    let private mappedDuToCaseName dus =
-        dus
-        |> Map.map (fun _ -> duToCasedName)
-
-    let private convertMappedDu dus =
-        dus
-        |> mappedDuToCaseName
-        |> box
-
     type DUConverter () =
         inherit JsonConverter ()
         override _.WriteJson(writer, value, serializer) =
             if isNull value then writer.WriteNull()
-            else serializer.Serialize(writer, duToCasedName value);
+            else serializer.Serialize(writer, NameCase.fromDiscriminatedUnion value);
 
         override _.ReadJson(reader, objectType, existingValue, serializer) =
             let duConverter = new Converters.DiscriminatedUnionConverter()
@@ -1291,43 +1256,43 @@ module DataTable =
             | DataTimestamp p -> box p
             | Editable p -> box p
             | EndCell p -> box p
-            | ExportColumns p -> convertDu p
-            | ExportFormat p -> convertDu p
-            | ExportHeaders p -> convertDu p
+            | ExportColumns p -> Convert.fromDiscriminatedUnion p
+            | ExportFormat p -> Convert.fromDiscriminatedUnion p
+            | ExportHeaders p -> Convert.fromDiscriminatedUnion p
             | FillWidth p -> box p
             | HiddenColumns p -> box p
             | IsFocused p -> box p
             | MergeDuplicateHeaders p -> box p
             | FixedColumns p -> box p
             | FixedRows p -> box p
-            | ColumnSelectable p -> convertDu p
+            | ColumnSelectable p -> Convert.fromDiscriminatedUnion p
             | RowDeletable p -> box p
             | CellSelectable p -> box p
-            | RowSelectable p -> convertDu p
+            | RowSelectable p -> Convert.fromDiscriminatedUnion p
             | SelectedCells p -> box p
             | SelectedRows p -> box p
             | SelectedColumns p -> box p
             | SelectedRowIds p -> box p
             | StartCell p -> box p
             | StyleAsListView p -> box p
-            | PageAction p -> convertDu p
+            | PageAction p -> Convert.fromDiscriminatedUnion p
             | PageCurrent p -> box p
             | PageCount p -> box p
             | PageSize p -> box p
             | Dropdown p -> box p
             | DropdownConditional p -> box p
             | DropdownData p -> box p
-            | Tooltip p -> convertMappedDu p
+            | Tooltip p -> Convert.fromMappedDiscriminatedUnions p
             | TooltipConditional p -> box p
-            | TooltipData p -> p |> Seq.map mappedDuToCaseName |> box
-            | TooltipHeader p -> convertMappedDu p
+            | TooltipData p -> p |> Seq.map Convert.fromMappedDiscriminatedUnions |> box
+            | TooltipHeader p -> Convert.fromMappedDiscriminatedUnions p
             | TooltipDelay p -> box p
             | TooltipDuration p -> box p
             | FilterQuery p -> box p
-            | FilterAction p -> convertDu p
+            | FilterAction p -> Convert.fromDiscriminatedUnion p
             | FilterOptions p ->  box p
-            | SortAction p -> convertDu p
-            | SortMode p -> convertDu p
+            | SortAction p -> Convert.fromDiscriminatedUnion p
+            | SortMode p -> Convert.fromDiscriminatedUnion p
             | SortBy p -> box p
             | SortAsNull p -> box p
             | StyleTable p -> box p
@@ -1355,13 +1320,10 @@ module DataTable =
             | LoadingState p -> box p
             | Persistence p -> box p
             | PersistedProps p -> box p
-            | PersistenceType p -> convertDu p
-
-        static member toNameOf : Prop -> string =
-            extractName >> toSnakeCase
+            | PersistenceType p -> Convert.fromDiscriminatedUnion p
 
         static member toDynamicMemberDef(prop: Prop) =
-            prop |> Prop.toNameOf, prop |> Prop.convert
+            prop |> Prop.toDynamicMemberPropName, Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -2082,94 +2044,87 @@ module DataTable =
             ) =
             fun (dataTable: DataTable) ->
                 let props = DashComponentProps()
-                let inline mkPropName prop =
-                    prop |> extractName |> toCamelCase
-                let inline setValueOpt prop maybeValue =
-                    prop
-                    |> mkPropName
-                    |> fun propName ->
-                        maybeValue
-                        |> Option.map (prop >> Prop.convert)
-                        |> DynObj.setValueOpt props propName
+                let inline setPropValueOpt   prop =
+                    DynObj.setPropValueOpt props prop Prop.convert
 
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                setValueOpt ActiveCell activeCell
-                setValueOpt Columns columns
-                setValueOpt IncludeHeadersOnCopyPaste includeHeadersOnCopyPaste
-                setValueOpt LocaleFormat localeFormat
-                setValueOpt MarkdownOptions markdownOptions
-                setValueOpt Css css
-                setValueOpt Data data
-                setValueOpt DataPrevious dataPrevious
-                setValueOpt DataTimestamp dataTimestamp
-                setValueOpt Editable editable
-                setValueOpt EndCell endCell
-                setValueOpt ExportColumns exportColumns
-                setValueOpt ExportFormat exportFormat
-                setValueOpt ExportHeaders exportHeaders
-                setValueOpt FillWidth fillWidth
-                setValueOpt HiddenColumns hiddenColumns
-                setValueOpt IsFocused isFocused
-                setValueOpt MergeDuplicateHeaders mergeDuplicateHeaders
-                setValueOpt FixedColumns fixedColumns
-                setValueOpt FixedRows fixedRows
-                setValueOpt ColumnSelectable columnSelectable
-                setValueOpt RowDeletable rowDeletable
-                setValueOpt CellSelectable cellSelectable
-                setValueOpt RowSelectable rowSelectable
-                setValueOpt SelectedCells selectedCells
-                setValueOpt SelectedRows selectedRows
-                setValueOpt SelectedColumns selectedColumns
-                setValueOpt SelectedRowIds selectedRowIds
-                setValueOpt StartCell startCell
-                setValueOpt StyleAsListView styleAsListView
-                setValueOpt PageAction pageAction
-                setValueOpt PageCurrent pageCurrent
-                setValueOpt PageCount pageCount
-                setValueOpt PageSize pageSize
-                setValueOpt Dropdown dropdown
-                setValueOpt DropdownConditional dropdownConditional
-                setValueOpt DropdownData dropdownData
-                setValueOpt Tooltip tooltip
-                setValueOpt TooltipConditional tooltipConditional
-                setValueOpt TooltipData tooltipData
-                setValueOpt TooltipHeader tooltipHeader
-                setValueOpt TooltipDelay tooltipDelay
-                setValueOpt TooltipDuration tooltipDuration
-                setValueOpt FilterQuery filterQuery
-                setValueOpt FilterAction filterAction
-                setValueOpt FilterOptions filterOptions
-                setValueOpt SortAction sortAction
-                setValueOpt SortMode sortMode
-                setValueOpt SortBy sortBy
-                setValueOpt SortAsNull sortAsNull
-                setValueOpt StyleTable styleTable
-                setValueOpt StyleCell styleCell
-                setValueOpt StyleData styleData
-                setValueOpt StyleFilter styleFilter
-                setValueOpt StyleHeader styleHeader
-                setValueOpt StyleCellConditional styleCellConditional
-                setValueOpt StyleDataConditional styleDataConditional
-                setValueOpt StyleFilterConditional styleFilterConditional
-                setValueOpt StyleHeaderConditional styleHeaderConditional
-                setValueOpt Virtualization virtualization
-                setValueOpt DerivedFilterQueryStructure derivedFilterQueryStructure
-                setValueOpt DerivedViewportData derivedViewportData
-                setValueOpt DerivedViewportIndices derivedViewportIndices
-                setValueOpt DerivedViewportRowIds derivedViewportRowIds
-                setValueOpt DerivedViewportSelectedColumns derivedViewportSelectedColumns
-                setValueOpt DerivedViewportSelectedRows derivedViewportSelectedRows
-                setValueOpt DerivedViewportSelectedRowIds derivedViewportSelectedRowIds
-                setValueOpt DerivedVirtualData derivedVirtualData
-                setValueOpt DerivedVirtualIndices derivedVirtualIndices
-                setValueOpt DerivedVirtualRowIds derivedVirtualRowIds
-                setValueOpt DerivedVirtualSelectedRows derivedVirtualSelectedRows
-                setValueOpt DerivedVirtualSelectedRowIds derivedVirtualSelectedRowIds
-                setValueOpt LoadingState loadingState
-                setValueOpt Persistence persistence
-                setValueOpt PersistedProps persistedProps
-                setValueOpt PersistenceType persistenceType
+                setPropValueOpt ActiveCell activeCell
+                setPropValueOpt Columns columns
+                setPropValueOpt IncludeHeadersOnCopyPaste includeHeadersOnCopyPaste
+                setPropValueOpt LocaleFormat localeFormat
+                setPropValueOpt MarkdownOptions markdownOptions
+                setPropValueOpt Css css
+                setPropValueOpt Data data
+                setPropValueOpt DataPrevious dataPrevious
+                setPropValueOpt DataTimestamp dataTimestamp
+                setPropValueOpt Editable editable
+                setPropValueOpt EndCell endCell
+                setPropValueOpt ExportColumns exportColumns
+                setPropValueOpt ExportFormat exportFormat
+                setPropValueOpt ExportHeaders exportHeaders
+                setPropValueOpt FillWidth fillWidth
+                setPropValueOpt HiddenColumns hiddenColumns
+                setPropValueOpt IsFocused isFocused
+                setPropValueOpt MergeDuplicateHeaders mergeDuplicateHeaders
+                setPropValueOpt FixedColumns fixedColumns
+                setPropValueOpt FixedRows fixedRows
+                setPropValueOpt ColumnSelectable columnSelectable
+                setPropValueOpt RowDeletable rowDeletable
+                setPropValueOpt CellSelectable cellSelectable
+                setPropValueOpt RowSelectable rowSelectable
+                setPropValueOpt SelectedCells selectedCells
+                setPropValueOpt SelectedRows selectedRows
+                setPropValueOpt SelectedColumns selectedColumns
+                setPropValueOpt SelectedRowIds selectedRowIds
+                setPropValueOpt StartCell startCell
+                setPropValueOpt StyleAsListView styleAsListView
+                setPropValueOpt PageAction pageAction
+                setPropValueOpt PageCurrent pageCurrent
+                setPropValueOpt PageCount pageCount
+                setPropValueOpt PageSize pageSize
+                setPropValueOpt Dropdown dropdown
+                setPropValueOpt DropdownConditional dropdownConditional
+                setPropValueOpt DropdownData dropdownData
+                setPropValueOpt Tooltip tooltip
+                setPropValueOpt TooltipConditional tooltipConditional
+                setPropValueOpt TooltipData tooltipData
+                setPropValueOpt TooltipHeader tooltipHeader
+                setPropValueOpt TooltipDelay tooltipDelay
+                setPropValueOpt TooltipDuration tooltipDuration
+                setPropValueOpt FilterQuery filterQuery
+                setPropValueOpt FilterAction filterAction
+                setPropValueOpt FilterOptions filterOptions
+                setPropValueOpt SortAction sortAction
+                setPropValueOpt SortMode sortMode
+                setPropValueOpt SortBy sortBy
+                setPropValueOpt SortAsNull sortAsNull
+                setPropValueOpt StyleTable styleTable
+                setPropValueOpt StyleCell styleCell
+                setPropValueOpt StyleData styleData
+                setPropValueOpt StyleFilter styleFilter
+                setPropValueOpt StyleHeader styleHeader
+                setPropValueOpt StyleCellConditional styleCellConditional
+                setPropValueOpt StyleDataConditional styleDataConditional
+                setPropValueOpt StyleFilterConditional styleFilterConditional
+                setPropValueOpt StyleHeaderConditional styleHeaderConditional
+                setPropValueOpt Virtualization virtualization
+                setPropValueOpt DerivedFilterQueryStructure derivedFilterQueryStructure
+                setPropValueOpt DerivedViewportData derivedViewportData
+                setPropValueOpt DerivedViewportIndices derivedViewportIndices
+                setPropValueOpt DerivedViewportRowIds derivedViewportRowIds
+                setPropValueOpt DerivedViewportSelectedColumns derivedViewportSelectedColumns
+                setPropValueOpt DerivedViewportSelectedRows derivedViewportSelectedRows
+                setPropValueOpt DerivedViewportSelectedRowIds derivedViewportSelectedRowIds
+                setPropValueOpt DerivedVirtualData derivedVirtualData
+                setPropValueOpt DerivedVirtualIndices derivedVirtualIndices
+                setPropValueOpt DerivedVirtualRowIds derivedVirtualRowIds
+                setPropValueOpt DerivedVirtualSelectedRows derivedVirtualSelectedRows
+                setPropValueOpt DerivedVirtualSelectedRowIds derivedVirtualSelectedRowIds
+                setPropValueOpt LoadingState loadingState
+                setPropValueOpt Persistence persistence
+                setPropValueOpt PersistedProps persistedProps
+                setPropValueOpt PersistenceType persistenceType
                 DynObj.setValue dataTable "namespace" "dash_table"
                 DynObj.setValue dataTable "props" props
                 DynObj.setValue dataTable "type" "DataTable"
