@@ -109,17 +109,16 @@ module ComponentPropTypes =
         static member init 
             (
                 isLoading       : bool,
-                ?PropName       : string,
-                ?ComponentName  : string
+                ?propName       : string,
+                ?componentName  : string
             ) =
                 let ls = LoadingState()
 
                 isLoading       |> DynObj.setValue ls "isLoading"
-                PropName        |> DynObj.setValueOpt ls "propName"
-                ComponentName   |> DynObj.setValueOpt ls "componentName"
+                propName        |> DynObj.setValueOpt ls "propName"
+                componentName   |> DynObj.setValueOpt ls "componentName"
 
                 ls
-       
 
     type DropdownOption () =
         inherit DynamicObj()
@@ -127,15 +126,15 @@ module ComponentPropTypes =
             (
                 label:IConvertible,
                 value:IConvertible,
-                ?Disabled:bool,
-                ?Title:string
+                ?disabled:bool,
+                ?title:string
             ) =
                 let dro = DropdownOption()
 
                 label   |> DynObj.setValue dro "label"
                 value   |> DynObj.setValue dro "value"
-                Disabled|> DynObj.setValueOpt dro "disabled"
-                Title   |> DynObj.setValueOpt dro "title"
+                disabled|> DynObj.setValueOpt dro "disabled"
+                title   |> DynObj.setValueOpt dro "title"
 
                 dro
 
@@ -145,13 +144,13 @@ module ComponentPropTypes =
             (
                 label:IConvertible,
                 value:IConvertible,
-                ?Disabled:bool
+                ?disabled:bool
             ) =
                 let dro = RadioItemsOption()
 
                 label   |> DynObj.setValue dro "label"
                 value   |> DynObj.setValue dro "value"
-                Disabled|> DynObj.setValueOpt dro "disabled"
+                disabled|> DynObj.setValueOpt dro "disabled"
 
                 dro
 
@@ -159,20 +158,33 @@ module ComponentPropTypes =
         inherit DynamicObj()
         static member init 
             (
-                ?Border      :string,
-                ?Primary     :string,
-                ?Background  :string
+                ?border      :string,
+                ?primary     :string,
+                ?background  :string
             ) =
                 let tc = TabColors()
 
-                Border    |> DynObj.setValueOpt tc "border"
-                Primary   |> DynObj.setValueOpt tc "primary"
-                Background|> DynObj.setValueOpt tc "background"
+                border    |> DynObj.setValueOpt tc "border"
+                primary   |> DynObj.setValueOpt tc "primary"
+                background|> DynObj.setValueOpt tc "background"
 
                 tc
       
+    type ChecklistOption () =
+        inherit DynamicObj()
+        static member init 
+            (
+                label:IConvertible,
+                value:IConvertible,
+                ?disabled:bool
+            ) =
+                let clo = ChecklistOption()
 
-    type ChecklistOption = RadioItemsOption
+                label   |> DynObj.setValue clo "label"
+                value   |> DynObj.setValue clo "value"
+                disabled|> DynObj.setValueOpt clo "disabled"
+
+                clo
 
 type ComponentProperty =
     | Children
