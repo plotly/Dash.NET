@@ -20,6 +20,8 @@ open Newtonsoft.Json
 //Giraffe, Logging and ASP.NET specific
 type DashGiraffeConfig = {
   HostName: string
+  IpAddress: string
+  Port : int
   LogLevel: LogLevel
   ErrorHandler: Exception -> HttpHandler
 }
@@ -223,7 +225,7 @@ type DashApp =
            clearResponse >=> setStatusCode 500 >=> (config.ErrorHandler ex)
 
         let configureCors (builder : CorsPolicyBuilder) =
-            builder.WithOrigins(sprintf "http://%s:5001" config.HostName)
+            builder.WithOrigins(sprintf "http://%s:%d" config.HostName config.Port)
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    |> ignore
@@ -233,10 +235,9 @@ type DashApp =
             (match env.EnvironmentName with
             | "Development" -> appBuilder.UseDeveloperExceptionPage()
             | _ -> appBuilder.UseGiraffeErrorHandler(errorHandler))
-                   .UseHttpsRedirection()
-                    .UseCors(configureCors)
-                    .UseStaticFiles()
-                    .UseGiraffe(DashApp.toHttpHandler loadedApp)
+                   .UseCors(configureCors)
+                   .UseStaticFiles()
+                   .UseGiraffe(DashApp.toHttpHandler loadedApp)
 
         let configureServices (services : IServiceCollection) =
             services.AddCors()    |> ignore
@@ -260,6 +261,7 @@ type DashApp =
             .ConfigureWebHostDefaults(
                 fun webHostBuilder ->
                     webHostBuilder
+                        .UseUrls(sprintf "http://%s:%d" config.IpAddress config.Port)
                         .UseContentRoot(contentRoot)
                         .UseWebRoot(webRoot)
                         .Configure(Action<IApplicationBuilder> configureApp)
