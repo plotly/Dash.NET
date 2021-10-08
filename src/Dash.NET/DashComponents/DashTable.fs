@@ -4,7 +4,6 @@ open System
 open DynamicObj
 open Dash.NET
 open Dash.NET.Common
-open Newtonsoft.Json
 
 [<Literal>]
 let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
@@ -20,31 +19,23 @@ let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
 ///</summary>
 [<RequireQualifiedAccess>]
 module DataTable =
-    type DUConverter () =
-        inherit JsonConverter ()
-        override _.WriteJson(writer, value, serializer) =
-            if isNull value then writer.WriteNull()
-            else serializer.Serialize(writer, NameCase.fromDiscriminatedUnion value);
-
-        override _.ReadJson(reader, objectType, existingValue, serializer) =
-            let duConverter = new Converters.DiscriminatedUnionConverter()
-            duConverter.ReadJson(reader, objectType, existingValue, serializer)
-
-        override _.CanConvert(objectType) =
-            let duConverter = new Converters.DiscriminatedUnionConverter()
-            duConverter.CanConvert(objectType)
-
     ///<summary>
     ///value equal to: 'first', 'last'
     ///</summary>
-    type ColumnTogglePosition =
+    type TogglePosition =
         | First
         | Last
+        static member convert =
+            DU.convertAsString
 
     type TogglableColumn =
-        | Position of ColumnTogglePosition
-        | Bool of bool
+        | Position of TogglePosition
+        | Enabled of bool
         | MergedMultiHeader of bool list
+        static member convert = function
+            | Position p -> TogglePosition.convert p
+            | Enabled p -> box p
+            | MergedMultiHeader p -> box p
 
     ///<summary>
     ///value equal to: 'odd', 'even'
@@ -52,6 +43,8 @@ module DataTable =
     type Alternate =
         | Odd
         | Even
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///number | list with values of type: number | value equal to: 'odd', 'even'
@@ -60,6 +53,10 @@ module DataTable =
         | Index of int
         | Indices of int list
         | Alternate of Alternate
+        static member convert = function
+            | Index p -> box p
+            | Indices p -> box p
+            | Alternate p -> Alternate.convert p
 
     ///<summary>
     ///value equal to: 'any', 'numeric', 'text', 'datetime'
@@ -87,34 +84,88 @@ module DataTable =
         | Numeric
         | Text
         | Datetime
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///string | list with values of type: string
     ///</summary>
-    type StyleColumn =
+    type ConditionalColumnIdType =
         | Id of string
         | Ids of string list
+        static member convert = function
+            | Id p -> box p
+            | Ids p -> box p
+
+    ///<summary>
+    ///record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)', 'header_index: number | list with values of type: number | value equal to: 'odd', 'even' (optional)', 'column_editable: boolean (optional)'
+    ///</summary>
+    type HeaderStyleCondition () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?columnId: ConditionalColumnIdType,
+                ?columnType: ColumnType,
+                ?headerIndex: SelectRowBy,
+                ?columnEditable: bool
+            ) =
+                let t = HeaderStyleCondition()
+
+                columnId |> DynObj.setDUValueOpt t ConditionalColumnIdType.convert "column_id"
+                columnType |> DynObj.setDUValueOpt t ColumnType.convert "column_type"
+                headerIndex |> DynObj.setDUValueOpt t SelectRowBy.convert "header_index"
+                columnEditable |> DynObj.setValueOpt t "column_editable"
+
+                t
 
     ///<summary>
     ///record with the field: 'if: record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)', 'header_index: number | list with values of type: number | value equal to: 'odd', 'even' (optional)', 'column_editable: boolean (optional)' (optional)'
     ///</summary>
-    type ConditionalHeaderStyle =
-        {
-            [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
-            [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
-            [<JsonProperty("header_index"); JsonConverter(typeof<DUConverter>)>] HeaderIndex: SelectRowBy option
-            [<JsonProperty("column_editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] ColumnEditable: bool option
-        }
+    type ConditionalHeaderStyle () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?ifCondition: HeaderStyleCondition
+            ) =
+                let t = ConditionalHeaderStyle()
+
+                ifCondition |> DynObj.setValueOpt t "if"
+
+                t
+
+    ///<summary>
+    ///record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)', 'column_editable: boolean (optional)'
+    ///</summary>
+    type FilterStyleCondition () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?columnId: ConditionalColumnIdType,
+                ?columnType: ColumnType,
+                ?columnEditable: bool
+            ) =
+                let t = FilterStyleCondition()
+
+                columnId |> DynObj.setDUValueOpt t ConditionalColumnIdType.convert "column_id"
+                columnType |> DynObj.setDUValueOpt t ColumnType.convert "column_type"
+                columnEditable |> DynObj.setValueOpt t "column_editable"
+
+                t
 
     ///<summary>
     ///record with the field: 'if: record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)', 'column_editable: boolean (optional)' (optional)'
     ///</summary>
-    type ConditionalFilterStyle =
-        {
-            [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
-            [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
-            [<JsonProperty("column_editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] ColumnEditable: bool option
-        }
+    type ConditionalFilterStyle () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?ifCondition: FilterStyleCondition
+            ) =
+                let t = ConditionalFilterStyle()
+
+                ifCondition |> DynObj.setValueOpt t "if"
+
+                t
 
     ///<summary>
     ///value equal to: 'active', 'selected'
@@ -122,28 +173,80 @@ module DataTable =
     type DataStyleState =
         | Active
         | Selected
+        static member convert =
+            DU.convertAsString
+
+    ///<summary>
+    ///record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)', 'filter_query: string (optional)', 'state: value equal to: 'active', 'selected' (optional)', 'row_index: number | value equal to: 'odd', 'even' | list with values of type: number (optional)', 'column_editable: boolean (optional)'
+    ///</summary>
+    type DataStyleCondition () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?columnId: ConditionalColumnIdType,
+                ?columnType: ColumnType,
+                ?filterQuery: string,
+                ?state: DataStyleState,
+                ?rowIndex: SelectRowBy,
+                ?columnEditable: bool
+            ) =
+                let t = DataStyleCondition()
+
+                columnId |> DynObj.setDUValueOpt t ConditionalColumnIdType.convert "column_id"
+                columnType |> DynObj.setDUValueOpt t ColumnType.convert "column_type"
+                filterQuery |> DynObj.setValueOpt t "filter_query"
+                state |> DynObj.setDUValueOpt t DataStyleState.convert "state"
+                rowIndex |> DynObj.setDUValueOpt t SelectRowBy.convert "row_index"
+                columnEditable |> DynObj.setValueOpt t "column_editable"
+
+                t
 
     ///<summary>
     ///record with the field: 'if: record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)', 'filter_query: string (optional)', 'state: value equal to: 'active', 'selected' (optional)', 'row_index: number | value equal to: 'odd', 'even' | list with values of type: number (optional)', 'column_editable: boolean (optional)' (optional)'
     ///</summary>
-    type ConditionalDataStyle =
-        {
-            [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
-            [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
-            [<JsonProperty("filter_query"); JsonConverter(typeof<Json.OptionConverter<string>>)>] FilterQuery: string option
-            [<JsonProperty("state"); JsonConverter(typeof<DUConverter>)>] State: DataStyleState option
-            [<JsonProperty("row_index"); JsonConverter(typeof<DUConverter>)>] RowIndex: SelectRowBy option
-            [<JsonProperty("column_editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] ColumnEditable: bool option
-        }
+    type ConditionalDataStyle () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?ifCondition: DataStyleCondition
+            ) =
+                let t = ConditionalDataStyle()
+
+                ifCondition |> DynObj.setValueOpt t "if"
+
+                t
+
+    ///<summary>
+    ///record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)'
+    ///</summary>
+    type CellStyleCondition () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?columnId: ConditionalColumnIdType,
+                ?columnType: ColumnType
+            ) =
+                let t = CellStyleCondition ()
+
+                columnId |> DynObj.setDUValueOpt t ConditionalColumnIdType.convert "column_id"
+                columnType |> DynObj.setDUValueOpt t ColumnType.convert "column_type"
+
+                t
 
     ///<summary>
     ///record with the field: 'if: record with the fields: 'column_id: string | list with values of type: string (optional)', 'column_type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)' (optional)'
     ///</summary>
-    type ConditionalCellStyle =
-        {
-            [<JsonProperty("column_id"); JsonConverter(typeof<DUConverter>)>] ColumnId: StyleColumn option
-            [<JsonProperty("column_type"); JsonConverter(typeof<DUConverter>)>] ColumnType: ColumnType option
-        }
+    type ConditionalCellStyle () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?ifCondition: CellStyleCondition
+            ) =
+                let t = ConditionalCellStyle ()
+
+                ifCondition |> DynObj.setValueOpt t "if"
+
+                t
 
     ///<summary>
     ///value equal to: 'asc', 'desc'
@@ -151,23 +254,34 @@ module DataTable =
     type SortDirection =
         | Asc
         | Desc
-        | AscDesc
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the fields: 'column_id: string (required)', 'direction: value equal to: 'asc', 'desc' (required)'
     ///</summary>
-    type SortBy =
-        {
-            [<JsonProperty("column_id")>] ColumnId: string
-            [<JsonProperty("direction"); JsonConverter(typeof<DUConverter>)>] Direction: SortDirection
-        }
+    type TableSortBy () =
+        inherit DynamicObj()
+        static member init
+            (
+                columnId: string,
+                direction: SortDirection
+            ) =
+                let t = TableSortBy()
+
+                columnId |> DynObj.setValue t "column_id"
+                direction |> SortDirection.convert |> DynObj.setValue t "direction"
+
+                t
 
     ///<summary>
     ///value equal to: 'single', 'multi'
     ///</summary>
-    type SortMode =
+    type SortModeType =
         | Single
         | Multi
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///value equal to: 'custom', 'native', 'none'
@@ -176,21 +290,32 @@ module DataTable =
         | Custom
         | Native
         | None
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
-    ///value equal to: 'sensitive', 'insensitive'
+    ///Sensitivity value equal to: 'sensitive', 'insensitive'
     ///</summary>
-    type FilterOptionCase =
+    type FilterSensitivity =
         | Sensitive
         | Insensitive
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the field: 'case: value equal to: 'sensitive', 'insensitive' (optional)'
     ///</summary>
-    type FilterOption =
-        {
-            [<JsonProperty("case"); JsonConverter(typeof<DUConverter>)>] Case: FilterOptionCase option
-        }
+    type FilterOption () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?case: FilterSensitivity
+            ) =
+                let t = FilterOption()
+
+                case |> DynObj.setDUValueOpt t FilterSensitivity.convert "case"
+
+                t
 
     ///<summary>
     ///value equal to: 'and', 'or'
@@ -198,6 +323,8 @@ module DataTable =
     type FilterActionOperator =
         | And
         | Or
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///value equal to: 'custom', 'native'
@@ -205,22 +332,36 @@ module DataTable =
     type FilterActionType =
         | Custom
         | Native
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the fields: 'type: value equal to: 'custom', 'native' (required)', 'operator: value equal to: 'and', 'or' (optional)'
     ///</summary>
-    type ConditionalFilterAction =
-        {
-            [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: FilterActionType
-            [<JsonProperty("operator"); JsonConverter(typeof<DUConverter>)>] Operator: FilterActionOperator option
-        }
+    type ConditionalFilterAction () =
+        inherit DynamicObj()
+        static member init
+            (
+                filterActionType: FilterActionType,
+                ?operator: FilterActionOperator
+            ) =
+                let t = ConditionalFilterAction()
+
+                filterActionType |> FilterActionType.convert |> DynObj.setValue t "type"
+                operator |> DynObj.setDUValueOpt t FilterActionOperator.convert "operator"
+
+                t
 
     ///<summary>
     ///value equal to: 'custom', 'native', 'none' | record with the fields: 'type: value equal to: 'custom', 'native' (required)', 'operator: value equal to: 'and', 'or' (optional)'
     ///</summary>
     type FilterAction =
-        | Type of MaybeActionType
+        | Action of MaybeActionType
         | Conditional of ConditionalFilterAction
+        static member convert = function
+            | Action p -> MaybeActionType.convert p
+            | Conditional p -> box p
+
 
     ///<summary>
     ///value equal to: 'text', 'markdown'
@@ -232,17 +373,29 @@ module DataTable =
     type TooltipValueType =
         | Text
         | Markdown
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
     ///</summary>
-    type TooltipValue =
-        {
-            [<JsonProperty("value")>] Value: string
-            [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: TooltipValueType option
-            [<JsonProperty("delay"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Delay: int option
-            [<JsonProperty("duration"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Duration: int option
-        }
+    type TooltipValue () =
+        inherit DynamicObj()
+        static member init
+            (
+                value: string,
+                ?valueType: TooltipValueType,
+                ?delay: int,
+                ?duration: int
+            ) =
+                let t = TooltipValue()
+
+                value |> DynObj.setValue t "value"
+                valueType |> DynObj.setDUValueOpt t TooltipValueType.convert "type"
+                delay |> DynObj.setValueOpt t "delay"
+                duration |> DynObj.setValueOpt t "duration"
+
+                t
 
     ///<summary>
     ///value equal to: 'null' | string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
@@ -251,6 +404,10 @@ module DataTable =
         | Text of string
         | Value of TooltipValue
         | Null
+        static member convert = function
+            | Text p -> box p
+            | Value p -> box p
+            | Null -> box "null"
 
     ///<summary>
     ///string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)' | list with values of type: value equal to: 'null' | string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
@@ -259,6 +416,10 @@ module DataTable =
         | Text of string
         | Value of TooltipValue
         | Values of MaybeTooltip list
+        static member convert = function
+            | Text p -> box p
+            | Value p -> box p
+            | Values p -> p |> List.map MaybeTooltip.convert |> box
 
     ///<summary>
     ///string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
@@ -266,6 +427,9 @@ module DataTable =
     type DataTooltip =
         | Text of string
         | Value of TooltipValue
+        static member convert = function
+            | Text p -> box p
+            | Value p -> box p
 
     ///<summary>
     ///record with the fields: 'column_id: string (optional)', 'filter_query: string (optional)', 'row_index: number | value equal to: 'odd', 'even' (optional)'
@@ -275,24 +439,44 @@ module DataTable =
     ///used. If multiple conditions are defined, all conditions
     ///must be met for the tooltip to be used by a cell.
     ///</summary>
-    type TooltipCondition =
-        {
-            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
-            [<JsonProperty("filter_query"); JsonConverter(typeof<Json.OptionConverter<string>>)>] FilterQuery: string option
-            [<JsonProperty("row_index"); JsonConverter(typeof<DUConverter>)>] RowIndex: SelectRowBy option
-        }
+    type TooltipCondition () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?columnId: string,
+                ?filterQuery: string,
+                ?rowIndex: SelectRowBy
+            ) =
+                let t = TooltipCondition()
+
+                columnId |> DynObj.setValueOpt t "column_id"
+                filterQuery |> DynObj.setValueOpt t "filter_query"
+                rowIndex |> DynObj.setDUValueOpt t SelectRowBy.convert "row_index"
+
+                t
 
     ///<summary>
     ///record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'if: record with the fields: 'column_id: string (optional)', 'filter_query: string (optional)', 'row_index: number | value equal to: 'odd', 'even' (optional)' (required)', 'type: value equal to: 'text', 'markdown' (optional)', 'value: string (required)'
     ///</summary>
-    type ConditionalTooltip =
-        {
-            [<JsonProperty("value")>] Value: string
-            [<JsonProperty("if"); JsonConverter(typeof<Json.OptionConverter<TooltipCondition>>)>] If: TooltipCondition option
-            [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: TooltipValueType option
-            [<JsonProperty("delay"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Delay: int option
-            [<JsonProperty("duration"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Duration: int option
-        }
+    type ConditionalTooltip () =
+        inherit DynamicObj()
+        static member init
+            (
+                value: string,
+                ?ifCondition: TooltipCondition,
+                ?valueType: TooltipValueType,
+                ?delay: int,
+                ?duration: int
+            ) =
+                let t = ConditionalTooltip()
+
+                value |> DynObj.setValue t "value"
+                ifCondition |> DynObj.setValueOpt t "if"
+                valueType |> DynObj.setDUValueOpt t TooltipValueType.convert "type"
+                delay |> DynObj.setValueOpt t "delay"
+                duration |> DynObj.setValueOpt t "duration"
+
+                t
 
     ///<summary>
     ///value equal to: 'both', 'data', 'header'
@@ -305,18 +489,31 @@ module DataTable =
         | Both
         | Data
         | Header
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'use_with: value equal to: 'both', 'data', 'header' (optional)', 'value: string (required)'
     ///</summary>
-    type UseWithTooltipValue =
-        {
-            [<JsonProperty("value")>] Value: string
-            [<JsonProperty("use_with"); JsonConverter(typeof<DUConverter>)>] UseWith: TooltipUseWith option
-            [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: TooltipValueType option
-            [<JsonProperty("delay"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Delay: int option
-            [<JsonProperty("duration"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Duration: int option
-        }
+    type UseWithTooltipValue () =
+        inherit DynamicObj()
+        static member init
+            (
+                value: string,
+                ?useWith: TooltipUseWith,
+                ?valueType: TooltipValueType,
+                ?delay: int,
+                ?duration: int
+            ) =
+                let t = UseWithTooltipValue()
+
+                value |> DynObj.setValue t "value"
+                useWith |> DynObj.setDUValueOpt t TooltipUseWith.convert "use_with"
+                valueType |> DynObj.setDUValueOpt t TooltipValueType.convert "type"
+                delay |> DynObj.setValueOpt t "delay"
+                duration |> DynObj.setValueOpt t "duration"
+
+                t
 
     ///<summary>
     ///string | record with the fields: 'delay: number (optional)', 'duration: number (optional)', 'type: value equal to: 'text', 'markdown' (optional)', 'use_with: value equal to: 'both', 'data', 'header' (optional)', 'value: string (required)'
@@ -324,54 +521,100 @@ module DataTable =
     type ColumnTooltip =
         | Text of string
         | UseWithValue of UseWithTooltipValue
+        static member convert = function
+            | Text p -> box p
+            | UseWithValue p -> box p
 
     ///<summary>
     ///record with the fields: 'column_id: string (optional)', 'filter_query: string (optional)'
     ///</summary>
-    type DropdownCondition =
-        {
-            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
-            [<JsonProperty("filter_query"); JsonConverter(typeof<Json.OptionConverter<string>>)>] FilterQuery: string option
-        }
+    type DropdownCondition () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?columnId: string,
+                ?filterQuery: string
+            ) =
+                let t = DropdownCondition()
+
+                columnId |> DynObj.setValueOpt t "column_id"
+                filterQuery |> DynObj.setValueOpt t "filter_query"
+
+                t
 
     ///<summary>
     ///record with the fields: 'label: string (required)', 'value: number | string | boolean (required)'
     ///</summary>
-    type DropdownOption =
-        {
-            [<JsonProperty("label")>] Label: string
-            [<JsonProperty("value")>] Value: IConvertible
-        }
+    type DropdownOption () =
+        inherit DynamicObj()
+        static member init
+            (
+                label: string,
+                value: IConvertible
+            ) =
+                let t = DropdownOption()
+
+                label |> DynObj.setValue t "label"
+                value |> DynObj.setValue t "value"
+
+                t
 
     ///<summary>
     ///record with the fields: 'clearable: boolean (optional)', 'options: list with values of type: record with the fields: 'label: string (required)', 'value: number | string | boolean (required)' (required)'
     ///</summary>
-    type Dropdown =
-        {
-            [<JsonProperty("options")>] Options: DropdownOption list
-            [<JsonProperty("clearable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Clearable: bool option
-        }
+    type Dropdown () =
+        inherit DynamicObj()
+        static member init
+            (
+                options: DropdownOption list,
+                ?clearable: bool option
+            ) =
+                let t = Dropdown()
+
+                options |> DynObj.setValue t "options"
+                clearable |> DynObj.setValueOpt t "clearable"
+
+                t
 
     ///<summary>
     ///record with the fields: 'clearable: boolean (optional)', 'if: record with the fields: 'column_id: string (optional)', 'filter_query: string (optional)' (optional)', 'options: list with values of type: record with the fields: 'label: string (required)', 'value: number | string | boolean (required)' (required)'
     ///</summary>
-    type ConditionalDropdown =
-        {
-            [<JsonProperty("clearable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Clearable: bool option
-            [<JsonProperty("if"); JsonConverter(typeof<Json.OptionConverter<DropdownCondition>>)>] If: DropdownCondition option
-            [<JsonProperty("options"); JsonConverter(typeof<Json.OptionConverter<DropdownOption>>)>] Options: DropdownOption list
-        }
+    type ConditionalDropdown () =
+        inherit DynamicObj()
+        static member init
+            (
+                options: DropdownOption list,
+                ?clearable: bool,
+                ?ifCondition: DropdownCondition
+            ) =
+                let t = ConditionalDropdown()
+
+                options |> DynObj.setValue t "options"
+                clearable |> DynObj.setValueOpt t "clearable"
+                ifCondition |> DynObj.setValueOpt t "if"
+
+                t
 
     ///<summary>
     ///record with the fields: 'row: number (optional)', 'column: number (optional)', 'row_id: string | number (optional)', 'column_id: string (optional)'
     ///</summary>
-    type Cell =
-        {
-            [<JsonProperty("row"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Row: int option
-            [<JsonProperty("column"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Column: int option
-            [<JsonProperty("row_id"); JsonConverter(typeof<Json.OptionConverter<IConvertible>>)>] RowId: IConvertible option
-            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
-        }
+    type Cell () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?row: int64,
+                ?column: int64,
+                ?rowId: IConvertible,
+                ?columnId: string
+            ) =
+                let t = Cell()
+
+                row |> DynObj.setValueOpt t "row"
+                column |> DynObj.setValueOpt t "column"
+                rowId |> DynObj.setValueOpt t "row_id"
+                columnId |> DynObj.setValueOpt t "column_id"
+
+                t
 
     ///<summary>
     ///value equal to: 'single', 'multi', 'false'
@@ -380,13 +623,23 @@ module DataTable =
         | Single
         | Multi
         | False
+        static member convert =
+            DU.convertAsString
 
-    ///• fixed_columns/fixed_headers (record with the fields: 'data: value equal to: '0' (optional)', 'headers: value equal to: 'false' (optional)' | record with the fields: 'data: number (optional)', 'headers: value equal to: 'true' (required)'; default {
-    type Fixed =
-        {
-            [<JsonProperty("data"); JsonConverter(typeof<Json.OptionConverter<uint>>)>] Data: uint option
-            [<JsonProperty("headers"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Headers: bool option
-        }
+    ///fixed_columns/fixed_headers (record with the fields: 'data: value equal to: '0' (optional)', 'headers: value equal to: 'false' (optional)' | record with the fields: 'data: number (optional)', 'headers: value equal to: 'true' (required)'; default {
+    type Fixed () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?data: uint,
+                ?headers: bool
+            ) =
+                let t = Fixed()
+
+                data |> DynObj.setValueOpt t "data"
+                headers |> DynObj.setValueOpt t "headers"
+
+                t
 
     ///<summary>
     ///value equal to: 'none', 'ids', 'names', 'display'
@@ -396,6 +649,8 @@ module DataTable =
         | Ids
         | Names
         | Display
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///value equal to: 'csv', 'xlsx', 'none'
@@ -404,22 +659,34 @@ module DataTable =
         | Csv
         | Xlsx
         | None
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///value equal to: 'all', 'visible'
     ///</summary>
-    type ExportColumns =
+    type ExportColumnsType =
         | All
         | Visible
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the fields: 'selector: string (required)', 'rule: string (required)'
     ///</summary>
-    type Css =
-        {
-            [<JsonProperty("selector")>] Selector: string
-            [<JsonProperty("rule")>] Rule: string
-        }
+    type Css () =
+        inherit DynamicObj()
+        static member init
+            (
+                selector: string,
+                rule: string
+            ) =
+                let t = Css()
+
+                selector |> DynObj.setValue t "selector"
+                rule |> DynObj.setValue t "rule"
+
+                t
 
     ///<summary>
     ///value equal to: '_blank', '_parent', '_self', '_top'
@@ -429,6 +696,13 @@ module DataTable =
         | Parent
         | Self
         | Top
+        static member convert =
+            function
+            | Blank -> "_blank"
+            | Parent -> "_parent"
+            | Self -> "_self"
+            | Top -> "_top"
+            >> box
 
     ///<summary>
     ///string | value equal to: '_blank', '_parent', '_self', '_top'
@@ -440,29 +714,53 @@ module DataTable =
     type LinkTarget =
         | Text of string
         | Behaviour of LinkBehaviour
+        static member convert = function
+            | Text t -> box t
+            | Behaviour b -> LinkBehaviour.convert b
 
     ///<summary>
     ///record with the fields: 'link_target: string | value equal to: '_blank', '_parent', '_self', '_top' (optional)', 'html: boolean (optional)'
     ///</summary>
-    type MarkdownOptions =
-        {
-            [<JsonProperty("link_target"); JsonConverter(typeof<DUConverter>)>] LinkTarget: LinkTarget option
-            [<JsonProperty("html"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Html: bool option
-        }
+    type MarkdownOption () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?linkTarget: LinkTarget,
+                ?html: bool
+            ) =
+                let t = MarkdownOption()
+
+                linkTarget |> DynObj.setDUValueOpt t LinkTarget.convert "link_target"
+                html |> DynObj.setValueOpt t "html"
+
+                t
 
     ///<summary>
     ///record with the fields: 'symbol: list with values of type: string (optional)', 'decimal: string (optional)', 'group: string (optional)', 'grouping: list with values of type: number (optional)', 'numerals: list with values of type: string (optional)', 'percent: string (optional)', 'separate_4digits: boolean (optional)'
     ///</summary>
-    type LocaleFormat =
-        {
-            [<JsonProperty("symbol"); JsonConverter(typeof<Json.OptionConverter<string list>>)>] Symbol: string list option
-            [<JsonProperty("decimal"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Decimal: string option
-            [<JsonProperty("group"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Group: string option
-            [<JsonProperty("grouping"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Grouping: int list option
-            [<JsonProperty("numerals"); JsonConverter(typeof<Json.OptionConverter<string list>>)>] Numerals: string list option
-            [<JsonProperty("percent"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Percent: string option
-            [<JsonProperty("separate_4digits"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Separate4digits: bool option
-        }
+    type Locale () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?symbol: string list,
+                ?decimal: string,
+                ?group: string,
+                ?grouping: int list,
+                ?numerals: string list,
+                ?percent: string,
+                ?separate4digits: bool
+            ) =
+                let t = Locale()
+
+                symbol |> DynObj.setValue t "symbol"
+                decimal |> DynObj.setValue t "decimal"
+                group |> DynObj.setValue t "group"
+                grouping |> DynObj.setValue t "grouping"
+                numerals |> DynObj.setValue t "numerals"
+                percent |> DynObj.setValue t "percent"
+                separate4digits |> DynObj.setValue t "separate_4digits"
+
+                t
 
     ///<summary>
     ///record with the fields: 'allow_null: boolean (optional)', 'default: boolean | number | string | record | list (optional)', 'allow_YY: boolean (optional)'
@@ -470,12 +768,21 @@ module DataTable =
     ///The &#96;validation&#96; options for user input processing that can accept, reject or apply a
     ///default value.
     ///</summary>
-    type ColumnValidation =
-        {
-            [<JsonProperty("allow_null"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] AllowNull: bool option
-            [<JsonProperty("default"); JsonConverter(typeof<Json.OptionConverter<obj>>)>] Default: obj option
-            [<JsonProperty("allow_YY"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] AllowYY: bool option
-        }
+    type ColumnValidation () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?allowNull: bool,
+                ?defaultValue: obj,
+                ?allowYY: bool
+            ) =
+                let t = ColumnValidation()
+
+                allowNull |> DynObj.setValueOpt t "allow_null"
+                defaultValue |> DynObj.setValueOpt t "default"
+                allowYY |> DynObj.setValueOpt t "allow_YY"
+
+                t
 
     ///<summary>
     ///value equal to: 'accept', 'default', 'reject'
@@ -489,6 +796,8 @@ module DataTable =
         | Accept
         | Default
         | Reject
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///value equal to: 'coerce', 'none', 'validate'
@@ -502,17 +811,27 @@ module DataTable =
         | Coerce
         | None
         | Validate
+        static member convert =
+            DU.convertAsString
 
     ///<summary>
     ///record with the fields: 'action: value equal to: 'coerce', 'none', 'validate' (optional)', 'failure: value equal to: 'accept', 'default', 'reject' (optional)'
     ///&#10;
     ///The &#96;on_change&#96; behavior of the column for user-initiated modifications.
     ///</summary>
-    type ColumnOnChange =
-        {
-            [<JsonProperty("action"); JsonConverter(typeof<DUConverter>)>] Action: MaybeOnChangeAction option
-            [<JsonProperty("failure"); JsonConverter(typeof<DUConverter>)>] Failure: FailureAction option
-        }
+    type ColumnOnChange () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?action: MaybeOnChangeAction,
+                ?failure: FailureAction
+            ) =
+                let t = ColumnOnChange()
+
+                action |> DynObj.setDUValueOpt t MaybeOnChangeAction.convert "action"
+                failure |> DynObj.setDUValueOpt t FailureAction.convert "failure"
+
+                t
 
     ///<summary>
     ///value equal to: 'input', 'dropdown', 'markdown'
@@ -525,6 +844,8 @@ module DataTable =
         | Input
         | Dropdown
         | Markdown
+        static member convert =
+            DU.convertAsString
             
     ///<summary>
     ///record with the fields: 'locale: record with the fields: 'symbol: list with values of type: string (optional)', 'decimal: string (optional)', 'group: string (optional)', 'grouping: list with values of type: number (optional)', 'numerals: list with values of type: string (optional)', 'percent: string (optional)', 'separate_4digits: boolean (optional)' (optional)', 'nully: boolean | number | string | record | list (optional)', 'prefix: number (optional)', 'specifier: string (optional)'
@@ -534,13 +855,23 @@ module DataTable =
     ///being structured slightly differently (under a single prop), the usage is the same.
     ///See also dash_table.FormatTemplate.  It contains helper functions for typical number formats.
     ///</summary>
-    type ColumnFormat =
-        {
-            [<JsonProperty("locale"); JsonConverter(typeof<Json.OptionConverter<LocaleFormat>>)>] Locale: LocaleFormat option
-            [<JsonProperty("nully"); JsonConverter(typeof<Json.OptionConverter<obj>>)>] Nully: obj option
-            [<JsonProperty("prefix"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Prefix: int option
-            [<JsonProperty("specifier"); JsonConverter(typeof<Json.OptionConverter<string>>)>] Specifier: string option
-        }
+    type ColumnFormat () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?locale: Locale,
+                ?nully: obj,
+                ?prefix: int,
+                ?specifier: string
+            ) =
+                let t = ColumnFormat()
+
+                locale |> DynObj.setValueOpt t "locale"
+                nully |> DynObj.setValueOpt t "nully"
+                prefix |> DynObj.setValueOpt t "prefix"
+                specifier |> DynObj.setValueOpt t "specifier"
+
+                t
 
     ///<summary>
     ///value equal to: 'first', 'last' | boolean | list with values of type: boolean
@@ -560,7 +891,7 @@ module DataTable =
     ///The table-level prop &#96;column_selectable&#96; is used to determine the type of column
     ///selection to use.
     ///</summary>
-    type ColumnSelectable = TogglableColumn
+    type SelectableColumn = TogglableColumn
 
     ///<summary>
     ///value equal to: 'first', 'last' | boolean | list with values of type: boolean
@@ -580,7 +911,7 @@ module DataTable =
     ///If the &#96;rename&#96; action button appears on a merged column, then clicking
     ///on that button will rename *all* of the merged columns associated with it.
     ///</summary>
-    type ColumnRenamable = TogglableColumn
+    type RenamableColumn = TogglableColumn
 
     ///<summary>
     ///value equal to: 'first', 'last' | boolean | list with values of type: boolean
@@ -600,14 +931,7 @@ module DataTable =
     ///If the &#96;hide&#96; action button appears on a merged column, then clicking
     ///on that button will hide *all* of the merged columns associated with it.
     ///</summary>
-    type ColumnHideable = TogglableColumn
-
-    ///<summary>
-    ///Sensitifity value equal to: 'sensitive', 'insensitive'
-    ///</summary>
-    type FilterSensitifity =
-        | Sensitive
-        | Insensitive
+    type HideableColumn = TogglableColumn
 
     ///<summary>
     ///record with the field: 'case: value equal to: 'sensitive', 'insensitive' (optional)'
@@ -620,10 +944,17 @@ module DataTable =
     ///If the column-level &#96;filter_options&#96; prop is set it overrides
     ///the table-level &#96;filter_options&#96; prop for that column.
     ///</summary>
-    type ColumnFilterOption =
-        {
-            [<JsonProperty("case"); JsonConverter(typeof<DUConverter>)>] Case: FilterSensitifity option
-        }
+    type ColumnFilterOption () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?case: FilterSensitivity
+            ) =
+                let t = ColumnFilterOption()
+
+                case |> DynObj.setDUValueOpt t FilterSensitivity.convert "case"
+
+                t
 
     ///<summary>
     ///value equal to: 'first', 'last' | boolean | list with values of type: boolean
@@ -643,7 +974,7 @@ module DataTable =
     ///If the &#96;delete&#96; action button appears on a merged column, then clicking
     ///on that button will remove *all* of the merged columns associated with it.
     ///</summary>
-    type ColumnDeletable = TogglableColumn
+    type DeletableColumn = TogglableColumn
 
     ///<summary>
     ///value equal to: 'first', 'last' | boolean | list with values of type: boolean
@@ -665,58 +996,169 @@ module DataTable =
     ///Unlike &#96;column.deletable&#96;, this action does not remove the column(s)
     ///from the table. It only removed the associated entries from &#96;data&#96;.
     ///</summary>
-    type ColumnClearable = TogglableColumn
+    type ClearableColumn = TogglableColumn
 
     ///<summary>
     ///record with the fields: 'clearable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'deletable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'editable: boolean (optional)', 'filter_options: record with the field: 'case: value equal to: 'sensitive', 'insensitive' (optional)' (optional)', 'hideable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'renamable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'selectable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'format: record with the fields: 'locale: record with the fields: 'symbol: list with values of type: string (optional)', 'decimal: string (optional)', 'group: string (optional)', 'grouping: list with values of type: number (optional)', 'numerals: list with values of type: string (optional)', 'percent: string (optional)', 'separate_4digits: boolean (optional)' (optional)', 'nully: boolean | number | string | record | list (optional)', 'prefix: number (optional)', 'specifier: string (optional)' (optional)', 'id: string (required)', 'name: string | list with values of type: string (required)', 'presentation: value equal to: 'input', 'dropdown', 'markdown' (optional)', 'on_change: record with the fields: 'action: value equal to: 'coerce', 'none', 'validate' (optional)', 'failure: value equal to: 'accept', 'default', 'reject' (optional)' (optional)', 'sort_as_null: list with values of type: string | number | boolean (optional)', 'validation: record with the fields: 'allow_null: boolean (optional)', 'default: boolean | number | string | record | list (optional)', 'allow_YY: boolean (optional)' (optional)', 'type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)'
     ///</summary>
-    type Column =
-        {
-            [<JsonProperty("name")>] Name: string list
-            [<JsonProperty("id")>] Id: string
-            [<JsonProperty("type"); JsonConverter(typeof<DUConverter>)>] Type: ColumnType option
-            [<JsonProperty("clearable"); JsonConverter(typeof<DUConverter>)>] Clearable: ColumnClearable option
-            [<JsonProperty("deletable"); JsonConverter(typeof<DUConverter>)>] Deletable: ColumnDeletable option
-            [<JsonProperty("editable"); JsonConverter(typeof<Json.OptionConverter<bool>>)>] Editable: bool option
-            [<JsonProperty("filter_options"); JsonConverter(typeof<Json.OptionConverter<ColumnFilterOption>>)>] FilterOptions: ColumnFilterOption option
-            [<JsonProperty("hideable"); JsonConverter(typeof<DUConverter>)>] Hideable: ColumnHideable option
-            [<JsonProperty("renamable"); JsonConverter(typeof<DUConverter>)>] Renamable: ColumnRenamable option
-            [<JsonProperty("selectable"); JsonConverter(typeof<DUConverter>)>] Selectable: ColumnSelectable option
-            [<JsonProperty("format"); JsonConverter(typeof<Json.OptionConverter<ColumnFormat>>)>] Format: ColumnFormat option
-            [<JsonProperty("presentation"); JsonConverter(typeof<Json.OptionConverter<ColumnPresentation>>)>] Presentation: ColumnPresentation option
-            [<JsonProperty("on_change"); JsonConverter(typeof<Json.OptionConverter<ColumnOnChange>>)>] OnChange: ColumnOnChange option
-            [<JsonProperty("sort_as_null"); JsonConverter(typeof<Json.OptionConverter<IConvertible list>>)>] SortAsNull: IConvertible list option
-            [<JsonProperty("validation"); JsonConverter(typeof<Json.OptionConverter<ColumnValidation>>)>] Validation: ColumnValidation option
-        }
-        static member create name id =
-            {
-                Name = [ name ]
-                Id = id
-                Type = Option.None
-                Clearable = Option.None
-                Deletable = Option.None
-                Editable = Option.None
-                FilterOptions = Option.None
-                Hideable = Option.None
-                Renamable = Option.None
-                Selectable = Option.None
-                Format = Option.None
-                Presentation = Option.None
-                OnChange = Option.None
-                SortAsNull = Option.None
-                Validation = Option.None
-            }
+    type Column private () =
+        inherit DynamicObj()
 
-    ///<summary>
-    ///record with the fields: 'row: number (optional)', 'column: number (optional)', 'row_id: string | number (optional)', 'column_id: string (optional)'
-    ///</summary>
-    type ActiveCell =
-        {
-            [<JsonProperty("row"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Row: int option
-            [<JsonProperty("column"); JsonConverter(typeof<Json.OptionConverter<int>>)>] Column: int option
-            [<JsonProperty("row_id"); JsonConverter(typeof<Json.OptionConverter<IConvertible>>)>] RowId: IConvertible option
-            [<JsonProperty("column_id"); JsonConverter(typeof<Json.OptionConverter<string>>)>] ColumnId: string option
-        }
+        static member init
+            (
+                names: string list,
+                id: string,
+                ?columnType: ColumnType,
+                ?clearable: ClearableColumn,
+                ?deletable: DeletableColumn,
+                ?editable: bool,
+                ?filterOptions: ColumnFilterOption,
+                ?hideable: HideableColumn,
+                ?renamable: RenamableColumn,
+                ?selectable: SelectableColumn,
+                ?format: ColumnFormat,
+                ?presentation: ColumnPresentation,
+                ?onChange: ColumnOnChange,
+                ?sortAsNull: IConvertible,
+                ?validation: ColumnValidation
+            ) =
+                let t = Column()
+
+                names |> DynObj.setValue t "name"
+                id |> DynObj.setValue t "id"
+                columnType |> DynObj.setDUValueOpt t ColumnType.convert "type"
+                clearable |> DynObj.setDUValueOpt t ClearableColumn.convert "clearable"
+                deletable |> DynObj.setDUValueOpt t DeletableColumn.convert "deletable"
+                editable |> DynObj.setValueOpt t "editable"
+                filterOptions |> DynObj.setValueOpt t "filter_options"
+                hideable |> DynObj.setDUValueOpt t HideableColumn.convert "hideable"
+                renamable |> DynObj.setDUValueOpt t RenamableColumn.convert "renamable"
+                selectable |> DynObj.setDUValueOpt t SelectableColumn.convert "selectable"
+                format |> DynObj.setValueOpt t "format"
+                presentation |> DynObj.setDUValueOpt t ColumnPresentation.convert "presentation"
+                onChange |> DynObj.setValueOpt t "on_change"
+                sortAsNull |> DynObj.setValueOpt t "sort_as_null"
+                validation |> DynObj.setValueOpt t "validation"
+
+                t
+
+        static member init
+            (
+                name: string,
+                id: string,
+                ?columnType: ColumnType,
+                ?clearable: ClearableColumn,
+                ?deletable: DeletableColumn,
+                ?editable: bool,
+                ?filterOptions: ColumnFilterOption,
+                ?hideable: HideableColumn,
+                ?renamable: RenamableColumn,
+                ?selectable: SelectableColumn,
+                ?format: ColumnFormat,
+                ?presentation: ColumnPresentation,
+                ?onChange: ColumnOnChange,
+                ?sortAsNull: IConvertible,
+                ?validation: ColumnValidation
+            ) =
+                Column.init(
+                    names = [ name ],
+                    id = id,
+                    ?columnType = columnType,
+                    ?clearable = clearable,
+                    ?deletable = deletable,
+                    ?editable = editable,
+                    ?filterOptions = filterOptions,
+                    ?hideable = hideable,
+                    ?renamable = renamable,
+                    ?selectable = selectable,
+                    ?format = format,
+                    ?presentation = presentation,
+                    ?onChange = onChange,
+                    ?sortAsNull = sortAsNull,
+                    ?validation = validation
+                )
+
+    type PropName =
+        | ActiveCell
+        | Columns
+        | IncludeHeadersOnCopyPaste
+        | LocaleFormat
+        | MarkdownOptions
+        | Css
+        | Data
+        | DataPrevious
+        | DataTimestamp
+        | Editable
+        | EndCell
+        | ExportColumns
+        | ExportFormat
+        | ExportHeaders
+        | FillWidth
+        | HiddenColumns
+        | IsFocused
+        | MergeDuplicateHeaders
+        | FixedColumns
+        | FixedRows
+        | ColumnSelectable
+        | RowDeletable
+        | CellSelectable
+        | RowSelectable
+        | SelectedCells
+        | SelectedRows
+        | SelectedColumns
+        | SelectedRowIds
+        | StartCell
+        | StyleAsListView
+        | PageAction
+        | PageCurrent
+        | PageCount
+        | PageSize
+        | Dropdown
+        | DropdownConditional
+        | DropdownData
+        | Tooltip
+        | TooltipConditional
+        | TooltipData
+        | TooltipHeader
+        | TooltipDelay
+        | TooltipDuration
+        | FilterQuery
+        | FilterAction
+        | FilterOptions
+        | SortAction
+        | SortMode
+        | SortBy
+        | SortAsNull
+        | StyleTable
+        | StyleCell
+        | StyleData
+        | StyleFilter
+        | StyleHeader
+        | StyleCellConditional
+        | StyleDataConditional
+        | StyleFilterConditional
+        | StyleHeaderConditional
+        | Virtualization
+        | DerivedFilterQueryStructure
+        | DerivedViewportData
+        | DerivedViewportIndices
+        | DerivedViewportRowIds
+        | DerivedViewportSelectedColumns
+        | DerivedViewportSelectedRows
+        | DerivedViewportSelectedRowIds
+        | DerivedVirtualData
+        | DerivedVirtualIndices
+        | DerivedVirtualRowIds
+        | DerivedVirtualSelectedRows
+        | DerivedVirtualSelectedRowIds
+        | LoadingState
+        | Persistence
+        | PersistedProps
+        | PersistenceType
+
+        member this.toString () =
+            //this |> Prop.createName |> NamingStrategy.toSnakeCase
+            this |> sprintf "%O" |> NamingStrategy.toSnakeCase
 
     ///<summary>
     ///• active_cell (record with the fields: 'row: number (optional)', 'column: number (optional)', 'row_id: string | number (optional)', 'column_id: string (optional)') - The row and column indices and IDs of the currently active cell.
@@ -1167,18 +1609,18 @@ module DataTable =
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
     type Prop =
-        | ActiveCell of ActiveCell
+        | ActiveCell of Cell
         | Columns of seq<Column>
         | IncludeHeadersOnCopyPaste of bool
-        | LocaleFormat of LocaleFormat
-        | MarkdownOptions of MarkdownOptions
+        | LocaleFormat of Locale
+        | MarkdownOptions of MarkdownOption
         | Css of seq<Css>
         | Data of seq<obj>
         | DataPrevious of seq<obj>
         | DataTimestamp of int64
         | Editable of bool
         | EndCell of Cell
-        | ExportColumns of ExportColumns
+        | ExportColumns of ExportColumnsType
         | ExportFormat of MaybeExportFormat
         | ExportHeaders of MaybeExportHeaders
         | FillWidth of bool
@@ -1214,8 +1656,8 @@ module DataTable =
         | FilterAction of FilterAction
         | FilterOptions of FilterOption
         | SortAction of MaybeActionType
-        | SortMode of SortMode
-        | SortBy of seq<SortBy>
+        | SortMode of SortModeType
+        | SortBy of seq<TableSortBy>
         | SortAsNull of seq<IConvertible>
         | StyleTable of DashComponentStyle
         | StyleCell of DashComponentStyle
@@ -1244,6 +1686,84 @@ module DataTable =
         | PersistedProps of string []
         | PersistenceType of PersistenceTypeOptions
 
+        static member toPropName = function
+            | ActiveCell _ -> PropName.ActiveCell
+            | Columns _ -> PropName.Columns
+            | IncludeHeadersOnCopyPaste _ -> PropName.IncludeHeadersOnCopyPaste
+            | LocaleFormat _ -> PropName.LocaleFormat
+            | MarkdownOptions _ -> PropName.MarkdownOptions
+            | Css _ -> PropName.Css
+            | Data _ -> PropName.Data
+            | DataPrevious _ -> PropName.DataPrevious
+            | DataTimestamp _ -> PropName.DataTimestamp
+            | Editable _ -> PropName.Editable
+            | EndCell _ -> PropName.EndCell
+            | ExportColumns _ -> PropName.ExportColumns
+            | ExportFormat _ -> PropName.ExportFormat
+            | ExportHeaders _ -> PropName.ExportHeaders
+            | FillWidth _ -> PropName.FillWidth
+            | HiddenColumns _ -> PropName.HiddenColumns
+            | IsFocused _ -> PropName.IsFocused
+            | MergeDuplicateHeaders _ -> PropName.MergeDuplicateHeaders
+            | FixedColumns _ -> PropName.FixedColumns
+            | FixedRows _ -> PropName.FixedRows
+            | ColumnSelectable _ -> PropName.ColumnSelectable
+            | RowDeletable _ -> PropName.RowDeletable
+            | CellSelectable _ -> PropName.CellSelectable
+            | RowSelectable _ -> PropName.RowSelectable
+            | SelectedCells _ -> PropName.SelectedCells
+            | SelectedRows _ -> PropName.SelectedRows
+            | SelectedColumns _ -> PropName.SelectedColumns
+            | SelectedRowIds _ -> PropName.SelectedRowIds
+            | StartCell _ -> PropName.StartCell
+            | StyleAsListView _ -> PropName.StyleAsListView
+            | PageAction _ -> PropName.PageAction
+            | PageCurrent _ -> PropName.PageCurrent
+            | PageCount _ -> PropName.PageCount
+            | PageSize _ -> PropName.PageSize
+            | Dropdown _ -> PropName.Dropdown
+            | DropdownConditional _ -> PropName.DropdownConditional
+            | DropdownData _ -> PropName.DropdownData
+            | Tooltip _ -> PropName.Tooltip
+            | TooltipConditional _ -> PropName.TooltipConditional
+            | TooltipData _ -> PropName.TooltipData
+            | TooltipHeader _ -> PropName.TooltipHeader
+            | TooltipDelay _ -> PropName.TooltipDelay
+            | TooltipDuration _ -> PropName.TooltipDuration
+            | FilterQuery _ -> PropName.FilterQuery
+            | FilterAction _ -> PropName.FilterAction
+            | FilterOptions _ -> PropName.FilterOptions
+            | SortAction _ -> PropName.SortAction
+            | SortMode _ -> PropName.SortMode
+            | SortBy _ -> PropName.SortBy
+            | SortAsNull _ -> PropName.SortAsNull
+            | StyleTable _ -> PropName.StyleTable
+            | StyleCell _ -> PropName.StyleCell
+            | StyleData _ -> PropName.StyleData
+            | StyleFilter _ -> PropName.StyleFilter
+            | StyleHeader _ -> PropName.StyleHeader
+            | StyleCellConditional _ -> PropName.StyleCellConditional
+            | StyleDataConditional _ -> PropName.StyleDataConditional
+            | StyleFilterConditional _ -> PropName.StyleFilterConditional
+            | StyleHeaderConditional _ -> PropName.StyleHeaderConditional
+            | Virtualization _ -> PropName.Virtualization
+            | DerivedFilterQueryStructure _ -> PropName.DerivedFilterQueryStructure
+            | DerivedViewportData _ -> PropName.DerivedViewportData
+            | DerivedViewportIndices _ -> PropName.DerivedViewportIndices
+            | DerivedViewportRowIds _ -> PropName.DerivedViewportRowIds
+            | DerivedViewportSelectedColumns _ -> PropName.DerivedViewportSelectedColumns
+            | DerivedViewportSelectedRows _ -> PropName.DerivedViewportSelectedRows
+            | DerivedViewportSelectedRowIds _ -> PropName.DerivedViewportSelectedRowIds
+            | DerivedVirtualData _ -> PropName.DerivedVirtualData
+            | DerivedVirtualIndices _ -> PropName.DerivedVirtualIndices
+            | DerivedVirtualRowIds _ -> PropName.DerivedVirtualRowIds
+            | DerivedVirtualSelectedRows _ -> PropName.DerivedVirtualSelectedRows
+            | DerivedVirtualSelectedRowIds _ -> PropName.DerivedVirtualSelectedRowIds
+            | LoadingState _ -> PropName.LoadingState
+            | Persistence _ -> PropName.Persistence
+            | PersistedProps _ -> PropName.PersistedProps
+            | PersistenceType _ -> PropName.PersistenceType
+
         static member convert = function
             | ActiveCell p -> box p
             | Columns p -> box p
@@ -1256,43 +1776,43 @@ module DataTable =
             | DataTimestamp p -> box p
             | Editable p -> box p
             | EndCell p -> box p
-            | ExportColumns p -> Convert.fromDiscriminatedUnion p
-            | ExportFormat p -> Convert.fromDiscriminatedUnion p
-            | ExportHeaders p -> Convert.fromDiscriminatedUnion p
+            | ExportColumns p -> ExportColumnsType.convert p
+            | ExportFormat p -> MaybeExportFormat.convert p
+            | ExportHeaders p -> MaybeExportHeaders.convert p
             | FillWidth p -> box p
             | HiddenColumns p -> box p
             | IsFocused p -> box p
             | MergeDuplicateHeaders p -> box p
             | FixedColumns p -> box p
             | FixedRows p -> box p
-            | ColumnSelectable p -> Convert.fromDiscriminatedUnion p
+            | ColumnSelectable p -> Select.convert p
             | RowDeletable p -> box p
             | CellSelectable p -> box p
-            | RowSelectable p -> Convert.fromDiscriminatedUnion p
+            | RowSelectable p -> Select.convert p
             | SelectedCells p -> box p
             | SelectedRows p -> box p
             | SelectedColumns p -> box p
             | SelectedRowIds p -> box p
             | StartCell p -> box p
             | StyleAsListView p -> box p
-            | PageAction p -> Convert.fromDiscriminatedUnion p
+            | PageAction p -> MaybeActionType.convert p
             | PageCurrent p -> box p
             | PageCount p -> box p
             | PageSize p -> box p
             | Dropdown p -> box p
             | DropdownConditional p -> box p
             | DropdownData p -> box p
-            | Tooltip p -> Convert.fromMappedDiscriminatedUnions p
+            | Tooltip p -> p |> DU.convertMapped ColumnTooltip.convert
             | TooltipConditional p -> box p
-            | TooltipData p -> p |> Seq.map Convert.fromMappedDiscriminatedUnions |> box
-            | TooltipHeader p -> Convert.fromMappedDiscriminatedUnions p
+            | TooltipData p -> p |> Seq.map (DU.convertMapped DataTooltip.convert) |> box
+            | TooltipHeader p -> p |> DU.convertMapped HeaderTooltip.convert
             | TooltipDelay p -> box p
             | TooltipDuration p -> box p
             | FilterQuery p -> box p
-            | FilterAction p -> Convert.fromDiscriminatedUnion p
+            | FilterAction p -> FilterAction.convert p
             | FilterOptions p ->  box p
-            | SortAction p -> Convert.fromDiscriminatedUnion p
-            | SortMode p -> Convert.fromDiscriminatedUnion p
+            | SortAction p -> MaybeActionType.convert p
+            | SortMode p -> SortModeType.convert p
             | SortBy p -> box p
             | SortAsNull p -> box p
             | StyleTable p -> box p
@@ -1320,10 +1840,10 @@ module DataTable =
             | LoadingState p -> box p
             | Persistence p -> box p
             | PersistedProps p -> box p
-            | PersistenceType p -> Convert.fromDiscriminatedUnion p
+            | PersistenceType p -> PersistenceTypeOptions.convert p
 
-        static member toDynamicMemberDef(prop: Prop) =
-            prop |> Prop.toDynamicMemberPropName, Prop.convert prop
+        static member toDynamicMemberDef prop =
+            prop |> Prop.toPropName |> fun cp -> cp.toString(), Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -1335,7 +1855,7 @@ module DataTable =
         ///The row and column indices and IDs of the currently active cell.
         ///&#96;row_id&#96; is only returned if the data rows have an &#96;id&#96; key.
         ///</summary>
-        static member activeCell(p: ActiveCell) = Prop(ActiveCell p)
+        static member activeCell(p: Cell) = Prop(ActiveCell p)
         ///<summary>
         ///Columns describes various aspects about each individual column.
         ///&#96;name&#96; and &#96;id&#96; are the only required parameters.
@@ -1352,11 +1872,11 @@ module DataTable =
         ///This prop is derived from the [d3.formatLocale](https://github.com/d3/d3-format#formatLocale) data structure specification.
         ///When left unspecified, each individual nested prop will default to a pre-determined value.
         ///</summary>
-        static member localeFormat(p: LocaleFormat) = Prop(LocaleFormat p)
+        static member localeFormat(p: Locale) = Prop(LocaleFormat p)
         ///<summary>
         ///The &#96;markdown_options&#96; property allows customization of the markdown cells behavior.
         ///</summary>
-        static member markdownOptions(p: MarkdownOptions) = Prop(MarkdownOptions p)
+        static member markdownOptions(p: MarkdownOption) = Prop(MarkdownOptions p)
         ///<summary>
         ///The &#96;css&#96; property is a way to embed CSS selectors and rules
         ///onto the page.
@@ -1381,6 +1901,19 @@ module DataTable =
         ///]
         ///</summary>
         static member data(p: #seq<obj> ) = Prop(Data p)
+        ///<summary>
+        ///The contents of the table.
+        ///The keys of each item in data should match the column IDs.
+        ///Each item can also have an 'id' key, whose value is its row ID. If there
+        ///is a column with ID='id' this will display the row ID, otherwise it is
+        ///just used to reference the row for selections, filtering, etc.
+        ///Example:
+        ///[
+        ///     {'column-1': 4.5, 'column-2': 'montreal', 'column-3': 'canada'},
+        ///     {'column-1': 8, 'column-2': 'boston', 'column-3': 'america'}
+        ///]
+        ///</summary>
+        static member data(p: seq<Map<string, obj>>) = p |> Seq.map box |> Data |> Prop
         ///<summary>
         ///The previous state of &#96;data&#96;. &#96;data_previous&#96;
         ///has the same structure as &#96;data&#96; and it will be updated
@@ -1421,7 +1954,7 @@ module DataTable =
         ///If &#96;all&#96;, all columns will be used (visible + hidden). If &#96;visible&#96;,
         ///only the visible columns will be used. Defaults to &#96;visible&#96;.
         ///</summary>
-        static member exportColumns(p: ExportColumns) = Prop(ExportColumns p)
+        static member exportColumns(p: ExportColumnsType) = Prop(ExportColumns p)
         ///<summary>
         ///Denotes the type of the export data file,
         ///Defaults to &#96;'none'&#96;
@@ -1686,7 +2219,7 @@ module DataTable =
         ///through a callback (where &#96;filter_query&#96; or &#96;derived_filter_query_structure&#96; would be the input
         ///and &#96;data&#96; would be the output).
         ///</summary>
-        static member filterAction(p: MaybeActionType) = Prop(FilterAction(FilterAction.Type p))
+        static member filterAction(p: MaybeActionType) = Prop(FilterAction(Action p))
         ///<summary>
         ///The &#96;filter_action&#96; property controls the behavior of the &#96;filtering&#96; UI.
         ///If &#96;'none'&#96;, then the filtering UI is not displayed.
@@ -1698,7 +2231,7 @@ module DataTable =
         ///through a callback (where &#96;filter_query&#96; or &#96;derived_filter_query_structure&#96; would be the input
         ///and &#96;data&#96; would be the output).
         ///</summary>
-        static member filterAction(p: ConditionalFilterAction) = Prop(FilterAction(FilterAction.Conditional p))
+        static member filterAction(p: ConditionalFilterAction) = Prop(FilterAction(Conditional p))
         ///<summary>
         ///There are two &#96;filter_options&#96; props in the table.
         ///This is the table-level filter_options prop and there is
@@ -1733,7 +2266,7 @@ module DataTable =
         ///the columns were sorted through the UI.
         ///See [https://github.com/plotly/dash-table/issues/170](https://github.com/plotly/dash-table/issues/170)
         ///</summary>
-        static member sortMode(p: SortMode) = Prop(SortMode p)
+        static member sortMode(p: SortModeType) = Prop(SortMode p)
         ///<summary>
         ///&#96;sort_by&#96; describes the current state
         ///of the sorting UI.
@@ -1745,7 +2278,7 @@ module DataTable =
         ///sorting parameters, in the order in which they were
         ///clicked.
         ///</summary>
-        static member sortBy(p: #seq<SortBy>) = Prop(SortBy p)
+        static member sortBy(p: #seq<TableSortBy>) = Prop(SortBy p)
         ///<summary>
         ///An array of string, number and boolean values that are treated as &#96;None&#96;
         ///(i.e. ignored and always displayed last) when sorting.
@@ -2044,11 +2577,12 @@ module DataTable =
             ) =
             fun (dataTable: DataTable) ->
                 let props = DashComponentProps()
-                let inline setPropValueOpt   prop =
-                    DynObj.setPropValueOpt props prop Prop.convert
+                let setPropValueOpt prop =
+                    DynObj.setPropValueOpt props Prop.convert prop
 
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
+
                 setPropValueOpt ActiveCell activeCell
                 setPropValueOpt Columns columns
                 setPropValueOpt IncludeHeadersOnCopyPaste includeHeadersOnCopyPaste

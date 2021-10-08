@@ -1,9 +1,9 @@
 namespace Dash.NET.DCC
 
-open Dash.NET
 open System
 open DynamicObj
-open ComponentPropTypes
+open Dash.NET
+open Dash.NET.Common
 
 ///<summary>
 ///RadioItems is a component that encapsulates several radio item inputs.
@@ -13,6 +13,35 @@ open ComponentPropTypes
 ///</summary>
 [<RequireQualifiedAccess>]
 module RadioItems =
+    type PropName =
+        | ClassName
+        | Style
+        | Options
+        | Value
+        | InputClassName
+        | InputStyle
+        | LabelClassName
+        | LabelStyle
+        | LoadingState
+        | Persistence
+        | PersistedProps
+        | PersistenceType
+
+        member this.toString () =
+            match this with
+            | ClassName         -> "className"
+            | Style             -> "style"
+            | Options           -> "options"
+            | Value             -> "value"
+            | InputClassName    -> "inputClassName"
+            | InputStyle        -> "inputStyle"
+            | LabelClassName    -> "labelClassName"
+            | LabelStyle        -> "labelStyle"
+            | LoadingState      -> "loading_state"
+            | Persistence       -> "persistence"
+            | PersistedProps    -> "persisted_props"
+            | PersistenceType   -> "persistence_type"
+
     ///<summary>
     ///• options (list with values of type: record with the fields: 'label: string | number (required)', 'value: string | number (required)', 'disabled: boolean (optional)'; default []) - An array of options
     ///&#10;
@@ -63,20 +92,38 @@ module RadioItems =
         | Persistence of IConvertible
         | PersistedProps of string []
         | PersistenceType of PersistenceTypeOptions
-        static member toDynamicMemberDef (prop:Prop) =
-            match prop with
-            | ClassName         p   -> "className"          , box p
-            | Style             p   -> "style"              , box p
-            | Options           p   -> "options"            , box p
-            | Value             p   -> "value"              , box p
-            | InputClassName    p   -> "inputClassName"     , box p
-            | InputStyle        p   -> "inputStyle"         , box p
-            | LabelClassName    p   -> "labelClassName"     , box p
-            | LabelStyle        p   -> "labelStyle"         , box p
-            | LoadingState      p   -> "loading_state"      , box p
-            | Persistence       p   -> "persistence"        , box p
-            | PersistedProps    p   -> "persisted_props"    , box p
-            | PersistenceType   p   -> "persistence_type"   , PersistenceTypeOptions.convert p
+
+        static member convert = function
+            | ClassName         p   -> box p
+            | Style             p   -> box p
+            | Options           p   -> box p
+            | Value             p   -> box p
+            | InputClassName    p   -> box p
+            | InputStyle        p   -> box p
+            | LabelClassName    p   -> box p
+            | LabelStyle        p   -> box p
+            | LoadingState      p   -> box p
+            | Persistence       p   -> box p
+            | PersistedProps    p   -> box p
+            | PersistenceType   p   -> PersistenceTypeOptions.convert p
+
+        static member toPropName = function
+            | ClassName         _   -> PropName.ClassName
+            | Style             _   -> PropName.Style
+            | Options           _   -> PropName.Options
+            | Value             _   -> PropName.Value
+            | InputClassName    _   -> PropName.InputClassName
+            | InputStyle        _   -> PropName.InputStyle
+            | LabelClassName    _   -> PropName.LabelClassName
+            | LabelStyle        _   -> PropName.LabelStyle
+            | LoadingState      _   -> PropName.LoadingState
+            | Persistence       _   -> PropName.Persistence
+            | PersistedProps    _   -> PropName.PersistedProps
+            | PersistenceType   _   -> PropName.PersistenceType
+
+        static member toDynamicMemberDef prop =
+            prop |> Prop.toPropName |> fun cp -> cp.toString()
+            , Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -203,20 +250,23 @@ module RadioItems =
             ) =
             (fun (t: RadioItems) ->
                 let props = DashComponentProps()
+                let setPropValueOpt prop =
+                    DynObj.setPropValueOpt props Prop.convert prop
+
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "options" (options |> Option.map box)
-                DynObj.setValueOpt props "value" (value |> Option.map box)
-                DynObj.setValueOpt props "style" (style |> Option.map box)
-                DynObj.setValueOpt props "className" (className |> Option.map box)
-                DynObj.setValueOpt props "inputStyle" (inputStyle |> Option.map box)
-                DynObj.setValueOpt props "inputClassName" (inputClassName |> Option.map box)
-                DynObj.setValueOpt props "labelStyle" (labelStyle |> Option.map box)
-                DynObj.setValueOpt props "labelClassName" (labelClassName |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
-                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
-                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
-                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
+                setPropValueOpt Options options
+                setPropValueOpt Value value
+                setPropValueOpt Style style
+                setPropValueOpt ClassName className
+                setPropValueOpt InputStyle inputStyle
+                setPropValueOpt InputClassName inputClassName
+                setPropValueOpt LabelStyle labelStyle
+                setPropValueOpt LabelClassName labelClassName
+                setPropValueOpt LoadingState loadingState
+                setPropValueOpt Persistence persistence
+                setPropValueOpt PersistedProps persistedProps
+                setPropValueOpt PersistenceType persistenceType
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "RadioItems"

@@ -3,12 +3,84 @@ namespace Dash.NET.DCC
 open System
 open DynamicObj
 open Dash.NET
+open Dash.NET.Common
 
 ///<summary>
 ///A basic HTML textarea for entering multiline text.
 ///</summary>
 [<RequireQualifiedAccess>]
 module Textarea =
+    type PropName =
+        | Value
+        | AutoFocus
+        | Cols
+        | Disabled
+        | Form
+        | MaxLength
+        | MinLength
+        | Name
+        | Placeholder
+        | ReadOnly
+        | Required
+        | Rows
+        | Wrap
+        | AccessKey
+        | ClassName
+        | ContentEditable
+        | ContextMenu
+        | Dir
+        | Draggable
+        | Hidden
+        | Lang
+        | SpellCheck
+        | Style
+        | TabIndex
+        | Title
+        | NBlur
+        | NBlurTimestamp
+        | NClicks
+        | NClicksTimestamp
+        | LoadingState
+        | Persistence
+        | PersistedProps
+        | PersistenceType
+
+        member this.toString () =
+            match this with
+            | Value             -> "value"
+            | AutoFocus         -> "autoFocus"
+            | Cols              -> "cols"
+            | Disabled          -> "disabled"
+            | Form              -> "form"
+            | MaxLength         -> "maxLength"
+            | MinLength         -> "minLength"
+            | Name              -> "name"
+            | Placeholder       -> "placeholder"
+            | ReadOnly          -> "readOnly"
+            | Required          -> "required"
+            | Rows              -> "rows"
+            | Wrap              -> "wrap"
+            | AccessKey         -> "accessKey"
+            | ClassName         -> "className"
+            | ContentEditable   -> "contentEditable"
+            | ContextMenu       -> "contextMenu"
+            | Dir               -> "dir"
+            | Draggable         -> "draggable"
+            | Hidden            -> "hidden"
+            | Lang              -> "lang"
+            | SpellCheck        -> "spellCheck"
+            | Style             -> "style"
+            | TabIndex          -> "tabIndex"
+            | Title             -> "title"
+            | NBlur             -> "n_blur"
+            | NBlurTimestamp    -> "n_blur_timestamp"
+            | NClicks           -> "n_clicks"
+            | NClicksTimestamp  -> "n_clicks_timestamp"
+            | LoadingState      -> "loading_state"
+            | Persistence       -> "persistence"
+            | PersistedProps    -> "persisted_props"
+            | PersistenceType   -> "persistence_type"
+
     ///<summary>
     ///• value (string) - The value of the textarea
     ///&#10;
@@ -126,41 +198,80 @@ module Textarea =
         | Persistence of IConvertible
         | PersistedProps of string []
         | PersistenceType of PersistenceTypeOptions
-        static member toDynamicMemberDef(prop: Prop) =
-            match prop with
-            | Value (p) -> "value", box p
-            | AutoFocus (p) -> "autoFocus", box p
-            | Cols (p) -> "cols", box p
-            | Disabled (p) -> "disabled", box p
-            | Form (p) -> "form", box p
-            | MaxLength (p) -> "maxLength", box p
-            | MinLength (p) -> "minLength", box p
-            | Name (p) -> "name", box p
-            | Placeholder (p) -> "placeholder", box p
-            | ReadOnly (p) -> "readOnly", box p
-            | Required (p) -> "required", box p
-            | Rows (p) -> "rows", box p
-            | Wrap (p) -> "wrap", box p
-            | AccessKey (p) -> "accessKey", box p
-            | ClassName (p) -> "className", box p
-            | ContentEditable (p) -> "contentEditable", box p
-            | ContextMenu (p) -> "contextMenu", box p
-            | Dir (p) -> "dir", box p
-            | Draggable (p) -> "draggable", box p
-            | Hidden (p) -> "hidden", box p
-            | Lang (p) -> "lang", box p
-            | SpellCheck (p) -> "spellCheck", box p
-            | Style (p) -> "style", box p
-            | TabIndex (p) -> "tabIndex", box p
-            | Title (p) -> "title", box p
-            | NBlur (p) -> "n_blur", box p
-            | NBlurTimestamp (p) -> "n_blur_timestamp", box p
-            | NClicks (p) -> "n_clicks", box p
-            | NClicksTimestamp (p) -> "n_clicks_timestamp", box p
-            | LoadingState (p) -> "loading_state", box p
-            | Persistence (p) -> "persistence", box p
-            | PersistedProps (p) -> "persisted_props", box p
-            | PersistenceType p -> "persistence_type", PersistenceTypeOptions.convert p
+
+        static member convert = function
+            | Value             p -> box p
+            | AutoFocus         p -> box p
+            | Cols              p -> box p
+            | Disabled          p -> box p
+            | Form              p -> box p
+            | MaxLength         p -> box p
+            | MinLength         p -> box p
+            | Name              p -> box p
+            | Placeholder       p -> box p
+            | ReadOnly          p -> box p
+            | Required          p -> box p
+            | Rows              p -> box p
+            | Wrap              p -> box p
+            | AccessKey         p -> box p
+            | ClassName         p -> box p
+            | ContentEditable   p -> box p
+            | ContextMenu       p -> box p
+            | Dir               p -> box p
+            | Draggable         p -> box p
+            | Hidden            p -> box p
+            | Lang              p -> box p
+            | SpellCheck        p -> box p
+            | Style             p -> box p
+            | TabIndex          p -> box p
+            | Title             p -> box p
+            | NBlur             p -> box p
+            | NBlurTimestamp    p -> box p
+            | NClicks           p -> box p
+            | NClicksTimestamp  p -> box p
+            | LoadingState      p -> box p
+            | Persistence       p -> box p
+            | PersistedProps    p -> box p
+            | PersistenceType   p -> PersistenceTypeOptions.convert p
+
+        static member toPropName = function
+            | Value             _ -> PropName.Value
+            | AutoFocus         _ -> PropName.AutoFocus
+            | Cols              _ -> PropName.Cols
+            | Disabled          _ -> PropName.Disabled
+            | Form              _ -> PropName.Form
+            | MaxLength         _ -> PropName.MaxLength
+            | MinLength         _ -> PropName.MinLength
+            | Name              _ -> PropName.Name
+            | Placeholder       _ -> PropName.Placeholder
+            | ReadOnly          _ -> PropName.ReadOnly
+            | Required          _ -> PropName.Required
+            | Rows              _ -> PropName.Rows
+            | Wrap              _ -> PropName.Wrap
+            | AccessKey         _ -> PropName.AccessKey
+            | ClassName         _ -> PropName.ClassName
+            | ContentEditable   _ -> PropName.ContentEditable
+            | ContextMenu       _ -> PropName.ContextMenu
+            | Dir               _ -> PropName.Dir
+            | Draggable         _ -> PropName.Draggable
+            | Hidden            _ -> PropName.Hidden
+            | Lang              _ -> PropName.Lang
+            | SpellCheck        _ -> PropName.SpellCheck
+            | Style             _ -> PropName.Style
+            | TabIndex          _ -> PropName.TabIndex
+            | Title             _ -> PropName.Title
+            | NBlur             _ -> PropName.NBlur
+            | NBlurTimestamp    _ -> PropName.NBlurTimestamp
+            | NClicks           _ -> PropName.NClicks
+            | NClicksTimestamp  _ -> PropName.NClicksTimestamp
+            | LoadingState      _ -> PropName.LoadingState
+            | Persistence       _ -> PropName.Persistence
+            | PersistedProps    _ -> PropName.PersistedProps
+            | PersistenceType   _ -> PropName.PersistenceType
+
+        static member toDynamicMemberDef prop =
+            prop |> Prop.toPropName |> fun cp -> cp.toString()
+            , Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -355,7 +466,7 @@ module Textarea =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = Children([ Html.text value ])
+        static member children(value: Guid) = Children([ Html.text value ])
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -414,41 +525,44 @@ module Textarea =
             ) =
             (fun (t: Textarea) ->
                 let props = DashComponentProps()
+                let setPropValueOpt prop =
+                    DynObj.setPropValueOpt props Prop.convert prop
+
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "value" (value |> Option.map box)
-                DynObj.setValueOpt props "autoFocus" (autoFocus |> Option.map box)
-                DynObj.setValueOpt props "cols" (cols |> Option.map box)
-                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
-                DynObj.setValueOpt props "form" (form |> Option.map box)
-                DynObj.setValueOpt props "maxLength" (maxLength |> Option.map box)
-                DynObj.setValueOpt props "minLength" (minLength |> Option.map box)
-                DynObj.setValueOpt props "name" (name |> Option.map box)
-                DynObj.setValueOpt props "placeholder" (placeholder |> Option.map box)
-                DynObj.setValueOpt props "readOnly" (readOnly |> Option.map box)
-                DynObj.setValueOpt props "required" (required |> Option.map box)
-                DynObj.setValueOpt props "rows" (rows |> Option.map box)
-                DynObj.setValueOpt props "wrap" (wrap |> Option.map box)
-                DynObj.setValueOpt props "accessKey" (accessKey |> Option.map box)
-                DynObj.setValueOpt props "className" (className |> Option.map box)
-                DynObj.setValueOpt props "contentEditable" (contentEditable |> Option.map box)
-                DynObj.setValueOpt props "contextMenu" (contextMenu |> Option.map box)
-                DynObj.setValueOpt props "dir" (dir |> Option.map box)
-                DynObj.setValueOpt props "draggable" (draggable |> Option.map box)
-                DynObj.setValueOpt props "hidden" (hidden |> Option.map box)
-                DynObj.setValueOpt props "lang" (lang |> Option.map box)
-                DynObj.setValueOpt props "spellCheck" (spellCheck |> Option.map box)
-                DynObj.setValueOpt props "style" (style |> Option.map box)
-                DynObj.setValueOpt props "tabIndex" (tabIndex |> Option.map box)
-                DynObj.setValueOpt props "title" (title |> Option.map box)
-                DynObj.setValueOpt props "nBlur" (nBlur |> Option.map box)
-                DynObj.setValueOpt props "nBlurTimestamp" (nBlurTimestamp |> Option.map box)
-                DynObj.setValueOpt props "nClicks" (nClicks |> Option.map box)
-                DynObj.setValueOpt props "nClicksTimestamp" (nClicksTimestamp |> Option.map box)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
-                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
-                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
-                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
+                setPropValueOpt Value value
+                setPropValueOpt AutoFocus autoFocus
+                setPropValueOpt Cols cols
+                setPropValueOpt Disabled disabled
+                setPropValueOpt Form form
+                setPropValueOpt MaxLength maxLength
+                setPropValueOpt MinLength minLength
+                setPropValueOpt Name name
+                setPropValueOpt Placeholder placeholder
+                setPropValueOpt ReadOnly readOnly
+                setPropValueOpt Required required
+                setPropValueOpt Rows rows
+                setPropValueOpt Wrap wrap
+                setPropValueOpt AccessKey accessKey
+                setPropValueOpt ClassName className
+                setPropValueOpt ContentEditable contentEditable
+                setPropValueOpt ContextMenu contextMenu
+                setPropValueOpt Dir dir
+                setPropValueOpt Draggable draggable
+                setPropValueOpt Hidden hidden
+                setPropValueOpt Lang lang
+                setPropValueOpt SpellCheck spellCheck
+                setPropValueOpt Style style
+                setPropValueOpt TabIndex tabIndex
+                setPropValueOpt Title title
+                setPropValueOpt NBlur nBlur
+                setPropValueOpt NBlurTimestamp nBlurTimestamp
+                setPropValueOpt NClicks nClicks
+                setPropValueOpt NClicksTimestamp nClicksTimestamp
+                setPropValueOpt LoadingState loadingState
+                setPropValueOpt Persistence persistence
+                setPropValueOpt PersistedProps persistedProps
+                setPropValueOpt PersistenceType persistenceType
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Textarea"
