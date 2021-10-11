@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Plotly</Authors>
+    <Authors>Kevin Schneider, Plotly</Authors>
     <Summary>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F#. This package contains the core implementation of dash for .NET such as callbacks, html and core components.</Summary>
     <Description>Dotnet interface for Dash - the most downloaded framework for building ML and data science web apps - written in F#. This package contains the core implementation of dash for .NET such as callbacks, html and core components.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

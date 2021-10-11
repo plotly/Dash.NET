@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Plotly</Authors>
+    <Authors>Kevin Schneider, Plotly</Authors>
     <Description>Giraffe backend implementation for Dash.NET</Description>
     <Summary>Giraffe backend implementation for Dash.NET</Summary>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
