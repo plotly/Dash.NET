@@ -76,7 +76,7 @@ type DashApp with
             clearResponse >=> setStatusCode 500 >=> (config.ErrorHandler ex)
 
         let configureCors (builder : CorsPolicyBuilder) =
-            builder.WithOrigins(sprintf "http://%s:5001" config.HostName)
+            builder.WithOrigins(sprintf "http://%s:%d" config.HostName config.Port)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     |> ignore
@@ -86,7 +86,6 @@ type DashApp with
             (match env.EnvironmentName with
             | "Development" -> appBuilder.UseDeveloperExceptionPage()
             | _ -> appBuilder.UseGiraffeErrorHandler(errorHandler))
-                    .UseHttpsRedirection()
                     .UseCors(configureCors)
                     .UseStaticFiles()
                     .UseGiraffe(DashApp.toHttpHandler loadedApp)
@@ -136,6 +135,8 @@ let generateLayoutEndpointTest name message expected (layout:DashComponent) =
     
     let testConfig = {
         HostName = "localhost"
+        IpAddress = "127.0.0.1"
+        Port = 5000
         LogLevel = LogLevel.Debug
         ErrorHandler = (fun ex -> text ex.Message)
         }

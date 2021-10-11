@@ -38,8 +38,11 @@ let main argv =
     DashApp.initDefault()
     |> DashApp.withLayout myLayout
 
+  // To listen in all IP addresses set IpAddress = "*"
   let config = 
     { HostName = "localhost"
+    ; IpAddress = "*"
+    ; Port = 8000
     ; LogLevel = LogLevel.Debug
     ; ErrorHandler = (fun ex -> text ex.Message) }
 
