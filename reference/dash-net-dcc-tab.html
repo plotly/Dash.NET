@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Tab (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -90,6 +90,9 @@
     <div>
       <p class="fsdocs-summary">
         
+Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
+Its children will be set as the content of that tab, which if clicked will become visible.
+
       </p>
     </div>
   </div>
@@ -112,6 +115,102 @@
         <tr>
           <td class="fsdocs-entity-name">
             <p>
+              <a name="Attr">
+                <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-attr.html">
+                  Attr
+                </a>
+              </a>
+            </p>
+          </td>
+          <td class="fsdocs-entity-xmldoc">
+            <div>
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Tab.Attr`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Tab.Attr\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L66-66" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+A list of children or a property for this dash component
+
+              </p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-entity-name">
+            <p>
+              <a name="Prop">
+                <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-prop.html">
+                  Prop
+                </a>
+              </a>
+            </p>
+          </td>
+          <td class="fsdocs-entity-xmldoc">
+            <div>
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Tab.Prop`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Tab.Prop\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L38-38" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+• label (string) - The tab's label
+
+
+• children (a list of or a singular dash component, string or number) - The content of the tab - will only be displayed if this tab is selected
+
+
+• value (string) - Value for determining which Tab is currently selected
+
+
+• disabled (boolean; default false) - Determines if tab is disabled or not - defaults to false
+
+
+• disabled_style (record; default {
+    color: '#d6d6d6',
+}) - Overrides the default (inline) styles when disabled
+
+
+• disabled_className (string) - Appends a class to the Tab component when it is disabled.
+
+
+• className (string) - Appends a class to the Tab component.
+
+
+• selected_className (string) - Appends a class to the Tab component when it is selected.
+
+
+• style (record) - Overrides the default (inline) styles for the Tab component.
+
+
+• selected_style (record) - Overrides the default (inline) styles for the Tab component when it is selected.
+
+
+• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
+
+              </p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-entity-name">
+            <p>
               <a name="Tab">
                 <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-tab.html">
                   Tab
@@ -129,42 +228,15 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L45-45" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L142-142" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
               <p class="fsdocs-summary">
                 
-              </p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-entity-name">
-            <p>
-              <a name="TabProps">
-                <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-tabprops.html">
-                  TabProps
-                </a>
-              </a>
-            </p>
-          </td>
-          <td class="fsdocs-entity-xmldoc">
-            <div>
-              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Tab.TabProps`')">
-                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
-              </div>
-              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Tab.TabProps\'/>')">
-                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
-              </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L20-20" class="fsdocs-source-link" title="Source on GitHub">
-                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-              </a>
-              <p class="fsdocs-summary">
-                
+Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
+Its children will be set as the content of that tab, which if clicked will become visible.
+
               </p>
             </div>
           </td>
@@ -191,19 +263,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
+              <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
                 <p>
                   <a id="tab">
                     <a href="#tab">
-                      <code><span>Tab.tab&#32;<span>id&#32;props&#32;children</span></span></code>
+                      <code><span>Tab.tab&#32;<span>id&#32;attrs</span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="25">
+              <div class="fsdocs-tip" id="35">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Tab.tab&#32;<span>id&#32;props&#32;children</span></span></code>
+                  <code><span>Tab.tab&#32;<span>id&#32;attrs</span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -218,18 +290,10 @@
                     <br/>
                     <span>
                       <b>
-                        props
+                        attrs
                       </b>
                       :
-                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-tabprops.html">TabProps</a>&gt;</span></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        children
-                      </b>
-                      :
-                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a>&gt;</span></code>
+                      <code><span><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-attr.html">Attr</a>&#32;list</span></code>
                     </span>
                     <br/>
                   </ul>
@@ -253,12 +317,58 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L119-119" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L242-242" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
               <p class="fsdocs-summary">
                 
+Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
+Its children will be set as the content of that tab, which if clicked will become visible.
+
+
+Properties:
+
+
+• id (string) - The ID of this component, used to identify dash components
+in callbacks. The ID needs to be unique across all of the
+components in an app.
+
+
+• label (string) - The tab's label
+
+
+• children (a list of or a singular dash component, string or number) - The content of the tab - will only be displayed if this tab is selected
+
+
+• value (string) - Value for determining which Tab is currently selected
+
+
+• disabled (boolean; default false) - Determines if tab is disabled or not - defaults to false
+
+
+• disabled_style (record; default {
+    color: '#d6d6d6',
+}) - Overrides the default (inline) styles when disabled
+
+
+• disabled_className (string) - Appends a class to the Tab component when it is disabled.
+
+
+• className (string) - Appends a class to the Tab component.
+
+
+• selected_className (string) - Appends a class to the Tab component when it is selected.
+
+
+• style (record) - Overrides the default (inline) styles for the Tab component.
+
+
+• selected_style (record) - Overrides the default (inline) styles for the Tab component when it is selected.
+
+
+• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
+
               </p>
             </div>
             <dl class="fsdocs-params">
@@ -272,18 +382,10 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  props
+                  attrs
                 </span>
                 :
-                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-tabprops.html">TabProps</a>&gt;</span></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  children
-                </span>
-                :
-                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a>&gt;</span></code>
+                <code><span><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-tab-attr.html">Attr</a>&#32;list</span></code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
             </dl>

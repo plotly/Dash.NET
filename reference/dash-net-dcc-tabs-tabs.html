@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Tabs (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -104,6 +104,10 @@
     <div>
       <p class="fsdocs-summary">
         
+A Dash component that lets you render pages with tabs - the Tabs component's children
+can be dcc.Tab components, which can hold a label that will be displayed as a tab, and can in turn hold
+children components that will be that tab's content.
+
       </p>
     </div>
   </div>
@@ -132,7 +136,7 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '447', 447)" onmouseover="showTip(event, '447', 447)">
+              <code onmouseout="hideTip(event, '1285', 1285)" onmouseover="showTip(event, '1285', 1285)">
                 <p>
                   <a id="( .ctor )">
                     <a href="#( .ctor )">
@@ -141,7 +145,7 @@
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="447">
+              <div class="fsdocs-tip" id="1285">
                 <div class="member-tooltip">
                   Full Usage: 
                   <code><span>Tabs<span>()</span></span></code>
@@ -166,7 +170,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L54-54" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L211-211" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -208,19 +212,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '448', 448)" onmouseover="showTip(event, '448', 448)">
+              <code onmouseout="hideTip(event, '1286', 1286)" onmouseover="showTip(event, '1286', 1286)">
                 <p>
                   <a id="applyMembers">
                     <a href="#applyMembers">
-                      <code><span>Tabs.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Value,&#32;?ContentClassName,&#32;?ParentClassName,&#32;?ParentStyle,&#32;?ContentStyle,&#32;?Vertical,&#32;?MobileBreakpoint,&#32;?Colors,&#32;?LoadingState,&#32;?Persistence,&#32;?PersistedProps,&#32;?PersistenceType</span>)</span></span></span></code>
+                      <code><span>Tabs.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?value,&#32;?className,&#32;?contentClassName,&#32;?parentClassName,&#32;?style,&#32;?parentStyle,&#32;?contentStyle,&#32;?vertical,&#32;?mobileBreakpoint,&#32;?colors,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="448">
+              <div class="fsdocs-tip" id="1286">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Tabs.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Value,&#32;?ContentClassName,&#32;?ParentClassName,&#32;?ParentStyle,&#32;?ContentStyle,&#32;?Vertical,&#32;?MobileBreakpoint,&#32;?Colors,&#32;?LoadingState,&#32;?Persistence,&#32;?PersistedProps,&#32;?PersistenceType</span>)</span></span></span></code>
+                  <code><span>Tabs.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?value,&#32;?className,&#32;?contentClassName,&#32;?parentClassName,&#32;?style,&#32;?parentStyle,&#32;?contentStyle,&#32;?vertical,&#32;?mobileBreakpoint,&#32;?colors,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -243,7 +247,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassName
+                        ?value
                       </b>
                       :
                       <code>string</code>
@@ -251,7 +255,31 @@
                     <br/>
                     <span>
                       <b>
-                        ?Style
+                        ?className
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?contentClassName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?parentClassName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?style
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -259,31 +287,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Value
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ContentClassName
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ParentClassName
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ParentStyle
+                        ?parentStyle
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -291,7 +295,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ContentStyle
+                        ?contentStyle
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -299,7 +303,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Vertical
+                        ?vertical
                       </b>
                       :
                       <code>bool</code>
@@ -307,7 +311,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?MobileBreakpoint
+                        ?mobileBreakpoint
                       </b>
                       :
                       <code>float</code>
@@ -315,7 +319,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Colors
+                        ?colors
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a></code>
@@ -323,7 +327,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?LoadingState
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -331,7 +335,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Persistence
+                        ?persistence
                       </b>
                       :
                       <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
@@ -339,7 +343,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?PersistedProps
+                        ?persistedProps
                       </b>
                       :
                       <code><span>string[]</span></code>
@@ -347,7 +351,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?PersistenceType
+                        ?persistenceType
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
@@ -374,7 +378,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L56-56" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L213-213" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -401,7 +405,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?value
                 </span>
                 :
                 <code>string</code>
@@ -409,7 +413,31 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Style
+                  ?className
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?contentClassName
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?parentClassName
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?style
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -417,31 +445,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Value
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ContentClassName
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ParentClassName
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ParentStyle
+                  ?parentStyle
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -449,7 +453,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ContentStyle
+                  ?contentStyle
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -457,7 +461,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Vertical
+                  ?vertical
                 </span>
                 :
                 <code>bool</code>
@@ -465,7 +469,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?MobileBreakpoint
+                  ?mobileBreakpoint
                 </span>
                 :
                 <code>float</code>
@@ -473,7 +477,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Colors
+                  ?colors
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a></code>
@@ -481,7 +485,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -489,7 +493,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Persistence
+                  ?persistence
                 </span>
                 :
                 <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
@@ -497,7 +501,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?PersistedProps
+                  ?persistedProps
                 </span>
                 :
                 <code><span>string[]</span></code>
@@ -505,7 +509,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?PersistenceType
+                  ?persistenceType
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
@@ -526,19 +530,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '449', 449)" onmouseover="showTip(event, '449', 449)">
+              <code onmouseout="hideTip(event, '1287', 1287)" onmouseover="showTip(event, '1287', 1287)">
                 <p>
                   <a id="init">
                     <a href="#init">
-                      <code><span>Tabs.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Value,&#32;?ContentClassName,&#32;?ParentClassName,&#32;?ParentStyle,&#32;?ContentStyle,&#32;?Vertical,&#32;?MobileBreakpoint,&#32;?Colors,&#32;?LoadingState,&#32;?Persistence,&#32;?PersistedProps,&#32;?PersistenceType</span>)</span></span></span></code>
+                      <code><span>Tabs.init&#32;<span><span>(<span>id,&#32;children,&#32;?value,&#32;?className,&#32;?contentClassName,&#32;?parentClassName,&#32;?style,&#32;?parentStyle,&#32;?contentStyle,&#32;?vertical,&#32;?mobileBreakpoint,&#32;?colors,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="449">
+              <div class="fsdocs-tip" id="1287">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Tabs.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Value,&#32;?ContentClassName,&#32;?ParentClassName,&#32;?ParentStyle,&#32;?ContentStyle,&#32;?Vertical,&#32;?MobileBreakpoint,&#32;?Colors,&#32;?LoadingState,&#32;?Persistence,&#32;?PersistedProps,&#32;?PersistenceType</span>)</span></span></span></code>
+                  <code><span>Tabs.init&#32;<span><span>(<span>id,&#32;children,&#32;?value,&#32;?className,&#32;?contentClassName,&#32;?parentClassName,&#32;?style,&#32;?parentStyle,&#32;?contentStyle,&#32;?vertical,&#32;?mobileBreakpoint,&#32;?colors,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -561,7 +565,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassName
+                        ?value
                       </b>
                       :
                       <code>string</code>
@@ -569,7 +573,31 @@
                     <br/>
                     <span>
                       <b>
-                        ?Style
+                        ?className
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?contentClassName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?parentClassName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?style
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -577,31 +605,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Value
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ContentClassName
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ParentClassName
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ParentStyle
+                        ?parentStyle
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -609,7 +613,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ContentStyle
+                        ?contentStyle
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -617,7 +621,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Vertical
+                        ?vertical
                       </b>
                       :
                       <code>bool</code>
@@ -625,7 +629,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?MobileBreakpoint
+                        ?mobileBreakpoint
                       </b>
                       :
                       <code>float</code>
@@ -633,7 +637,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Colors
+                        ?colors
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a></code>
@@ -641,7 +645,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?LoadingState
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -649,7 +653,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Persistence
+                        ?persistence
                       </b>
                       :
                       <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
@@ -657,7 +661,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?PersistedProps
+                        ?persistedProps
                       </b>
                       :
                       <code><span>string[]</span></code>
@@ -665,7 +669,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?PersistenceType
+                        ?persistenceType
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
@@ -692,7 +696,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L105-105" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L255-255" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -719,7 +723,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?value
                 </span>
                 :
                 <code>string</code>
@@ -727,7 +731,31 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Style
+                  ?className
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?contentClassName
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?parentClassName
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?style
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -735,31 +763,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Value
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ContentClassName
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ParentClassName
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ParentStyle
+                  ?parentStyle
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -767,7 +771,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ContentStyle
+                  ?contentStyle
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -775,7 +779,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Vertical
+                  ?vertical
                 </span>
                 :
                 <code>bool</code>
@@ -783,7 +787,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?MobileBreakpoint
+                  ?mobileBreakpoint
                 </span>
                 :
                 <code>float</code>
@@ -791,7 +795,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Colors
+                  ?colors
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a></code>
@@ -799,7 +803,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -807,7 +811,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Persistence
+                  ?persistence
                 </span>
                 :
                 <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
@@ -815,7 +819,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?PersistedProps
+                  ?persistedProps
                 </span>
                 :
                 <code><span>string[]</span></code>
@@ -823,7 +827,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?PersistenceType
+                  ?persistenceType
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>

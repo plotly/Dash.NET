@@ -1,0 +1,2855 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>DataTable (Dash.NET)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Kevin Schneider, Plotly">
+    <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://plotly.github.io/Dash.NET/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://plotly.github.io/Dash.NET/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="searchbox" id="fsdocs-searchbox">
+                            <label for="search-by">
+                                <i class="fas fa-search"></i>
+                            </label>
+                            <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                            <span data-search-clear="">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/blob/dev/LICENSE">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/">Source Repository</a></li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://plotly.github.io/Dash.NET/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    <div>
+  <h2>
+    DataTable.DataTable Type
+  </h2>
+  <dl class="fsdocs-metadata">
+    <dt>
+      Namespace: 
+      <a href="https://plotly.github.io/Dash.NET/reference/dash-net.html">
+        Dash.NET
+      </a>
+    </dt>
+    <dt>
+      Assembly: Dash.NET.dll
+    </dt>
+    <dt>
+      Parent Module: 
+      <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable.html">
+        DataTable
+      </a>
+    </dt>
+    <dt>
+      Base Type: 
+      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a></code>
+    </dt>
+    <dt>
+      All Interfaces: 
+      <code><a href="https://docs.microsoft.com/dotnet/api/system.dynamic.idynamicmetaobjectprovider">IDynamicMetaObjectProvider</a></code>
+    </dt>
+  </dl>
+  <div class="fsdocs-xmldoc">
+    <div>
+      <p class="fsdocs-summary">
+        
+Dash DataTable is an interactive table component designed for
+designed for viewing, editing, and exploring large datasets.
+DataTable is rendered with standard, semantic HTML <table/> markup,
+which makes it accessible, responsive, and easy to style. This
+component was written from scratch in React.js specifically for the
+Dash community. Its API was designed to be ergonomic and its behavior
+is completely customizable through its properties.
+
+      </p>
+    </div>
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div>
+    <h3>
+      Constructors
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Constructor
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '242', 242)" onmouseover="showTip(event, '242', 242)">
+                <p>
+                  <a id="( .ctor )">
+                    <a href="#( .ctor )">
+                      <code><span>DataTable<span>()</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="242">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>DataTable<span>()</span></span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.DashTable.DataTable.DataTable.#ctor`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.DashTable.DataTable.DataTable.#ctor\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/DashTable.fs#L2419-2419" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a></code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div></div>
+  <div>
+    <h3>
+      Static members
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Static member
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '243', 243)" onmouseover="showTip(event, '243', 243)">
+                <p>
+                  <a id="applyMembers">
+                    <a href="#applyMembers">
+                      <code><span>DataTable.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?activeCell,&#32;?columns,&#32;?includeHeadersOnCopyPaste,&#32;?localeFormat,&#32;?markdownOptions,&#32;?css,&#32;?data,&#32;?dataPrevious,&#32;?dataTimestamp,&#32;?editable,&#32;?endCell,&#32;?exportColumns,&#32;?exportFormat,&#32;?exportHeaders,&#32;?fillWidth,&#32;?hiddenColumns,&#32;?isFocused,&#32;?mergeDuplicateHeaders,&#32;?fixedColumns,&#32;?fixedRows,&#32;?columnSelectable,&#32;?rowDeletable,&#32;?cellSelectable,&#32;?rowSelectable,&#32;?selectedCells,&#32;?selectedRows,&#32;?selectedColumns,&#32;?selectedRowIds,&#32;?startCell,&#32;?styleAsListView,&#32;?pageAction,&#32;?pageCurrent,&#32;?pageCount,&#32;?pageSize,&#32;?dropdown,&#32;?dropdownConditional,&#32;?dropdownData,&#32;?tooltip,&#32;?tooltipConditional,&#32;?tooltipData,&#32;?tooltipHeader,&#32;?tooltipDelay,&#32;?tooltipDuration,&#32;?filterQuery,&#32;?filterAction,&#32;?filterOptions,&#32;?sortAction,&#32;?sortMode,&#32;?sortBy,&#32;?sortAsNull,&#32;?styleTable,&#32;?styleCell,&#32;?styleData,&#32;?styleFilter,&#32;?styleHeader,&#32;?styleCellConditional,&#32;?styleDataConditional,&#32;?styleFilterConditional,&#32;?styleHeaderConditional,&#32;?virtualization,&#32;?derivedFilterQueryStructure,&#32;?derivedViewportData,&#32;?derivedViewportIndices,&#32;?derivedViewportRowIds,&#32;?derivedViewportSelectedColumns,&#32;?derivedViewportSelectedRows,&#32;?derivedViewportSelectedRowIds,&#32;?derivedVirtualData,&#32;?derivedVirtualIndices,&#32;?derivedVirtualRowIds,&#32;?derivedVirtualSelectedRows,&#32;?derivedVirtualSelectedRowIds,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="243">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>DataTable.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?activeCell,&#32;?columns,&#32;?includeHeadersOnCopyPaste,&#32;?localeFormat,&#32;?markdownOptions,&#32;?css,&#32;?data,&#32;?dataPrevious,&#32;?dataTimestamp,&#32;?editable,&#32;?endCell,&#32;?exportColumns,&#32;?exportFormat,&#32;?exportHeaders,&#32;?fillWidth,&#32;?hiddenColumns,&#32;?isFocused,&#32;?mergeDuplicateHeaders,&#32;?fixedColumns,&#32;?fixedRows,&#32;?columnSelectable,&#32;?rowDeletable,&#32;?cellSelectable,&#32;?rowSelectable,&#32;?selectedCells,&#32;?selectedRows,&#32;?selectedColumns,&#32;?selectedRowIds,&#32;?startCell,&#32;?styleAsListView,&#32;?pageAction,&#32;?pageCurrent,&#32;?pageCount,&#32;?pageSize,&#32;?dropdown,&#32;?dropdownConditional,&#32;?dropdownData,&#32;?tooltip,&#32;?tooltipConditional,&#32;?tooltipData,&#32;?tooltipHeader,&#32;?tooltipDelay,&#32;?tooltipDuration,&#32;?filterQuery,&#32;?filterAction,&#32;?filterOptions,&#32;?sortAction,&#32;?sortMode,&#32;?sortBy,&#32;?sortAsNull,&#32;?styleTable,&#32;?styleCell,&#32;?styleData,&#32;?styleFilter,&#32;?styleHeader,&#32;?styleCellConditional,&#32;?styleDataConditional,&#32;?styleFilterConditional,&#32;?styleHeaderConditional,&#32;?virtualization,&#32;?derivedFilterQueryStructure,&#32;?derivedViewportData,&#32;?derivedViewportIndices,&#32;?derivedViewportRowIds,&#32;?derivedViewportSelectedColumns,&#32;?derivedViewportSelectedRows,&#32;?derivedViewportSelectedRowIds,&#32;?derivedVirtualData,&#32;?derivedVirtualIndices,&#32;?derivedVirtualRowIds,&#32;?derivedVirtualSelectedRows,&#32;?derivedVirtualSelectedRowIds,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        id
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        children
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?activeCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?columns
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?includeHeadersOnCopyPaste
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?localeFormat
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-locale.html">Locale</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?markdownOptions
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-markdownoption.html">MarkdownOption</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?css
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-css.html">Css</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?data
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dataPrevious
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dataTimestamp
+                      </b>
+                      :
+                      <code>int64</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?editable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?endCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?exportColumns
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-exportcolumnstype.html">ExportColumnsType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?exportFormat
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportformat.html">MaybeExportFormat</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?exportHeaders
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportheaders.html">MaybeExportHeaders</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?fillWidth
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?hiddenColumns
+                      </b>
+                      :
+                      <code><span>seq&lt;string&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?isFocused
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?mergeDuplicateHeaders
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?fixedColumns
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?fixedRows
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?columnSelectable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?rowDeletable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?cellSelectable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?rowSelectable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedCells
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedRows
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedColumns
+                      </b>
+                      :
+                      <code><span>seq&lt;string&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?startCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleAsListView
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageAction
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageCurrent
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageCount
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageSize
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dropdown
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dropdownConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldropdown.html">ConditionalDropdown</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dropdownData
+                      </b>
+                      :
+                      <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltip
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntooltip.html">ColumnTooltip</a></span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaltooltip.html">ConditionalTooltip</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipData
+                      </b>
+                      :
+                      <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatooltip.html">DataTooltip</a></span>&gt;</span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipHeader
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-headertooltip.html">HeaderTooltip</a></span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipDelay
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipDuration
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterQuery
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterAction
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteraction.html">FilterAction</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterOptions
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteroption.html">FilterOption</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortAction
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortMode
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-sortmodetype.html">SortModeType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortBy
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-tablesortby.html">TableSortBy</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortAsNull
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleTable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleData
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleFilter
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleHeader
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleCellConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalcellstyle.html">ConditionalCellStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleDataConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldatastyle.html">ConditionalDataStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleFilterConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalfilterstyle.html">ConditionalFilterStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleHeaderConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalheaderstyle.html">ConditionalHeaderStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?virtualization
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedFilterQueryStructure
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportData
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportIndices
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportSelectedColumns
+                      </b>
+                      :
+                      <code><span>seq&lt;string&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportSelectedRows
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportSelectedRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualData
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualIndices
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualSelectedRows
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualSelectedRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?loadingState
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?persistence
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?persistedProps
+                      </b>
+                      :
+                      <code><span>string[]</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?persistenceType
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a>&#32;->&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a></span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.DashTable.DataTable.DataTable.applyMembers`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.DashTable.DataTable.DataTable.applyMembers\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/DashTable.fs#L2422-2422" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  id
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  children
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?activeCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?columns
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?includeHeadersOnCopyPaste
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?localeFormat
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-locale.html">Locale</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?markdownOptions
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-markdownoption.html">MarkdownOption</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?css
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-css.html">Css</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?data
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dataPrevious
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dataTimestamp
+                </span>
+                :
+                <code>int64</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?editable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?endCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?exportColumns
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-exportcolumnstype.html">ExportColumnsType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?exportFormat
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportformat.html">MaybeExportFormat</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?exportHeaders
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportheaders.html">MaybeExportHeaders</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?fillWidth
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?hiddenColumns
+                </span>
+                :
+                <code><span>seq&lt;string&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?isFocused
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?mergeDuplicateHeaders
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?fixedColumns
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?fixedRows
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?columnSelectable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?rowDeletable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?cellSelectable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?rowSelectable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedCells
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedRows
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedColumns
+                </span>
+                :
+                <code><span>seq&lt;string&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?startCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleAsListView
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageAction
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageCurrent
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageCount
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageSize
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dropdown
+                </span>
+                :
+                <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dropdownConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldropdown.html">ConditionalDropdown</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dropdownData
+                </span>
+                :
+                <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltip
+                </span>
+                :
+                <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntooltip.html">ColumnTooltip</a></span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaltooltip.html">ConditionalTooltip</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipData
+                </span>
+                :
+                <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatooltip.html">DataTooltip</a></span>&gt;</span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipHeader
+                </span>
+                :
+                <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-headertooltip.html">HeaderTooltip</a></span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipDelay
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipDuration
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterQuery
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterAction
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteraction.html">FilterAction</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterOptions
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteroption.html">FilterOption</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortAction
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortMode
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-sortmodetype.html">SortModeType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortBy
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-tablesortby.html">TableSortBy</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortAsNull
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleTable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleData
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleFilter
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleHeader
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleCellConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalcellstyle.html">ConditionalCellStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleDataConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldatastyle.html">ConditionalDataStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleFilterConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalfilterstyle.html">ConditionalFilterStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleHeaderConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalheaderstyle.html">ConditionalHeaderStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?virtualization
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedFilterQueryStructure
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportData
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportIndices
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportSelectedColumns
+                </span>
+                :
+                <code><span>seq&lt;string&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportSelectedRows
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportSelectedRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualData
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualIndices
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualSelectedRows
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualSelectedRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?loadingState
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?persistence
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?persistedProps
+                </span>
+                :
+                <code><span>string[]</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?persistenceType
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code><span><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a>&#32;->&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a></span></code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '244', 244)" onmouseover="showTip(event, '244', 244)">
+                <p>
+                  <a id="init">
+                    <a href="#init">
+                      <code><span>DataTable.init&#32;<span><span>(<span>id,&#32;children,&#32;?activeCell,&#32;?columns,&#32;?includeHeadersOnCopyPaste,&#32;?localeFormat,&#32;?markdownOptions,&#32;?css,&#32;?data,&#32;?dataPrevious,&#32;?dataTimestamp,&#32;?editable,&#32;?endCell,&#32;?exportColumns,&#32;?exportFormat,&#32;?exportHeaders,&#32;?fillWidth,&#32;?hiddenColumns,&#32;?isFocused,&#32;?mergeDuplicateHeaders,&#32;?fixedColumns,&#32;?fixedRows,&#32;?columnSelectable,&#32;?rowDeletable,&#32;?cellSelectable,&#32;?rowSelectable,&#32;?selectedCells,&#32;?selectedRows,&#32;?selectedColumns,&#32;?selectedRowIds,&#32;?startCell,&#32;?styleAsListView,&#32;?pageAction,&#32;?pageCurrent,&#32;?pageCount,&#32;?pageSize,&#32;?dropdown,&#32;?dropdownConditional,&#32;?dropdownData,&#32;?tooltip,&#32;?tooltipConditional,&#32;?tooltipData,&#32;?tooltipHeader,&#32;?tooltipDelay,&#32;?tooltipDuration,&#32;?filterQuery,&#32;?filterAction,&#32;?filterOptions,&#32;?sortAction,&#32;?sortMode,&#32;?sortBy,&#32;?sortAsNull,&#32;?styleTable,&#32;?styleCell,&#32;?styleData,&#32;?styleFilter,&#32;?styleHeader,&#32;?styleCellConditional,&#32;?styleDataConditional,&#32;?styleFilterConditional,&#32;?styleHeaderConditional,&#32;?virtualization,&#32;?derivedFilterQueryStructure,&#32;?derivedViewportData,&#32;?derivedViewportIndices,&#32;?derivedViewportRowIds,&#32;?derivedViewportSelectedColumns,&#32;?derivedViewportSelectedRows,&#32;?derivedViewportSelectedRowIds,&#32;?derivedVirtualData,&#32;?derivedVirtualIndices,&#32;?derivedVirtualRowIds,&#32;?derivedVirtualSelectedRows,&#32;?derivedVirtualSelectedRowIds,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="244">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>DataTable.init&#32;<span><span>(<span>id,&#32;children,&#32;?activeCell,&#32;?columns,&#32;?includeHeadersOnCopyPaste,&#32;?localeFormat,&#32;?markdownOptions,&#32;?css,&#32;?data,&#32;?dataPrevious,&#32;?dataTimestamp,&#32;?editable,&#32;?endCell,&#32;?exportColumns,&#32;?exportFormat,&#32;?exportHeaders,&#32;?fillWidth,&#32;?hiddenColumns,&#32;?isFocused,&#32;?mergeDuplicateHeaders,&#32;?fixedColumns,&#32;?fixedRows,&#32;?columnSelectable,&#32;?rowDeletable,&#32;?cellSelectable,&#32;?rowSelectable,&#32;?selectedCells,&#32;?selectedRows,&#32;?selectedColumns,&#32;?selectedRowIds,&#32;?startCell,&#32;?styleAsListView,&#32;?pageAction,&#32;?pageCurrent,&#32;?pageCount,&#32;?pageSize,&#32;?dropdown,&#32;?dropdownConditional,&#32;?dropdownData,&#32;?tooltip,&#32;?tooltipConditional,&#32;?tooltipData,&#32;?tooltipHeader,&#32;?tooltipDelay,&#32;?tooltipDuration,&#32;?filterQuery,&#32;?filterAction,&#32;?filterOptions,&#32;?sortAction,&#32;?sortMode,&#32;?sortBy,&#32;?sortAsNull,&#32;?styleTable,&#32;?styleCell,&#32;?styleData,&#32;?styleFilter,&#32;?styleHeader,&#32;?styleCellConditional,&#32;?styleDataConditional,&#32;?styleFilterConditional,&#32;?styleHeaderConditional,&#32;?virtualization,&#32;?derivedFilterQueryStructure,&#32;?derivedViewportData,&#32;?derivedViewportIndices,&#32;?derivedViewportRowIds,&#32;?derivedViewportSelectedColumns,&#32;?derivedViewportSelectedRows,&#32;?derivedViewportSelectedRowIds,&#32;?derivedVirtualData,&#32;?derivedVirtualIndices,&#32;?derivedVirtualRowIds,&#32;?derivedVirtualSelectedRows,&#32;?derivedVirtualSelectedRowIds,&#32;?loadingState,&#32;?persistence,&#32;?persistedProps,&#32;?persistenceType</span>)</span></span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        id
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        children
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?activeCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?columns
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?includeHeadersOnCopyPaste
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?localeFormat
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-locale.html">Locale</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?markdownOptions
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-markdownoption.html">MarkdownOption</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?css
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-css.html">Css</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?data
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dataPrevious
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dataTimestamp
+                      </b>
+                      :
+                      <code>int64</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?editable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?endCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?exportColumns
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-exportcolumnstype.html">ExportColumnsType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?exportFormat
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportformat.html">MaybeExportFormat</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?exportHeaders
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportheaders.html">MaybeExportHeaders</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?fillWidth
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?hiddenColumns
+                      </b>
+                      :
+                      <code><span>seq&lt;string&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?isFocused
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?mergeDuplicateHeaders
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?fixedColumns
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?fixedRows
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?columnSelectable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?rowDeletable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?cellSelectable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?rowSelectable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedCells
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedRows
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedColumns
+                      </b>
+                      :
+                      <code><span>seq&lt;string&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?startCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleAsListView
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageAction
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageCurrent
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageCount
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?pageSize
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dropdown
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dropdownConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldropdown.html">ConditionalDropdown</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?dropdownData
+                      </b>
+                      :
+                      <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltip
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntooltip.html">ColumnTooltip</a></span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaltooltip.html">ConditionalTooltip</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipData
+                      </b>
+                      :
+                      <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatooltip.html">DataTooltip</a></span>&gt;</span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipHeader
+                      </b>
+                      :
+                      <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-headertooltip.html">HeaderTooltip</a></span>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipDelay
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?tooltipDuration
+                      </b>
+                      :
+                      <code>int</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterQuery
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterAction
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteraction.html">FilterAction</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterOptions
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteroption.html">FilterOption</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortAction
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortMode
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-sortmodetype.html">SortModeType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortBy
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-tablesortby.html">TableSortBy</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortAsNull
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleTable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleCell
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleData
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleFilter
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleHeader
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleCellConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalcellstyle.html">ConditionalCellStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleDataConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldatastyle.html">ConditionalDataStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleFilterConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalfilterstyle.html">ConditionalFilterStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleHeaderConditional
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalheaderstyle.html">ConditionalHeaderStyle</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?virtualization
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedFilterQueryStructure
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportData
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportIndices
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportSelectedColumns
+                      </b>
+                      :
+                      <code><span>seq&lt;string&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportSelectedRows
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedViewportSelectedRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualData
+                      </b>
+                      :
+                      <code><span>seq&lt;obj&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualIndices
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualSelectedRows
+                      </b>
+                      :
+                      <code><span>seq&lt;int&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?derivedVirtualSelectedRowIds
+                      </b>
+                      :
+                      <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?loadingState
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?persistence
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?persistedProps
+                      </b>
+                      :
+                      <code><span>string[]</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?persistenceType
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.DashTable.DataTable.DataTable.init`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.DashTable.DataTable.DataTable.init\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/DashTable.fs#L2592-2592" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  id
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  children
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponent.html">DashComponent</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?activeCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?columns
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?includeHeadersOnCopyPaste
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?localeFormat
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-locale.html">Locale</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?markdownOptions
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-markdownoption.html">MarkdownOption</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?css
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-css.html">Css</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?data
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dataPrevious
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dataTimestamp
+                </span>
+                :
+                <code>int64</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?editable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?endCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?exportColumns
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-exportcolumnstype.html">ExportColumnsType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?exportFormat
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportformat.html">MaybeExportFormat</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?exportHeaders
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeexportheaders.html">MaybeExportHeaders</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?fillWidth
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?hiddenColumns
+                </span>
+                :
+                <code><span>seq&lt;string&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?isFocused
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?mergeDuplicateHeaders
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?fixedColumns
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?fixedRows
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-fixed.html">Fixed</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?columnSelectable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?rowDeletable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?cellSelectable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?rowSelectable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-select.html">Select</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedCells
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedRows
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedColumns
+                </span>
+                :
+                <code><span>seq&lt;string&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?startCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-cell.html">Cell</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleAsListView
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageAction
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageCurrent
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageCount
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?pageSize
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dropdown
+                </span>
+                :
+                <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dropdownConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldropdown.html">ConditionalDropdown</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?dropdownData
+                </span>
+                :
+                <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-dropdown.html">Dropdown</a></span>&gt;</span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltip
+                </span>
+                :
+                <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntooltip.html">ColumnTooltip</a></span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaltooltip.html">ConditionalTooltip</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipData
+                </span>
+                :
+                <code><span>seq&lt;<span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatooltip.html">DataTooltip</a></span>&gt;</span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipHeader
+                </span>
+                :
+                <code><span><a href="https://fsharp.github.io/fsharp-core-docs/reference/fsharp-collections-fsharpmap-2">Map</a>&lt;<span>string,&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-headertooltip.html">HeaderTooltip</a></span>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipDelay
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?tooltipDuration
+                </span>
+                :
+                <code>int</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterQuery
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterAction
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteraction.html">FilterAction</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterOptions
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-filteroption.html">FilterOption</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortAction
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-maybeactiontype.html">MaybeActionType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortMode
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-sortmodetype.html">SortModeType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortBy
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-tablesortby.html">TableSortBy</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortAsNull
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleTable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleCell
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleData
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleFilter
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleHeader
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleCellConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalcellstyle.html">ConditionalCellStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleDataConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionaldatastyle.html">ConditionalDataStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleFilterConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalfilterstyle.html">ConditionalFilterStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleHeaderConditional
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-conditionalheaderstyle.html">ConditionalHeaderStyle</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?virtualization
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedFilterQueryStructure
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportData
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportIndices
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportSelectedColumns
+                </span>
+                :
+                <code><span>seq&lt;string&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportSelectedRows
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedViewportSelectedRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualData
+                </span>
+                :
+                <code><span>seq&lt;obj&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualIndices
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualSelectedRows
+                </span>
+                :
+                <code><span>seq&lt;int&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?derivedVirtualSelectedRowIds
+                </span>
+                :
+                <code><span>seq&lt;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a>&gt;</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?loadingState
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?persistence
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?persistedProps
+                </span>
+                :
+                <code><span>string[]</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?persistenceType
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-datatable.html">DataTable</a></code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://plotly.github.io/Dash.NET/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

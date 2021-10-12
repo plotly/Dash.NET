@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Upload (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -104,6 +104,8 @@
     <div>
       <p class="fsdocs-summary">
         
+Upload components allow your app to accept user-uploaded files via drag'n'drop
+
       </p>
     </div>
   </div>
@@ -132,7 +134,7 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '465', 465)" onmouseover="showTip(event, '465', 465)">
+              <code onmouseout="hideTip(event, '1418', 1418)" onmouseover="showTip(event, '1418', 1418)">
                 <p>
                   <a id="( .ctor )">
                     <a href="#( .ctor )">
@@ -141,7 +143,7 @@
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="465">
+              <div class="fsdocs-tip" id="1418">
                 <div class="member-tooltip">
                   Full Usage: 
                   <code><span>Upload<span>()</span></span></code>
@@ -166,7 +168,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L81-81" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L254-254" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -208,19 +210,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '466', 466)" onmouseover="showTip(event, '466', 466)">
+              <code onmouseout="hideTip(event, '1419', 1419)" onmouseover="showTip(event, '1419', 1419)">
                 <p>
                   <a id="applyMembers">
                     <a href="#applyMembers">
-                      <code><span>Upload.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Contents,&#32;?Filename,&#32;?LastModified,&#32;?Accept,&#32;?Disabled,&#32;?DisableClick,&#32;?MaxSize,&#32;?MinSize,&#32;?Multiple,&#32;?ClassNameActive,&#32;?ClassNameReject,&#32;?ClassNameDisabled,&#32;?Style,&#32;?StyleActive,&#32;?StyleReject,&#32;?StyleDisabled,&#32;?LoadingState</span>)</span></span></span></code>
+                      <code><span>Upload.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?contents,&#32;?filename,&#32;?lastModified,&#32;?accept,&#32;?disabled,&#32;?disableClick,&#32;?maxSize,&#32;?minSize,&#32;?multiple,&#32;?className,&#32;?classNameActive,&#32;?classNameReject,&#32;?classNameDisabled,&#32;?style,&#32;?styleActive,&#32;?styleReject,&#32;?styleDisabled,&#32;?loadingState</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="466">
+              <div class="fsdocs-tip" id="1419">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Upload.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Contents,&#32;?Filename,&#32;?LastModified,&#32;?Accept,&#32;?Disabled,&#32;?DisableClick,&#32;?MaxSize,&#32;?MinSize,&#32;?Multiple,&#32;?ClassNameActive,&#32;?ClassNameReject,&#32;?ClassNameDisabled,&#32;?Style,&#32;?StyleActive,&#32;?StyleReject,&#32;?StyleDisabled,&#32;?LoadingState</span>)</span></span></span></code>
+                  <code><span>Upload.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?contents,&#32;?filename,&#32;?lastModified,&#32;?accept,&#32;?disabled,&#32;?disableClick,&#32;?maxSize,&#32;?minSize,&#32;?multiple,&#32;?className,&#32;?classNameActive,&#32;?classNameReject,&#32;?classNameDisabled,&#32;?style,&#32;?styleActive,&#32;?styleReject,&#32;?styleDisabled,&#32;?loadingState</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -243,7 +245,31 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassName
+                        ?contents
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadcontents.html">UploadContents</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filename
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadfilename.html">UploadFileName</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?lastModified
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadlastmodified.html">UploadLastModified</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?accept
                       </b>
                       :
                       <code>string</code>
@@ -251,39 +277,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Contents
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadcontents.html">UploadContents</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Filename
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadfilename.html">UploadFileName</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?LastModified
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadlastmodified.html">UploadLastModified</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Accept
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Disabled
+                        ?disabled
                       </b>
                       :
                       <code>bool</code>
@@ -291,7 +285,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?DisableClick
+                        ?disableClick
                       </b>
                       :
                       <code>bool</code>
@@ -299,7 +293,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?MaxSize
+                        ?maxSize
                       </b>
                       :
                       <code>int</code>
@@ -307,7 +301,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?MinSize
+                        ?minSize
                       </b>
                       :
                       <code>int</code>
@@ -315,7 +309,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Multiple
+                        ?multiple
                       </b>
                       :
                       <code>bool</code>
@@ -323,7 +317,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassNameActive
+                        ?className
                       </b>
                       :
                       <code>string</code>
@@ -331,7 +325,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassNameReject
+                        ?classNameActive
                       </b>
                       :
                       <code>string</code>
@@ -339,7 +333,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassNameDisabled
+                        ?classNameReject
                       </b>
                       :
                       <code>string</code>
@@ -347,7 +341,23 @@
                     <br/>
                     <span>
                       <b>
-                        ?Style
+                        ?classNameDisabled
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?style
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleActive
                       </b>
                       :
                       <code>obj</code>
@@ -355,7 +365,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?StyleActive
+                        ?styleReject
                       </b>
                       :
                       <code>obj</code>
@@ -363,7 +373,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?StyleReject
+                        ?styleDisabled
                       </b>
                       :
                       <code>obj</code>
@@ -371,15 +381,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?StyleDisabled
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?LoadingState
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -406,7 +408,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L83-83" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L256-256" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -433,7 +435,31 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?contents
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadcontents.html">UploadContents</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filename
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadfilename.html">UploadFileName</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?lastModified
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadlastmodified.html">UploadLastModified</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?accept
                 </span>
                 :
                 <code>string</code>
@@ -441,39 +467,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Contents
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadcontents.html">UploadContents</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Filename
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadfilename.html">UploadFileName</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?LastModified
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadlastmodified.html">UploadLastModified</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Accept
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Disabled
+                  ?disabled
                 </span>
                 :
                 <code>bool</code>
@@ -481,7 +475,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?DisableClick
+                  ?disableClick
                 </span>
                 :
                 <code>bool</code>
@@ -489,7 +483,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?MaxSize
+                  ?maxSize
                 </span>
                 :
                 <code>int</code>
@@ -497,7 +491,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?MinSize
+                  ?minSize
                 </span>
                 :
                 <code>int</code>
@@ -505,7 +499,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Multiple
+                  ?multiple
                 </span>
                 :
                 <code>bool</code>
@@ -513,7 +507,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassNameActive
+                  ?className
                 </span>
                 :
                 <code>string</code>
@@ -521,7 +515,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassNameReject
+                  ?classNameActive
                 </span>
                 :
                 <code>string</code>
@@ -529,7 +523,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassNameDisabled
+                  ?classNameReject
                 </span>
                 :
                 <code>string</code>
@@ -537,7 +531,23 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Style
+                  ?classNameDisabled
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?style
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleActive
                 </span>
                 :
                 <code>obj</code>
@@ -545,7 +555,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StyleActive
+                  ?styleReject
                 </span>
                 :
                 <code>obj</code>
@@ -553,7 +563,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StyleReject
+                  ?styleDisabled
                 </span>
                 :
                 <code>obj</code>
@@ -561,15 +571,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StyleDisabled
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -590,19 +592,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '467', 467)" onmouseover="showTip(event, '467', 467)">
+              <code onmouseout="hideTip(event, '1420', 1420)" onmouseover="showTip(event, '1420', 1420)">
                 <p>
                   <a id="init">
                     <a href="#init">
-                      <code><span>Upload.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Contents,&#32;?Filename,&#32;?LastModified,&#32;?Accept,&#32;?Disabled,&#32;?DisableClick,&#32;?MaxSize,&#32;?MinSize,&#32;?Multiple,&#32;?ClassNameActive,&#32;?ClassNameReject,&#32;?ClassNameDisabled,&#32;?Style,&#32;?StyleActive,&#32;?StyleReject,&#32;?StyleDisabled,&#32;?LoadingState</span>)</span></span></span></code>
+                      <code><span>Upload.init&#32;<span><span>(<span>id,&#32;children,&#32;?contents,&#32;?filename,&#32;?lastModified,&#32;?accept,&#32;?disabled,&#32;?disableClick,&#32;?maxSize,&#32;?minSize,&#32;?multiple,&#32;?className,&#32;?classNameActive,&#32;?classNameReject,&#32;?classNameDisabled,&#32;?style,&#32;?styleActive,&#32;?styleReject,&#32;?styleDisabled,&#32;?loadingState</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="467">
+              <div class="fsdocs-tip" id="1420">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Upload.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Contents,&#32;?Filename,&#32;?LastModified,&#32;?Accept,&#32;?Disabled,&#32;?DisableClick,&#32;?MaxSize,&#32;?MinSize,&#32;?Multiple,&#32;?ClassNameActive,&#32;?ClassNameReject,&#32;?ClassNameDisabled,&#32;?Style,&#32;?StyleActive,&#32;?StyleReject,&#32;?StyleDisabled,&#32;?LoadingState</span>)</span></span></span></code>
+                  <code><span>Upload.init&#32;<span><span>(<span>id,&#32;children,&#32;?contents,&#32;?filename,&#32;?lastModified,&#32;?accept,&#32;?disabled,&#32;?disableClick,&#32;?maxSize,&#32;?minSize,&#32;?multiple,&#32;?className,&#32;?classNameActive,&#32;?classNameReject,&#32;?classNameDisabled,&#32;?style,&#32;?styleActive,&#32;?styleReject,&#32;?styleDisabled,&#32;?loadingState</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -625,7 +627,31 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassName
+                        ?contents
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadcontents.html">UploadContents</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filename
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadfilename.html">UploadFileName</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?lastModified
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadlastmodified.html">UploadLastModified</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?accept
                       </b>
                       :
                       <code>string</code>
@@ -633,39 +659,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Contents
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadcontents.html">UploadContents</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Filename
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadfilename.html">UploadFileName</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?LastModified
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadlastmodified.html">UploadLastModified</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Accept
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Disabled
+                        ?disabled
                       </b>
                       :
                       <code>bool</code>
@@ -673,7 +667,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?DisableClick
+                        ?disableClick
                       </b>
                       :
                       <code>bool</code>
@@ -681,7 +675,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?MaxSize
+                        ?maxSize
                       </b>
                       :
                       <code>int</code>
@@ -689,7 +683,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?MinSize
+                        ?minSize
                       </b>
                       :
                       <code>int</code>
@@ -697,7 +691,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Multiple
+                        ?multiple
                       </b>
                       :
                       <code>bool</code>
@@ -705,7 +699,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassNameActive
+                        ?className
                       </b>
                       :
                       <code>string</code>
@@ -713,7 +707,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassNameReject
+                        ?classNameActive
                       </b>
                       :
                       <code>string</code>
@@ -721,7 +715,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassNameDisabled
+                        ?classNameReject
                       </b>
                       :
                       <code>string</code>
@@ -729,7 +723,23 @@
                     <br/>
                     <span>
                       <b>
-                        ?Style
+                        ?classNameDisabled
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?style
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?styleActive
                       </b>
                       :
                       <code>obj</code>
@@ -737,7 +747,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?StyleActive
+                        ?styleReject
                       </b>
                       :
                       <code>obj</code>
@@ -745,7 +755,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?StyleReject
+                        ?styleDisabled
                       </b>
                       :
                       <code>obj</code>
@@ -753,15 +763,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?StyleDisabled
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?LoadingState
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -788,7 +790,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L139-139" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L306-306" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -815,7 +817,31 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?contents
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadcontents.html">UploadContents</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filename
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadfilename.html">UploadFileName</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?lastModified
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-upload-uploadlastmodified.html">UploadLastModified</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?accept
                 </span>
                 :
                 <code>string</code>
@@ -823,39 +849,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Contents
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadcontents.html">UploadContents</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Filename
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadfilename.html">UploadFileName</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?LastModified
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadlastmodified.html">UploadLastModified</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Accept
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Disabled
+                  ?disabled
                 </span>
                 :
                 <code>bool</code>
@@ -863,7 +857,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?DisableClick
+                  ?disableClick
                 </span>
                 :
                 <code>bool</code>
@@ -871,7 +865,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?MaxSize
+                  ?maxSize
                 </span>
                 :
                 <code>int</code>
@@ -879,7 +873,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?MinSize
+                  ?minSize
                 </span>
                 :
                 <code>int</code>
@@ -887,7 +881,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Multiple
+                  ?multiple
                 </span>
                 :
                 <code>bool</code>
@@ -895,7 +889,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassNameActive
+                  ?className
                 </span>
                 :
                 <code>string</code>
@@ -903,7 +897,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassNameReject
+                  ?classNameActive
                 </span>
                 :
                 <code>string</code>
@@ -911,7 +905,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassNameDisabled
+                  ?classNameReject
                 </span>
                 :
                 <code>string</code>
@@ -919,7 +913,23 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Style
+                  ?classNameDisabled
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?style
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?styleActive
                 </span>
                 :
                 <code>obj</code>
@@ -927,7 +937,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StyleActive
+                  ?styleReject
                 </span>
                 :
                 <code>obj</code>
@@ -935,7 +945,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StyleReject
+                  ?styleDisabled
                 </span>
                 :
                 <code>obj</code>
@@ -943,15 +953,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StyleDisabled
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Graph (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -104,6 +104,10 @@
     <div>
       <p class="fsdocs-summary">
         
+Graph can be used to render any plotly.js-powered data visualization.
+You can define callbacks based on user interaction with Graphs such as
+hovering, clicking or selecting
+
       </p>
     </div>
   </div>
@@ -132,7 +136,7 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '350', 350)" onmouseover="showTip(event, '350', 350)">
+              <code onmouseout="hideTip(event, '870', 870)" onmouseover="showTip(event, '870', 870)">
                 <p>
                   <a id="( .ctor )">
                     <a href="#( .ctor )">
@@ -141,7 +145,7 @@
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="350">
+              <div class="fsdocs-tip" id="870">
                 <div class="member-tooltip">
                   Full Usage: 
                   <code><span>Graph<span>()</span></span></code>
@@ -166,7 +170,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L58-58" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L282-282" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -208,19 +212,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '351', 351)" onmouseover="showTip(event, '351', 351)">
+              <code onmouseout="hideTip(event, '871', 871)" onmouseover="showTip(event, '871', 871)">
                 <p>
                   <a id="applyMembers">
                     <a href="#applyMembers">
-                      <code><span>Graph.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?Figure,&#32;?Config,&#32;?ClickData,&#32;?ClickAnnotationData,&#32;?HoverData,&#32;?ClearOnUnhover,&#32;?SelectedData,&#32;?RelayoutData,&#32;?ExtendData,&#32;?PrependData,&#32;?RestyleData,&#32;?Style,&#32;?ClassName,&#32;?Animate,&#32;?AnimationOptions,&#32;?LoadingState</span>)</span></span></span></code>
+                      <code><span>Graph.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?clickData,&#32;?clickAnnotationData,&#32;?hoverData,&#32;?clearOnUnhover,&#32;?selectedData,&#32;?relayoutData,&#32;?extendData,&#32;?prependData,&#32;?restyleData,&#32;?figure,&#32;?style,&#32;?className,&#32;?animate,&#32;?animationOptions,&#32;?config,&#32;?loadingState</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="351">
+              <div class="fsdocs-tip" id="871">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Graph.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?Figure,&#32;?Config,&#32;?ClickData,&#32;?ClickAnnotationData,&#32;?HoverData,&#32;?ClearOnUnhover,&#32;?SelectedData,&#32;?RelayoutData,&#32;?ExtendData,&#32;?PrependData,&#32;?RestyleData,&#32;?Style,&#32;?ClassName,&#32;?Animate,&#32;?AnimationOptions,&#32;?LoadingState</span>)</span></span></span></code>
+                  <code><span>Graph.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?clickData,&#32;?clickAnnotationData,&#32;?hoverData,&#32;?clearOnUnhover,&#32;?selectedData,&#32;?relayoutData,&#32;?extendData,&#32;?prependData,&#32;?restyleData,&#32;?figure,&#32;?style,&#32;?className,&#32;?animate,&#32;?animationOptions,&#32;?config,&#32;?loadingState</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -243,7 +247,79 @@
                     <br/>
                     <span>
                       <b>
-                        ?Figure
+                        ?clickData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?clickAnnotationData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?hoverData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?clearOnUnhover
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?relayoutData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?extendData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?prependData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?restyleData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?figure
                       </b>
                       :
                       <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.genericchart.figure">Figure</a></code>
@@ -251,95 +327,15 @@
                     <br/>
                     <span>
                       <b>
-                        ?Config
+                        ?style
                       </b>
                       :
-                      <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
                     </span>
                     <br/>
                     <span>
                       <b>
-                        ?ClickData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ClickAnnotationData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?HoverData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ClearOnUnhover
-                      </b>
-                      :
-                      <code>bool</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?SelectedData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?RelayoutData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ExtendData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?PrependData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?RestyleData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Style
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ClassName
+                        ?className
                       </b>
                       :
                       <code>string</code>
@@ -347,7 +343,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Animate
+                        ?animate
                       </b>
                       :
                       <code>bool</code>
@@ -355,7 +351,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?AnimationOptions
+                        ?animationOptions
                       </b>
                       :
                       <code>obj</code>
@@ -363,7 +359,15 @@
                     <br/>
                     <span>
                       <b>
-                        ?LoadingState
+                        ?config
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -390,7 +394,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L60-60" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L284-284" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -417,7 +421,79 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Figure
+                  ?clickData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?clickAnnotationData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?hoverData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?clearOnUnhover
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?relayoutData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?extendData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?prependData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?restyleData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?figure
                 </span>
                 :
                 <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.genericchart.figure">Figure</a></code>
@@ -425,95 +501,15 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Config
+                  ?style
                 </span>
                 :
-                <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClickData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ClickAnnotationData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?HoverData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ClearOnUnhover
-                </span>
-                :
-                <code>bool</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?SelectedData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?RelayoutData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ExtendData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?PrependData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?RestyleData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Style
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?className
                 </span>
                 :
                 <code>string</code>
@@ -521,7 +517,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Animate
+                  ?animate
                 </span>
                 :
                 <code>bool</code>
@@ -529,7 +525,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?AnimationOptions
+                  ?animationOptions
                 </span>
                 :
                 <code>obj</code>
@@ -537,7 +533,15 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?config
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -558,19 +562,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '352', 352)" onmouseover="showTip(event, '352', 352)">
+              <code onmouseout="hideTip(event, '872', 872)" onmouseover="showTip(event, '872', 872)">
                 <p>
                   <a id="init">
                     <a href="#init">
-                      <code><span>Graph.init&#32;<span><span>(<span>id,&#32;children,&#32;?Figure,&#32;?Config,&#32;?ClickData,&#32;?ClickAnnotationData,&#32;?HoverData,&#32;?ClearOnUnhover,&#32;?SelectedData,&#32;?RelayoutData,&#32;?ExtendData,&#32;?PrependData,&#32;?RestyleData,&#32;?Style,&#32;?ClassName,&#32;?Animate,&#32;?AnimationOptions,&#32;?LoadingState</span>)</span></span></span></code>
+                      <code><span>Graph.init&#32;<span><span>(<span>id,&#32;children,&#32;?clickData,&#32;?clickAnnotationData,&#32;?hoverData,&#32;?clearOnUnhover,&#32;?selectedData,&#32;?relayoutData,&#32;?extendData,&#32;?prependData,&#32;?restyleData,&#32;?figure,&#32;?style,&#32;?className,&#32;?animate,&#32;?animationOptions,&#32;?config,&#32;?loadingState</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="352">
+              <div class="fsdocs-tip" id="872">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Graph.init&#32;<span><span>(<span>id,&#32;children,&#32;?Figure,&#32;?Config,&#32;?ClickData,&#32;?ClickAnnotationData,&#32;?HoverData,&#32;?ClearOnUnhover,&#32;?SelectedData,&#32;?RelayoutData,&#32;?ExtendData,&#32;?PrependData,&#32;?RestyleData,&#32;?Style,&#32;?ClassName,&#32;?Animate,&#32;?AnimationOptions,&#32;?LoadingState</span>)</span></span></span></code>
+                  <code><span>Graph.init&#32;<span><span>(<span>id,&#32;children,&#32;?clickData,&#32;?clickAnnotationData,&#32;?hoverData,&#32;?clearOnUnhover,&#32;?selectedData,&#32;?relayoutData,&#32;?extendData,&#32;?prependData,&#32;?restyleData,&#32;?figure,&#32;?style,&#32;?className,&#32;?animate,&#32;?animationOptions,&#32;?config,&#32;?loadingState</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -593,7 +597,79 @@
                     <br/>
                     <span>
                       <b>
-                        ?Figure
+                        ?clickData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?clickAnnotationData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?hoverData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?clearOnUnhover
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?relayoutData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?extendData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?prependData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?restyleData
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?figure
                       </b>
                       :
                       <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.genericchart.figure">Figure</a></code>
@@ -601,95 +677,15 @@
                     <br/>
                     <span>
                       <b>
-                        ?Config
+                        ?style
                       </b>
                       :
-                      <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
                     </span>
                     <br/>
                     <span>
                       <b>
-                        ?ClickData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ClickAnnotationData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?HoverData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ClearOnUnhover
-                      </b>
-                      :
-                      <code>bool</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?SelectedData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?RelayoutData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ExtendData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?PrependData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?RestyleData
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Style
-                      </b>
-                      :
-                      <code>obj</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?ClassName
+                        ?className
                       </b>
                       :
                       <code>string</code>
@@ -697,7 +693,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Animate
+                        ?animate
                       </b>
                       :
                       <code>bool</code>
@@ -705,7 +701,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?AnimationOptions
+                        ?animationOptions
                       </b>
                       :
                       <code>obj</code>
@@ -713,7 +709,15 @@
                     <br/>
                     <span>
                       <b>
-                        ?LoadingState
+                        ?config
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -740,7 +744,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L111-111" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L330-330" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -767,7 +771,79 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Figure
+                  ?clickData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?clickAnnotationData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?hoverData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?clearOnUnhover
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?relayoutData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?extendData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?prependData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?restyleData
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?figure
                 </span>
                 :
                 <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.genericchart.figure">Figure</a></code>
@@ -775,95 +851,15 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Config
+                  ?style
                 </span>
                 :
-                <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClickData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ClickAnnotationData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?HoverData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ClearOnUnhover
-                </span>
-                :
-                <code>bool</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?SelectedData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?RelayoutData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ExtendData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?PrependData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?RestyleData
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Style
-                </span>
-                :
-                <code>obj</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?className
                 </span>
                 :
                 <code>string</code>
@@ -871,7 +867,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Animate
+                  ?animate
                 </span>
                 :
                 <code>bool</code>
@@ -879,7 +875,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?AnimationOptions
+                  ?animationOptions
                 </span>
                 :
                 <code>obj</code>
@@ -887,7 +883,15 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?config
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/plotly.net.config">Config</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>

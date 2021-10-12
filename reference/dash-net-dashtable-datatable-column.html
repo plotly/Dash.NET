@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Column (Dash.NET)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Kevin Schneider, Plotly">
+    <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://plotly.github.io/Dash.NET/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://plotly.github.io/Dash.NET/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="searchbox" id="fsdocs-searchbox">
+                            <label for="search-by">
+                                <i class="fas fa-search"></i>
+                            </label>
+                            <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                            <span data-search-clear="">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/blob/dev/LICENSE">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/">Source Repository</a></li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://plotly.github.io/Dash.NET/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    <div>
+  <h2>
+    DataTable.Column Type
+  </h2>
+  <dl class="fsdocs-metadata">
+    <dt>
+      Namespace: 
+      <a href="https://plotly.github.io/Dash.NET/reference/dash-net.html">
+        Dash.NET
+      </a>
+    </dt>
+    <dt>
+      Assembly: Dash.NET.dll
+    </dt>
+    <dt>
+      Parent Module: 
+      <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable.html">
+        DataTable
+      </a>
+    </dt>
+    <dt>
+      Base Type: 
+      <code><a href="https://docs.microsoft.com/dotnet/api/dynamicobj.dynamicobj">DynamicObj</a></code>
+    </dt>
+    <dt>
+      All Interfaces: 
+      <code><a href="https://docs.microsoft.com/dotnet/api/system.dynamic.idynamicmetaobjectprovider">IDynamicMetaObjectProvider</a></code>
+    </dt>
+  </dl>
+  <div class="fsdocs-xmldoc">
+    <div>
+      <p class="fsdocs-summary">
+        
+record with the fields: 'clearable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'deletable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'editable: boolean (optional)', 'filter_options: record with the field: 'case: value equal to: 'sensitive', 'insensitive' (optional)' (optional)', 'hideable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'renamable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'selectable: value equal to: 'first', 'last' | boolean | list with values of type: boolean (optional)', 'format: record with the fields: 'locale: record with the fields: 'symbol: list with values of type: string (optional)', 'decimal: string (optional)', 'group: string (optional)', 'grouping: list with values of type: number (optional)', 'numerals: list with values of type: string (optional)', 'percent: string (optional)', 'separate_4digits: boolean (optional)' (optional)', 'nully: boolean | number | string | record | list (optional)', 'prefix: number (optional)', 'specifier: string (optional)' (optional)', 'id: string (required)', 'name: string | list with values of type: string (required)', 'presentation: value equal to: 'input', 'dropdown', 'markdown' (optional)', 'on_change: record with the fields: 'action: value equal to: 'coerce', 'none', 'validate' (optional)', 'failure: value equal to: 'accept', 'default', 'reject' (optional)' (optional)', 'sort_as_null: list with values of type: string | number | boolean (optional)', 'validation: record with the fields: 'allow_null: boolean (optional)', 'default: boolean | number | string | record | list (optional)', 'allow_YY: boolean (optional)' (optional)', 'type: value equal to: 'any', 'numeric', 'text', 'datetime' (optional)'
+
+      </p>
+    </div>
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div>
+    <h3>
+      Static members
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Static member
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '196', 196)" onmouseover="showTip(event, '196', 196)">
+                <p>
+                  <a id="init">
+                    <a href="#init">
+                      <code><span>Column.init&#32;<span><span>(<span>name,&#32;id,&#32;?columnType,&#32;?clearable,&#32;?deletable,&#32;?editable,&#32;?filterOptions,&#32;?hideable,&#32;?renamable,&#32;?selectable,&#32;?format,&#32;?presentation,&#32;?onChange,&#32;?sortAsNull,&#32;?validation</span>)</span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="196">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Column.init&#32;<span><span>(<span>name,&#32;id,&#32;?columnType,&#32;?clearable,&#32;?deletable,&#32;?editable,&#32;?filterOptions,&#32;?hideable,&#32;?renamable,&#32;?selectable,&#32;?format,&#32;?presentation,&#32;?onChange,&#32;?sortAsNull,&#32;?validation</span>)</span></span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        name
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        id
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?columnType
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntype.html">ColumnType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?clearable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-clearablecolumn.html">ClearableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?deletable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-deletablecolumn.html">DeletableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?editable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterOptions
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnfilteroption.html">ColumnFilterOption</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?hideable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-hideablecolumn.html">HideableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?renamable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-renamablecolumn.html">RenamableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-selectablecolumn.html">SelectableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?format
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnformat.html">ColumnFormat</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?presentation
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnpresentation.html">ColumnPresentation</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?onChange
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnonchange.html">ColumnOnChange</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortAsNull
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?validation
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnvalidation.html">ColumnValidation</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.DashTable.DataTable.Column.init`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.DashTable.DataTable.Column.init\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/DashTable.fs#L1045-1045" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  name
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  id
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?columnType
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntype.html">ColumnType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?clearable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-clearablecolumn.html">ClearableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?deletable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-deletablecolumn.html">DeletableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?editable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterOptions
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnfilteroption.html">ColumnFilterOption</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?hideable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-hideablecolumn.html">HideableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?renamable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-renamablecolumn.html">RenamableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-selectablecolumn.html">SelectableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?format
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnformat.html">ColumnFormat</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?presentation
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnpresentation.html">ColumnPresentation</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?onChange
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnonchange.html">ColumnOnChange</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortAsNull
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?validation
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnvalidation.html">ColumnValidation</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a></code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '197', 197)" onmouseover="showTip(event, '197', 197)">
+                <p>
+                  <a id="init">
+                    <a href="#init">
+                      <code><span>Column.init&#32;<span><span>(<span>names,&#32;id,&#32;?columnType,&#32;?clearable,&#32;?deletable,&#32;?editable,&#32;?filterOptions,&#32;?hideable,&#32;?renamable,&#32;?selectable,&#32;?format,&#32;?presentation,&#32;?onChange,&#32;?sortAsNull,&#32;?validation</span>)</span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="197">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Column.init&#32;<span><span>(<span>names,&#32;id,&#32;?columnType,&#32;?clearable,&#32;?deletable,&#32;?editable,&#32;?filterOptions,&#32;?hideable,&#32;?renamable,&#32;?selectable,&#32;?format,&#32;?presentation,&#32;?onChange,&#32;?sortAsNull,&#32;?validation</span>)</span></span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        names
+                      </b>
+                      :
+                      <code><span>string&#32;list</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        id
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?columnType
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntype.html">ColumnType</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?clearable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-clearablecolumn.html">ClearableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?deletable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-deletablecolumn.html">DeletableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?editable
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?filterOptions
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnfilteroption.html">ColumnFilterOption</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?hideable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-hideablecolumn.html">HideableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?renamable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-renamablecolumn.html">RenamableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectable
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-selectablecolumn.html">SelectableColumn</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?format
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnformat.html">ColumnFormat</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?presentation
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnpresentation.html">ColumnPresentation</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?onChange
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnonchange.html">ColumnOnChange</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?sortAsNull
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?validation
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnvalidation.html">ColumnValidation</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.DashTable.DataTable.Column.init`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.DashTable.DataTable.Column.init\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/DashTable.fs#L1007-1007" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  names
+                </span>
+                :
+                <code><span>string&#32;list</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  id
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?columnType
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columntype.html">ColumnType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?clearable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-clearablecolumn.html">ClearableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?deletable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-deletablecolumn.html">DeletableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?editable
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?filterOptions
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnfilteroption.html">ColumnFilterOption</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?hideable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-hideablecolumn.html">HideableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?renamable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-renamablecolumn.html">RenamableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectable
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-selectablecolumn.html">SelectableColumn</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?format
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnformat.html">ColumnFormat</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?presentation
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnpresentation.html">ColumnPresentation</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?onChange
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnonchange.html">ColumnOnChange</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?sortAsNull
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?validation
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-columnvalidation.html">ColumnValidation</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashtable-datatable-column.html">Column</a></code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://plotly.github.io/Dash.NET/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

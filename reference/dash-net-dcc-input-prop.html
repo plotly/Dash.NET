@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Prop (Dash.NET)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Kevin Schneider, Plotly">
+    <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+
+    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://plotly.github.io/Dash.NET/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head> 
+
+<body>
+    <div class="columns is-fullheight m-0">
+        <div id="fsdocs-menu" class="column is-2 is-paddingless">
+            <aside class="menu">
+                <div class="container is-paddingless is-marginless has-background-dark">
+                    <a href="https://plotly.github.io/Dash.NET/">
+                        <figure class="image is-128x128 container">
+                            <img src="https://plotly.github.io/Dash.NET/img/logo.png">
+                        </figure>
+                    </a>
+                    <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
+                </div>
+                <div class="content">
+                    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+                    <div id="header">
+                        <div class="searchbox" id="fsdocs-searchbox">
+                            <label for="search-by">
+                                <i class="fas fa-search"></i>
+                            </label>
+                            <input data-search-input="" id="search-by" type="search" placeholder="Search..." class="input"/>
+                            <span data-search-clear="">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- END SEARCH BOX: this adds support for the search box -->
+                    <ul class="navbar-nav">
+                        <li class="nav-header">Links</li>
+                        <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/blob/dev/LICENSE">License (MIT)</a></li>
+                        <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md">Release Notes</a></li>
+                        <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/plotly/Dash.NET/">Source Repository</a></li>
+                        <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://plotly.github.io/Dash.NET/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="column is-10 is-paddingless">
+            <div class="section pt-4">
+                <div class="container" id="fsdocs-content">
+                    <div>
+  <h2>
+    Input.Prop Type
+  </h2>
+  <dl class="fsdocs-metadata">
+    <dt>
+      Namespace: 
+      <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc.html">
+        Dash.NET.DCC
+      </a>
+    </dt>
+    <dt>
+      Assembly: Dash.NET.dll
+    </dt>
+    <dt>
+      Parent Module: 
+      <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-input.html">
+        Input
+      </a>
+    </dt>
+    <dt>
+      Base Type: 
+      <code>obj</code>
+    </dt>
+    <dt>
+      All Interfaces: 
+      <code><span><a href="https://docs.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-input-prop.html">Prop</a>&gt;</span></code>
+      , 
+      <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>
+    </dt>
+  </dl>
+  <div class="fsdocs-xmldoc">
+    <div>
+      <p class="fsdocs-summary">
+        
+• value (string | number) - The value of the input
+
+
+• style (record) - The input's inline styles
+
+
+• className (string) - The class of the input element
+
+
+• debounce (boolean; default false) - If true, changes to input will be sent back to the Dash server only on enter or when losing focus.
+If it's false, it will sent the value back on every change.
+
+
+• type (value equal to: 'text', 'number', 'password', 'email', 'range', 'search', 'tel', 'url', 'hidden'; default text) - The type of control to render.
+
+
+• autoComplete (string) - This attribute indicates whether the value of the control can be automatically completed by the browser.
+
+
+• autoFocus (value equal to: 'autoFocus', 'autofocus', 'AUTOFOCUS' | boolean) - The element should be automatically focused after the page loaded.
+autoFocus is an HTML boolean attribute - it is enabled by a boolean or
+'autoFocus'. Alternative capitalizations `autofocus` & `AUTOFOCUS`
+are also acccepted.
+
+
+• disabled (value equal to: 'disabled', 'DISABLED' | boolean) - If true, the input is disabled and can't be clicked on.
+disabled is an HTML boolean attribute - it is enabled by a boolean or
+'disabled'. Alternative capitalizations `DISABLED`
+
+
+• inputMode (value equal to: 'verbatim', 'latin', 'latin-name', 'latin-prose', 'full-width-latin', 'kana', 'katakana', 'numeric', 'tel', 'email', 'url') - Provides a hint to the browser as to the type of data that might be
+entered by the user while editing the element or its contents.
+
+
+• list (string) - Identifies a list of pre-defined options to suggest to the user.
+The value must be the id of a <datalist> element in the same document.
+The browser displays only options that are valid values for this
+input element.
+This attribute is ignored when the type attribute's value is
+hidden, checkbox, radio, file, or a button type.
+
+
+• max (string | number) - The maximum (numeric or date-time) value for this item, which must not be less than its minimum (min attribute) value.
+
+
+• maxLength (string | number) - If the value of the type attribute is text, email, search, password, tel, or url, this attribute specifies the maximum number of characters (in UTF-16 code units) that the user can enter. For other control types, it is ignored. It can exceed the value of the size attribute. If it is not specified, the user can enter an unlimited number of characters. Specifying a negative number results in the default behavior (i.e. the user can enter an unlimited number of characters). The constraint is evaluated only when the value of the attribute has been changed.
+
+
+• min (string | number) - The minimum (numeric or date-time) value for this item, which must not be greater than its maximum (max attribute) value.
+
+
+• minLength (string | number) - If the value of the type attribute is text, email, search, password, tel, or url, this attribute specifies the minimum number of characters (in Unicode code points) that the user can enter. For other control types, it is ignored.
+
+
+• multiple (boolean) - This Boolean attribute indicates whether the user can enter more than one value. This attribute applies when the type attribute is set to email or file, otherwise it is ignored.
+
+
+• name (string) - The name of the control, which is submitted with the form data.
+
+
+• pattern (string) - A regular expression that the control's value is checked against. The pattern must match the entire value, not just some subset. Use the title attribute to describe the pattern to help the user. This attribute applies when the value of the type attribute is text, search, tel, url, email, or password, otherwise it is ignored. The regular expression language is the same as JavaScript RegExp algorithm, with the 'u' parameter that makes it treat the pattern as a sequence of unicode code points. The pattern is not surrounded by forward slashes.
+
+
+• placeholder (string | number) - A hint to the user of what can be entered in the control . The placeholder text must not contain carriage returns or line-feeds. Note: Do not use the placeholder attribute instead of a <label> element, their purposes are different. The <label> attribute describes the role of the form element (i.e. it indicates what kind of information is expected), and the placeholder attribute is a hint about the format that the content should take. There are cases in which the placeholder attribute is never displayed to the user, so the form must be understandable without it.
+
+
+• readOnly (boolean | value equal to: 'readOnly', 'readonly', 'READONLY') - This attribute indicates that the user cannot modify the value of the control. The value of the attribute is irrelevant. If you need read-write access to the input value, do not add the "readonly" attribute. It is ignored if the value of the type attribute is hidden, range, color, checkbox, radio, file, or a button type (such as button or submit).
+readOnly is an HTML boolean attribute - it is enabled by a boolean or
+'readOnly'. Alternative capitalizations `readonly` & `READONLY`
+are also acccepted.
+
+
+• required (value equal to: 'required', 'REQUIRED' | boolean) - This attribute specifies that the user must fill in a value before submitting a form. It cannot be used when the type attribute is hidden, image, or a button type (submit, reset, or button). The :optional and :required CSS pseudo-classes will be applied to the field as appropriate.
+required is an HTML boolean attribute - it is enabled by a boolean or
+'required'. Alternative capitalizations `REQUIRED`
+are also acccepted.
+
+
+• selectionDirection (string) - The direction in which selection occurred. This is "forward" if the selection was made from left-to-right in an LTR locale or right-to-left in an RTL locale, or "backward" if the selection was made in the opposite direction. On platforms on which it's possible this value isn't known, the value can be "none"; for example, on macOS, the default direction is "none", then as the user begins to modify the selection using the keyboard, this will change to reflect the direction in which the selection is expanding.
+
+
+• selectionEnd (string) - The offset into the element's text content of the last selected character. If there's no selection, this value indicates the offset to the character following the current text input cursor position (that is, the position the next character typed would occupy).
+
+
+• selectionStart (string) - The offset into the element's text content of the first selected character. If there's no selection, this value indicates the offset to the character following the current text input cursor position (that is, the position the next character typed would occupy).
+
+
+• size (string) - The initial size of the control. This value is in pixels unless the value of the type attribute is text or password, in which case it is an integer number of characters. Starting in, this attribute applies only when the type attribute is set to text, search, tel, url, email, or password, otherwise it is ignored. In addition, the size must be greater than zero. If you do not specify a size, a default value of 20 is used.' simply states "the user agent should ensure that at least that many characters are visible", but different characters can have different widths in certain fonts. In some browsers, a certain string with x characters will not be entirely visible even if size is defined to at least x.
+
+
+• spellCheck (value equal to: 'true', 'false' | boolean) - Setting the value of this attribute to true indicates that the element needs to have its spelling and grammar checked. The value default indicates that the element is to act according to a default behavior, possibly based on the parent element's own spellcheck value. The value false indicates that the element should not be checked.
+
+
+• step (string | number; default any) - Works with the min and max attributes to limit the increments at which a numeric or date-time value can be set. It can be the string any or a positive floating point number. If this attribute is not set to any, the control accepts only values at multiples of the step value greater than the minimum.
+
+
+• n_submit (number; default 0) - Number of times the `Enter` key was pressed while the input had focus.
+
+
+• n_submit_timestamp (number; default -1) - Last time that `Enter` was pressed.
+
+
+• n_blur (number; default 0) - Number of times the input lost focus.
+
+
+• n_blur_timestamp (number; default -1) - Last time the input lost focus.
+
+
+• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
+
+
+• persistence (boolean | string | number) - Used to allow user interactions in this component to be persisted when
+the component - or the page - is refreshed. If `persisted` is truthy and
+hasn't changed from its previous value, a `value` that the user has
+changed while using the app will keep that change, as long as
+the new `value` also matches what was given originally.
+Used in conjunction with `persistence_type`.
+
+
+• persisted_props (list with values of type: value equal to: 'value'; default ['value']) - Properties whose user interactions will persist after refreshing the
+component or the page. Since only `value` is allowed this prop can
+normally be ignored.
+
+
+• persistence_type (value equal to: 'local', 'session', 'memory'; default local) - Where persisted user changes will be stored:
+memory: only kept in memory, reset on page refresh.
+local: window.localStorage, data is kept after the browser quit.
+session: window.sessionStorage, data is cleared once the browser quit.
+
+      </p>
+    </div>
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div>
+    <h3>
+      Union cases
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Union case
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '936', 936)" onmouseover="showTip(event, '936', 936)">
+                <p>
+                  <a id="AutoComplete">
+                    <a href="#AutoComplete">
+                      <code><span>AutoComplete&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="936">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>AutoComplete&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L119-119" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '937', 937)" onmouseover="showTip(event, '937', 937)">
+                <p>
+                  <a id="AutoFocus">
+                    <a href="#AutoFocus">
+                      <code><span>AutoFocus&#32;bool</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="937">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>AutoFocus&#32;bool</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L120-120" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '938', 938)" onmouseover="showTip(event, '938', 938)">
+                <p>
+                  <a id="ClassName">
+                    <a href="#ClassName">
+                      <code><span>ClassName&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="938">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>ClassName&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L116-116" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '939', 939)" onmouseover="showTip(event, '939', 939)">
+                <p>
+                  <a id="Debounce">
+                    <a href="#Debounce">
+                      <code><span>Debounce&#32;bool</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="939">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Debounce&#32;bool</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L117-117" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '940', 940)" onmouseover="showTip(event, '940', 940)">
+                <p>
+                  <a id="Disabled">
+                    <a href="#Disabled">
+                      <code><span>Disabled&#32;bool</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="940">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Disabled&#32;bool</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L121-121" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '941', 941)" onmouseover="showTip(event, '941', 941)">
+                <p>
+                  <a id="List">
+                    <a href="#List">
+                      <code><span>List&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="941">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>List&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L123-123" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '942', 942)" onmouseover="showTip(event, '942', 942)">
+                <p>
+                  <a id="LoadingState">
+                    <a href="#LoadingState">
+                      <code><span>LoadingState&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="942">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>LoadingState&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L145-145" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '943', 943)" onmouseover="showTip(event, '943', 943)">
+                <p>
+                  <a id="Max">
+                    <a href="#Max">
+                      <code><span>Max&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="943">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Max&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L124-124" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '944', 944)" onmouseover="showTip(event, '944', 944)">
+                <p>
+                  <a id="MaxLength">
+                    <a href="#MaxLength">
+                      <code><span>MaxLength&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="944">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>MaxLength&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L125-125" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '945', 945)" onmouseover="showTip(event, '945', 945)">
+                <p>
+                  <a id="Min">
+                    <a href="#Min">
+                      <code><span>Min&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="945">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Min&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L126-126" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '946', 946)" onmouseover="showTip(event, '946', 946)">
+                <p>
+                  <a id="MinLength">
+                    <a href="#MinLength">
+                      <code><span>MinLength&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="946">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>MinLength&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L127-127" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '947', 947)" onmouseover="showTip(event, '947', 947)">
+                <p>
+                  <a id="Mode">
+                    <a href="#Mode">
+                      <code><span>Mode&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputmode.html">InputMode</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="947">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Mode&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputmode.html">InputMode</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputmode.html">InputMode</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L122-122" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputmode.html">InputMode</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '948', 948)" onmouseover="showTip(event, '948', 948)">
+                <p>
+                  <a id="Multiple">
+                    <a href="#Multiple">
+                      <code><span>Multiple&#32;bool</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="948">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Multiple&#32;bool</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L128-128" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '949', 949)" onmouseover="showTip(event, '949', 949)">
+                <p>
+                  <a id="NBlur">
+                    <a href="#NBlur">
+                      <code><span>NBlur&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="949">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>NBlur&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L142-142" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '950', 950)" onmouseover="showTip(event, '950', 950)">
+                <p>
+                  <a id="NBlurTimestamp">
+                    <a href="#NBlurTimestamp">
+                      <code><span>NBlurTimestamp&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="950">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>NBlurTimestamp&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L143-143" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '951', 951)" onmouseover="showTip(event, '951', 951)">
+                <p>
+                  <a id="NSubmit">
+                    <a href="#NSubmit">
+                      <code><span>NSubmit&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="951">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>NSubmit&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L140-140" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '952', 952)" onmouseover="showTip(event, '952', 952)">
+                <p>
+                  <a id="NSubmitTimestamp">
+                    <a href="#NSubmitTimestamp">
+                      <code><span>NSubmitTimestamp&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="952">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>NSubmitTimestamp&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L141-141" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '953', 953)" onmouseover="showTip(event, '953', 953)">
+                <p>
+                  <a id="Name">
+                    <a href="#Name">
+                      <code><span>Name&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="953">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Name&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L129-129" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '954', 954)" onmouseover="showTip(event, '954', 954)">
+                <p>
+                  <a id="Pattern">
+                    <a href="#Pattern">
+                      <code><span>Pattern&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="954">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Pattern&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L130-130" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '955', 955)" onmouseover="showTip(event, '955', 955)">
+                <p>
+                  <a id="PersistedProps">
+                    <a href="#PersistedProps">
+                      <code><span>PersistedProps&#32;<span>string[]</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="955">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>PersistedProps&#32;<span>string[]</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><span>string[]</span></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L147-147" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><span>string[]</span></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '956', 956)" onmouseover="showTip(event, '956', 956)">
+                <p>
+                  <a id="Persistence">
+                    <a href="#Persistence">
+                      <code><span>Persistence&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="956">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Persistence&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L146-146" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '957', 957)" onmouseover="showTip(event, '957', 957)">
+                <p>
+                  <a id="PersistenceType">
+                    <a href="#PersistenceType">
+                      <code><span>PersistenceType&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="957">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>PersistenceType&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L148-148" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '958', 958)" onmouseover="showTip(event, '958', 958)">
+                <p>
+                  <a id="Placeholder">
+                    <a href="#Placeholder">
+                      <code><span>Placeholder&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="958">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Placeholder&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L131-131" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '959', 959)" onmouseover="showTip(event, '959', 959)">
+                <p>
+                  <a id="ReadOnly">
+                    <a href="#ReadOnly">
+                      <code><span>ReadOnly&#32;bool</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="959">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>ReadOnly&#32;bool</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L132-132" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '960', 960)" onmouseover="showTip(event, '960', 960)">
+                <p>
+                  <a id="Required">
+                    <a href="#Required">
+                      <code><span>Required&#32;bool</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="960">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Required&#32;bool</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L133-133" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>bool</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '961', 961)" onmouseover="showTip(event, '961', 961)">
+                <p>
+                  <a id="SelectionDirection">
+                    <a href="#SelectionDirection">
+                      <code><span>SelectionDirection&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="961">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>SelectionDirection&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L134-134" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '962', 962)" onmouseover="showTip(event, '962', 962)">
+                <p>
+                  <a id="SelectionEnd">
+                    <a href="#SelectionEnd">
+                      <code><span>SelectionEnd&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="962">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>SelectionEnd&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L135-135" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '963', 963)" onmouseover="showTip(event, '963', 963)">
+                <p>
+                  <a id="SelectionStart">
+                    <a href="#SelectionStart">
+                      <code><span>SelectionStart&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="963">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>SelectionStart&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L136-136" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '964', 964)" onmouseover="showTip(event, '964', 964)">
+                <p>
+                  <a id="SetProps">
+                    <a href="#SetProps">
+                      <code><span>SetProps&#32;obj</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="964">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>SetProps&#32;obj</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>obj</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L144-144" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>obj</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '965', 965)" onmouseover="showTip(event, '965', 965)">
+                <p>
+                  <a id="Size">
+                    <a href="#Size">
+                      <code><span>Size&#32;string</span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="965">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Size&#32;string</span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L137-137" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '966', 966)" onmouseover="showTip(event, '966', 966)">
+                <p>
+                  <a id="Spellcheck">
+                    <a href="#Spellcheck">
+                      <code><span>Spellcheck&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-spellcheckoptions.html">SpellCheckOptions</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="966">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Spellcheck&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-spellcheckoptions.html">SpellCheckOptions</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-spellcheckoptions.html">SpellCheckOptions</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L138-138" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-spellcheckoptions.html">SpellCheckOptions</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '967', 967)" onmouseover="showTip(event, '967', 967)">
+                <p>
+                  <a id="Step">
+                    <a href="#Step">
+                      <code><span>Step&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="967">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Step&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L139-139" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '968', 968)" onmouseover="showTip(event, '968', 968)">
+                <p>
+                  <a id="Style">
+                    <a href="#Style">
+                      <code><span>Style&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="968">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Style&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L115-115" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '969', 969)" onmouseover="showTip(event, '969', 969)">
+                <p>
+                  <a id="Type">
+                    <a href="#Type">
+                      <code><span>Type&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputtype.html">InputType</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="969">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Type&#32;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputtype.html">InputType</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputtype.html">InputType</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L118-118" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-inputtype.html">InputType</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '970', 970)" onmouseover="showTip(event, '970', 970)">
+                <p>
+                  <a id="Value">
+                    <a href="#Value">
+                      <code><span>Value&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="970">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Value&#32;<a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        Item
+                      </b>
+                      :
+                      <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L114-114" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  Item
+                </span>
+                :
+                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div>
+    <h3>
+      Static members
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Static member
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '971', 971)" onmouseover="showTip(event, '971', 971)">
+                <p>
+                  <a id="toDynamicMemberDef">
+                    <a href="#toDynamicMemberDef">
+                      <code><span>Prop.toDynamicMemberDef&#32;<span>prop</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="971">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>Prop.toDynamicMemberDef&#32;<span>prop</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        prop
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-input-prop.html">Prop</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span>string&#32;*&#32;obj</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <div class="fsdocs-summary">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.DCC.Input.Prop.toDynamicMemberDef`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.DCC.Input.Prop.toDynamicMemberDef\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L149-149" class="fsdocs-source-link" title="Source on GitHub">
+                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+              </a>
+              <p class="fsdocs-summary">
+                
+              </p>
+            </div>
+            <dl class="fsdocs-params">
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  prop
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-input-prop.html">Prop</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+            </dl>
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code><span>string&#32;*&#32;obj</span></code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <script type="text/javascript">var fsdocs_search_baseurl = 'https://plotly.github.io/Dash.NET/'</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+    <script type="text/javascript" src="https://plotly.github.io/Dash.NET/content/fsdocs-search.js"></script>
+    <!-- END SEARCH BOX: this adds support for the search box -->
+</body>
+
+</html>

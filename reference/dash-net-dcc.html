@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Dash.NET.DCC</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -80,7 +80,7 @@
     <thead>
       <tr>
         <td>
-          Type/Module
+          Modules
         </td>
         <td>
           Description
@@ -88,6 +88,73 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Checklist">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-checklist.html">
+                Checklist
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Checklist`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Checklist\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Checklist.fs#L14-14" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+Checklist is a component that encapsulates several checkboxes.
+The values and labels of the checklist are specified in the `options`
+property and the checked items are specified with the `value` property.
+Each checkbox is rendered as an input with a surrounding label.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Clipboard">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-clipboard.html">
+                Clipboard
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Clipboard`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Clipboard\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Clipboard.fs#L11-11" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+The Clipboard component copies text to the clipboard
+
+            </p>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td class="fsdocs-entity-name">
           <p>
@@ -114,6 +181,14 @@
             </a>
             <p class="fsdocs-summary">
               
+Dropdown is an interactive dropdown element for selecting one or more
+items.
+The values and labels of the dropdown items are specified in the `options`
+property and the selected item(s) are specified with the `value` property.
+Use a dropdown when you have many options (more than 5) or when you are
+constrained for space. Otherwise, you can use RadioItems or a Checklist,
+which have the benefit of showing the users all of the items at once.
+
             </p>
           </div>
         </td>
@@ -138,12 +213,16 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L20-20" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Graph.fs#L15-15" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
+Graph can be used to render any plotly.js-powered data visualization.
+You can define callbacks based on user interaction with Graphs such as
+hovering, clicking or selecting
+
             </p>
           </div>
         </td>
@@ -168,12 +247,151 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L17-17" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Input.fs#L15-15" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
+A basic HTML input control for entering text, numbers, or passwords.
+Note that checkbox and radio types are supported through
+the Checklist and RadioItems component. Dates, times, and file uploads
+are also supported through separate components.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Interval">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-interval.html">
+                Interval
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Interval`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Interval\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Interval.fs#L15-15" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+A component that repeatedly increments a counter `n_intervals`
+with a fixed time delay between each increment.
+Interval is good for triggering a component on a recurring basis.
+The time delay is set with the property "interval" in milliseconds.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Loading">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-loading.html">
+                Loading
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Loading`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Loading\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Loading.fs#L12-12" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+A Loading component that wraps any other component and displays a spinner until the wrapped component has rendered.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Location">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-location.html">
+                Location
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Location`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Location\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Location.fs#L11-11" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+Update and track the current window.location object through the window.history state.
+Use in conjunction with the `dash_core_components.Link` component to make apps with multiple pages.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Markdown">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-markdown.html">
+                Markdown
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Markdown`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Markdown\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Markdown.fs#L13-13" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+A component that renders Markdown text as specified by the
+GitHub Markdown spec. These component uses
+[react-markdown](https://remarkjs.github.io/react-markdown/) under the hood.
+
             </p>
           </div>
         </td>
@@ -198,12 +416,49 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/RadioItems.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/RadioItems.fs#L15-15" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
+RadioItems is a component that encapsulates several radio item inputs.
+The values and labels of the RadioItems is specified in the `options`
+property and the seleced item is specified with the `value` property.
+Each radio item is rendered as an input with a surrounding label.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Slider">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-slider.html">
+                Slider
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Slider`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Slider\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Slider.fs#L13-13" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+A slider component with a single handle.
+
             </p>
           </div>
         </td>
@@ -228,12 +483,17 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L14-14" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
+Easily keep data on the client side with this component.
+The data is not inserted in the DOM.
+Data can be in memory, localStorage or sessionStorage.
+The data will be kept with the id as key.
+
             </p>
           </div>
         </td>
@@ -258,12 +518,15 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L12-12" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
+Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
+Its children will be set as the content of that tab, which if clicked will become visible.
+
             </p>
           </div>
         </td>
@@ -288,12 +551,48 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L18-18" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tabs.fs#L14-14" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
+A Dash component that lets you render pages with tabs - the Tabs component's children
+can be dcc.Tab components, which can hold a label that will be displayed as a tab, and can in turn hold
+children components that will be that tab's content.
+
+            </p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="fsdocs-entity-name">
+          <p>
+            <a name="Textarea">
+              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-textarea.html">
+                Textarea
+              </a>
+            </a>
+          </p>
+        </td>
+        <td class="fsdocs-entity-xmldoc">
+          <div>
+            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.Textarea`')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+            </div>
+            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.Textarea\'/>')">
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+            </div>
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Textarea.fs#L12-12" class="fsdocs-source-link" title="Source on GitHub">
+              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
+              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
+            </a>
+            <p class="fsdocs-summary">
+              
+A basic HTML textarea for entering multiline text.
+
             </p>
           </div>
         </td>
@@ -318,102 +617,14 @@
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
             </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L39-39" class="fsdocs-source-link" title="Source on GitHub">
+            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L12-12" class="fsdocs-source-link" title="Source on GitHub">
               <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
               <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
             </a>
             <p class="fsdocs-summary">
               
-            </p>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="fsdocs-entity-name">
-          <p>
-            <a name="UploadContents">
-              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadcontents.html">
-                UploadContents
-              </a>
-            </a>
-          </p>
-        </td>
-        <td class="fsdocs-entity-xmldoc">
-          <div>
-            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.UploadContents`')">
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
-            </div>
-            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.UploadContents\'/>')">
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
-            </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L17-17" class="fsdocs-source-link" title="Source on GitHub">
-              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-            </a>
-            <p class="fsdocs-summary">
-              
-            </p>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="fsdocs-entity-name">
-          <p>
-            <a name="UploadFileName">
-              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadfilename.html">
-                UploadFileName
-              </a>
-            </a>
-          </p>
-        </td>
-        <td class="fsdocs-entity-xmldoc">
-          <div>
-            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.UploadFileName`')">
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
-            </div>
-            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.UploadFileName\'/>')">
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
-            </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L24-24" class="fsdocs-source-link" title="Source on GitHub">
-              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-            </a>
-            <p class="fsdocs-summary">
-              
-            </p>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="fsdocs-entity-name">
-          <p>
-            <a name="UploadLastModified">
-              <a href="https://plotly.github.io/Dash.NET/reference/dash-net-dcc-uploadlastmodified.html">
-                UploadLastModified
-              </a>
-            </a>
-          </p>
-        </td>
-        <td class="fsdocs-entity-xmldoc">
-          <div>
-            <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:T:Dash.NET.DCC.UploadLastModified`')">
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
-            </div>
-            <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'T:Dash.NET.DCC.UploadLastModified\'/>')">
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
-            </div>
-            <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Upload.fs#L31-31" class="fsdocs-source-link" title="Source on GitHub">
-              <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-              <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-            </a>
-            <p class="fsdocs-summary">
-              
+Upload components allow your app to accept user-uploaded files via drag'n'drop
+
             </p>
           </div>
         </td>

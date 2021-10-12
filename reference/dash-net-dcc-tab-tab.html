@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Tab (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -104,6 +104,9 @@
     <div>
       <p class="fsdocs-summary">
         
+Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
+Its children will be set as the content of that tab, which if clicked will become visible.
+
       </p>
     </div>
   </div>
@@ -132,7 +135,7 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '433', 433)" onmouseover="showTip(event, '433', 433)">
+              <code onmouseout="hideTip(event, '1244', 1244)" onmouseover="showTip(event, '1244', 1244)">
                 <p>
                   <a id="( .ctor )">
                     <a href="#( .ctor )">
@@ -141,7 +144,7 @@
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="433">
+              <div class="fsdocs-tip" id="1244">
                 <div class="member-tooltip">
                   Full Usage: 
                   <code><span>Tab<span>()</span></span></code>
@@ -166,7 +169,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L45-45" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L142-142" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -208,19 +211,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '434', 434)" onmouseover="showTip(event, '434', 434)">
+              <code onmouseout="hideTip(event, '1245', 1245)" onmouseover="showTip(event, '1245', 1245)">
                 <p>
                   <a id="applyMembers">
                     <a href="#applyMembers">
-                      <code><span>Tab.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Label,&#32;?Value,&#32;?Disabled,&#32;?DisabledStyle,&#32;?DisabledClassName,&#32;?SelectedClassName,&#32;?SelectedStyle,&#32;?LoadingState</span>)</span></span></span></code>
+                      <code><span>Tab.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?label,&#32;?value,&#32;?disabled,&#32;?disabledStyle,&#32;?disabledClassName,&#32;?className,&#32;?selectedClassName,&#32;?style,&#32;?selectedStyle,&#32;?loadingState</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="434">
+              <div class="fsdocs-tip" id="1245">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Tab.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Label,&#32;?Value,&#32;?Disabled,&#32;?DisabledStyle,&#32;?DisabledClassName,&#32;?SelectedClassName,&#32;?SelectedStyle,&#32;?LoadingState</span>)</span></span></span></code>
+                  <code><span>Tab.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?label,&#32;?value,&#32;?disabled,&#32;?disabledStyle,&#32;?disabledClassName,&#32;?className,&#32;?selectedClassName,&#32;?style,&#32;?selectedStyle,&#32;?loadingState</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -243,7 +246,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassName
+                        ?label
                       </b>
                       :
                       <code>string</code>
@@ -251,15 +254,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Style
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Label
+                        ?value
                       </b>
                       :
                       <code>string</code>
@@ -267,15 +262,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Value
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Disabled
+                        ?disabled
                       </b>
                       :
                       <code>bool</code>
@@ -283,7 +270,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?DisabledStyle
+                        ?disabledStyle
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -291,7 +278,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?DisabledClassName
+                        ?disabledClassName
                       </b>
                       :
                       <code>string</code>
@@ -299,7 +286,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?SelectedClassName
+                        ?className
                       </b>
                       :
                       <code>string</code>
@@ -307,7 +294,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?SelectedStyle
+                        ?selectedClassName
                       </b>
                       :
                       <code>string</code>
@@ -315,7 +302,23 @@
                     <br/>
                     <span>
                       <b>
-                        ?LoadingState
+                        ?style
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedStyle
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -342,7 +345,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L47-47" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L144-144" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -369,7 +372,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?label
                 </span>
                 :
                 <code>string</code>
@@ -377,15 +380,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Style
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Label
+                  ?value
                 </span>
                 :
                 <code>string</code>
@@ -393,15 +388,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Value
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Disabled
+                  ?disabled
                 </span>
                 :
                 <code>bool</code>
@@ -409,7 +396,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?DisabledStyle
+                  ?disabledStyle
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -417,7 +404,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?DisabledClassName
+                  ?disabledClassName
                 </span>
                 :
                 <code>string</code>
@@ -425,7 +412,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?SelectedClassName
+                  ?className
                 </span>
                 :
                 <code>string</code>
@@ -433,7 +420,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?SelectedStyle
+                  ?selectedClassName
                 </span>
                 :
                 <code>string</code>
@@ -441,7 +428,23 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?style
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedStyle
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -462,19 +465,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '435', 435)" onmouseover="showTip(event, '435', 435)">
+              <code onmouseout="hideTip(event, '1246', 1246)" onmouseover="showTip(event, '1246', 1246)">
                 <p>
                   <a id="init">
                     <a href="#init">
-                      <code><span>Tab.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Label,&#32;?Value,&#32;?Disabled,&#32;?DisabledStyle,&#32;?DisabledClassName,&#32;?SelectedClassName,&#32;?SelectedStyle,&#32;?LoadingState</span>)</span></span></span></code>
+                      <code><span>Tab.init&#32;<span><span>(<span>id,&#32;children,&#32;?label,&#32;?value,&#32;?disabled,&#32;?disabledStyle,&#32;?disabledClassName,&#32;?className,&#32;?selectedClassName,&#32;?style,&#32;?selectedStyle,&#32;?loadingState</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="435">
+              <div class="fsdocs-tip" id="1246">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Tab.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClassName,&#32;?Style,&#32;?Label,&#32;?Value,&#32;?Disabled,&#32;?DisabledStyle,&#32;?DisabledClassName,&#32;?SelectedClassName,&#32;?SelectedStyle,&#32;?LoadingState</span>)</span></span></span></code>
+                  <code><span>Tab.init&#32;<span><span>(<span>id,&#32;children,&#32;?label,&#32;?value,&#32;?disabled,&#32;?disabledStyle,&#32;?disabledClassName,&#32;?className,&#32;?selectedClassName,&#32;?style,&#32;?selectedStyle,&#32;?loadingState</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -497,7 +500,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClassName
+                        ?label
                       </b>
                       :
                       <code>string</code>
@@ -505,15 +508,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Style
-                      </b>
-                      :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Label
+                        ?value
                       </b>
                       :
                       <code>string</code>
@@ -521,15 +516,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?Value
-                      </b>
-                      :
-                      <code>string</code>
-                    </span>
-                    <br/>
-                    <span>
-                      <b>
-                        ?Disabled
+                        ?disabled
                       </b>
                       :
                       <code>bool</code>
@@ -537,7 +524,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?DisabledStyle
+                        ?disabledStyle
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -545,7 +532,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?DisabledClassName
+                        ?disabledClassName
                       </b>
                       :
                       <code>string</code>
@@ -553,7 +540,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?SelectedClassName
+                        ?className
                       </b>
                       :
                       <code>string</code>
@@ -561,7 +548,7 @@
                     <br/>
                     <span>
                       <b>
-                        ?SelectedStyle
+                        ?selectedClassName
                       </b>
                       :
                       <code>string</code>
@@ -569,7 +556,23 @@
                     <br/>
                     <span>
                       <b>
-                        ?LoadingState
+                        ?style
+                      </b>
+                      :
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?selectedStyle
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        ?loadingState
                       </b>
                       :
                       <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>
@@ -596,7 +599,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L87-87" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Tab.fs#L178-178" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -623,7 +626,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClassName
+                  ?label
                 </span>
                 :
                 <code>string</code>
@@ -631,15 +634,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Style
-                </span>
-                :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Label
+                  ?value
                 </span>
                 :
                 <code>string</code>
@@ -647,15 +642,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Value
-                </span>
-                :
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-param-docs"></dd>
-              <dt class="fsdocs-param">
-                <span class="fsdocs-param-name">
-                  ?Disabled
+                  ?disabled
                 </span>
                 :
                 <code>bool</code>
@@ -663,7 +650,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?DisabledStyle
+                  ?disabledStyle
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
@@ -671,7 +658,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?DisabledClassName
+                  ?disabledClassName
                 </span>
                 :
                 <code>string</code>
@@ -679,7 +666,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?SelectedClassName
+                  ?className
                 </span>
                 :
                 <code>string</code>
@@ -687,7 +674,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?SelectedStyle
+                  ?selectedClassName
                 </span>
                 :
                 <code>string</code>
@@ -695,7 +682,23 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?LoadingState
+                  ?style
+                </span>
+                :
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-dashcomponentstyle.html">DashComponentStyle</a></code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?selectedStyle
+                </span>
+                :
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-param-docs"></dd>
+              <dt class="fsdocs-param">
+                <span class="fsdocs-param-name">
+                  ?loadingState
                 </span>
                 :
                 <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-loadingstate.html">LoadingState</a></code>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>DropdownOption (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -93,13 +93,11 @@
     </dt>
     <dt>
       Base Type: 
-      <code>obj</code>
+      <code><a href="https://docs.microsoft.com/dotnet/api/dynamicobj.dynamicobj">DynamicObj</a></code>
     </dt>
     <dt>
       All Interfaces: 
-      <code><span><a href="https://docs.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-dropdownoption.html">DropdownOption</a>&gt;</span></code>
-      , 
-      <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>
+      <code><a href="https://docs.microsoft.com/dotnet/api/system.dynamic.idynamicmetaobjectprovider">IDynamicMetaObjectProvider</a></code>
     </dt>
   </dl>
   <div class="fsdocs-xmldoc">
@@ -113,15 +111,17 @@
   <div></div>
   <div></div>
   <div></div>
+  <div></div>
+  <div></div>
   <div>
     <h3>
-      Record fields
+      Constructors
     </h3>
     <table class="table outer-list fsdocs-member-list">
       <thead>
         <tr>
           <td class="fsdocs-member-list-header">
-            Record Field
+            Constructor
           </td>
           <td class="fsdocs-member-list-header">
             Description
@@ -132,24 +132,24 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '28', 28)" onmouseover="showTip(event, '28', 28)">
+              <code onmouseout="hideTip(event, '60', 60)" onmouseover="showTip(event, '60', 60)">
                 <p>
-                  <a id="Disabled">
-                    <a href="#Disabled">
-                      <code>Disabled</code>
+                  <a id="( .ctor )">
+                    <a href="#( .ctor )">
+                      <code><span>DropdownOption<span>()</span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="28">
+              <div class="fsdocs-tip" id="60">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code>Disabled</code>
+                  <code><span>DropdownOption<span>()</span></span></code>
                   <br/>
                   <br/>
                   <span>
-                    Field type: 
-                    <code>bool</code>
+                    Returns: 
+                    <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-dropdownoption.html">DropdownOption</a></code>
                   </span>
                   <br/>
                 </div>
@@ -158,7 +158,15 @@
           </td>
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L116-116" class="fsdocs-source-link" title="Source on GitHub">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.ComponentPropTypes.DropdownOption.#ctor`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.ComponentPropTypes.DropdownOption.#ctor\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L123-123" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -169,153 +177,9 @@
             <dl class="fsdocs-returns">
               <dt>
                 <span class="fsdocs-return-name">
-                  Field type: 
+                  Returns: 
                 </span>
-                <code>bool</code>
-              </dt>
-              <dd class="fsdocs-return-docs"></dd>
-            </dl>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
-                <p>
-                  <a id="Label">
-                    <a href="#Label">
-                      <code>Label</code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="29">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code>Label</code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L114-114" class="fsdocs-source-link" title="Source on GitHub">
-                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-              </a>
-              <p class="fsdocs-summary">
-                
-              </p>
-            </div>
-            <dl class="fsdocs-returns">
-              <dt>
-                <span class="fsdocs-return-name">
-                  Field type: 
-                </span>
-                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
-              </dt>
-              <dd class="fsdocs-return-docs"></dd>
-            </dl>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
-                <p>
-                  <a id="Title">
-                    <a href="#Title">
-                      <code>Title</code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="30">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code>Title</code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code>string</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L117-117" class="fsdocs-source-link" title="Source on GitHub">
-                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-              </a>
-              <p class="fsdocs-summary">
-                
-              </p>
-            </div>
-            <dl class="fsdocs-returns">
-              <dt>
-                <span class="fsdocs-return-name">
-                  Field type: 
-                </span>
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-return-docs"></dd>
-            </dl>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
-                <p>
-                  <a id="Value">
-                    <a href="#Value">
-                      <code>Value</code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="31">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code>Value</code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L115-115" class="fsdocs-source-link" title="Source on GitHub">
-                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-              </a>
-              <p class="fsdocs-summary">
-                
-              </p>
-            </div>
-            <dl class="fsdocs-returns">
-              <dt>
-                <span class="fsdocs-return-name">
-                  Field type: 
-                </span>
-                <code><a href="https://docs.microsoft.com/dotnet/api/system.iconvertible">IConvertible</a></code>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-dropdownoption.html">DropdownOption</a></code>
               </dt>
               <dd class="fsdocs-return-docs"></dd>
             </dl>
@@ -324,8 +188,6 @@
       </tbody>
     </table>
   </div>
-  <div></div>
-  <div></div>
   <div></div>
   <div>
     <h3>
@@ -346,19 +208,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '32', 32)" onmouseover="showTip(event, '32', 32)">
+              <code onmouseout="hideTip(event, '61', 61)" onmouseover="showTip(event, '61', 61)">
                 <p>
-                  <a id="create">
-                    <a href="#create">
-                      <code><span>DropdownOption.create&#32;<span>label&#32;value&#32;disabled&#32;title</span></span></code>
+                  <a id="init">
+                    <a href="#init">
+                      <code><span>DropdownOption.init&#32;<span><span>(<span>label,&#32;value,&#32;?disabled,&#32;?title</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="32">
+              <div class="fsdocs-tip" id="61">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>DropdownOption.create&#32;<span>label&#32;value&#32;disabled&#32;title</span></span></code>
+                  <code><span>DropdownOption.init&#32;<span><span>(<span>label,&#32;value,&#32;?disabled,&#32;?title</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -381,7 +243,7 @@
                     <br/>
                     <span>
                       <b>
-                        disabled
+                        ?disabled
                       </b>
                       :
                       <code>bool</code>
@@ -389,7 +251,7 @@
                     <br/>
                     <span>
                       <b>
-                        title
+                        ?title
                       </b>
                       :
                       <code>string</code>
@@ -408,15 +270,15 @@
           </td>
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-summary">
-              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.ComponentPropTypes.DropdownOption.create`')">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.ComponentPropTypes.DropdownOption.init`')">
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
               </div>
-              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.ComponentPropTypes.DropdownOption.create\'/>')">
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.ComponentPropTypes.DropdownOption.init\'/>')">
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L119-119" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L125-125" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -443,7 +305,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  disabled
+                  ?disabled
                 </span>
                 :
                 <code>bool</code>
@@ -451,7 +313,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  title
+                  ?title
                 </span>
                 :
                 <code>string</code>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Store (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -104,6 +104,11 @@
     <div>
       <p class="fsdocs-summary">
         
+Easily keep data on the client side with this component.
+The data is not inserted in the DOM.
+Data can be in memory, localStorage or sessionStorage.
+The data will be kept with the id as key.
+
       </p>
     </div>
   </div>
@@ -132,7 +137,7 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '425', 425)" onmouseover="showTip(event, '425', 425)">
+              <code onmouseout="hideTip(event, '1211', 1211)" onmouseover="showTip(event, '1211', 1211)">
                 <p>
                   <a id="( .ctor )">
                     <a href="#( .ctor )">
@@ -141,7 +146,7 @@
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="425">
+              <div class="fsdocs-tip" id="1211">
                 <div class="member-tooltip">
                   Full Usage: 
                   <code><span>Store<span>()</span></span></code>
@@ -166,7 +171,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L32-32" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L99-99" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -208,19 +213,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '426', 426)" onmouseover="showTip(event, '426', 426)">
+              <code onmouseout="hideTip(event, '1212', 1212)" onmouseover="showTip(event, '1212', 1212)">
                 <p>
                   <a id="applyMembers">
                     <a href="#applyMembers">
-                      <code><span>Store.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClearData,&#32;?Data,&#32;?ModifiedTimestamp,&#32;?StorageType</span>)</span></span></span></code>
+                      <code><span>Store.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?storageType,&#32;?data,&#32;?clearData,&#32;?modifiedTimestamp</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="426">
+              <div class="fsdocs-tip" id="1212">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Store.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?ClearData,&#32;?Data,&#32;?ModifiedTimestamp,&#32;?StorageType</span>)</span></span></span></code>
+                  <code><span>Store.applyMembers&#32;<span><span>(<span>id,&#32;children,&#32;?storageType,&#32;?data,&#32;?clearData,&#32;?modifiedTimestamp</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -243,15 +248,15 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClearData
+                        ?storageType
                       </b>
                       :
-                      <code>bool</code>
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
                     </span>
                     <br/>
                     <span>
                       <b>
-                        ?Data
+                        ?data
                       </b>
                       :
                       <code>string</code>
@@ -259,18 +264,18 @@
                     <br/>
                     <span>
                       <b>
-                        ?ModifiedTimestamp
+                        ?clearData
                       </b>
                       :
-                      <code>int</code>
+                      <code>bool</code>
                     </span>
                     <br/>
                     <span>
                       <b>
-                        ?StorageType
+                        ?modifiedTimestamp
                       </b>
                       :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                      <code>int64</code>
                     </span>
                     <br/>
                   </ul>
@@ -294,7 +299,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L34-34" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L101-101" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -321,15 +326,15 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClearData
+                  ?storageType
                 </span>
                 :
-                <code>bool</code>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Data
+                  ?data
                 </span>
                 :
                 <code>string</code>
@@ -337,18 +342,18 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ModifiedTimestamp
+                  ?clearData
                 </span>
                 :
-                <code>int</code>
+                <code>bool</code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StorageType
+                  ?modifiedTimestamp
                 </span>
                 :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                <code>int64</code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
             </dl>
@@ -366,19 +371,19 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '427', 427)" onmouseover="showTip(event, '427', 427)">
+              <code onmouseout="hideTip(event, '1213', 1213)" onmouseover="showTip(event, '1213', 1213)">
                 <p>
                   <a id="init">
                     <a href="#init">
-                      <code><span>Store.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClearData,&#32;?Data,&#32;?ModifiedTimestamp,&#32;?StorageType</span>)</span></span></span></code>
+                      <code><span>Store.init&#32;<span><span>(<span>id,&#32;children,&#32;?storageType,&#32;?data,&#32;?clearData,&#32;?modifiedTimestamp</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="427">
+              <div class="fsdocs-tip" id="1213">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>Store.init&#32;<span><span>(<span>id,&#32;children,&#32;?ClearData,&#32;?Data,&#32;?ModifiedTimestamp,&#32;?StorageType</span>)</span></span></span></code>
+                  <code><span>Store.init&#32;<span><span>(<span>id,&#32;children,&#32;?storageType,&#32;?data,&#32;?clearData,&#32;?modifiedTimestamp</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
@@ -401,15 +406,15 @@
                     <br/>
                     <span>
                       <b>
-                        ?ClearData
+                        ?storageType
                       </b>
                       :
-                      <code>bool</code>
+                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
                     </span>
                     <br/>
                     <span>
                       <b>
-                        ?Data
+                        ?data
                       </b>
                       :
                       <code>string</code>
@@ -417,18 +422,18 @@
                     <br/>
                     <span>
                       <b>
-                        ?ModifiedTimestamp
+                        ?clearData
                       </b>
                       :
-                      <code>int</code>
+                      <code>bool</code>
                     </span>
                     <br/>
                     <span>
                       <b>
-                        ?StorageType
+                        ?modifiedTimestamp
                       </b>
                       :
-                      <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                      <code>int64</code>
                     </span>
                     <br/>
                   </ul>
@@ -452,7 +457,7 @@
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L63-63" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/CoreComponents/Store.fs#L123-123" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -479,15 +484,15 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ClearData
+                  ?storageType
                 </span>
                 :
-                <code>bool</code>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?Data
+                  ?data
                 </span>
                 :
                 <code>string</code>
@@ -495,18 +500,18 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?ModifiedTimestamp
+                  ?clearData
                 </span>
                 :
-                <code>int</code>
+                <code>bool</code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  ?StorageType
+                  ?modifiedTimestamp
                 </span>
                 :
-                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-persistencetypeoptions.html">PersistenceTypeOptions</a></code>
+                <code>int64</code>
               </dt>
               <dd class="fsdocs-param-docs"></dd>
             </dl>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>TabColors (Dash.NET)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="Kevin Schneider">
+    <meta name="author" content="Kevin Schneider, Plotly">
     <link rel="shortcut icon" type="image/x-icon" href="https://plotly.github.io/Dash.NET//img/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -35,7 +35,7 @@
                         </figure>
                     </a>
                     <h2 class="title has-text-centered has-text-white">Dash.NET</h2>
-                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.1.0-alpha9</h5>
+                    <h5 class="has-text-centered has-text-white pb-4">Documentation for 0.2.0-alpha.2</h5>
                 </div>
                 <div class="content">
                     <!-- BEGIN SEARCH BOX: this adds support for the search box -->
@@ -93,19 +93,11 @@
     </dt>
     <dt>
       Base Type: 
-      <code>obj</code>
+      <code><a href="https://docs.microsoft.com/dotnet/api/dynamicobj.dynamicobj">DynamicObj</a></code>
     </dt>
     <dt>
       All Interfaces: 
-      <code><span><a href="https://docs.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a>&gt;</span></code>
-      , 
-      <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>
-      , 
-      <code><span><a href="https://docs.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a>&gt;</span></code>
-      , 
-      <code><a href="https://docs.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>
-      , 
-      <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralcomparable">IStructuralComparable</a></code>
+      <code><a href="https://docs.microsoft.com/dotnet/api/system.dynamic.idynamicmetaobjectprovider">IDynamicMetaObjectProvider</a></code>
     </dt>
   </dl>
   <div class="fsdocs-xmldoc">
@@ -119,15 +111,17 @@
   <div></div>
   <div></div>
   <div></div>
+  <div></div>
+  <div></div>
   <div>
     <h3>
-      Record fields
+      Constructors
     </h3>
     <table class="table outer-list fsdocs-member-list">
       <thead>
         <tr>
           <td class="fsdocs-member-list-header">
-            Record Field
+            Constructor
           </td>
           <td class="fsdocs-member-list-header">
             Description
@@ -138,24 +132,24 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
+              <code onmouseout="hideTip(event, '99', 99)" onmouseover="showTip(event, '99', 99)">
                 <p>
-                  <a id="Background">
-                    <a href="#Background">
-                      <code>Background</code>
+                  <a id="( .ctor )">
+                    <a href="#( .ctor )">
+                      <code><span>TabColors<span>()</span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="74">
+              <div class="fsdocs-tip" id="99">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code>Background</code>
+                  <code><span>TabColors<span>()</span></span></code>
                   <br/>
                   <br/>
                   <span>
-                    Field type: 
-                    <code>string</code>
+                    Returns: 
+                    <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a></code>
                   </span>
                   <br/>
                 </div>
@@ -164,7 +158,15 @@
           </td>
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L133-133" class="fsdocs-source-link" title="Source on GitHub">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.ComponentPropTypes.TabColors.#ctor`')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
+              </div>
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.ComponentPropTypes.TabColors.#ctor\'/>')">
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
+                <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
+              </div>
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L157-157" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -175,105 +177,9 @@
             <dl class="fsdocs-returns">
               <dt>
                 <span class="fsdocs-return-name">
-                  Field type: 
+                  Returns: 
                 </span>
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-return-docs"></dd>
-            </dl>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
-                <p>
-                  <a id="Border">
-                    <a href="#Border">
-                      <code>Border</code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="75">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code>Border</code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code>string</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L131-131" class="fsdocs-source-link" title="Source on GitHub">
-                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-              </a>
-              <p class="fsdocs-summary">
-                
-              </p>
-            </div>
-            <dl class="fsdocs-returns">
-              <dt>
-                <span class="fsdocs-return-name">
-                  Field type: 
-                </span>
-                <code>string</code>
-              </dt>
-              <dd class="fsdocs-return-docs"></dd>
-            </dl>
-          </td>
-        </tr>
-        <tr>
-          <td class="fsdocs-member-usage">
-            <div>
-              <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
-                <p>
-                  <a id="Primary">
-                    <a href="#Primary">
-                      <code>Primary</code>
-                    </a>
-                  </a>
-                </p>
-              </code>
-              <div class="fsdocs-tip" id="76">
-                <div class="member-tooltip">
-                  Full Usage: 
-                  <code>Primary</code>
-                  <br/>
-                  <br/>
-                  <span>
-                    Field type: 
-                    <code>string</code>
-                  </span>
-                  <br/>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td class="fsdocs-member-xmldoc">
-            <div class="fsdocs-summary">
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L132-132" class="fsdocs-source-link" title="Source on GitHub">
-                <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
-                <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
-              </a>
-              <p class="fsdocs-summary">
-                
-              </p>
-            </div>
-            <dl class="fsdocs-returns">
-              <dt>
-                <span class="fsdocs-return-name">
-                  Field type: 
-                </span>
-                <code>string</code>
+                <code><a href="https://plotly.github.io/Dash.NET/reference/dash-net-componentproptypes-tabcolors.html">TabColors</a></code>
               </dt>
               <dd class="fsdocs-return-docs"></dd>
             </dl>
@@ -282,8 +188,6 @@
       </tbody>
     </table>
   </div>
-  <div></div>
-  <div></div>
   <div></div>
   <div>
     <h3>
@@ -304,26 +208,26 @@
         <tr>
           <td class="fsdocs-member-usage">
             <div>
-              <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
+              <code onmouseout="hideTip(event, '100', 100)" onmouseover="showTip(event, '100', 100)">
                 <p>
-                  <a id="create">
-                    <a href="#create">
-                      <code><span>TabColors.create&#32;<span>border&#32;primary&#32;background</span></span></code>
+                  <a id="init">
+                    <a href="#init">
+                      <code><span>TabColors.init&#32;<span><span>(<span>?border,&#32;?primary,&#32;?background</span>)</span></span></span></code>
                     </a>
                   </a>
                 </p>
               </code>
-              <div class="fsdocs-tip" id="77">
+              <div class="fsdocs-tip" id="100">
                 <div class="member-tooltip">
                   Full Usage: 
-                  <code><span>TabColors.create&#32;<span>border&#32;primary&#32;background</span></span></code>
+                  <code><span>TabColors.init&#32;<span><span>(<span>?border,&#32;?primary,&#32;?background</span>)</span></span></span></code>
                   <br/>
                   <br/>
                   Parameters: 
                   <ul>
                     <span>
                       <b>
-                        border
+                        ?border
                       </b>
                       :
                       <code>string</code>
@@ -331,7 +235,7 @@
                     <br/>
                     <span>
                       <b>
-                        primary
+                        ?primary
                       </b>
                       :
                       <code>string</code>
@@ -339,7 +243,7 @@
                     <br/>
                     <span>
                       <b>
-                        background
+                        ?background
                       </b>
                       :
                       <code>string</code>
@@ -358,15 +262,15 @@
           </td>
           <td class="fsdocs-member-xmldoc">
             <div class="fsdocs-summary">
-              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.ComponentPropTypes.TabColors.create`')">
+              <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:Dash.NET.ComponentPropTypes.TabColors.init`')">
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-md.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-md-hover.png" class="hover"/>
               </div>
-              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.ComponentPropTypes.TabColors.create\'/>')">
+              <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:Dash.NET.ComponentPropTypes.TabColors.init\'/>')">
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/copy-xml-hover.png" class="hover"/>
               </div>
-              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L135-135" class="fsdocs-source-link" title="Source on GitHub">
+              <a href="https://github.com/plotly/Dash.NET/tree/master/src/Dash.NET/DashComponents/ComponentBase.fs#L159-159" class="fsdocs-source-link" title="Source on GitHub">
                 <img src="https://plotly.github.io/Dash.NET/content/img/github.png" class="normal"/>
                 <img src="https://plotly.github.io/Dash.NET/content/img/github-hover.png" class="hover"/>
               </a>
@@ -377,7 +281,7 @@
             <dl class="fsdocs-params">
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  border
+                  ?border
                 </span>
                 :
                 <code>string</code>
@@ -385,7 +289,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  primary
+                  ?primary
                 </span>
                 :
                 <code>string</code>
@@ -393,7 +297,7 @@
               <dd class="fsdocs-param-docs"></dd>
               <dt class="fsdocs-param">
                 <span class="fsdocs-param-name">
-                  background
+                  ?background
                 </span>
                 :
                 <code>string</code>
