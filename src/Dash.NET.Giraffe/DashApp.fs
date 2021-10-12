@@ -30,8 +30,8 @@ type DashGiraffeConfig =
     static member initDefault hostname = 
         {
             HostName = hostname
-            IpAddress = "127.0.0.1"
-            Port = "5001"
+            IpAddress = hostname
+            Port = 5001
             LogLevel = LogLevel.Information
             ErrorHandler = ((fun ex ->  ex.Message) >> text)
         }
@@ -39,8 +39,8 @@ type DashGiraffeConfig =
     static member initDebug hostname = 
         {
             HostName = hostname
-            IpAddress = "127.0.0.1"
-            Port = "5001"
+            IpAddress = hostname
+            Port = 5001
             LogLevel = LogLevel.Debug
             ErrorHandler = ((fun ex ->  ex.Message) >> text)
         }
