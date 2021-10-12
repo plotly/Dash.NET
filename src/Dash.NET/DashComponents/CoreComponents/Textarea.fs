@@ -10,77 +10,6 @@ open Dash.NET.Common
 ///</summary>
 [<RequireQualifiedAccess>]
 module Textarea =
-    type PropName =
-        | Value
-        | AutoFocus
-        | Cols
-        | Disabled
-        | Form
-        | MaxLength
-        | MinLength
-        | Name
-        | Placeholder
-        | ReadOnly
-        | Required
-        | Rows
-        | Wrap
-        | AccessKey
-        | ClassName
-        | ContentEditable
-        | ContextMenu
-        | Dir
-        | Draggable
-        | Hidden
-        | Lang
-        | SpellCheck
-        | Style
-        | TabIndex
-        | Title
-        | NBlur
-        | NBlurTimestamp
-        | NClicks
-        | NClicksTimestamp
-        | LoadingState
-        | Persistence
-        | PersistedProps
-        | PersistenceType
-
-        member this.toString () =
-            match this with
-            | Value             -> "value"
-            | AutoFocus         -> "autoFocus"
-            | Cols              -> "cols"
-            | Disabled          -> "disabled"
-            | Form              -> "form"
-            | MaxLength         -> "maxLength"
-            | MinLength         -> "minLength"
-            | Name              -> "name"
-            | Placeholder       -> "placeholder"
-            | ReadOnly          -> "readOnly"
-            | Required          -> "required"
-            | Rows              -> "rows"
-            | Wrap              -> "wrap"
-            | AccessKey         -> "accessKey"
-            | ClassName         -> "className"
-            | ContentEditable   -> "contentEditable"
-            | ContextMenu       -> "contextMenu"
-            | Dir               -> "dir"
-            | Draggable         -> "draggable"
-            | Hidden            -> "hidden"
-            | Lang              -> "lang"
-            | SpellCheck        -> "spellCheck"
-            | Style             -> "style"
-            | TabIndex          -> "tabIndex"
-            | Title             -> "title"
-            | NBlur             -> "n_blur"
-            | NBlurTimestamp    -> "n_blur_timestamp"
-            | NClicks           -> "n_clicks"
-            | NClicksTimestamp  -> "n_clicks_timestamp"
-            | LoadingState      -> "loading_state"
-            | Persistence       -> "persistence"
-            | PersistedProps    -> "persisted_props"
-            | PersistenceType   -> "persistence_type"
-
     ///<summary>
     ///• value (string) - The value of the textarea
     ///&#10;
@@ -235,42 +164,42 @@ module Textarea =
             | PersistenceType   p -> PersistenceTypeOptions.convert p
 
         static member toPropName = function
-            | Value             _ -> PropName.Value
-            | AutoFocus         _ -> PropName.AutoFocus
-            | Cols              _ -> PropName.Cols
-            | Disabled          _ -> PropName.Disabled
-            | Form              _ -> PropName.Form
-            | MaxLength         _ -> PropName.MaxLength
-            | MinLength         _ -> PropName.MinLength
-            | Name              _ -> PropName.Name
-            | Placeholder       _ -> PropName.Placeholder
-            | ReadOnly          _ -> PropName.ReadOnly
-            | Required          _ -> PropName.Required
-            | Rows              _ -> PropName.Rows
-            | Wrap              _ -> PropName.Wrap
-            | AccessKey         _ -> PropName.AccessKey
-            | ClassName         _ -> PropName.ClassName
-            | ContentEditable   _ -> PropName.ContentEditable
-            | ContextMenu       _ -> PropName.ContextMenu
-            | Dir               _ -> PropName.Dir
-            | Draggable         _ -> PropName.Draggable
-            | Hidden            _ -> PropName.Hidden
-            | Lang              _ -> PropName.Lang
-            | SpellCheck        _ -> PropName.SpellCheck
-            | Style             _ -> PropName.Style
-            | TabIndex          _ -> PropName.TabIndex
-            | Title             _ -> PropName.Title
-            | NBlur             _ -> PropName.NBlur
-            | NBlurTimestamp    _ -> PropName.NBlurTimestamp
-            | NClicks           _ -> PropName.NClicks
-            | NClicksTimestamp  _ -> PropName.NClicksTimestamp
-            | LoadingState      _ -> PropName.LoadingState
-            | Persistence       _ -> PropName.Persistence
-            | PersistedProps    _ -> PropName.PersistedProps
-            | PersistenceType   _ -> PropName.PersistenceType
+            | Value             _   -> "value"
+            | AutoFocus         _   -> "autoFocus"
+            | Cols              _   -> "cols"
+            | Disabled          _   -> "disabled"
+            | Form              _   -> "form"
+            | MaxLength         _   -> "maxLength"
+            | MinLength         _   -> "minLength"
+            | Name              _   -> "name"
+            | Placeholder       _   -> "placeholder"
+            | ReadOnly          _   -> "readOnly"
+            | Required          _   -> "required"
+            | Rows              _   -> "rows"
+            | Wrap              _   -> "wrap"
+            | AccessKey         _   -> "accessKey"
+            | ClassName         _   -> "className"
+            | ContentEditable   _   -> "contentEditable"
+            | ContextMenu       _   -> "contextMenu"
+            | Dir               _   -> "dir"
+            | Draggable         _   -> "draggable"
+            | Hidden            _   -> "hidden"
+            | Lang              _   -> "lang"
+            | SpellCheck        _   -> "spellCheck"
+            | Style             _   -> "style"
+            | TabIndex          _   -> "tabIndex"
+            | Title             _   -> "title"
+            | NBlur             _   -> "n_blur"
+            | NBlurTimestamp    _   -> "n_blur_timestamp"
+            | NClicks           _   -> "n_clicks"
+            | NClicksTimestamp  _   -> "n_clicks_timestamp"
+            | LoadingState      _   -> "loading_state"
+            | Persistence       _   -> "persistence"
+            | PersistedProps    _   -> "persisted_props"
+            | PersistenceType   _   -> "persistence_type"
 
         static member toDynamicMemberDef prop =
-            prop |> Prop.toPropName |> fun cp -> cp.toString()
+            Prop.toPropName prop
             , Prop.convert prop
 
     ///<summary>

@@ -1157,8 +1157,7 @@ module DataTable =
         | PersistenceType
 
         member this.toString () =
-            //this |> Prop.createName |> NamingStrategy.toSnakeCase
-            this |> sprintf "%O" |> NamingStrategy.toSnakeCase
+            this |> Prop.createName |> NamingStrategy.toSnakeCase
 
     ///<summary>
     ///• active_cell (record with the fields: 'row: number (optional)', 'column: number (optional)', 'row_id: string | number (optional)', 'column_id: string (optional)') - The row and column indices and IDs of the currently active cell.
@@ -1686,84 +1685,6 @@ module DataTable =
         | PersistedProps of string []
         | PersistenceType of PersistenceTypeOptions
 
-        static member toPropName = function
-            | ActiveCell _ -> PropName.ActiveCell
-            | Columns _ -> PropName.Columns
-            | IncludeHeadersOnCopyPaste _ -> PropName.IncludeHeadersOnCopyPaste
-            | LocaleFormat _ -> PropName.LocaleFormat
-            | MarkdownOptions _ -> PropName.MarkdownOptions
-            | Css _ -> PropName.Css
-            | Data _ -> PropName.Data
-            | DataPrevious _ -> PropName.DataPrevious
-            | DataTimestamp _ -> PropName.DataTimestamp
-            | Editable _ -> PropName.Editable
-            | EndCell _ -> PropName.EndCell
-            | ExportColumns _ -> PropName.ExportColumns
-            | ExportFormat _ -> PropName.ExportFormat
-            | ExportHeaders _ -> PropName.ExportHeaders
-            | FillWidth _ -> PropName.FillWidth
-            | HiddenColumns _ -> PropName.HiddenColumns
-            | IsFocused _ -> PropName.IsFocused
-            | MergeDuplicateHeaders _ -> PropName.MergeDuplicateHeaders
-            | FixedColumns _ -> PropName.FixedColumns
-            | FixedRows _ -> PropName.FixedRows
-            | ColumnSelectable _ -> PropName.ColumnSelectable
-            | RowDeletable _ -> PropName.RowDeletable
-            | CellSelectable _ -> PropName.CellSelectable
-            | RowSelectable _ -> PropName.RowSelectable
-            | SelectedCells _ -> PropName.SelectedCells
-            | SelectedRows _ -> PropName.SelectedRows
-            | SelectedColumns _ -> PropName.SelectedColumns
-            | SelectedRowIds _ -> PropName.SelectedRowIds
-            | StartCell _ -> PropName.StartCell
-            | StyleAsListView _ -> PropName.StyleAsListView
-            | PageAction _ -> PropName.PageAction
-            | PageCurrent _ -> PropName.PageCurrent
-            | PageCount _ -> PropName.PageCount
-            | PageSize _ -> PropName.PageSize
-            | Dropdown _ -> PropName.Dropdown
-            | DropdownConditional _ -> PropName.DropdownConditional
-            | DropdownData _ -> PropName.DropdownData
-            | Tooltip _ -> PropName.Tooltip
-            | TooltipConditional _ -> PropName.TooltipConditional
-            | TooltipData _ -> PropName.TooltipData
-            | TooltipHeader _ -> PropName.TooltipHeader
-            | TooltipDelay _ -> PropName.TooltipDelay
-            | TooltipDuration _ -> PropName.TooltipDuration
-            | FilterQuery _ -> PropName.FilterQuery
-            | FilterAction _ -> PropName.FilterAction
-            | FilterOptions _ -> PropName.FilterOptions
-            | SortAction _ -> PropName.SortAction
-            | SortMode _ -> PropName.SortMode
-            | SortBy _ -> PropName.SortBy
-            | SortAsNull _ -> PropName.SortAsNull
-            | StyleTable _ -> PropName.StyleTable
-            | StyleCell _ -> PropName.StyleCell
-            | StyleData _ -> PropName.StyleData
-            | StyleFilter _ -> PropName.StyleFilter
-            | StyleHeader _ -> PropName.StyleHeader
-            | StyleCellConditional _ -> PropName.StyleCellConditional
-            | StyleDataConditional _ -> PropName.StyleDataConditional
-            | StyleFilterConditional _ -> PropName.StyleFilterConditional
-            | StyleHeaderConditional _ -> PropName.StyleHeaderConditional
-            | Virtualization _ -> PropName.Virtualization
-            | DerivedFilterQueryStructure _ -> PropName.DerivedFilterQueryStructure
-            | DerivedViewportData _ -> PropName.DerivedViewportData
-            | DerivedViewportIndices _ -> PropName.DerivedViewportIndices
-            | DerivedViewportRowIds _ -> PropName.DerivedViewportRowIds
-            | DerivedViewportSelectedColumns _ -> PropName.DerivedViewportSelectedColumns
-            | DerivedViewportSelectedRows _ -> PropName.DerivedViewportSelectedRows
-            | DerivedViewportSelectedRowIds _ -> PropName.DerivedViewportSelectedRowIds
-            | DerivedVirtualData _ -> PropName.DerivedVirtualData
-            | DerivedVirtualIndices _ -> PropName.DerivedVirtualIndices
-            | DerivedVirtualRowIds _ -> PropName.DerivedVirtualRowIds
-            | DerivedVirtualSelectedRows _ -> PropName.DerivedVirtualSelectedRows
-            | DerivedVirtualSelectedRowIds _ -> PropName.DerivedVirtualSelectedRowIds
-            | LoadingState _ -> PropName.LoadingState
-            | Persistence _ -> PropName.Persistence
-            | PersistedProps _ -> PropName.PersistedProps
-            | PersistenceType _ -> PropName.PersistenceType
-
         static member convert = function
             | ActiveCell p -> box p
             | Columns p -> box p
@@ -1842,8 +1763,12 @@ module DataTable =
             | PersistedProps p -> box p
             | PersistenceType p -> PersistenceTypeOptions.convert p
 
+        static member toPropName =
+            Prop.createName >> NamingStrategy.toSnakeCase
+
         static member toDynamicMemberDef prop =
-            prop |> Prop.toPropName |> fun cp -> cp.toString(), Prop.convert prop
+            Prop.toPropName prop
+            , Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component

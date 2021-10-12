@@ -23,23 +23,6 @@ module Loading =
         static member convert =
             DU.convertAsString
 
-    type PropName =
-        | Type
-        | Fullscreen
-        | Debug
-        | ClassName
-        | ParentClassName
-        | Style
-        | ParentStyle
-        | Color
-        | LoadingState
-
-        member this.toString () =
-            match this with
-            | ClassName         _   -> "className"
-            | ParentClassName   _   -> "parentClassName"
-            | prop                  -> prop |> Prop.createName |> NamingStrategy.toSnakeCase
-
     ///<summary>
     ///• children (list with values of type: a list of or a singular dash component, string or number | a list of or a singular dash component, string or number) - Array that holds components to render
     ///&#10;
@@ -86,18 +69,12 @@ module Loading =
             | LoadingState      p -> box p
 
         static member toPropName = function
-            | Type              _ -> PropName.Type
-            | Fullscreen        _ -> PropName.Fullscreen
-            | Debug             _ -> PropName.Debug
-            | ClassName         _ -> PropName.ClassName
-            | ParentClassName   _ -> PropName.ParentClassName
-            | Style             _ -> PropName.Style
-            | ParentStyle       _ -> PropName.ParentStyle
-            | Color             _ -> PropName.Color
-            | LoadingState      _ -> PropName.LoadingState
+            | ClassName         _   -> "className"
+            | ParentClassName   _   -> "parentClassName"
+            | prop                  -> prop |> Prop.createName |> NamingStrategy.toSnakeCase
 
         static member toDynamicMemberDef prop =
-            prop |> Prop.toPropName |> fun cp -> cp.toString()
+            Prop.toPropName prop
             , Prop.convert prop
 
     ///<summary>

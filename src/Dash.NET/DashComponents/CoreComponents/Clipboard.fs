@@ -9,25 +9,6 @@ open DynamicObj
 ///</summary>
 [<RequireQualifiedAccess>]
 module Clipboard =
-    type PropName =
-        | TargetId
-        | Content
-        | NClicks
-        | Title
-        | Style
-        | ClassName
-        | LoadingState
-
-        member this.toString () =
-            match this with
-            | TargetId      _ -> "target_id"
-            | Content       _ -> "content"
-            | NClicks       _ -> "n_clicks"
-            | Title         _ -> "title"
-            | Style         _ -> "style"
-            | ClassName     _ -> "className"
-            | LoadingState  _ -> "loading_state"
-
     ///<summary>
     ///• target_id (string | record; default null) - The id of target component containing text to copy to the clipboard.
     ///The inner text of the &#96;children&#96; prop will be copied to the clipboard.  If none, then the text from the
@@ -64,16 +45,16 @@ module Clipboard =
             | LoadingState  p -> box p
 
         static member toPropName = function
-            | TargetId      _ -> PropName.TargetId
-            | Content       _ -> PropName.Content
-            | NClicks       _ -> PropName.NClicks
-            | Title         _ -> PropName.Title
-            | Style         _ -> PropName.Style
-            | ClassName     _ -> PropName.ClassName
-            | LoadingState  _ -> PropName.LoadingState
+            | TargetId      _ -> "target_id"
+            | Content       _ -> "content"
+            | NClicks       _ -> "n_clicks"
+            | Title         _ -> "title"
+            | Style         _ -> "style"
+            | ClassName     _ -> "className"
+            | LoadingState  _ -> "loading_state"
 
         static member toDynamicMemberDef(prop: Prop) =
-            prop |> Prop.toPropName |> fun cp -> cp.toString()
+            Prop.toPropName prop
             , Prop.convert prop
 
     ///<summary>

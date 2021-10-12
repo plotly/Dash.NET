@@ -13,35 +13,6 @@ open Dash.NET.Common
 ///</summary>
 [<RequireQualifiedAccess>]
 module RadioItems =
-    type PropName =
-        | ClassName
-        | Style
-        | Options
-        | Value
-        | InputClassName
-        | InputStyle
-        | LabelClassName
-        | LabelStyle
-        | LoadingState
-        | Persistence
-        | PersistedProps
-        | PersistenceType
-
-        member this.toString () =
-            match this with
-            | ClassName         -> "className"
-            | Style             -> "style"
-            | Options           -> "options"
-            | Value             -> "value"
-            | InputClassName    -> "inputClassName"
-            | InputStyle        -> "inputStyle"
-            | LabelClassName    -> "labelClassName"
-            | LabelStyle        -> "labelStyle"
-            | LoadingState      -> "loading_state"
-            | Persistence       -> "persistence"
-            | PersistedProps    -> "persisted_props"
-            | PersistenceType   -> "persistence_type"
-
     ///<summary>
     ///• options (list with values of type: record with the fields: 'label: string | number (required)', 'value: string | number (required)', 'disabled: boolean (optional)'; default []) - An array of options
     ///&#10;
@@ -108,21 +79,21 @@ module RadioItems =
             | PersistenceType   p   -> PersistenceTypeOptions.convert p
 
         static member toPropName = function
-            | ClassName         _   -> PropName.ClassName
-            | Style             _   -> PropName.Style
-            | Options           _   -> PropName.Options
-            | Value             _   -> PropName.Value
-            | InputClassName    _   -> PropName.InputClassName
-            | InputStyle        _   -> PropName.InputStyle
-            | LabelClassName    _   -> PropName.LabelClassName
-            | LabelStyle        _   -> PropName.LabelStyle
-            | LoadingState      _   -> PropName.LoadingState
-            | Persistence       _   -> PropName.Persistence
-            | PersistedProps    _   -> PropName.PersistedProps
-            | PersistenceType   _   -> PropName.PersistenceType
+            | ClassName         _   -> "className"
+            | Style             _   -> "style"
+            | Options           _   -> "options"
+            | Value             _   -> "value"
+            | InputClassName    _   -> "inputClassName"
+            | InputStyle        _   -> "inputStyle"
+            | LabelClassName    _   -> "labelClassName"
+            | LabelStyle        _   -> "labelStyle"
+            | LoadingState      _   -> "loading_state"
+            | Persistence       _   -> "persistence"
+            | PersistedProps    _   -> "persisted_props"
+            | PersistenceType   _   -> "persistence_type"
 
         static member toDynamicMemberDef prop =
-            prop |> Prop.toPropName |> fun cp -> cp.toString()
+            Prop.toPropName prop
             , Prop.convert prop
 
     ///<summary>
