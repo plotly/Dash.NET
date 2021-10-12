@@ -21,8 +21,7 @@ module Json =
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         )
 
-[<RequireQualifiedAccess>]
-module NameCase =
+module NamingStrategy =
     open Newtonsoft.Json
 
     let private toCase (ns: Serialization.NamingStrategy) name =
@@ -32,41 +31,26 @@ module NameCase =
     let toCamelCase name = toCase (Serialization.CamelCaseNamingStrategy()) name
     let toKebabCase name = toCase (Serialization.KebabCaseNamingStrategy()) name
 
-    let fromDiscriminatedUnion du =
+[<RequireQualifiedAccess>]
+module DU =
+    let private toString du =
         du
         |> sprintf "%A"
-        |> fun s -> s.Split(' ')
-        |> Array.rev
-        |> Array.head
-        |> toKebabCase
+        |> NamingStrategy.toKebabCase
 
-    let fromMappedDiscriminatedUnions dus =
-        dus |> Map.map (fun _ -> fromDiscriminatedUnion)
+    let convertAsString du =
+        du |> toString |> box
 
-    let fromProp prop =
+    let convertMapped convert =
+        Map.map (fun _ -> convert) >> box
+
+[<RequireQualifiedAccess>]
+module Prop =
+    let createName prop =
         prop
         |> sprintf "%O"
         |> fun s -> s.Replace('\n', ' ').Split(' ')
         |> Array.head
-
-module Prop =
-    let toDynamicMemberPropName prop =
-        prop
-        |> NameCase.fromProp
-        |> NameCase.toSnakeCase
-        |> fun s -> s.Replace("class_name", "className")
-
-[<RequireQualifiedAccess>]
-module Convert =
-    let fromDiscriminatedUnion du =
-        du
-        |>NameCase.fromDiscriminatedUnion 
-        |> box
-
-    let fromMappedDiscriminatedUnions dus =
-        dus
-        |> NameCase.fromMappedDiscriminatedUnions
-        |> box
 
 [<RequireQualifiedAccess>]
 module DynObj =
@@ -74,13 +58,19 @@ module DynObj =
 
     let private toPropName prop =
         prop
-        |> NameCase.fromProp
-        |> NameCase.toCamelCase
+        |> Prop.createName
+        |> NamingStrategy.toCamelCase
 
-    let setPropValueOpt props prop convert maybeValue =
+    let setPropValueOpt dynObj convert prop maybeValue =
         prop
         |> toPropName
         |> fun propName ->
             maybeValue
             |> Option.map (prop >> convert)
-            |> DynObj.setValueOpt props propName
+            |> DynObj.setValueOpt dynObj propName
+
+    let setDUValueOpt dynObj convert dynPropName maybeValue =
+        maybeValue
+        |> Option.map convert
+        |> DynObj.setValueOpt dynObj dynPropName
+

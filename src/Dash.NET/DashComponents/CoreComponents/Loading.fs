@@ -20,6 +20,9 @@ module Loading =
         | Dot
         | Default
 
+        static member convert =
+            DU.convertAsString
+
     ///<summary>
     ///• children (list with values of type: a list of or a singular dash component, string or number | a list of or a singular dash component, string or number) - Array that holds components to render
     ///&#10;
@@ -55,18 +58,24 @@ module Loading =
         | LoadingState of LoadingState
 
         static member convert = function
-            | Type p -> Convert.fromDiscriminatedUnion p
-            | Fullscreen p -> box p
-            | Debug p -> box p
-            | ClassName p -> box p
-            | ParentClassName p -> box p
-            | Style p -> box p
-            | ParentStyle p -> box p
-            | Color p -> box p
-            | LoadingState p -> box p
+            | Type              p -> LoadingType.convert p
+            | Fullscreen        p -> box p
+            | Debug             p -> box p
+            | ClassName         p -> box p
+            | ParentClassName   p -> box p
+            | Style             p -> box p
+            | ParentStyle       p -> box p
+            | Color             p -> box p
+            | LoadingState      p -> box p
 
-        static member toDynamicMemberDef(prop: Prop) =
-            prop |> Prop.toDynamicMemberPropName, Prop.convert prop
+        static member toPropName = function
+            | ClassName         _   -> "className"
+            | ParentClassName   _   -> "parentClassName"
+            | prop                  -> prop |> Prop.createName |> NamingStrategy.toSnakeCase
+
+        static member toDynamicMemberDef prop =
+            Prop.toPropName prop
+            , Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
@@ -162,8 +171,8 @@ module Loading =
             ) =
             (fun (t: Loading) ->
                 let props = DashComponentProps()
-                let inline setPropValueOpt prop =
-                    DynObj.setPropValueOpt props prop Prop.convert
+                let setPropValueOpt prop =
+                    DynObj.setPropValueOpt props Prop.convert prop
 
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
