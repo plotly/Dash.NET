@@ -54,13 +54,13 @@
     <Compile Include="DashComponents\CoreComponents\LogoutButton.fs" />
     <Compile Include="DashComponents\CoreComponents\Graph.fs" />
     <Compile Include="DashComponents\CoreComponents\RadioItems.fs" />
-    <Compile Include="DashComponents\CoreComponents\RangeSlider.fs" />
     <Compile Include="DashComponents\CoreComponents\Store.fs" />
     <Compile Include="DashComponents\CoreComponents\Tab.fs" />
     <Compile Include="DashComponents\CoreComponents\Tabs.fs" />
     <Compile Include="DashComponents\CoreComponents\Textarea.fs" />
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DashComponents\CoreComponents\Slider.fs" />
+    <Compile Include="DashComponents\CoreComponents\RangeSlider.fs" />
     <Compile Include="DashComponents\DashTable.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Dependency.fs" />
@@ -72,7 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="DynamicObj" Version="0.2.0" />
     <PackageReference Include="Plotly.NET" Version="2.0.0-preview.9" />
     <PackageReference Include="Feliz.Engine" Version="1.0.0-beta-004" />
