@@ -74,7 +74,7 @@ module RangeSlider =
     ///</summary>
     type PushableType =
         | Bool of bool
-        | Number of int
+        | Number of float
         static member convert = function
             | Bool v -> box v
             | Number v -> box v
