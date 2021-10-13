@@ -15,7 +15,7 @@ namespace Dash.Giraffe.CSharp.Example
     {
         static void Main(string[] args)
         {
-            var myGraph = Plotly.NET.Chart.Line<int, int, int>(new List<Tuple<int, int>>() { Tuple.Create(1, 1), Tuple.Create(2, 2) });
+            var myGraph = Plotly.NET.Chart2D.Chart.Line<int, int, int>(new List<Tuple<int, int>>() { Tuple.Create(1, 1), Tuple.Create(2, 2) });
 
             var layout =
                 Html.div(
@@ -44,6 +44,8 @@ namespace Dash.Giraffe.CSharp.Example
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Debug,
+                ipAddress: "*",
+                port: 8000,
                 errorHandler: (Exception err) => Core.text(err.Message)
             );
 

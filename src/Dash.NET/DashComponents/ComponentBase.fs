@@ -1,9 +1,9 @@
 ﻿namespace Dash.NET
 
 open Newtonsoft.Json
-open Plotly.NET
 open System.Runtime.InteropServices
 open System
+open DynamicObj
 
 type LoadableComponentDefinition = 
     { ComponentName: string
@@ -94,14 +94,6 @@ module ComponentPropTypes =
             | False -> "false"
         static member convert = SpellCheckOptions.toString >> box
 
-    type LoadingState = 
-        {
-            IsLoading : bool
-            PropName : string
-            ComponentName : string
-        }
-        static member create isLoading propName componentName = {IsLoading=isLoading; PropName=propName; ComponentName=componentName}
-
     type PersistenceTypeOptions =
         | Local
         | Session
@@ -112,43 +104,87 @@ module ComponentPropTypes =
             | Memory    -> "memory"
         static member convert = PersistenceTypeOptions.toString >> box
 
-    type DropdownOption = 
-        {
-            Label:IConvertible
-            Value:IConvertible
-            Disabled:bool
-            Title:string
-        }
-        static member create label value disabled title = {Label=label; Value=value; Disabled=disabled; Title=title}
+    type LoadingState () =
+        inherit DynamicObj()
+        static member init 
+            (
+                isLoading       : bool,
+                ?propName       : string,
+                ?componentName  : string
+            ) =
+                let ls = LoadingState()
 
-    type RadioItemsOption = 
-        {
-            Label:IConvertible
-            Value:IConvertible
-            Disabled:bool
-        }
-        static member create label value disabled = {Label=label; Value=value; Disabled=disabled}
+                isLoading       |> DynObj.setValue ls "isLoading"
+                propName        |> DynObj.setValueOpt ls "propName"
+                componentName   |> DynObj.setValueOpt ls "componentName"
 
-    type TabColors = 
-        {
-            Border : string
-            Primary : string
-            Background : string
-        }
-        static member create border primary background = {Border=border; Primary=primary; Background=background}
+                ls
 
-    type ChecklistOption =
-        {
-            Label:IConvertible
-            Value:IConvertible
-            Disabled: bool
-        }
-        static member create label value disabled =
-            {
-                Label=label
-                Value=value
-                Disabled=disabled
-            }
+    type DropdownOption () =
+        inherit DynamicObj()
+        static member init 
+            (
+                label:IConvertible,
+                value:IConvertible,
+                ?disabled:bool,
+                ?title:string
+            ) =
+                let dro = DropdownOption()
+
+                label   |> DynObj.setValue dro "label"
+                value   |> DynObj.setValue dro "value"
+                disabled|> DynObj.setValueOpt dro "disabled"
+                title   |> DynObj.setValueOpt dro "title"
+
+                dro
+
+    type RadioItemsOption () =
+        inherit DynamicObj()
+        static member init 
+            (
+                label:IConvertible,
+                value:IConvertible,
+                ?disabled:bool
+            ) =
+                let dro = RadioItemsOption()
+
+                label   |> DynObj.setValue dro "label"
+                value   |> DynObj.setValue dro "value"
+                disabled|> DynObj.setValueOpt dro "disabled"
+
+                dro
+
+    type TabColors () =
+        inherit DynamicObj()
+        static member init 
+            (
+                ?border      :string,
+                ?primary     :string,
+                ?background  :string
+            ) =
+                let tc = TabColors()
+
+                border    |> DynObj.setValueOpt tc "border"
+                primary   |> DynObj.setValueOpt tc "primary"
+                background|> DynObj.setValueOpt tc "background"
+
+                tc
+      
+    type ChecklistOption () =
+        inherit DynamicObj()
+        static member init 
+            (
+                label:IConvertible,
+                value:IConvertible,
+                ?disabled:bool
+            ) =
+                let clo = ChecklistOption()
+
+                label   |> DynObj.setValue clo "label"
+                value   |> DynObj.setValue clo "value"
+                disabled|> DynObj.setValueOpt clo "disabled"
+
+                clo
 
 type ComponentProperty =
     | Children

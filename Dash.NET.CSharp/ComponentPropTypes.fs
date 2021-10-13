@@ -42,7 +42,7 @@ module ComponentPropTypes =
             PropName : string
             ComponentName : string
         }
-        with static member internal Convert (v : LoadingState) : Dash.NET.ComponentPropTypes.LoadingState = Dash.NET.ComponentPropTypes.LoadingState.create v.IsLoading v.PropName v.ComponentName
+        with static member internal Convert (v : LoadingState) : Dash.NET.ComponentPropTypes.LoadingState = Dash.NET.ComponentPropTypes.LoadingState.init (v.IsLoading, v.PropName, v.ComponentName)
 
     type PersistenceTypeOptions = private WrappedPersistenceTypeOptions of Dash.NET.ComponentPropTypes.PersistenceTypeOptions with
         static member internal Wrap (v : Dash.NET.ComponentPropTypes.PersistenceTypeOptions) = WrappedPersistenceTypeOptions v
@@ -59,7 +59,7 @@ module ComponentPropTypes =
             Disabled:bool
             Title:string
         }
-        static member internal Convert (v : DropdownOption) : Dash.NET.ComponentPropTypes.DropdownOption = Dash.NET.ComponentPropTypes.DropdownOption.create v.Label v.Value v.Disabled v.Title
+        static member internal Convert (v : DropdownOption) : Dash.NET.ComponentPropTypes.DropdownOption = Dash.NET.ComponentPropTypes.DropdownOption.init (v.Label, v.Value, v.Disabled, v.Title)
 
     type RadioItemsOption = 
         {
@@ -67,7 +67,7 @@ module ComponentPropTypes =
             Value:IConvertible
             Disabled:bool
         }
-        static member internal Convert (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = Dash.NET.ComponentPropTypes.RadioItemsOption.create v.Label v.Value v.Disabled
+        static member internal Convert (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = Dash.NET.ComponentPropTypes.RadioItemsOption.init (v.Label, v.Value, v.Disabled)
         
     type TabColors = 
         {
@@ -75,7 +75,7 @@ module ComponentPropTypes =
             Primary : string
             Background : string
         }
-        static member internal Convert (v : TabColors) : Dash.NET.ComponentPropTypes.TabColors = Dash.NET.ComponentPropTypes.TabColors.create v.Border v.Primary v.Background
+        static member internal Convert (v : TabColors) : Dash.NET.ComponentPropTypes.TabColors = Dash.NET.ComponentPropTypes.TabColors.init (v.Border, v.Primary, v.Background)
 
     type ChecklistOption =
         {
@@ -83,4 +83,4 @@ module ComponentPropTypes =
             Value:IConvertible
             Disabled: bool
         }
-        static member internal Convert (v : ChecklistOption) : Dash.NET.ComponentPropTypes.ChecklistOption = Dash.NET.ComponentPropTypes.ChecklistOption.create v.Label v.Value v.Disabled
+        static member internal Convert (v : ChecklistOption) : Dash.NET.ComponentPropTypes.ChecklistOption = Dash.NET.ComponentPropTypes.ChecklistOption.init (v.Label, v.Value, v.Disabled)

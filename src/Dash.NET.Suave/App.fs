@@ -2,6 +2,8 @@
 
 open Views
 
+open System.IO
+
 open Suave.Html
 open Suave
 open Suave.Operators
@@ -10,11 +12,9 @@ open Suave.Filters
 open System.Reflection
 open Dash.NET
 open Newtonsoft.Json
-open Newtonsoft.Json.Serialization
 
 module Util =
-  let settings = new JsonSerializerSettings()
-  settings.ContractResolver <- CamelCasePropertyNamesContractResolver()
+  let settings = Common.Json.mkSerializerSettings()
   let json o = JsonConvert.SerializeObject(o, settings)
   let unjson<'T> str = JsonConvert.DeserializeObject<'T>(str,settings)
 
@@ -126,6 +126,15 @@ type DashApp =
 
   static member toWebPart (app:DashApp) : WebPart =
 
+    let buildIframe =
+     context(fun ctx ->
+       let url = sprintf "http://%s/" ctx.request.rawHost
+       let color = "white"
+       let height = "600px"
+       let iframeString = 
+         "<iframe src=\"" + url + "\" style=\"display: block; margin: 0px; overflow: hidden; background-color: " + color + ";width: 100%; height: " + height + "; visibility: visible;\"></iframe>"
+       Successful.OK(iframeString))
+
     let handleCallbackRequest (cbRequest:CallbackRequest) =
       let inputs = 
         let inputs = cbRequest.Inputs |> Array.map (fun reqInput ->  reqInput.Value) //generate argument list for the callback
@@ -148,10 +157,11 @@ type DashApp =
     choose [
       GET >=>
         choose [
-          //serve the index
+          // Serves the index
           path "/" >=> Successful.OK(renderHtmlDocument(app |> DashApp.getIndexHTML))
-
-          //Dash GET enpoints
+          // Serves the index page inside an iframe (to be called from Dash.Net.Interactive)
+          path "/iframe" >=> buildIframe
+          // Dash GET enpoints
           path "/_dash-layout"       >=> context(fun x -> Successful.OK(Util.json(app.Layout))) >=> Writers.setMimeType "application/json"//Calls from Dash renderer for what components to render (must return serialized dash components)
           path "/_dash-dependencies" >=> Successful.OK(Util.json (app.Callbacks |> CallbackMap.toDependencies)) >=> Writers.setMimeType "application/json"//Serves callback bindings as json on app start.
           path "/_reload-hash"       >=> Successful.OK(Util.json obj) >=> Writers.setMimeType "application/json"//This call is done when using hot reload.
@@ -167,6 +177,9 @@ type DashApp =
                   // return serialized result of the handler function
                   Successful.OK(Util.json result) >=> Writers.setMimeType "application/json")
         ]
+
+      GET >=> Files.browseHome
+
       RequestErrors.NOT_FOUND "File not found" ]
 
   static member runAsync (args: string []) (config: DashSuaveConfig) (app: DashApp) =
@@ -220,11 +233,12 @@ type DashApp =
       |> fst
 
     // This folder has to be "<path-to-exe>/WebRoot" for the way generated component javascript injection currently works
-    //let contentRoot = Reflection.Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
-    //let webRoot     = Path.Combine(contentRoot, "WebRoot")
+    let contentRoot = Assembly.GetExecutingAssembly().Location |> Path.GetDirectoryName
+    let webRoot     = Path.Combine(contentRoot, "WebRoot")
 
     let conf =
       { defaultConfig with
+          homeFolder = Some webRoot
           bindings = [ HttpBinding.createSimple HTTP config.ip config.port ]
           errorHandler = config.errorHandler }
 

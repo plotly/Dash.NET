@@ -1,0 +1,62 @@
+#!csharp
+
+// Load Dash.NET extension (when the package gets published we do not need to use the include directive here)
+#i "nuget:C:\Work\Dash.NET\src\Dash.NET.Interactive\bin\Debug"
+#r "nuget:Dash.NET.Interactive,0.30.0"
+
+#!fsharp
+
+// Learn more about Dash.NET at https://plotly.github.io/Dash.NET/
+
+#r "nuget: Newtonsoft.Json,12.0.3"
+#r "nuget: Suave"
+#r "nuget: Suave.Experimental"
+#r "nuget: Plotly.NET,2.0.0-preview.2"
+#r "nuget: Feliz.Engine,1.0.0-beta-004"
+
+// The following local references can be changed to nuget references when new packages are published
+#I @"C:\Work\Dash.NET\examples\Dash.NET.Suave.Example\bin\Debug\net5.0"
+#r "Dash.NET.dll"
+#r "Dash.NET.Suave.dll"
+
+open Dash.NET.Suave
+open Dash.NET.Html
+open Dash.NET.DCC
+open Dash.NET
+open Plotly.NET
+
+let myGraph = Chart.Bar([(1,1);(2,2)])
+
+let myLayout = 
+  Html.div [
+    Attr.children [
+      Html.h1 [
+          Attr.children "Hello world from Dash.NET and Suave!"
+      ];
+      Html.h2 [ Attr.children "Take a look at this graph:"];
+      Graph.graph "my-ghraph-id" [Graph.Attr.figure(GenericChart.toFigure myGraph)];
+      Html.h2 [Attr.children "Tell us something!"];
+      Input.input "test-input" [Input.Attr.inputType InputType.Text];
+      Html.h3 [Attr.children "Input below will not trigger the callback"]
+      Input.input "test-input-state" [Input.Attr.inputType InputType.Text]
+      Html.div [ Attr.id "test-output" ];
+    ]
+  ]
+
+let testCallback =
+  Callback.singleOut(
+      "test-input" @. Value,
+      "test-output" @. Children,
+      (fun (input:string) (state:string) ->
+          "test-output" @. Children => (
+              sprintf "You said : '%s' and we added the state: '%s'" input state)
+      ),
+      State = ["test-input-state" @. Value])
+
+let dashApp =
+  DashApp.initDefault()
+  |> DashApp.withLayout myLayout
+  |> DashApp.addCallback testCallback
+
+// display the application inside the notebook
+dashApp

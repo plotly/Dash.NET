@@ -46,7 +46,8 @@ let propertyCodeGenerationTest (prop: SafeReactProp) =
               // will through an error if we use the existing dll, we have to grab it from nuget
               // Error: "typecheck error The module/namespace 'System.Dynamic' from compilation unit 'System.Linq.Expressions' did not contain the namespace, module or type 'DynamicObject'"
               // TODO: figure out why this is happening, would be better to use Plotly.NET.dll here
-              yield "#r \"nuget: Plotly.NET, 2.0.0-preview.6\"" ]
+              yield "#r \"nuget: Plotly.NET, 2.0.0-preview.9\""
+              yield "#r \"nuget: DynamicObj\"" ]
             |> List.reduce (sprintf "%s\n%s")
             |> sprintf "%s\n%s" sourceText
             |> SourceText.ofString 

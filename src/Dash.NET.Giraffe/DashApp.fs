@@ -15,13 +15,35 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open System.Reflection
 open Dash.NET
+open Newtonsoft.Json
 
 //Giraffe, Logging and ASP.NET specific
-type DashGiraffeConfig = {
-  HostName: string
-  LogLevel: LogLevel
-  ErrorHandler: Exception -> HttpHandler
-}
+type DashGiraffeConfig = 
+    {
+        HostName: string
+        LogLevel: LogLevel
+        IpAddress: string
+        Port : int
+        ErrorHandler: Exception -> HttpHandler
+    }
+
+    static member initDefault hostname = 
+        {
+            HostName = hostname
+            IpAddress = hostname
+            Port = 5001
+            LogLevel = LogLevel.Information
+            ErrorHandler = ((fun ex ->  ex.Message) >> text)
+        }
+
+    static member initDebug hostname = 
+        {
+            HostName = hostname
+            IpAddress = hostname
+            Port = 5001
+            LogLevel = LogLevel.Debug
+            ErrorHandler = ((fun ex ->  ex.Message) >> text)
+        }
 
 type DashApp =
     {
@@ -222,7 +244,7 @@ type DashApp =
            clearResponse >=> setStatusCode 500 >=> (config.ErrorHandler ex)
 
         let configureCors (builder : CorsPolicyBuilder) =
-            builder.WithOrigins(sprintf "http://%s:5001" config.HostName)
+            builder.WithOrigins(sprintf "http://%s:%d" config.HostName config.Port)
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    |> ignore
@@ -232,15 +254,19 @@ type DashApp =
             (match env.EnvironmentName with
             | "Development" -> appBuilder.UseDeveloperExceptionPage()
             | _ -> appBuilder.UseGiraffeErrorHandler(errorHandler))
-                   .UseHttpsRedirection()
-                    .UseCors(configureCors)
-                    .UseStaticFiles()
-                    .UseGiraffe(DashApp.toHttpHandler loadedApp)
+                   .UseCors(configureCors)
+                   .UseStaticFiles()
+                   .UseGiraffe(DashApp.toHttpHandler loadedApp)
 
         let configureServices (services : IServiceCollection) =
             services.AddCors()    |> ignore
             services.AddGiraffe() |> ignore
 
+            Common.Json.mkSerializerSettings()
+            |> NewtonsoftJson.Serializer
+            |> services.AddSingleton<Json.ISerializer>
+            |> ignore
+        
         let configureLogging (builder : ILoggingBuilder) =
             builder.AddFilter(fun l -> l.Equals config.LogLevel)
                    .AddConsole()
@@ -254,6 +280,7 @@ type DashApp =
             .ConfigureWebHostDefaults(
                 fun webHostBuilder ->
                     webHostBuilder
+                        .UseUrls(sprintf "http://%s:%d" config.IpAddress config.Port)
                         .UseContentRoot(contentRoot)
                         .UseWebRoot(webRoot)
                         .Configure(Action<IApplicationBuilder> configureApp)

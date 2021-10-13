@@ -4,14 +4,36 @@
     <TargetFramework>net5.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <WarnOn>3390;$(WarnOn)</WarnOn>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>Kevin Schneider, Plotly</Authors>
+    <Description>Giraffe backend implementation for Dash.NET</Description>
+    <Summary>Giraffe backend implementation for Dash.NET</Summary>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://plotly.github.io/Dash.NET/</PackageProjectUrl>
+    <PackageTags>fsharp csharp dotnet dash plotly data-visualization datascience</PackageTags>
+    <RepositoryUrl>https://github.com/plotly/Dash.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <FsDocsLicenseLink>https://github.com/plotly/Dash.NET/blob/dev/LICENSE</FsDocsLicenseLink>
+    <FsDocsReleaseNotesLink>https://github.com/plotly/Dash.NET/blob/dev/RELEASE_NOTES.md</FsDocsReleaseNotesLink>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Plotly</Company>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Include="Views.fs" />
     <Compile Include="DashApp.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
     <PackageReference Include="Giraffe" Version="5.0.0" />
   </ItemGroup>
 

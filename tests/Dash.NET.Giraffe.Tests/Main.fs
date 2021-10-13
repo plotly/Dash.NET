@@ -1,4 +1,4 @@
-﻿module Dash.NET.Tests
+﻿module Dash.NET.Giraffe.Tests
 open Expecto
 
 [<EntryPoint>]

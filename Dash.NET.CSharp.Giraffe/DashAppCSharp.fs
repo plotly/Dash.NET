@@ -14,9 +14,11 @@ module DashApp =
     //Giraffe, Logging and ASP.NET specific
     type DashGiraffeConfig =
         {
-            HostName: string
-            LogLevel: LogLevel
-            ErrorHandler: System.Func<System.Exception,HttpHandler> // TODO : HttpHandler type from C# is not very usable
+            HostName : string
+            LogLevel : LogLevel
+            ErrorHandler : System.Func<System.Exception,HttpHandler> // TODO : HttpHandler type from C# is not very usable
+            IpAddress: string
+            Port : int
         }
 
     let private convertConfig (config : DashGiraffeConfig) : Dash.NET.Giraffe.DashGiraffeConfig =
@@ -24,6 +26,8 @@ module DashApp =
             Dash.NET.Giraffe.DashGiraffeConfig.HostName = config.HostName
             LogLevel = config.LogLevel
             ErrorHandler = FuncConvert.FromFunc(config.ErrorHandler)
+            IpAddress = config.IpAddress
+            Port = config.Port
         }
 
     type DashConfig = private DashConfigWrapped of Dash.NET.DashConfig with

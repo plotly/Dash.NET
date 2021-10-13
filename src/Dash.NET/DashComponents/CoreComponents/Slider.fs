@@ -2,7 +2,7 @@
 
 open Dash.NET
 open System
-open Plotly.NET
+open DynamicObj
 open System.Collections.Generic
 open ComponentPropTypes
 
@@ -61,7 +61,7 @@ module Slider =
         static member convert this = 
             box
                 {| always_visible = this.AlwaysVisible
-                   placement = this.Placement |}
+                   placement = this.Placement |> TooltipPlacement.convert |}
 
     ///<summary>
     ///record with the fields: 'label: string (optional)', 'style: record (optional)'

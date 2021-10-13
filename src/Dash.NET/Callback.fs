@@ -1,9 +1,10 @@
 ﻿namespace Dash.NET
 
-open Plotly.NET
+open DynamicObj
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open System
+open Dash.NET.Common
 open DynamicInvoke
 
 /// JSON converter to always convert a single item as well as a JArray of items on the same field to `Seq<'T>`
@@ -167,7 +168,7 @@ type Callback<'Function>
     /// If true, the callback will not be called during initialization of the DashApp
     member _.PreventInitialCall = defaultArg PreventInitialCall true
 
-    [<JsonProperty("clientside_function")>]
+    [<JsonProperty("clientside_function"); JsonConverter(typeof<Json.OptionConverter<ClientSideFunction>>)>]
     /// A clientside function that should be run by this callback
     member _.ClientSideFunction = ClientSideFunction
 
@@ -372,7 +373,13 @@ type Callback<'Function>
                 |> Seq.map (fun (argument,targetType) -> 
                     //printfn "JsonType: %A;      ArgType:%A" argument.Type targetType
                     // it may be necessary to inspect the JToken when the input is an object/higher kinded type
-                    argument.ToObject(targetType))
+                    if not <| isNull argument then
+                        argument.ToObject(targetType)
+                    else
+                        //F# can handle a non-nullable type being null, it just might throw an exception if you try to use it
+                        //you can get around this with Nullable<...> 
+                        null
+                )
             else
                 failwithf "handler function arguments and targetTypes have different lenght: args:%i vs. types:%i" callbackHandlerFunctionRange.Length (Seq.length args)
 

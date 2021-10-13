@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <WarnOn>3390;$(WarnOn)</WarnOn>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -13,11 +14,11 @@
 
   <PropertyGroup>
     <Authors>Plotly</Authors>
-    <Description>A Suave backend implementation for Dash.NET</Description>
-    <Summary>A Suave backend implementation for Dash.NET</Summary>
+    <Description>A Dash.NET visualizer extension for Dot NET Interactive</Description>
+    <Summary>A Dash.NET visualizer extension for Dot NET Interactive</Summary>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://plotly.github.io/Dash.NET/</PackageProjectUrl>
-    <PackageTags>fsharp csharp dotnet dash plotly data-visualization datascience</PackageTags>
+    <PackageTags>fsharp csharp dotnet dash plotly notebooks data-visualization datascience</PackageTags>
     <RepositoryUrl>https://github.com/plotly/Dash.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <FsDocsLicenseLink>https://github.com/plotly/Dash.NET/blob/dev/LICENSE</FsDocsLicenseLink>
@@ -26,21 +27,25 @@
     <FileVersion>1.0.0.0</FileVersion>
     <Company>Plotly</Company>
   </PropertyGroup>
-    
+
   <ItemGroup>
-    <Compile Include="Views.fs" />
-    <Compile Include="App.fs" />
+    <Compile Include="Library.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.DotNet.Interactive" Version="1.0.0-beta.21459.1" />
+    <PackageReference Include="Microsoft.DotNet.Interactive.Formatting" Version="1.0.0-beta.21459.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Suave" Version="2.6.1" />
-    <PackageReference Include="Suave.Experimental" Version="2.6.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dash.NET.Suave\Dash.NET.Suave.fsproj" />
     <ProjectReference Include="..\Dash.NET\Dash.NET.fsproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(OutputPath)/Dash.NET.Interactive.dll" Pack="true" PackagePath="interactive-extensions/dotnet" />
+  </ItemGroup>
+
 
 </Project>
