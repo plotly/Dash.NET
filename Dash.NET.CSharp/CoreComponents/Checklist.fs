@@ -200,4 +200,4 @@ module Checklist =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let checklist (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Checklist.checklist id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let checklist (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Checklist.checklist id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

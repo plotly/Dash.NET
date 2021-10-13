@@ -119,4 +119,4 @@ module Store =
     ///&#10;
     ///• modified_timestamp (number; default -1) - The last time the storage was modified.
     ///</summary>
-    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Store.store id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Store.store id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

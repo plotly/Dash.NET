@@ -119,4 +119,4 @@ module Interval =
     ///If -1, then the interval has no limit (the default)
     ///and if 0 then the interval stops running.
     ///</summary>
-    let interval (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Interval.interval id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let interval (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Interval.interval id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

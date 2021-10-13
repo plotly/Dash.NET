@@ -40,7 +40,7 @@ let dslLayout =
                 Dropdown.Attr.multi true
             ]
             Html.br []
-            Html.label [ Attr.children (Html.text "Selected values :") ]
+            Html.label [ Attr.children (Html.text "Selected values (multiplied by number of clicks) :") ]
             Html.br []
             Html.div [ Attr.id "output-1" ]
             Html.div [ Attr.id "output-2" ]

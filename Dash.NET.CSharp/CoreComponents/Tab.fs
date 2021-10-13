@@ -163,4 +163,4 @@ module Tab =
     ///&#10;
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
     ///</summary>
-    let tab (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tab.tab id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let tab (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tab.tab id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

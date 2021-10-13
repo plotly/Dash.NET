@@ -342,4 +342,4 @@ module Slider =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let slider (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Slider.slider id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let slider (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Slider.slider id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

@@ -116,4 +116,4 @@ module Location =
     ///&#10;
     ///• refresh (boolean; default true) - Refresh the page when the location is updated?
     ///</summary>
-    let location (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Location.location id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let location (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Location.location id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

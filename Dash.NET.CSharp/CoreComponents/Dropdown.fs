@@ -37,7 +37,7 @@ module Dropdown =
         ///An array of options {label: [string|number], value: [string|number]},
         ///an optional disabled field can be used for each option
         ///</summary>
-        static member options(p: seq<DropdownOption>) = 
+        static member options([<ParamArray>] p: DropdownOption array) = 
             guardAgainstNull "p" p
             p |> Seq.iter (guardAgainstNull "p")
             OAttr.options (p |> Seq.map DropdownOption.Convert) |> Attr.Wrap
@@ -267,4 +267,4 @@ module Dropdown =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let markdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Dropdown.dropdown id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let dropdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Dropdown.dropdown id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

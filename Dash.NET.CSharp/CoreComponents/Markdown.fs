@@ -143,4 +143,4 @@ module Markdown =
     ///&#10;
     ///• style (record) - User-defined inline styles for the rendered Markdown
     ///</summary>
-    let markdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Markdown.markdown id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let markdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Markdown.markdown id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

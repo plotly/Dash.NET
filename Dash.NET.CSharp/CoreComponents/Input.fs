@@ -331,4 +331,4 @@ module Input =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let input (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Input.input id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let input (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Input.input id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap

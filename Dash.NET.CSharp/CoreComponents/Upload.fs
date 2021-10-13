@@ -290,4 +290,4 @@ module Upload =
     ///&#10;
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
     ///</summary>
-    let upload (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Upload.upload id (attrs |> List.ofArray |> List.map Attr.Unwrap)
+    let upload (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Upload.upload id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
