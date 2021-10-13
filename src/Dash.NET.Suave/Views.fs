@@ -32,7 +32,7 @@ module Views =
       script ["type", "application/javascript"; "crossorigin", " "; "src", "https://unpkg.com/@babel/polyfill@7.8.7/dist/polyfill.min.js"] []
       script ["type", "application/javascript"; "crossorigin", " "; "src", "https://unpkg.com/prop-types@15.7.2/prop-types.js"] []
       script ["type", "application/javascript"; "crossorigin", " "; "src", "https://unpkg.com/dash-renderer@1.7.0/dash_renderer/dash_renderer.min.js"] []
-      script ["type", "application/javascript"; "crossorigin", " "; "src", "https://unpkg.com/dash-core-components@1.17.1/dash_core_components/dash_core_components.min.js"] []
+      script ["type", "application/javascript"; "crossorigin", " "; "src", "https://unpkg.com/dash-core-components@1.17.1/dash_core_components/dash_core_components.js"] []
       script ["type", "application/javascript"; "crossorigin", " "; "src", "https://cdn.jsdelivr.net/npm/dash-html-components@1.1.0/dash_html_components/dash_html_components.min.js"] []
       script ["type", "application/javascript"; "crossorigin", " "; "src", "https://cdn.plot.ly/plotly-latest.min.js"] []
       script ["type", "application/javascript"; "crossorigin", " "; "src", DashTable.CdnLink ] []
