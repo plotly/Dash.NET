@@ -12,6 +12,7 @@ open Suave.Filters
 open System.Reflection
 open Dash.NET
 open Newtonsoft.Json
+open System
 
 module Util =
   let settings = Common.Json.mkSerializerSettings()
@@ -126,6 +127,11 @@ type DashApp =
 
   static member toWebPart (app:DashApp) : WebPart =
 
+    let s = Environment.GetEnvironmentVariable("DASH_ROUTES_PATHNAME_PREFIX")
+    // Asumes the environment variable does not contain a forward slash at the begining nor the end
+    let routePrefix r =
+      if s = null then r else ("/" + s + r)
+
     let buildIframe =
      context(fun ctx ->
        let url = sprintf "http://%s/" ctx.request.rawHost
@@ -158,19 +164,20 @@ type DashApp =
       GET >=>
         choose [
           // Serves the index
-          path "/" >=> Successful.OK(renderHtmlDocument(app |> DashApp.getIndexHTML))
+          path (routePrefix "/") >=> Successful.OK(renderHtmlDocument(app |> DashApp.getIndexHTML))
+          path (routePrefix "") >=> Successful.OK(renderHtmlDocument(app |> DashApp.getIndexHTML))
           // Serves the index page inside an iframe (to be called from Dash.Net.Interactive)
           path "/iframe" >=> buildIframe
           // Dash GET enpoints
-          path "/_dash-layout"       >=> context(fun x -> Successful.OK(Util.json(app.Layout))) >=> Writers.setMimeType "application/json"//Calls from Dash renderer for what components to render (must return serialized dash components)
-          path "/_dash-dependencies" >=> Successful.OK(Util.json (app.Callbacks |> CallbackMap.toDependencies)) >=> Writers.setMimeType "application/json"//Serves callback bindings as json on app start.
-          path "/_reload-hash"       >=> Successful.OK(Util.json obj) >=> Writers.setMimeType "application/json"//This call is done when using hot reload.
+          path (routePrefix "/_dash-layout")       >=> context(fun x -> Successful.OK(Util.json(app.Layout))) >=> Writers.setMimeType "application/json"//Calls from Dash renderer for what components to render (must return serialized dash components)
+          path (routePrefix "/_dash-dependencies") >=> Successful.OK(Util.json (app.Callbacks |> CallbackMap.toDependencies)) >=> Writers.setMimeType "application/json"//Serves callback bindings as json on app start.
+          path (routePrefix "/_reload-hash")       >=> Successful.OK(Util.json obj) >=> Writers.setMimeType "application/json"//This call is done when using hot reload.
         ]
 
       POST >=> 
         choose [
           //Dash POST endpoints
-          path "/_dash-update-component" //calls from callbacks come in here.
+          path (routePrefix "/_dash-update-component") //calls from callbacks come in here.
             >=> request(fun r ->
                   let ooo = Util.unjson<CallbackRequest> (System.Text.Encoding.UTF8.GetString r.rawForm)
                   let result = handleCallbackRequest ooo
