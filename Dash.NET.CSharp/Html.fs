@@ -23,6 +23,18 @@ module Html =
         static member Wrap (v : Dash.NET.DashComponent) = WrappedDashComponent v
         static member Unwrap (v : DashComponent) = match v with | WrappedDashComponent value -> value
 
+    type ComponentProperty = private WrappedComponentProperty of Dash.NET.ComponentProperty
+        with
+        static member internal Wrap (v : Dash.NET.ComponentProperty) = WrappedComponentProperty v
+        static member internal Unwrap (v : ComponentProperty) = match v with | WrappedComponentProperty value -> value
+        static member Children = Dash.NET.ComponentProperty.Children |> WrappedComponentProperty
+        static member Value = Dash.NET.ComponentProperty.Value |> WrappedComponentProperty
+        static member N_Clicks = Dash.NET.ComponentProperty.N_Clicks |> WrappedComponentProperty
+        static member CustomProperty (value : string) =
+            guardAgainstNull "value" value
+            Dash.NET.ComponentProperty.CustomProperty value |> WrappedComponentProperty
+
+
     type HtmlProp = private WrappedHtmlProp of Dash.NET.Html.HtmlProp
         with
         static member internal Wrap (v : Dash.NET.Html.HtmlProp) = WrappedHtmlProp v

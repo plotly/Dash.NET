@@ -10,6 +10,7 @@
     <Compile Include="ComponentPropTypes.fs" />
     <Compile Include="Html.fs" />
     <Compile Include="ComponentStyle.fs" />
+    <Compile Include="Callback.fs" />
     <Compile Include="CoreComponents\Checklist.fs" />
     <Compile Include="CoreComponents\Markdown.fs" />
     <Compile Include="CoreComponents\Dropdown.fs" />

@@ -11,7 +11,7 @@ namespace Dash.Giraffe.CSharp.Example
 {
     static class CallbacksExample
     {
-        static DashComponent CallbacksHtml()
+        internal static DashComponent CallbacksHtml()
         {
             var html =
                 Html.div(
@@ -19,13 +19,71 @@ namespace Dash.Giraffe.CSharp.Example
                         Dropdown.dropdown(
                             "testInput1", 
                             Dropdown.Attr.options(
-                                DropdownOption.Init("1", "1")
+                                DropdownOption.Init("1", "1"),
+                                DropdownOption.Init(2, 2),
+                                DropdownOption.Init(3L, 3L),
+                                DropdownOption.Init(4.1, 4.1)
+                            ),
+                            Dropdown.Attr.multi(true)
+                        ),
+                        Html.br(),
+                        Html.label(
+                            Attr.children(
+                                Html.text("Selected values (multiplied by number of clicks) :")
                             )
-                        )
+                        ),
+                        Html.br(),
+                        Html.div(Attr.id("output-1")),
+                        Html.div(Attr.id("output-2")),
+                        Html.div(Attr.id("output-3")),
+                        Html.div(Attr.id("output-4")),
+                        Html.button(
+                            Attr.className("button is-primary"),
+                            Attr.id("testInput2"),
+                            Attr.children("Click ME!")
+                        ),
+                        Html.button(
+                            Attr.className("button is-primary"),
+                            Attr.id("testInput3"),
+                            Attr.children("Click ME 2!")
+                        ),
+                        Html.br(),
+                        Html.label(
+                            Attr.children(Html.text("Number of clicks:"))
+                        ),
+                        Html.div(Attr.id("output-5"))
                     )
                 );
 
             return html;
+        }
+
+        internal static Dash.NET.CSharp.Callback CallbackArrayInput()
+        {
+            var test =
+                Dash.NET.CSharp.Callback.multiOut(
+                    new[] {
+                        ("testInput2", ComponentProperty.N_Clicks),
+                        ("testInput3", ComponentProperty.N_Clicks)
+                        //("output-1", ComponentProperty.Children),
+                        //("output-2", ComponentProperty.Children)
+                    },
+                    new[] {
+                        ("output-5", ComponentProperty.Children)
+                    },
+                    (float x, float y) => {
+                        return new[] {
+                            Dash.NET.CallbackResultBinding.bindResult(Dash.NET.Dependency.create("output-1", "children"), x.ToString() + " and " + y.ToString())
+                        };
+                    }
+                );
+
+            return test;
+        }
+
+        internal static void CallbackClickInput()
+        {
+
         }
     }
 }

@@ -33,13 +33,15 @@ namespace Dash.Giraffe.CSharp.Example
                                 Style.StyleProperty("marginLeft", "12px"),
                                 Css.borderLeftWidth(2)
                             )
-                        )
+                        ),
+                        CallbacksExample.CallbacksHtml()
                     )
                 );
 
             var dashApp = DashApp
                 .initDefault()
-                .withLayout(layout);
+                .withLayout(layout)
+                .addCallback(Dash.NET.CSharp.Callback.Unwrap(CallbacksExample.CallbackArrayInput()));
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
