@@ -1,12 +1,10 @@
-﻿module Dash.NET.DashTable
+﻿namespace Dash.NET.DashTable
 
 open System
 open DynamicObj
 open Dash.NET
 open Dash.NET.Common
-
-[<Literal>]
-let CdnLink = "https://unpkg.com/dash-table@4.12.1/dash_table/bundle.js"
+open Newtonsoft.Json
 
 ///<summary>
 ///Dash DataTable is an interactive table component designed for
@@ -738,27 +736,39 @@ module DataTable =
     ///<summary>
     ///record with the fields: 'symbol: list with values of type: string (optional)', 'decimal: string (optional)', 'group: string (optional)', 'grouping: list with values of type: number (optional)', 'numerals: list with values of type: string (optional)', 'percent: string (optional)', 'separate_4digits: boolean (optional)'
     ///</summary>
+
+    module Locale =
+        [<RequireQualifiedAccess>]
+        module Prop =
+            let [<Literal>] symbol = "symbol"
+            let [<Literal>] decimal = "decimal"
+            let [<Literal>] group = "group"
+            let [<Literal>] grouping = "grouping"
+            let [<Literal>] numerals = "numerals"
+            let [<Literal>] percent = "percent"
+            let [<Literal>] separate4digits = "separate_4digits"
+
     type Locale () =
         inherit DynamicObj()
         static member init
             (
                 ?symbol: string list,
-                ?decimal: string,
-                ?group: string,
-                ?grouping: int list,
+                ?decimal: char,
+                ?group: char,
+                ?grouping: uint list,
                 ?numerals: string list,
                 ?percent: string,
                 ?separate4digits: bool
             ) =
                 let t = Locale()
 
-                symbol |> DynObj.setValue t "symbol"
-                decimal |> DynObj.setValue t "decimal"
-                group |> DynObj.setValue t "group"
-                grouping |> DynObj.setValue t "grouping"
-                numerals |> DynObj.setValue t "numerals"
-                percent |> DynObj.setValue t "percent"
-                separate4digits |> DynObj.setValue t "separate_4digits"
+                symbol |> DynObj.setValueOpt t Locale.Prop.symbol
+                decimal |> DynObj.setValueOpt t Locale.Prop.decimal
+                group |> DynObj.setValueOpt t Locale.Prop.group
+                grouping |> DynObj.setValueOpt t Locale.Prop.grouping
+                numerals |> DynObj.setValueOpt t Locale.Prop.numerals
+                percent |> DynObj.setValueOpt t Locale.Prop.percent
+                separate4digits |> DynObj.setValueOpt t Locale.Prop.separate4digits
 
                 t
 
@@ -846,7 +856,15 @@ module DataTable =
         | Markdown
         static member convert =
             DU.convertAsString
-            
+
+    module Format =
+        [<RequireQualifiedAccess>]
+        module Prop =
+            let [<Literal>] locale = "locale"
+            let [<Literal>] nully = "nully"
+            let [<Literal>] prefix = "prefix"
+            let [<Literal>] specifier = "specifier"
+
     ///<summary>
     ///record with the fields: 'locale: record with the fields: 'symbol: list with values of type: string (optional)', 'decimal: string (optional)', 'group: string (optional)', 'grouping: list with values of type: number (optional)', 'numerals: list with values of type: string (optional)', 'percent: string (optional)', 'separate_4digits: boolean (optional)' (optional)', 'nully: boolean | number | string | record | list (optional)', 'prefix: number (optional)', 'specifier: string (optional)'
     ///&#10;
@@ -855,21 +873,21 @@ module DataTable =
     ///being structured slightly differently (under a single prop), the usage is the same.
     ///See also dash_table.FormatTemplate.  It contains helper functions for typical number formats.
     ///</summary>
-    type ColumnFormat () =
+    type Format () =
         inherit DynamicObj()
         static member init
             (
                 ?locale: Locale,
                 ?nully: obj,
-                ?prefix: int,
+                ?prefix: float,
                 ?specifier: string
             ) =
-                let t = ColumnFormat()
+                let t = Format()
 
-                locale |> DynObj.setValueOpt t "locale"
-                nully |> DynObj.setValueOpt t "nully"
-                prefix |> DynObj.setValueOpt t "prefix"
-                specifier |> DynObj.setValueOpt t "specifier"
+                locale |> DynObj.setValueOpt t Format.Prop.locale
+                nully |> DynObj.setValueOpt t Format.Prop.nully
+                prefix |> DynObj.setValueOpt t Format.Prop.prefix
+                specifier |> DynObj.setValueOpt t Format.Prop.specifier
 
                 t
 
@@ -1016,7 +1034,7 @@ module DataTable =
                 ?hideable: HideableColumn,
                 ?renamable: RenamableColumn,
                 ?selectable: SelectableColumn,
-                ?format: ColumnFormat,
+                ?format: Format,
                 ?presentation: ColumnPresentation,
                 ?onChange: ColumnOnChange,
                 ?sortAsNull: IConvertible,
@@ -1054,7 +1072,7 @@ module DataTable =
                 ?hideable: HideableColumn,
                 ?renamable: RenamableColumn,
                 ?selectable: SelectableColumn,
-                ?format: ColumnFormat,
+                ?format: Format,
                 ?presentation: ColumnPresentation,
                 ?onChange: ColumnOnChange,
                 ?sortAsNull: IConvertible,
@@ -1077,87 +1095,6 @@ module DataTable =
                     ?sortAsNull = sortAsNull,
                     ?validation = validation
                 )
-
-    type PropName =
-        | ActiveCell
-        | Columns
-        | IncludeHeadersOnCopyPaste
-        | LocaleFormat
-        | MarkdownOptions
-        | Css
-        | Data
-        | DataPrevious
-        | DataTimestamp
-        | Editable
-        | EndCell
-        | ExportColumns
-        | ExportFormat
-        | ExportHeaders
-        | FillWidth
-        | HiddenColumns
-        | IsFocused
-        | MergeDuplicateHeaders
-        | FixedColumns
-        | FixedRows
-        | ColumnSelectable
-        | RowDeletable
-        | CellSelectable
-        | RowSelectable
-        | SelectedCells
-        | SelectedRows
-        | SelectedColumns
-        | SelectedRowIds
-        | StartCell
-        | StyleAsListView
-        | PageAction
-        | PageCurrent
-        | PageCount
-        | PageSize
-        | Dropdown
-        | DropdownConditional
-        | DropdownData
-        | Tooltip
-        | TooltipConditional
-        | TooltipData
-        | TooltipHeader
-        | TooltipDelay
-        | TooltipDuration
-        | FilterQuery
-        | FilterAction
-        | FilterOptions
-        | SortAction
-        | SortMode
-        | SortBy
-        | SortAsNull
-        | StyleTable
-        | StyleCell
-        | StyleData
-        | StyleFilter
-        | StyleHeader
-        | StyleCellConditional
-        | StyleDataConditional
-        | StyleFilterConditional
-        | StyleHeaderConditional
-        | Virtualization
-        | DerivedFilterQueryStructure
-        | DerivedViewportData
-        | DerivedViewportIndices
-        | DerivedViewportRowIds
-        | DerivedViewportSelectedColumns
-        | DerivedViewportSelectedRows
-        | DerivedViewportSelectedRowIds
-        | DerivedVirtualData
-        | DerivedVirtualIndices
-        | DerivedVirtualRowIds
-        | DerivedVirtualSelectedRows
-        | DerivedVirtualSelectedRowIds
-        | LoadingState
-        | Persistence
-        | PersistedProps
-        | PersistenceType
-
-        member this.toString () =
-            this |> Prop.createName |> NamingStrategy.toSnakeCase
 
     ///<summary>
     ///• active_cell (record with the fields: 'row: number (optional)', 'column: number (optional)', 'row_id: string | number (optional)', 'column_id: string (optional)') - The row and column indices and IDs of the currently active cell.

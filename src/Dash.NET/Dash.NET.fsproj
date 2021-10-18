@@ -61,7 +61,10 @@
     <Compile Include="DashComponents\CoreComponents\Upload.fs" />
     <Compile Include="DashComponents\CoreComponents\Slider.fs" />
     <Compile Include="DashComponents\CoreComponents\RangeSlider.fs" />
-    <Compile Include="DashComponents\DashTable.fs" />
+    <Compile Include="DashComponents\DashTableComponents\DashTable.fs" />
+    <Compile Include="DashComponents\DashTableComponents\DataTable.fs" />
+    <Compile Include="DashComponents\DashTableComponents\Format.fs" />
+    <Compile Include="DashComponents\DashTableComponents\FormatTemplate.fs" />
     <Compile Include="DynamicInvoke.fs" />
     <Compile Include="Dependency.fs" />
     <Compile Include="CallbackBinding.fs" />
