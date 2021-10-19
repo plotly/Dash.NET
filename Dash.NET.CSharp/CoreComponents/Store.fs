@@ -78,23 +78,23 @@ module Store =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Easily keep data on the client side with this component.
@@ -119,4 +119,4 @@ module Store =
     ///&#10;
     ///• modified_timestamp (number; default -1) - The last time the storage was modified.
     ///</summary>
-    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Store.store id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Store.store id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

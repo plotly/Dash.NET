@@ -50,24 +50,24 @@ module Tabs =
         ///<summary>
         ///Appends (inline) styles to the Tabs container holding the individual Tab components.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Appends (inline) styles to the top-level parent container holding both the Tabs container and the content container.
         ///</summary>
-        static member parentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member parentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.parentStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.parentStyle (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Appends (inline) styles to the tab content container holding the children of the Tab that is selected.
         ///</summary>
-        static member contentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member contentStyle([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.contentStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.contentStyle (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Renders the tabs vertically (on the side)
         ///</summary>
@@ -155,23 +155,23 @@ module Tabs =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
 
     ///<summary>
@@ -234,4 +234,4 @@ module Tabs =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let tabs (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tabs.tabs id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let tabs (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tabs.tabs id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

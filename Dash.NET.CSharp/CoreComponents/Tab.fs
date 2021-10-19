@@ -43,10 +43,10 @@ module Tab =
         ///<summary>
         ///Overrides the default (inline) styles when disabled
         ///</summary>
-        static member disabledStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member disabledStyle([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.disabledStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.disabledStyle (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Appends a class to the Tab component when it is disabled.
         ///</summary>
@@ -68,10 +68,10 @@ module Tab =
         ///<summary>
         ///Overrides the default (inline) styles for the Tab component.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Overrides the default (inline) styles for the Tab component when it is selected.
         ///</summary>
@@ -111,23 +111,23 @@ module Tab =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
@@ -163,4 +163,4 @@ module Tab =
     ///&#10;
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
     ///</summary>
-    let tab (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tab.tab id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let tab (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tab.tab id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

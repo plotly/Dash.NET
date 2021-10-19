@@ -78,23 +78,23 @@ module Location =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///Update and track the current window.location object through the window.history state.
@@ -116,4 +116,4 @@ module Location =
     ///&#10;
     ///• refresh (boolean; default true) - Refresh the page when the location is updated?
     ///</summary>
-    let location (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Location.location id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let location (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Location.location id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

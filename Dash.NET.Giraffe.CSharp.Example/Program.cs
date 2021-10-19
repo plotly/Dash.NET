@@ -5,7 +5,7 @@ using Plotly.NET;
 using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using static Dash.NET.CSharp.Html;
+using static Dash.NET.CSharp.Dsl;
 using static Dash.NET.CSharp.Giraffe.DashApp;
 
 // namespace Dash.NET.Giraffe.CSharp.Example // TODO : I changed the namespace here because it was automatically opening types from the Dash.NET namespace (while they should be hidden for C# users, who only go through Dash.NET.CSharp)
@@ -41,7 +41,7 @@ namespace Dash.Giraffe.CSharp.Example
             var dashApp = DashApp
                 .initDefault()
                 .withLayout(layout)
-                .addCallback(Dash.NET.CSharp.Callback.Unwrap(CallbacksExample.CallbackArrayInput()));
+                .addCallback(CallbacksExample.CallbackArrayInput());
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",

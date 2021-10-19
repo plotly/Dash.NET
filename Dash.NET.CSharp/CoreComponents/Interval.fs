@@ -78,23 +78,23 @@ module Interval =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///A component that repeatedly increments a counter &#96;n_intervals&#96;
@@ -119,4 +119,4 @@ module Interval =
     ///If -1, then the interval has no limit (the default)
     ///and if 0 then the interval stops running.
     ///</summary>
-    let interval (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Interval.interval id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let interval (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Interval.interval id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

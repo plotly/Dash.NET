@@ -80,11 +80,13 @@ module DashApp =
             Dash.NET.Giraffe.DashApp.withLayout (layout |> DashComponent.Unwrap) dashApp
             |> DashApp.fromDashApp
 
-        member _.addCallback (callback: Dash.NET.Callback<'Function>) = 
+        member _.addCallback (callback: Callback) = 
+            let callback = callback |> Callback.Unwrap
             Dash.NET.Giraffe.DashApp.addCallback callback dashApp
             |> DashApp.fromDashApp
 
-        member _.addCallbacks (callbacks: seq<(Dash.NET.Callback<'Function>)>) = 
+        member _.addCallbacks (callbacks: seq<Callback>) = 
+            let callbacks = callbacks |> Seq.map Callback.Unwrap
             Dash.NET.Giraffe.DashApp.addCallbacks callbacks dashApp
             |> DashApp.fromDashApp
 

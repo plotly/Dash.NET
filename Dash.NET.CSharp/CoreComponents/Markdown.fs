@@ -83,10 +83,10 @@ module Markdown =
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -143,4 +143,4 @@ module Markdown =
     ///&#10;
     ///• style (record) - User-defined inline styles for the rendered Markdown
     ///</summary>
-    let markdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Markdown.markdown id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let markdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Markdown.markdown id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

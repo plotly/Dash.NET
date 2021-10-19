@@ -40,10 +40,10 @@ module RadioItems =
         ///<summary>
         ///The style of the container (div)
         ///</summary>
-        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member style([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.style (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the container (div)
         ///</summary>
@@ -53,10 +53,10 @@ module RadioItems =
         ///<summary>
         ///The style of the &lt;input&gt; radio element
         ///</summary>
-        static member inputStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member inputStyle([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.inputStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.inputStyle (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the &lt;input&gt; radio element
         ///</summary>
@@ -67,10 +67,10 @@ module RadioItems =
         ///The style of the &lt;label&gt; that wraps the radio input
         /// and the option's label
         ///</summary>
-        static member labelStyle([<ParamArray>] p: array<Dash.NET.CSharp.Html.Style>) = 
+        static member labelStyle([<ParamArray>] p: array<Dash.NET.CSharp.Dsl.Style>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.labelStyle (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            OAttr.labelStyle (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The class of the &lt;label&gt; that wraps the radio input
         /// and the option's label
@@ -142,23 +142,23 @@ module RadioItems =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            OAttr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            OAttr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            OAttr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            OAttr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
     ///<summary>
     ///RadioItems is a component that encapsulates several radio item inputs.
@@ -208,4 +208,4 @@ module RadioItems =
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
-    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.RadioItems.radioItems id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.RadioItems.radioItems id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dash.NET.CSharp.DCC;
-using static Dash.NET.CSharp.Html;
+using static Dash.NET.CSharp.Dsl;
 using static Dash.NET.CSharp.DCC.ComponentPropTypes; // TODO : Annoying that we need to open this as static as well?
+using Dash.NET.CSharp;
 
 namespace Dash.Giraffe.CSharp.Example
 {
@@ -58,10 +59,10 @@ namespace Dash.Giraffe.CSharp.Example
             return html;
         }
 
-        internal static Dash.NET.CSharp.Callback CallbackArrayInput()
+        internal static Callback CallbackArrayInput()
         {
             var test =
-                Dash.NET.CSharp.Callback.Create(
+                Callback.Create(
                     input: new[] {
                         ("testInput2", ComponentProperty.N_Clicks),
                         //("testInput3", ComponentProperty.N_Clicks)
@@ -73,7 +74,7 @@ namespace Dash.Giraffe.CSharp.Example
                     },
                     handler: (float x, float y) => {
                         return new[] {
-                            Dash.NET.CallbackResultBinding.bindResult(Dash.NET.Dependency.create("output-1", "children"), x.ToString() + " and " + y.ToString())
+                            CallbackResult.Create(("output-1", ComponentProperty.Children), x.ToString() + " and " + y.ToString())
                         };
                     },
                     state: new[]

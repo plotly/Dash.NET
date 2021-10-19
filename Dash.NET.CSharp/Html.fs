@@ -5,7 +5,7 @@ open Plotly.NET
 open System
 
 [<AutoOpen>]
-module Html =
+module Dsl =
     type Style = private WrappedStyle of Dash.NET.Css.Style
         with
         static member StyleProperty (property : string, value : obj) = Dash.NET.Css.Style.StyleProperty (property, value) |> Style.WrappedStyle

@@ -115,10 +115,10 @@ module Graph =
         ///<summary>
         ///Generic style overrides on the plot div
         ///</summary>
-        static member style([<ParamArray>] p: Dash.NET.CSharp.Html.Style array) = 
+        static member style([<ParamArray>] p: Dash.NET.CSharp.Dsl.Style array) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            Dash.NET.DCC.Graph.Attr.style (p |> Array.map Dash.NET.CSharp.Html.Style.Unwrap) |> Attr.Wrap
+            Dash.NET.DCC.Graph.Attr.style (p |> Array.map Dash.NET.CSharp.Dsl.Style.Unwrap) |> Attr.Wrap
         ///<summary>
         ///className of the parent div
         ///</summary>
@@ -180,23 +180,23 @@ module Graph =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: Dash.NET.CSharp.Html.DashComponent) = 
+        static member children(value: Dash.NET.CSharp.Dsl.DashComponent) = 
             guardAgainstNull "value" value
-            Dash.NET.DCC.Graph.Attr.children (value |> Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            Dash.NET.DCC.Graph.Attr.children (value |> Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children([<ParamArray>] value: array<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Array.iter (guardAgainstNull "value")
-            Dash.NET.DCC.Graph.Attr.children (value |> Array.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            Dash.NET.DCC.Graph.Attr.children (value |> Array.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: seq<Dash.NET.CSharp.Html.DashComponent>) = 
+        static member children(value: seq<Dash.NET.CSharp.Dsl.DashComponent>) = 
             guardAgainstNull "value" value
             value |> Seq.iter (guardAgainstNull "value")
-            Dash.NET.DCC.Graph.Attr.children (value |> Seq.map Dash.NET.CSharp.Html.DashComponent.Unwrap) |> Attr.Wrap
+            Dash.NET.DCC.Graph.Attr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
-    let Graph (id: string, [<ParamArray>] attrs : Attr array) = Dash.NET.DCC.Graph.graph id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Html.DashComponent.Wrap
+    let Graph (id: string, [<ParamArray>] attrs : Attr array) = Dash.NET.DCC.Graph.graph id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap
 
