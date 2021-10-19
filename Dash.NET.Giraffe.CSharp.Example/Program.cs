@@ -41,7 +41,8 @@ namespace Dash.Giraffe.CSharp.Example
             var dashApp = DashApp
                 .initDefault()
                 .withLayout(layout)
-                .addCallback(CallbacksExample.CallbackArrayInput());
+                .addCallback(CallbacksExample.CallbackArrayInput())
+                .addCallback(CallbacksExample.CallbackClickInput());
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",

@@ -43,11 +43,6 @@ namespace Dash.Giraffe.CSharp.Example
                             Attr.id("testInput2"),
                             Attr.children("Click ME!")
                         ),
-                        Html.button(
-                            Attr.className("button is-primary"),
-                            Attr.id("testInput3"),
-                            Attr.children("Click ME 2!")
-                        ),
                         Html.br(),
                         Html.label(
                             Attr.children(Html.text("Number of clicks:"))
@@ -61,34 +56,46 @@ namespace Dash.Giraffe.CSharp.Example
 
         internal static Callback CallbackArrayInput()
         {
-            var test =
-                Callback.Create(
-                    input: new[] {
-                        ("testInput2", ComponentProperty.N_Clicks),
-                        //("testInput3", ComponentProperty.N_Clicks)
-                        //("output-1", ComponentProperty.Children),
-                        //("output-2", ComponentProperty.Children)
-                    },
-                    output: new[] {
-                        ("output-5", ComponentProperty.Children)
-                    },
-                    handler: (float x, float y) => {
-                        return new[] {
-                            CallbackResult.Create(("output-1", ComponentProperty.Children), x.ToString() + " and " + y.ToString())
-                        };
-                    },
-                    state: new[]
-                    {
-                        ("testInput3", ComponentProperty.N_Clicks)
-                    }
-                );
-
-            return test;
+            return Callback.Create(
+                input: new[] {
+                    ("testInput1", ComponentProperty.Value),
+                },
+                output: new[] {
+                    ("output-1", ComponentProperty.Children),
+                    ("output-2", ComponentProperty.Children)
+                },
+                handler: (float[] inputs, float nclicks) => {
+                    return new[] {
+                        CallbackResult.Create(("output-1", ComponentProperty.Children), inputs.Last() * nclicks * 1),
+                        CallbackResult.Create(("output-2", ComponentProperty.Children), inputs.Last() * nclicks * 2)
+                    };
+                },
+                state: new[]
+                {
+                    ("testInput2", ComponentProperty.N_Clicks)
+                }
+            );
         }
 
-        internal static void CallbackClickInput()
+        internal static Callback CallbackClickInput()
         {
-
+            return Callback.Create(
+                input: new[]
+                {
+                    ("testInput2", ComponentProperty.N_Clicks)
+                },
+                output: new[]
+                {
+                    ("output-5", ComponentProperty.Children)
+                },
+                handler: (float x) =>
+                {
+                    return new[]
+                    {
+                        CallbackResult.Create(("output-5", ComponentProperty.Children), x.ToString())
+                    };
+                }
+            );
         }
     }
 }
