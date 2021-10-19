@@ -61,20 +61,24 @@ namespace Dash.Giraffe.CSharp.Example
         internal static Dash.NET.CSharp.Callback CallbackArrayInput()
         {
             var test =
-                Dash.NET.CSharp.Callback.multiOut(
-                    new[] {
+                Dash.NET.CSharp.Callback.Create(
+                    input: new[] {
                         ("testInput2", ComponentProperty.N_Clicks),
-                        ("testInput3", ComponentProperty.N_Clicks)
+                        //("testInput3", ComponentProperty.N_Clicks)
                         //("output-1", ComponentProperty.Children),
                         //("output-2", ComponentProperty.Children)
                     },
-                    new[] {
+                    output: new[] {
                         ("output-5", ComponentProperty.Children)
                     },
-                    (float x, float y) => {
+                    handler: (float x, float y) => {
                         return new[] {
                             Dash.NET.CallbackResultBinding.bindResult(Dash.NET.Dependency.create("output-1", "children"), x.ToString() + " and " + y.ToString())
                         };
+                    },
+                    state: new[]
+                    {
+                        ("testInput3", ComponentProperty.N_Clicks)
                     }
                 );
 

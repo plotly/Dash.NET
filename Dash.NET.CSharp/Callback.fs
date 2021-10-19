@@ -11,33 +11,33 @@ type internal Helpers =
 type Callback = private WrappedCallback of Dash.NET.Callback<obj> with
 
     /// <summary>returns a callback that binds a handler function mapping from multiple input components to a single output component (n -> 1)</summary>
-    /// <param name="inputs"> A sequence of `CallbackInput` that represents the input components of this callback. Changes to any of these components signalled by the client will trigger the callback. </param>
+    /// <param name="input"> A sequence of `CallbackInput` that represents the input components of this callback. Changes to any of these components signalled by the client will trigger the callback. </param>
     /// <param name="output"> A `CallbackOutput` that represents the output component of this callback </param>
-    /// <param name="handlerFunction"> The handler function that maps the callback input components to the callback output components </param>
+    /// <param name="handler"> The handler function that maps the callback input components to the callback output components </param>
     /// <param name="state"> A sequence of `CallbackState` that represents additional input components of this callback. In contrast to the other input componenst, these will not trigger the handler function when changed on the client.</param>
     /// <param name="preventInitialCall"> Wether to prevent the app to call this callback on initialization </param>
     /// <param name="clientSideFunction"> A client side function to execute with the callback </param>
-    static member multiOut
+    static member Create
         (
-            inputs : Dependency array,
+            input : Dependency array,
             output : Dependency array,
-            handlerFunction: System.Func<'a, Dash.NET.CallbackResultBinding array>,
+            handler: System.Func<'a, Dash.NET.CallbackResultBinding array>,
             [<Optional>] state : Dependency array,
             [<Optional>] preventInitialCall : System.Nullable<bool>,
             [<Optional>] clientSideFunction : Dash.NET.ClientSideFunction // TODO
         ) : Callback =
-            guardAgainstNull "inputs" inputs
+            guardAgainstNull "input" input
             guardAgainstNull "output" output
-            guardAgainstNull "handlerFunction" handlerFunction
+            guardAgainstNull "handler" handler
 
             let state = Option.ofObj state |> Option.map (Array.map Helpers.ConvertDependency >> Seq.ofArray)
             let preventInitialCall = Option.ofNullable preventInitialCall
             let clientSideFunction : Dash.NET.ClientSideFunction option = Option.ofObj (box clientSideFunction) |> unbox
 
-            let handlerFunction = handlerFunction |> FuncConvert.FromFunc >> List.ofArray
+            let handlerFunction = handler |> FuncConvert.FromFunc >> List.ofArray
 
             Dash.NET.Callback.multiOut(
-                inputs |> Array.map Helpers.ConvertDependency,
+                input |> Array.map Helpers.ConvertDependency,
                 output |> Array.map Helpers.ConvertDependency,
                 box handlerFunction,
                 ?State = state,
@@ -46,27 +46,27 @@ type Callback = private WrappedCallback of Dash.NET.Callback<obj> with
             )
             |> WrappedCallback
 
-    static member multiOut
+    static member Create
         (
-            inputs : Dependency array,
+            input : Dependency array,
             output : Dependency array,
-            handlerFunction: System.Func<'a, 'b, Dash.NET.CallbackResultBinding array>,
+            handler: System.Func<'a, 'b, Dash.NET.CallbackResultBinding array>,
             [<Optional>] state : Dependency array,
             [<Optional>] preventInitialCall : System.Nullable<bool>,
             [<Optional>] clientSideFunction : Dash.NET.ClientSideFunction // TODO
         ) : Callback =
-            guardAgainstNull "inputs" inputs
+            guardAgainstNull "input" input
             guardAgainstNull "output" output
-            guardAgainstNull "handlerFunction" handlerFunction
+            guardAgainstNull "handlerFunction" handler
 
             let state = Option.ofObj state |> Option.map (Array.map Helpers.ConvertDependency >> Seq.ofArray)
             let preventInitialCall = Option.ofNullable preventInitialCall
             let clientSideFunction : Dash.NET.ClientSideFunction option = Option.ofObj (box clientSideFunction) |> unbox
 
-            let handlerFunction = fun a b -> (FuncConvert.FromFunc handlerFunction) a b |> List.ofArray
+            let handlerFunction = fun a b -> (FuncConvert.FromFunc handler) a b |> List.ofArray
 
             Dash.NET.Callback.multiOut(
-                inputs |> Array.map Helpers.ConvertDependency,
+                input |> Array.map Helpers.ConvertDependency,
                 output |> Array.map Helpers.ConvertDependency,
                 box handlerFunction,
                 ?State = state,
