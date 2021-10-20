@@ -198,5 +198,5 @@ module Graph =
             value |> Seq.iter (guardAgainstNull "value")
             Dash.NET.DCC.Graph.Attr.children (value |> Seq.map Dash.NET.CSharp.Dsl.DashComponent.Unwrap) |> Attr.Wrap
 
-    let Graph (id: string, [<ParamArray>] attrs : Attr array) = Dash.NET.DCC.Graph.graph id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap
+    let graph (id: string, [<ParamArray>] attrs : Attr array) = Dash.NET.DCC.Graph.graph id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap
 

@@ -1,48 +1,127 @@
 ﻿using System;
-//using Dash.NET.Giraffe.CSharp;
 using Dash.NET.CSharp.DCC;
 using Plotly.NET;
 using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
-using static Dash.NET.CSharp.Giraffe.DashApp;
+using Dash.NET.CSharp.Giraffe;
+using Dash.NET.CSharp;
+using System.Net;
+using System.IO;
+using System.Linq;
+using System.Globalization;
+using Microsoft.FSharp.Core;
 
-// namespace Dash.NET.Giraffe.CSharp.Example // TODO : I changed the namespace here because it was automatically opening types from the Dash.NET namespace (while they should be hidden for C# users, who only go through Dash.NET.CSharp)
 namespace Dash.Giraffe.CSharp.Example
 {
     class Program
     {
+        static string GetCSV(string url)
+        {
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            var resp = (HttpWebResponse)req.GetResponse();
+
+            var sr = new StreamReader(resp.GetResponseStream());
+            var results = sr.ReadToEnd();
+            sr.Close();
+
+            return results;
+        }
+
         static void Main(string[] args)
         {
-            var myGraph = Plotly.NET.Chart2D.Chart.Line<int, int, int>(new List<Tuple<int, int>>() { Tuple.Create(1, 1), Tuple.Create(2, 2) });
+            // Read and parse CSV
+
+            var csv = GetCSV("https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv");
+            var rows = csv
+                .Split("\r\n")
+                .Skip(1) // Skip header
+                .SkipLast(1) // Skip empty line after split
+                .Select(x => x.Split(","))
+                .Select(x =>
+                    new {
+                        sepal_length = decimal.Parse(x[0], CultureInfo.InvariantCulture.NumberFormat),
+                        sepal_width = decimal.Parse(x[1], CultureInfo.InvariantCulture.NumberFormat),
+                        petal_length = decimal.Parse(x[2], CultureInfo.InvariantCulture.NumberFormat),
+                        petal_width = decimal.Parse(x[3], CultureInfo.InvariantCulture.NumberFormat),
+                        species = x[4],
+                        species_id = int.Parse(x[5], CultureInfo.InvariantCulture.NumberFormat),
+                    }
+                )
+                .ToList();
+
+            // Use plotly charts
+
+            Func<decimal, decimal, GenericChart.Figure> scatterPlot =
+                (decimal low, decimal high) => {
+                    var filtered = rows.Where(x => x.petal_width > low && x.petal_width < high);
+                    var points = filtered.Select(x => Tuple.Create(x.sepal_width, x.sepal_length));
+                    var petal_length = filtered.Select(x => 6 * (int)x.petal_length);
+                    // Map species to different colors
+                    var spec = filtered.Select(x => x.species);
+                    var colors = spec.Select(x =>
+                    {
+                        if (x == "setossa")
+                            return Color.fromHex("#4287f5");
+                        else if (x == "versicolor")
+                            return Color.fromHex("#cb23fa");
+                        else
+                            return Color.fromHex("#23fabd");
+                    });
+
+                    var markers = Plotly.NET.TraceObjects.Marker.init(MultiSize: new FSharpOption<IEnumerable<int>>(petal_length), Colors: new FSharpOption<IEnumerable<Color>>(colors)); // It should not be necessary to create explicit FSharp Options here, this is something that should be improved in Plotly.NET
+
+                    var chart = Chart2D.Chart
+                        .Scatter<decimal, decimal, decimal>(points, StyleParam.Mode.Markers)
+                        .WithMarker(markers)
+                        .WithTitle("Iris Dataset")
+                        .WithXAxisStyle(Title.init("Sepal Width"))
+                        .WithYAxisStyle(Title.init("Sepal Length"));
+
+                    var fig = GenericChart.toFigure(chart);
+
+                    return fig;
+                };
+
 
             var layout =
                 Html.div(
                     Attr.children(
-                        Html.h1(
-                            Attr.children("Hello world from Dash.NET and Giraffe!")
-                        ),
-                        Html.h2(
-                            Attr.children("Take a look at this graph:")
-                        ),
-                        Graph.Graph(
-                            "my-ghraph-id",
-                            Graph.Attr.figure(GenericChart.toFigure(myGraph)),
-                            Graph.Attr.style(
-                                Style.StyleProperty("marginLeft", "12px"),
-                                Css.borderLeftWidth(2)
-                            )
-                        ),
-                        CallbacksExample.CallbacksHtml()
+                        Graph.graph(id: "scatter-plot"),
+                        Html.p(Attr.children("Petal Width:")),
+                        RangeSlider.rangeSlider(
+                            id: "range-slider",
+                            RangeSlider.Attr.min(0),
+                            RangeSlider.Attr.max(2.5),
+                            RangeSlider.Attr.step(0.1)
+                        )
                     )
+                );
+
+            var callback =
+                Callback.Create(
+                    input: new[] {
+                        ("range-slider", ComponentProperty.Value)
+                    },
+                    output: new[] {
+                        ("scatter-plot", ComponentProperty.CustomProperty("figure"))
+                    },
+                    handler: (decimal[] sliderRange) => {
+                        var r1 = sliderRange[0];
+                        var r2 = sliderRange[1];
+                        var low = r1 < r2 ? r1 : r2;
+                        var high = r1 < r2 ? r2 : r1;
+                        return new[] {
+                            CallbackResult.Create(("scatter-plot", ComponentProperty.Children), scatterPlot(low, high)),
+                        };
+                    }
                 );
 
             var dashApp = DashApp
                 .initDefault()
                 .withLayout(layout)
-                .addCallback(CallbacksExample.CallbackArrayInput())
-                .addCallback(CallbacksExample.CallbackClickInput());
+                .addCallback(callback);
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",

@@ -7,11 +7,54 @@ using Dash.NET.CSharp.DCC;
 using static Dash.NET.CSharp.Dsl;
 using static Dash.NET.CSharp.DCC.ComponentPropTypes; // TODO : Annoying that we need to open this as static as well?
 using Dash.NET.CSharp;
+using Plotly.NET;
+using Dash.NET.CSharp.Giraffe;
 
 namespace Dash.Giraffe.CSharp.Example
 {
     static class CallbacksExample
     {
+        internal static DashApp CallbacksExampleDashApp()
+        {
+            var layout = CallbacksExample.ExampleHtml();
+
+            var dashApp = DashApp
+                .initDefault()
+                .withLayout(layout)
+                .addCallback(CallbacksExample.CallbackArrayInput())
+                .addCallback(CallbacksExample.CallbackClickInput());
+
+            return dashApp;
+        }
+
+        internal static DashComponent ExampleHtml()
+        {
+            var myGraph = Plotly.NET.Chart2D.Chart.Line<int, int, int>(new List<Tuple<int, int>>() { Tuple.Create(1, 1), Tuple.Create(2, 2) });
+
+            var layout =
+                Html.div(
+                    Attr.children(
+                        Html.h1(
+                            Attr.children("Hello world from Dash.NET and Giraffe!")
+                        ),
+                        Html.h2(
+                            Attr.children("Take a look at this graph:")
+                        ),
+                        Graph.graph(
+                            "my-ghraph-id",
+                            Graph.Attr.figure(GenericChart.toFigure(myGraph)),
+                            Graph.Attr.style(
+                                Style.StyleProperty("marginLeft", "12px"),
+                                Css.borderLeftWidth(2)
+                            )
+                        ),
+                        CallbacksExample.CallbacksHtml()
+                    )
+                );
+
+            return layout;
+        }
+
         internal static DashComponent CallbacksHtml()
         {
             var html =
