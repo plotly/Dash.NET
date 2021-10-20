@@ -19,6 +19,7 @@
     <Compile Include="CoreComponents\Location.fs" />
     <Compile Include="CoreComponents\Graph.fs" />
     <Compile Include="CoreComponents\RadioItems.fs" />
+    <Compile Include="CoreComponents\RangeSlider.fs" />
     <Compile Include="CoreComponents\Store.fs" />
     <Compile Include="CoreComponents\Tab.fs" />
     <Compile Include="CoreComponents\Tabs.fs" />

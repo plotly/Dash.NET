@@ -149,22 +149,29 @@ type DashApp =
     ///
     /// POST /_dash-update-component -> handles callback requests and returns serialized callback JSON responses.
     static member toHttpHandler (app:DashApp) : HttpHandler =
+
+        let s = Environment.GetEnvironmentVariable("DASH_ROUTES_PATHNAME_PREFIX")
+        // Asumes the environment variable does not contain a forward slash at the begining nor the end
+        let routePrefix r =
+          if s = null then r else ("/" + s + r)
+
         choose [
             GET >=>
                 choose [
                     //serve the index
-                    route "/" >=> htmlView (app |> DashApp.getIndexHTML)
+                    route (routePrefix "/") >=> htmlView (app |> DashApp.getIndexHTML)
+                    route (routePrefix "")  >=> htmlView (app |> DashApp.getIndexHTML)
 
                     //Dash GET enpoints
-                    route "/_dash-layout"       >=> json app.Layout        //Calls from Dash renderer for what components to render (must return serialized dash components)
-                    route "/_dash-dependencies" >=> json (app.Callbacks |> CallbackMap.toDependencies) //Serves callback bindings as json on app start.
-                    route "/_reload-hash"       >=> json obj               //This call is done when using hot reload.
+                    route (routePrefix "/_dash-layout")       >=> json app.Layout        //Calls from Dash renderer for what components to render (must return serialized dash components)
+                    route (routePrefix "/_dash-dependencies") >=> json (app.Callbacks |> CallbackMap.toDependencies) //Serves callback bindings as json on app start.
+                    route (routePrefix "/_reload-hash")       >=> json obj               //This call is done when using hot reload.
                 ]
 
             POST >=> 
                 choose [
                     //Dash POST endpoints
-                    route "/_dash-update-component" //calls from callbacks come in here.
+                    route (routePrefix "/_dash-update-component") //calls from callbacks come in here.
                         >=> bindJson ( fun (cbRequest:CallbackRequest) -> 
 
                             let inputs = 

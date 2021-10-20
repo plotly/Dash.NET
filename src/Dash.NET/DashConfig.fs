@@ -1,6 +1,7 @@
 ﻿namespace Dash.NET
 
 open Newtonsoft.Json
+open System
 
 type HotReloadSettings =
     {
@@ -64,7 +65,7 @@ type DashConfig =
     static member initDefault() =
         DashConfig.create 
             None 
-            "/" 
+            (let s = Environment.GetEnvironmentVariable("DASH_REQUESTS_PATHNAME_PREFIX") in if s = null then "/" else ("/" + s))
             false 
             true 
             true 

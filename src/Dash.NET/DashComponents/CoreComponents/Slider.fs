@@ -1,10 +1,9 @@
 ﻿namespace Dash.NET.DCC
 
-open Dash.NET
 open System
 open DynamicObj
-open System.Collections.Generic
-open ComponentPropTypes
+open Dash.NET
+open Dash.NET.Common
 
 ///<summary>
 ///A slider component with a single handle.
@@ -14,14 +13,14 @@ module Slider =
     ///<summary>
     ///value equal to: 'mouseup', 'drag'
     ///</summary>
-    type UpdateModeType =
+    type UpdateOn =
         | Mouseup
         | Drag
-        static member convert this = 
-            match this with
+        static member convert =
+            function
             | Mouseup -> "mouseup"
             | Drag -> "drag"
-            |> box
+            >> box
 
     ///<summary>
     ///value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'
@@ -40,63 +39,61 @@ module Slider =
         | TopRight
         | BottomLeft
         | BottomRight
-        static member convert this = 
-            match this with
-            | Left -> "left"
-            | Right -> "right"
-            | Top -> "top"
-            | Bottom -> "bottom"
-            | TopLeft -> "topLeft"
-            | TopRight -> "topRight"
-            | BottomLeft -> "bottomLeft"
-            | BottomRight -> "bottomRight"
-            |> box
+        static member convert =
+            function
+            | Left          -> "left"
+            | Right         -> "right"
+            | Top           -> "top"
+            | Bottom        -> "bottom"
+            | TopLeft       -> "topLeft"
+            | TopRight      -> "topRight"
+            | BottomLeft    -> "bottomLeft"
+            | BottomRight   -> "bottomRight"
+            >> box
 
     ///<summary>
     ///record with the fields: 'always_visible: boolean (optional)', 'placement: value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight' (optional)'
     ///</summary>
-    type Tooltip =
-        { AlwaysVisible: bool
-          Placement: TooltipPlacement }
-        static member convert this = 
-            box
-                {| always_visible = this.AlwaysVisible
-                   placement = this.Placement |> TooltipPlacement.convert |}
+    type TooltipOptions () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?alwaysVisible: bool,
+                ?placement: TooltipPlacement
+            ) =
+                let t = TooltipOptions()
+
+                alwaysVisible |> DynObj.setValueOpt t "always_visible"
+                placement |> DynObj.setDUValueOpt t TooltipPlacement.convert "placement"
+
+                t
 
     ///<summary>
     ///record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarkWithStyle =
-        { Label: string
-          Style: obj }
-        static member convert this = 
-            box
-                {| label = this.Label
-                   style = this.Style |}
+    type StyledMarkValue () =
+        inherit DynamicObj()
+        static member init
+            (
+                ?label: string,
+                ?style: DashComponentStyle
+            ) =
+                let t = StyledMarkValue()
+
+                label |> DynObj.setValueOpt t "label"
+                style |> DynObj.setValueOpt t "style"
+
+                t
 
     ///<summary>
     ///string | record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarkValue =
-        | String of string
-        | MarkWithStyle of MarkWithStyle
-        static member convert this = 
-            match this with
-            | String (v) -> box v
-            | MarkWithStyle (v) -> box (v |> MarkWithStyle.convert)
-            |> box
-
-    ///<summary>
-    ///dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)'
-    ///</summary>
-    type MarksType =
-        | MarksType of Map<string, MarkValue>
-        static member convert this = 
-            match this with
-            | MarksType (v) ->
-                v
-                |> Map.map (fun _ v -> box (v |> MarkValue.convert))
-                |> box
+    type Mark =
+        | Value of string
+        | StyledValue of StyledMarkValue
+        static member convert = function
+            | Value v -> box v
+            | StyledValue v -> box v
 
     ///<summary>
     ///• marks (dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
@@ -161,51 +158,75 @@ module Slider =
     ///session: window.sessionStorage, data is cleared once the browser quit.
     ///</summary>
     type Prop =
-        | Marks of MarksType
-        | Value of IConvertible
-        | DragValue of IConvertible
+        | Marks of Map<float, Mark>
+        | Value of float
+        | DragValue of float
         | ClassName of string
         | Disabled of bool
         | Dots of bool
         | Included of bool
-        | Min of IConvertible
-        | Max of IConvertible
-        | Tooltip of Tooltip
-        | Step of IConvertible
+        | Min of float
+        | Max of float
+        | Tooltip of TooltipOptions
+        | Step of float
         | Vertical of bool
-        | VerticalHeight of IConvertible
-        | UpdateMode of UpdateModeType
+        | VerticalHeight of float
+        | UpdateMode of UpdateOn
         | LoadingState of LoadingState
         | Persistence of IConvertible
         | PersistedProps of string []
         | PersistenceType of PersistenceTypeOptions
-        static member toDynamicMemberDef(prop: Prop) =
-            match prop with
-            | Marks (p) -> "marks", MarksType.convert p
-            | Value (p) -> "value", box p
-            | DragValue (p) -> "drag_value", box p
-            | ClassName (p) -> "className", box p
-            | Disabled (p) -> "disabled", box p
-            | Dots (p) -> "dots", box p
-            | Included (p) -> "included", box p
-            | Min (p) -> "min", box p
-            | Max (p) -> "max", box p
-            | Tooltip (p) -> "tooltip", Tooltip.convert p
-            | Step (p) -> "step", box p
-            | Vertical (p) -> "vertical", box p
-            | VerticalHeight (p) -> "verticalHeight", box p
-            | UpdateMode (p) -> "updatemode", UpdateModeType.convert p
-            | LoadingState (p) -> "loading_state", box p
-            | Persistence (p) -> "persistence", box p
-            | PersistedProps (p) -> "persisted_props", box p
-            | PersistenceType (p) -> "persistence_type", PersistenceTypeOptions.convert p
+
+        static member convert = function
+            | Marks             p -> p |> Map.map (fun _ -> Mark.convert) |> box
+            | Value             p -> box p
+            | DragValue         p -> box p
+            | ClassName         p -> box p
+            | Disabled          p -> box p
+            | Dots              p -> box p
+            | Included          p -> box p
+            | Min               p -> box p
+            | Max               p -> box p
+            | Tooltip           p -> box p
+            | Step              p -> box p
+            | Vertical          p -> box p
+            | VerticalHeight    p -> box p
+            | UpdateMode        p -> UpdateOn.convert p
+            | LoadingState      p -> box p
+            | Persistence       p -> box p
+            | PersistedProps    p -> box p
+            | PersistenceType   p -> PersistenceTypeOptions.convert p
+
+        static member toPropName = function
+            | Marks             _ -> "marks"
+            | Value             _ -> "value"
+            | DragValue         _ -> "drag_value"
+            | ClassName         _ -> "className"
+            | Disabled          _ -> "disabled"
+            | Dots              _ -> "dots"
+            | Included          _ -> "included"
+            | Min               _ -> "min"
+            | Max               _ -> "max"
+            | Tooltip           _ -> "tooltip"
+            | Step              _ -> "step"
+            | Vertical          _ -> "vertical"
+            | VerticalHeight    _ -> "verticalHeight"
+            | UpdateMode        _ -> "updatemode"
+            | LoadingState      _ -> "loading_state"
+            | Persistence       _ -> "persistence"
+            | PersistedProps    _ -> "persisted_props"
+            | PersistenceType   _ -> "persistence_type"
+
+        static member toDynamicMemberDef prop =
+            Prop.toPropName prop
+            , Prop.convert prop
 
     ///<summary>
     ///A list of children or a property for this dash component
     ///</summary>
     type Attr =
         | Prop of Prop
-        | Children of list<DashComponent>
+        | Children of DashComponent list
         ///<summary>
         ///Marks on the slider.
         ///The key determines the position (a number),
@@ -214,58 +235,58 @@ module Slider =
         ///the value should be an object which
         ///contains style and label properties.
         ///</summary>
-        static member marks(p: MarksType) = Prop(Marks p)
+        static member marks p = Prop(Marks p)
         ///<summary>
         ///The value of the input
         ///</summary>
-        static member value(p: IConvertible) = Prop(Value p)
+        static member value p = Prop(Value p)
         ///<summary>
         ///The value of the input during a drag
         ///</summary>
-        static member dragValue(p: IConvertible) = Prop(DragValue p)
+        static member dragValue p = Prop(DragValue p)
         ///<summary>
         ///Additional CSS class for the root DOM node
         ///</summary>
-        static member className(p: string) = Prop(ClassName p)
+        static member className p = Prop(ClassName p)
         ///<summary>
         ///If true, the handles can't be moved.
         ///</summary>
-        static member disabled(p: bool) = Prop(Disabled p)
+        static member disabled p = Prop(Disabled p)
         ///<summary>
         ///When the step value is greater than 1,
         ///you can set the dots to true if you want to
         ///render the slider with dots.
         ///</summary>
-        static member dots(p: bool) = Prop(Dots p)
+        static member dots p = Prop(Dots p)
         ///<summary>
         ///If the value is true, it means a continuous
         ///value is included. Otherwise, it is an independent value.
         ///</summary>
-        static member included(p: bool) = Prop(Included p)
+        static member included p = Prop(Included p)
         ///<summary>
         ///Minimum allowed value of the slider
         ///</summary>
-        static member min(p: IConvertible) = Prop(Min p)
+        static member min p = Prop(Min p)
         ///<summary>
         ///Maximum allowed value of the slider
         ///</summary>
-        static member max(p: IConvertible) = Prop(Max p)
+        static member max p = Prop(Max p)
         ///<summary>
         ///Configuration for tooltips describing the current slider value
         ///</summary>
-        static member tooltip(p: Tooltip) = Prop(Tooltip p)
+        static member tooltip p = Prop(Tooltip p)
         ///<summary>
         ///Value by which increments or decrements are made
         ///</summary>
-        static member step(p: IConvertible) = Prop(Step p)
+        static member step p = Prop(Step p)
         ///<summary>
         ///If true, the slider will be vertical
         ///</summary>
-        static member vertical(p: bool) = Prop(Vertical p)
+        static member vertical p = Prop(Vertical p)
         ///<summary>
         ///The height, in px, of the slider if it is vertical.
         ///</summary>
-        static member verticalHeight(p: IConvertible) = Prop(VerticalHeight p)
+        static member verticalHeight p = Prop(VerticalHeight p)
         ///<summary>
         ///Determines when the component should update its &#96;value&#96;
         ///property. If &#96;mouseup&#96; (the default) then the slider
@@ -276,11 +297,11 @@ module Slider =
         ///leave &#96;updatemode&#96; as &#96;mouseup&#96; and use &#96;drag_value&#96;
         ///for the continuously updating value.
         ///</summary>
-        static member updateMode(p: UpdateModeType) = Prop(UpdateMode p)
+        static member updateMode p = Prop(UpdateMode p)
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = Prop(LoadingState p)
+        static member loadingState p = Prop(LoadingState p)
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -289,22 +310,20 @@ module Slider =
         ///the new &#96;value&#96; also matches what was given originally.
         ///Used in conjunction with &#96;persistence_type&#96;.
         ///</summary>
-        static member persistence(p: IConvertible) =
-            Prop(Persistence p)
-
+        static member persistence p = Prop(Persistence p)
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
         ///normally be ignored.
         ///</summary>
-        static member persistedProps(p: string []) = Prop(PersistedProps p)
+        static member persistedProps p = Prop(PersistedProps p)
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
         ///local: window.localStorage, data is kept after the browser quit.
         ///session: window.sessionStorage, data is cleared once the browser quit.
         ///</summary>
-        static member persistenceType(p: PersistenceTypeOptions) = Prop(PersistenceType p)
+        static member persistenceType p = Prop(PersistenceType p)
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -320,7 +339,7 @@ module Slider =
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
-        static member children(value: System.Guid) = Children([ Html.text value ])
+        static member children(value: Guid) = Children([ Html.text value ])
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -343,47 +362,52 @@ module Slider =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?marks: MarksType,
-                ?value: IConvertible,
-                ?dragValue: IConvertible,
-                ?className: string,
-                ?disabled: bool,
-                ?dots: bool,
-                ?included: bool,
-                ?min: IConvertible,
-                ?max: IConvertible,
-                ?tooltip: Tooltip,
-                ?step: IConvertible,
-                ?vertical: bool,
-                ?verticalHeight: IConvertible,
-                ?updatemode: UpdateModeType,
-                ?loadingState: LoadingState,
-                ?persistence: IConvertible,
-                ?persistedProps: string [],
-                ?persistenceType: PersistenceTypeOptions
+                ?marks,
+                ?value,
+                ?dragValue,
+                ?className,
+                ?disabled,
+                ?dots,
+                ?included,
+                ?min,
+                ?max,
+                ?tooltip,
+                ?step,
+                ?vertical,
+                ?verticalHeight,
+                ?updatemode,
+                ?loadingState,
+                ?persistence,
+                ?persistedProps,
+                ?persistenceType
             ) =
             (fun (t: Slider) ->
                 let props = DashComponentProps()
+                let setPropValueOpt prop =
+                    DynObj.setPropValueOpt props Prop.convert prop
+
                 DynObj.setValue props "id" id
                 DynObj.setValue props "children" children
-                DynObj.setValueOpt props "marks" (marks |> Option.map MarksType.convert)
-                DynObj.setValueOpt props "value" (value |> Option.map box)
-                DynObj.setValueOpt props "dragValue" (dragValue |> Option.map box)
-                DynObj.setValueOpt props "className" (className |> Option.map box)
-                DynObj.setValueOpt props "disabled" (disabled |> Option.map box)
-                DynObj.setValueOpt props "dots" (dots |> Option.map box)
-                DynObj.setValueOpt props "included" (included |> Option.map box)
-                DynObj.setValueOpt props "min" (min |> Option.map box)
-                DynObj.setValueOpt props "max" (max |> Option.map box)
-                DynObj.setValueOpt props "tooltip" (tooltip |> Option.map Tooltip.convert)
-                DynObj.setValueOpt props "step" (step |> Option.map box)
-                DynObj.setValueOpt props "vertical" (vertical |> Option.map box)
-                DynObj.setValueOpt props "verticalHeight" (verticalHeight |> Option.map box)
-                DynObj.setValueOpt props "updatemode" (updatemode |> Option.map UpdateModeType.convert)
-                DynObj.setValueOpt props "loadingState" (loadingState |> Option.map box)
-                DynObj.setValueOpt props "persistence" (persistence |> Option.map box)
-                DynObj.setValueOpt props "persistedProps" (persistedProps |> Option.map box)
-                DynObj.setValueOpt props "persistenceType" (persistenceType |> Option.map PersistenceTypeOptions.convert)
+
+                setPropValueOpt Marks marks
+                setPropValueOpt Value value
+                setPropValueOpt DragValue dragValue
+                setPropValueOpt ClassName className
+                setPropValueOpt Disabled disabled
+                setPropValueOpt Dots dots
+                setPropValueOpt Included included
+                setPropValueOpt Min min
+                setPropValueOpt Max max
+                setPropValueOpt Tooltip tooltip
+                setPropValueOpt Step step
+                setPropValueOpt Vertical vertical
+                setPropValueOpt VerticalHeight verticalHeight
+                setPropValueOpt UpdateMode updatemode
+                setPropValueOpt LoadingState loadingState
+                setPropValueOpt Persistence persistence
+                setPropValueOpt PersistedProps persistedProps
+                setPropValueOpt PersistenceType persistenceType
+
                 DynObj.setValue t "namespace" "dash_core_components"
                 DynObj.setValue t "props" props
                 DynObj.setValue t "type" "Slider"
@@ -393,24 +417,24 @@ module Slider =
             (
                 id: string,
                 children: seq<DashComponent>,
-                ?marks: MarksType,
-                ?value: IConvertible,
-                ?dragValue: IConvertible,
-                ?className: string,
-                ?disabled: bool,
-                ?dots: bool,
-                ?included: bool,
-                ?min: IConvertible,
-                ?max: IConvertible,
-                ?tooltip: Tooltip,
-                ?step: IConvertible,
-                ?vertical: bool,
-                ?verticalHeight: IConvertible,
-                ?updatemode: UpdateModeType,
-                ?loadingState: LoadingState,
-                ?persistence: IConvertible,
-                ?persistedProps: string [],
-                ?persistenceType: PersistenceTypeOptions
+                ?marks,
+                ?value,
+                ?dragValue,
+                ?className,
+                ?disabled,
+                ?dots,
+                ?included,
+                ?min,
+                ?max,
+                ?tooltip,
+                ?step,
+                ?vertical,
+                ?verticalHeight,
+                ?updatemode,
+                ?loadingState,
+                ?persistence,
+                ?persistedProps,
+                ?persistenceType
             ) =
             Slider.applyMembers
                 (id,
@@ -519,7 +543,7 @@ module Slider =
 
         let componentProps =
             match t.TryGetTypedValue<DashComponentProps> "props" with
-            | Some (p) -> p
+            | Some p -> p
             | None -> DashComponentProps()
 
         Seq.iter
