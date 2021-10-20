@@ -3,6 +3,7 @@
 open System
 open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
+open System.Collections.Generic
 
 ///<summary>
 ///A slider component with a single handle.
@@ -17,12 +18,12 @@ module Slider =
     ///<summary>
     ///value equal to: 'mouseup', 'drag'
     ///</summary>
-    type UpdateModeType = private WrappedUpdateModeType of Dash.NET.DCC.Slider.UpdateModeType with
-        static member internal Wrap (attr : Dash.NET.DCC.Slider.UpdateModeType) = WrappedUpdateModeType attr
-        static member internal Unwrap (attr : UpdateModeType) = match attr with | WrappedUpdateModeType attr -> attr
+    type UpdateOn = private WrappedUpdateOn of Dash.NET.DCC.Slider.UpdateOn with
+        static member internal Wrap (attr : Dash.NET.DCC.Slider.UpdateOn) = WrappedUpdateOn attr
+        static member internal Unwrap (attr : UpdateOn) = match attr with | WrappedUpdateOn attr -> attr
 
-        static member Mouseup = Dash.NET.DCC.Slider.UpdateModeType.Mouseup |> UpdateModeType.Wrap
-        static member Drag = Dash.NET.DCC.Slider.UpdateModeType.Drag |> UpdateModeType.Wrap
+        static member Mouseup = Dash.NET.DCC.Slider.UpdateOn.Mouseup |> UpdateOn.Wrap
+        static member Drag = Dash.NET.DCC.Slider.UpdateOn.Drag |> UpdateOn.Wrap
 
     ///<summary>
     ///value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'
@@ -48,42 +49,37 @@ module Slider =
     ///<summary>
     ///record with the fields: 'always_visible: boolean (optional)', 'placement: value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight' (optional)'
     ///</summary>
-    type Tooltip =
+    type TooltipOptions =
         { AlwaysVisible: bool
           Placement: TooltipPlacement }
         with
-        static member internal Convert (v : Tooltip) : Dash.NET.DCC.Slider.Tooltip =
-            {
-                Dash.NET.DCC.Slider.Tooltip.AlwaysVisible = v.AlwaysVisible
-                Placement = v.Placement |> TooltipPlacement.Unwrap
-            }
+        static member internal Convert (v : TooltipOptions) : Dash.NET.DCC.Slider.TooltipOptions =
+            Dash.NET.DCC.Slider.TooltipOptions.init (v.AlwaysVisible, v.Placement |> TooltipPlacement.Unwrap)
+
 
     ///<summary>
     ///record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarkWithStyle =
+    type StyledMarkValue =
         { Label: string
-          Style: obj }
+          Style: DashComponentStyle }
         with
-        static member internal Convert (v : MarkWithStyle) : Dash.NET.DCC.Slider.MarkWithStyle = 
-            {
-                Dash.NET.DCC.Slider.MarkWithStyle.Label = v.Label
-                Dash.NET.DCC.Slider.MarkWithStyle.Style = v.Style
-            }
+        static member internal Convert (v : StyledMarkValue) : Dash.NET.DCC.Slider.StyledMarkValue = 
+            Dash.NET.DCC.Slider.StyledMarkValue.init (v.Label, v.Style |> DashComponentStyle.Unwrap)
 
     ///<summary>
     ///string | record with the fields: 'label: string (optional)', 'style: record (optional)'
     ///</summary>
-    type MarkValue = private WrappedMarkValue of Dash.NET.DCC.Slider.MarkValue with
-        static member internal Wrap (v : Dash.NET.DCC.Slider.MarkValue) = WrappedMarkValue v
-        static member internal Unwrap (attr : MarkValue) = match attr with | WrappedMarkValue attr -> attr
+    type Mark = private WrappedMark of Dash.NET.DCC.Slider.Mark with
+        static member internal Wrap (v : Dash.NET.DCC.Slider.Mark) = WrappedMark v
+        static member internal Unwrap (attr : Mark) = match attr with | WrappedMark attr -> attr
 
-        static member String (value : string) = 
+        static member Value (value : string) = 
             guardAgainstNull "value" value
-            Dash.NET.DCC.Slider.MarkValue.String value |> MarkValue.Wrap
-        static member MarkWithStyle (value : MarkWithStyle) = 
+            Dash.NET.DCC.Slider.Mark.Value value |> Mark.Wrap
+        static member StyledValue (value : StyledMarkValue) = 
             guardAgainstNull "value" value
-            Dash.NET.DCC.Slider.MarkValue.MarkWithStyle (value |> MarkWithStyle.Convert) |> MarkValue.Wrap
+            Dash.NET.DCC.Slider.Mark.StyledValue (value |> StyledMarkValue.Convert) |> Mark.Wrap
 
     
     ///<summary>
@@ -101,33 +97,33 @@ module Slider =
         ///the value should be an object which
         ///contains style and label properties.
         ///</summary>
-        static member marks(p: Map<string, MarkValue>) = 
+        static member marks(p: Dictionary<float, Mark>) = 
             guardAgainstNull "p" p
-            OAttr.marks (p |> Map.map (fun k v -> MarkValue.Unwrap v) |> Dash.NET.DCC.Slider.MarksType) // TODO : How usable is Map from C# ? Would a paramlist of tuples work here?
+            OAttr.marks (p |> Map.fromDictionary |> Map.map (fun k v -> Mark.Unwrap v)) |> Attr.Wrap
         ///<summary>
         ///The value of the input
         ///</summary>
-        static member value(p: IConvertible) = 
+        static member value(p: float) = 
             guardAgainstNull "p" p
-            OAttr.value p
+            OAttr.value p |> Attr.Wrap
         ///<summary>
         ///The value of the input during a drag
         ///</summary>
-        static member dragValue(p: IConvertible) = 
+        static member dragValue(p: float) = 
             guardAgainstNull "p" p
-            OAttr.dragValue p
+            OAttr.dragValue p |> Attr.Wrap
         ///<summary>
         ///Additional CSS class for the root DOM node
         ///</summary>
         static member className(p: string) = 
             guardAgainstNull "p" p
-            OAttr.className p
+            OAttr.className p |> Attr.Wrap
         ///<summary>
         ///If true, the handles can't be moved.
         ///</summary>
         static member disabled(p: bool) = 
             guardAgainstNull "p" p
-            OAttr.disabled p
+            OAttr.disabled p |> Attr.Wrap
         ///<summary>
         ///When the step value is greater than 1,
         ///you can set the dots to true if you want to
@@ -135,50 +131,50 @@ module Slider =
         ///</summary>
         static member dots(p: bool) = 
             guardAgainstNull "p" p
-            OAttr.dots p
+            OAttr.dots p |> Attr.Wrap
         ///<summary>
         ///If the value is true, it means a continuous
         ///value is included. Otherwise, it is an independent value.
         ///</summary>
         static member included(p: bool) = 
             guardAgainstNull "p" p
-            OAttr.included p
+            OAttr.included p |> Attr.Wrap
         ///<summary>
         ///Minimum allowed value of the slider
         ///</summary>
-        static member min(p: IConvertible) = 
+        static member min(p: float) = 
             guardAgainstNull "p" p
-            OAttr.min p
+            OAttr.min p |> Attr.Wrap
         ///<summary>
         ///Maximum allowed value of the slider
         ///</summary>
-        static member max(p: IConvertible) = 
+        static member max(p: float) = 
             guardAgainstNull "p" p
-            OAttr.max p
+            OAttr.max p |> Attr.Wrap
         ///<summary>
         ///Configuration for tooltips describing the current slider value
         ///</summary>
-        static member tooltip(p: Tooltip) = 
+        static member tooltip(p: TooltipOptions) = 
             guardAgainstNull "p" p
-            OAttr.tooltip (p |> Tooltip.Convert)
+            OAttr.tooltip (p |> TooltipOptions.Convert) |> Attr.Wrap
         ///<summary>
         ///Value by which increments or decrements are made
         ///</summary>
-        static member step(p: IConvertible) = 
+        static member step(p: float) = 
             guardAgainstNull "p" p
-            OAttr.step p
+            OAttr.step p |> Attr.Wrap
         ///<summary>
         ///If true, the slider will be vertical
         ///</summary>
         static member vertical(p: bool) = 
             guardAgainstNull "p" p
-            OAttr.vertical p
+            OAttr.vertical p |> Attr.Wrap
         ///<summary>
         ///The height, in px, of the slider if it is vertical.
         ///</summary>
-        static member verticalHeight(p: IConvertible) = 
+        static member verticalHeight(p: float) = 
             guardAgainstNull "p" p
-            OAttr.verticalHeight p
+            OAttr.verticalHeight p |> Attr.Wrap
         ///<summary>
         ///Determines when the component should update its &#96;value&#96;
         ///property. If &#96;mouseup&#96; (the default) then the slider
@@ -189,15 +185,15 @@ module Slider =
         ///leave &#96;updatemode&#96; as &#96;mouseup&#96; and use &#96;drag_value&#96;
         ///for the continuously updating value.
         ///</summary>
-        static member updateMode(p: UpdateModeType) = 
+        static member updateMode(p: UpdateOn) = 
             guardAgainstNull "p" p
-            OAttr.updateMode (p |> UpdateModeType.Unwrap)
+            OAttr.updateMode (p |> UpdateOn.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert)
+            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -208,7 +204,7 @@ module Slider =
         ///</summary>
         static member persistence(p: IConvertible) = 
             guardAgainstNull "p" p
-            OAttr.persistence p
+            OAttr.persistence p |> Attr.Wrap
         ///<summary>
         ///Properties whose user interactions will persist after refreshing the
         ///component or the page. Since only &#96;value&#96; is allowed this prop can
@@ -217,7 +213,7 @@ module Slider =
         static member persistedProps([<ParamArray>] p: string []) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.persistedProps
+            OAttr.persistedProps p |> Attr.Wrap
         ///<summary>
         ///Where persisted user changes will be stored:
         ///memory: only kept in memory, reset on page refresh.
@@ -226,7 +222,7 @@ module Slider =
         ///</summary>
         static member persistenceType(p: PersistenceTypeOptions) = 
             guardAgainstNull "p" p
-            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap)
+            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>

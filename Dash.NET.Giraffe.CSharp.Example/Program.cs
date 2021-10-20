@@ -88,13 +88,22 @@ namespace Dash.Giraffe.CSharp.Example
             var layout =
                 Html.div(
                     Attr.children(
-                        Graph.graph(id: "scatter-plot"),
+                        Graph.graph(id: "my-graph-id"),
                         Html.p(Attr.children("Petal Width:")),
                         RangeSlider.rangeSlider(
                             id: "range-slider",
                             RangeSlider.Attr.min(0),
                             RangeSlider.Attr.max(2.5),
-                            RangeSlider.Attr.step(0.1)
+                            RangeSlider.Attr.step(0.1),
+                            RangeSlider.Attr.marks(
+                                new Dictionary<double, RangeSlider.Mark>()
+                                {
+                                    {  0.0, RangeSlider.Mark.Value("0.0") },
+                                    {  2.5, RangeSlider.Mark.Value("2.5") }
+                                }
+                            ),
+                            RangeSlider.Attr.value(0.5, 2.0),
+                            RangeSlider.Attr.tooltip(RangeSlider.TooltipOptions.Init(true, RangeSlider.TooltipPlacement.Bottom))
                         )
                     )
                 );
@@ -105,7 +114,7 @@ namespace Dash.Giraffe.CSharp.Example
                         ("range-slider", ComponentProperty.Value)
                     },
                     output: new[] {
-                        ("scatter-plot", ComponentProperty.CustomProperty("figure"))
+                        ("my-graph-id", ComponentProperty.CustomProperty("figure"))
                     },
                     handler: (decimal[] sliderRange) => {
                         var r1 = sliderRange[0];
@@ -113,9 +122,10 @@ namespace Dash.Giraffe.CSharp.Example
                         var low = r1 < r2 ? r1 : r2;
                         var high = r1 < r2 ? r2 : r1;
                         return new[] {
-                            CallbackResult.Create(("scatter-plot", ComponentProperty.Children), scatterPlot(low, high)),
+                            CallbackResult.Create(("my-graph-id", ComponentProperty.Children), scatterPlot(low, high)),
                         };
-                    }
+                    },
+                    preventInitialCall: false
                 );
 
             var dashApp = DashApp
