@@ -1,6 +1,10 @@
 ﻿namespace Dash.NET.CSharp.DCC
 
 open System
+open Dash.NET.CSharp.ComponentStyle
+open System.Runtime.InteropServices
+open ComponentPropTypes
+open System.Collections.Generic
 
 ///<summary>
 ///A double slider with two handles.
@@ -12,6 +16,67 @@ module RangeSlider =
     // Original attr
     type internal OAttr = Dash.NET.DCC.RangeSlider.Attr
 
+    type StyledMarkValue = WrappedStyledMarkValue of Dash.NET.DCC.RangeSlider.StyledMarkValue with
+        static member internal Unwrap (WrappedStyledMarkValue v) = v
+
+        static member Init([<Optional>] label : string, [<Optional>] style : DashComponentStyle) =
+            let style = style |> DashComponentStyle.Unwrap |> box |> Option.ofObj |> unbox
+            Dash.NET.DCC.RangeSlider.StyledMarkValue.init(?label = Option.ofObj label, ?style = style)
+
+
+    type Mark = WrappedMark of Dash.NET.DCC.RangeSlider.Mark with
+        static member internal Unwrap (WrappedMark v) = v
+
+        static member Value (value : string) =
+            guardAgainstNull "value" value
+            Dash.NET.DCC.RangeSlider.Mark.Value value |> WrappedMark
+
+        static member StyledValue (value : StyledMarkValue) =
+            guardAgainstNull "value" value
+            Dash.NET.DCC.RangeSlider.Mark.StyledValue (value |> StyledMarkValue.Unwrap) |> WrappedMark
+
+    ///<summary>
+    ///value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'
+    ///&#10;
+    ///Determines the placement of tooltips
+    ///See https://github.com/react-component/tooltip#api
+    ///top/bottom{*} sets the _origin_ of the tooltip, so e.g. &#96;topLeft&#96;
+    ///will in reality appear to be on the top right of the handle
+    ///</summary>
+    type TooltipPlacement = private WrappedTooltipPlacement of Dash.NET.DCC.RangeSlider.TooltipPlacement with
+        static member internal Wrap (attr : Dash.NET.DCC.RangeSlider.TooltipPlacement) = WrappedTooltipPlacement attr
+        static member internal Unwrap (attr : TooltipPlacement) = match attr with | WrappedTooltipPlacement attr -> attr
+
+        static member Left = Dash.NET.DCC.RangeSlider.TooltipPlacement.Left |> TooltipPlacement.Wrap
+        static member Right = Dash.NET.DCC.RangeSlider.TooltipPlacement.Right |> TooltipPlacement.Wrap
+        static member Top = Dash.NET.DCC.RangeSlider.TooltipPlacement.Top |> TooltipPlacement.Wrap
+        static member Bottom = Dash.NET.DCC.RangeSlider.TooltipPlacement.Bottom |> TooltipPlacement.Wrap
+        static member TopLeft = Dash.NET.DCC.RangeSlider.TooltipPlacement.TopLeft |> TooltipPlacement.Wrap
+        static member TopRight = Dash.NET.DCC.RangeSlider.TooltipPlacement.TopRight |> TooltipPlacement.Wrap
+        static member BottomLeft = Dash.NET.DCC.RangeSlider.TooltipPlacement.BottomLeft |> TooltipPlacement.Wrap
+        static member BottomRight = Dash.NET.DCC.RangeSlider.TooltipPlacement.BottomRight |> TooltipPlacement.Wrap
+
+    ///<summary>
+    ///record with the fields: 'always_visible: boolean (optional)', 'placement: value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight' (optional)'
+    ///</summary>
+    type TooltipOptions = WrappedTooltipOptions of Dash.NET.DCC.RangeSlider.TooltipOptions with
+        static member internal Convert (WrappedTooltipOptions v) = v
+
+        static member Init ([<Optional>] alwaysVisible, [<Optional>] placement) =
+            Dash.NET.DCC.RangeSlider.TooltipOptions.init (alwaysVisible, placement |> TooltipPlacement.Unwrap) |> WrappedTooltipOptions
+        
+     
+    ///<summary>
+    ///value equal to: 'mouseup', 'drag'
+    ///</summary>
+    type UpdateOn = private WrappedUpdateOn of Dash.NET.DCC.RangeSlider.UpdateOn with
+        static member internal Wrap (attr : Dash.NET.DCC.RangeSlider.UpdateOn) = WrappedUpdateOn attr
+        static member internal Unwrap (attr : UpdateOn) = match attr with | WrappedUpdateOn attr -> attr
+
+        static member Mouseup = Dash.NET.DCC.RangeSlider.UpdateOn.Mouseup |> UpdateOn.Wrap
+        static member Drag = Dash.NET.DCC.RangeSlider.UpdateOn.Drag |> UpdateOn.Wrap
+   
+
     ///<summary>
     ///A list of children or a property for this dash component
     ///</summary>
@@ -19,22 +84,26 @@ module RangeSlider =
         static member internal Wrap (attr : Dash.NET.DCC.RangeSlider.Attr) = Attr.WrappedAttr attr
         static member internal Unwrap (attr : Attr) = match attr with | Attr.WrappedAttr attr -> attr
 
-        /////<summary>
-        /////Marks on the slider.
-        /////The key determines the position (a number),
-        /////and the value determines what will show.
-        /////If you want to set the style of a specific mark point,
-        /////the value should be an object which
-        /////contains style and label properties.
-        /////</summary>
-        //static member marks(p: MarksType) = Prop(Marks p)
-        /////<summary>
-        /////The value of the input
-        /////</summary>
-        //static member value(p: ValueType) = Prop(Value p)
-        /////<summary>
-        /////The value of the input during a drag
-        /////</summary>
+        ///<summary>
+        ///Marks on the slider.
+        ///The key determines the position (a number),
+        ///and the value determines what will show.
+        ///If you want to set the style of a specific mark point,
+        ///the value should be an object which
+        ///contains style and label properties.
+        ///</summary>
+        static member marks(p: Dictionary<float,Mark>) =
+            guardAgainstNull "p" p
+            OAttr.marks (p |> Map.fromDictionary |> Map.map (fun k v -> v |> Mark.Unwrap)) |> Attr.Wrap
+        ///<summary>
+        ///The value of the input
+        ///</summary>
+        static member value([<ParamArray>] p: float[]) =
+            guardAgainstNull "p" p
+            OAttr.value (p |> List.ofArray) |> Attr.Wrap
+        ///<summary>
+        ///The value of the input during a drag
+        ///</summary>
         //static member dragValue(p: DragValueType) = Prop(DragValue p)
         ///<summary>
         ///allowCross could be set as true to allow those handles to cross.
@@ -52,7 +121,7 @@ module RangeSlider =
         ///Determine how many ranges to render, and multiple handles
         ///will be rendered (number + 1).
         ///</summary>
-        static member count(p: IConvertible) =
+        static member count(p: int) =
             guardAgainstNull "p" p
             OAttr.count p |> Attr.Wrap
         ///<summary>
@@ -79,13 +148,13 @@ module RangeSlider =
         ///<summary>
         ///Minimum allowed value of the slider
         ///</summary>
-        static member min(p: IConvertible) =
+        static member min(p: float) =
             guardAgainstNull "p" p
             OAttr.min p |> Attr.Wrap
         ///<summary>
         ///Maximum allowed value of the slider
         ///</summary>
-        static member max(p: IConvertible) =
+        static member max(p: float) =
             guardAgainstNull "p" p
             OAttr.max p |> Attr.Wrap
         ///<summary>
@@ -103,18 +172,20 @@ module RangeSlider =
         ///When set to a number, the number will be the
         ///minimum ensured distance between handles.
         ///</summary>
-        static member pushable(p: IConvertible) =
+        static member pushable(p: float) =
             guardAgainstNull "p" p
             OAttr.pushable p |> Attr.Wrap
 
-        /////<summary>
-        /////Configuration for tooltips describing the current slider values
-        /////</summary>
-        //static member tooltip(p: TooltipType) = Prop(Tooltip p)
+        ///<summary>
+        ///Configuration for tooltips describing the current slider values
+        ///</summary>
+        static member tooltip(p: TooltipOptions) =
+            guardAgainstNull "p" p
+            OAttr.tooltip (p |> TooltipOptions.Convert) |> Attr.Wrap
         ///<summary>
         ///Value by which increments or decrements are made
         ///</summary>
-        static member step(p: IConvertible) =
+        static member step(p: float) =
             guardAgainstNull "p" p
             OAttr.step p |> Attr.Wrap
         ///<summary>
@@ -126,22 +197,24 @@ module RangeSlider =
         ///<summary>
         ///The height, in px, of the slider if it is vertical.
         ///</summary>
-        static member verticalHeight(p: IConvertible) =
+        static member verticalHeight(p: float) =
             guardAgainstNull "p" p
             OAttr.verticalHeight p |> Attr.Wrap
-        /////<summary>
-        /////Determines when the component should update its &#96;value&#96;
-        /////property. If &#96;mouseup&#96; (the default) then the slider
-        /////will only trigger its value when the user has finished
-        /////dragging the slider. If &#96;drag&#96;, then the slider will
-        /////update its value continuously as it is being dragged.
-        /////Note that for the latter case, the &#96;drag_value&#96;
-        /////property could be used instead.
-        /////</summary>
-        //static member updatemode(p: UpdatemodeType) = Prop(Updatemode p)
-        /////<summary>
-        /////Object that holds the loading state object coming from dash-renderer
-        /////</summary>
+        ///<summary>
+        ///Determines when the component should update its &#96;value&#96;
+        ///property. If &#96;mouseup&#96; (the default) then the slider
+        ///will only trigger its value when the user has finished
+        ///dragging the slider. If &#96;drag&#96;, then the slider will
+        ///update its value continuously as it is being dragged.
+        ///Note that for the latter case, the &#96;drag_value&#96;
+        ///property could be used instead.
+        ///</summary>
+        static member updatemode(p: UpdateOn) =
+            guardAgainstNull "p" p
+            OAttr.updatemode (p |> UpdateOn.Unwrap) |> Attr.Wrap
+        ///<summary>
+        ///Object that holds the loading state object coming from dash-renderer
+        ///</summary>
         //static member loadingState(p: LoadingStateType) = Prop(LoadingState p)
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
@@ -179,19 +252,23 @@ module RangeSlider =
             guardAgainstNull "p" p
             OAttr.persistence p |> Attr.Wrap
 
-        /////<summary>
-        /////Properties whose user interactions will persist after refreshing the
-        /////component or the page. Since only &#96;value&#96; is allowed this prop can
-        /////normally be ignored.
-        /////</summary>
-        //static member persistedProps(p: PersistedPropsType) = Prop(PersistedProps p)
-        /////<summary>
-        /////Where persisted user changes will be stored:
-        /////memory: only kept in memory, reset on page refresh.
-        /////local: window.localStorage, data is kept after the browser quit.
-        /////session: window.sessionStorage, data is cleared once the browser quit.
-        /////</summary>
-        //static member persistenceType(p: PersistenceTypeType) = Prop(PersistenceType p)
+        ///<summary>
+        ///Properties whose user interactions will persist after refreshing the
+        ///component or the page. Since only &#96;value&#96; is allowed this prop can
+        ///normally be ignored.
+        ///</summary>
+        static member persistedProps([<ParamArray>] p: string[]) =
+            guardAgainstNull "p" p
+            OAttr.persistedProps p |> Attr.Wrap
+        ///<summary>
+        ///Where persisted user changes will be stored:
+        ///memory: only kept in memory, reset on page refresh.
+        ///local: window.localStorage, data is kept after the browser quit.
+        ///session: window.sessionStorage, data is cleared once the browser quit.
+        ///</summary>
+        static member persistenceType(p: PersistenceTypeOptions) =
+            guardAgainstNull "p" p
+            OAttr.persistenceType (p |> PersistenceTypeOptions.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
