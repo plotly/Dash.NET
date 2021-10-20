@@ -62,7 +62,7 @@ namespace Dash.Giraffe.CSharp.Example
                     var spec = filtered.Select(x => x.species);
                     var colors = spec.Select(x =>
                     {
-                        if (x == "setossa")
+                        if (x == "setosa")
                             return Color.fromHex("#4287f5");
                         else if (x == "versicolor")
                             return Color.fromHex("#cb23fa");
@@ -70,7 +70,11 @@ namespace Dash.Giraffe.CSharp.Example
                             return Color.fromHex("#23fabd");
                     });
 
-                    var markers = Plotly.NET.TraceObjects.Marker.init(MultiSize: new FSharpOption<IEnumerable<int>>(petal_length), Colors: new FSharpOption<IEnumerable<Color>>(colors)); // It should not be necessary to create explicit FSharp Options here, this is something that should be improved in Plotly.NET
+                    var markers = Plotly.NET.TraceObjects.Marker.init(
+                        MultiSize: new FSharpOption<IEnumerable<int>>(petal_length),
+                        Colors: new FSharpOption<IEnumerable<Color>>(colors), // Doesn't do anything !!!
+                        Color: Color.fromColors(colors)
+                    ); // It should not be necessary to create explicit FSharp Options here, this is something that should be improved in Plotly.NET
 
                     var chart = Chart2D.Chart
                         .Scatter<decimal, decimal, decimal>(points, StyleParam.Mode.Markers)
@@ -122,7 +126,7 @@ namespace Dash.Giraffe.CSharp.Example
                         var low = r1 < r2 ? r1 : r2;
                         var high = r1 < r2 ? r2 : r1;
                         return new[] {
-                            CallbackResult.Create(("my-graph-id", ComponentProperty.Children), scatterPlot(low, high)),
+                            CallbackResult.Create(("my-graph-id", ComponentProperty.CustomProperty("figure")), scatterPlot(low, high)),
                         };
                     },
                     preventInitialCall: false
