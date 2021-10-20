@@ -68,9 +68,6 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Interactive", "src\Dash.NET.Interactive\Dash.NET.Interactive.fsproj", "{80139B46-8259-468C-9104-994619DCF6F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{641EFBAF-85B3-4E8E-8FEF-DA30EBB86D18}"
-	ProjectSection(SolutionItems) = preProject
-		examples\dotnet-interactive\dash-notebook.dib = examples\dotnet-interactive\dash-notebook.dib
-	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.Giraffe.Example", "examples\Dash.NET.Giraffe.Example\Dash.NET.Giraffe.Example.fsproj", "{C8F55DE8-E158-439F-B723-D2C9F90E9C52}"
 EndProject
@@ -81,6 +78,8 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.CSharp.Giraffe", "Dash.NET.CSharp.Giraffe\Dash.NET.CSharp.Giraffe.fsproj", "{5D50F10B-56E6-4A15-8136-6AE25602DE94}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash.NET.Giraffe.CSharp.Example", "Dash.NET.Giraffe.CSharp.Example\Dash.NET.Giraffe.CSharp.Example.csproj", "{B1334C66-DAA5-4E3E-8168-5808541AD7B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash.NET.Giraffe.CSharp.Example.Tests", "Dash.NET.Giraffe.CSharp.Tests\Dash.NET.Giraffe.CSharp.Example.Tests.csproj", "{0DCB95A7-45E9-4C3C-A135-95B6995E6204}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -260,6 +259,18 @@ Global
 		{B1334C66-DAA5-4E3E-8168-5808541AD7B0}.Release|x64.Build.0 = Release|Any CPU
 		{B1334C66-DAA5-4E3E-8168-5808541AD7B0}.Release|x86.ActiveCfg = Release|Any CPU
 		{B1334C66-DAA5-4E3E-8168-5808541AD7B0}.Release|x86.Build.0 = Release|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Debug|x64.Build.0 = Debug|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Release|x64.Build.0 = Release|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -274,6 +285,7 @@ Global
 		{C8F55DE8-E158-439F-B723-D2C9F90E9C52} = {641EFBAF-85B3-4E8E-8FEF-DA30EBB86D18}
 		{EDF05B52-3102-4EE7-9E3F-90283039B929} = {641EFBAF-85B3-4E8E-8FEF-DA30EBB86D18}
 		{B1334C66-DAA5-4E3E-8168-5808541AD7B0} = {641EFBAF-85B3-4E8E-8FEF-DA30EBB86D18}
+		{0DCB95A7-45E9-4C3C-A135-95B6995E6204} = {641EFBAF-85B3-4E8E-8FEF-DA30EBB86D18}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {47D6A0E3-05A6-4BB7-81D1-A90CE758E430}
