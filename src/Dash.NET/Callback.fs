@@ -83,11 +83,12 @@ type CallbackResponse() =
             cr?multi <- true
             cr?response <- response
 
+            (*
             printfn "Result JSON : %A" (result |> JsonConvert.SerializeObject)
             printfn "Response JSON : %A" (response |> JsonConvert.SerializeObject)
             printfn "final response : %A" cr
             printfn "final response JSON : %A" (cr |> JsonConvert.SerializeObject)
-
+            *)
             cr
 
     /// creates a `CallbackResponse` object for a single output callback response from the given `CallbackResultBinding`
