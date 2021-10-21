@@ -79,7 +79,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Dash.NET.CSharp.Giraffe", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash.NET.Giraffe.CSharp.Example", "Dash.NET.Giraffe.CSharp.Example\Dash.NET.Giraffe.CSharp.Example.csproj", "{B1334C66-DAA5-4E3E-8168-5808541AD7B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash.NET.Giraffe.CSharp.Example.Tests", "Dash.NET.Giraffe.CSharp.Tests\Dash.NET.Giraffe.CSharp.Example.Tests.csproj", "{0DCB95A7-45E9-4C3C-A135-95B6995E6204}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash.NET.Giraffe.CSharp.Documentation.Examples", "Dash.NET.Giraffe.CSharp.Tests\Dash.NET.Giraffe.CSharp.Documentation.Examples.csproj", "{0DCB95A7-45E9-4C3C-A135-95B6995E6204}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Globalization;
 using Microsoft.FSharp.Core;
-using Dash.NET.DCC;
 
 namespace Dash.Giraffe.CSharp.Example
 {
