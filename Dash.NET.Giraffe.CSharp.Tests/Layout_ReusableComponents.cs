@@ -4,6 +4,10 @@ using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
 using System.Linq;
 using Dash.NET.CSharp.Giraffe;
+using System.IO;
+using System.Net.Http;
+using CsvHelper;
+using System.Globalization;
 
 namespace Documentation.Examples
 {
@@ -11,19 +15,10 @@ namespace Documentation.Examples
     {
         public static void RunExample()
         {
-            List<string> splitted = new List<string>();
-            var csv = Program.GetCSV("https://gist.githubusercontent.com/chriddyp/c78bf172206ce24f77d6363a2d754b59/raw/c353e8ef842413cae56ae3920b8fd78468aa4cb2/usa-agricultural-exports-2011.csv");
-            var headers = csv
-                .Split("\n")
-                .First()
-                .Split(",");
-            var rows = csv
-                .Split("\n")
-                .Skip(1)
-                .SkipLast(1)
-                .Select(x => x.Split(","))
-                .ToList();
-
+            var csv = new HttpClient().GetStringAsync("https://gist.githubusercontent.com/chriddyp/c78bf172206ce24f77d6363a2d754b59/raw/c353e8ef842413cae56ae3920b8fd78468aa4cb2/usa-agricultural-exports-2011.csv").Result;
+            var rows = csv.Split("\n").SkipLast(1).Select(x => x.Split(","));
+            var headers = rows.First();
+            var data = rows.Skip(1);
 
             var layout =
                 Html.div(
@@ -38,7 +33,7 @@ namespace Documentation.Examples
                                 ),
                                 Html.tbody(
                                     Attr.children(
-                                        rows.Select(x => Html.tr(Attr.children(x.Select(x => Html.td(Attr.children(x))))))
+                                        data.Select(x => Html.tr(Attr.children(x.Select(x => Html.td(Attr.children(x))))))
                                     )
                                 )
                             )

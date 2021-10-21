@@ -15,24 +15,12 @@ namespace Documentation.Examples
 {
     class Program
     {
-        public static string GetCSV(string url)
-        {
-            var req = (HttpWebRequest)WebRequest.Create(url);
-            var resp = (HttpWebResponse)req.GetResponse();
-
-            var sr = new StreamReader(resp.GetResponseStream());
-            var results = sr.ReadToEnd();
-            sr.Close();
-
-            return results;
-        }
-
         static void Main(string[] args)
         {
-            Layout_FirstExample.RunExample();
+            //Layout_FirstExample.RunExample();
             //Layout_MoreAboutHtmlComponents.RunExample();
             //Layout_Markdown.RunExample();
-            //Layout_ReusableComponents.RunExample();
+            Layout_ReusableComponents.RunExample();
         }
     }
 }
