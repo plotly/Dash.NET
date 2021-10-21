@@ -150,9 +150,9 @@ module Graph =
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: Dash.NET.CSharp.DCC.ComponentPropTypes.LoadingState) = 
+        static member loadingState(p: Dash.NET.CSharp.DCC.LoadingState) = 
             guardAgainstNull "p" p
-            Dash.NET.DCC.Graph.Attr.loadingState (p |> Dash.NET.CSharp.DCC.ComponentPropTypes.LoadingState.Convert) |> Attr.Wrap
+            Dash.NET.DCC.Graph.Attr.loadingState (p |> Dash.NET.CSharp.DCC.LoadingState.Convert) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>

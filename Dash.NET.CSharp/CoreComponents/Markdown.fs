@@ -1,7 +1,6 @@
 ﻿namespace Dash.NET.CSharp.DCC
 
 open System
-open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 
 ///<summary>
