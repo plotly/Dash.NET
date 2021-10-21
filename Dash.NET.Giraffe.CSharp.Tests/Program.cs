@@ -8,7 +8,7 @@ using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
-using static Dash.NET.CSharp.Giraffe.DashApp;
+using Dash.NET.CSharp.Giraffe;
 
 // namespace Dash.NET.Giraffe.CSharp.Example // TODO : I changed the namespace here because it was automatically opening types from the Dash.NET namespace (while they should be hidden for C# users, who only go through Dash.NET.CSharp)
 namespace Dash.Giraffe.CSharp.Example.Tests
@@ -36,7 +36,7 @@ namespace Dash.Giraffe.CSharp.Example.Tests
                         Html.div(
                             Attr.children("Dash: A web application framework for your data")
                             ),
-                        Graph.Graph(
+                        Graph.graph(
                             "my-graph",
                             Graph.Attr.figure(GenericChart.toFigure(fig))
                             )
@@ -196,6 +196,7 @@ namespace Dash.Giraffe.CSharp.Example.Tests
 */
 //-----------------------------------------------------------------------
 //getting_started_markdown
+
 using System;
 using System.Net;
 using System.IO;
@@ -205,8 +206,9 @@ using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
-using static Dash.NET.CSharp.Giraffe.DashApp;
-
+using Dash.NET.CSharp.Giraffe;
+using System.Linq;
+using System.Globalization;
 
 namespace Dash.Giraffe.CSharp.Example.Tests
 {
@@ -214,57 +216,53 @@ namespace Dash.Giraffe.CSharp.Example.Tests
     {
         public static string GetCSV(string url)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            var resp = (HttpWebResponse)req.GetResponse();
 
-            StreamReader sr = new StreamReader(resp.GetResponseStream());
-            string results = sr.ReadToEnd();
+            var sr = new StreamReader(resp.GetResponseStream());
+            var results = sr.ReadToEnd();
             sr.Close();
 
             return results;
         }
         static void Main(string[] args)
         {
-            
+
             List<string> splitted = new List<string>();
-            string fileList = GetCSV("https://gist.githubusercontent.com/chriddyp/c78bf172206ce24f77d6363a2d754b59/raw/c353e8ef842413cae56ae3920b8fd78468aa4cb2/usa-agricultural-exports-2011.csv");
-            string[] tempStr;
+            var csv = GetCSV("https://gist.githubusercontent.com/chriddyp/c78bf172206ce24f77d6363a2d754b59/raw/c353e8ef842413cae56ae3920b8fd78468aa4cb2/usa-agricultural-exports-2011.csv");
+            var headers = csv
+                .Split("\n")
+                .First()
+                .Split(",");
+            var rows = csv
+                .Split("\n")
+                .Skip(1)
+                .SkipLast(1)
+                .Select(x => x.Split(","))
+                .ToList();
 
-            tempStr = fileList.Split(',');
-
-            splitted.Add("");
-
-            foreach (string item in tempStr)
-            {
-                if (!string.IsNullOrWhiteSpace(item))
-                {
-                    splitted.Add(item);
-                }
-            }
-
-
-            List<DashComponent> testList = new List<DashComponent>(){ };
-            testList.Add(Html.th(Attr.children("hello")));
-            testList.Add(Html.th(Attr.children("good bye")));
-            testList.Add(Html.th(Attr.children("good afternoon")));
-
-            var testList2 = testList.ToArray();
 
             var layout =
-                Html.div(
-                    Attr.children(
-                        Html.h4(Attr.children("US Agriculture Exports (2011)")),
-                        Html.table(
-                            Attr.children(
-                                Html.thead(
-                                    Attr.children(
-                                        testList2
-                                        )
+            Html.div(
+                Attr.children(
+                    Html.h4(Attr.children("US Agriculture Exports (2011)")),
+                    Html.table(
+                        Attr.children(
+                            Html.thead(
+                                Attr.children(
+                                    headers.Select(x => Html.th(Attr.children(x))).ToArray()
                                     )
+                                ),
+                            Html.tbody(
+                                Attr.children(
+                                    rows.Select(x => Html.tr(Attr.children(x.Select(x => Html.td(Attr.children(x))).ToArray())))
+                                    )
+
                                 )
                             )
                         )
-                    );
+                    )
+                );
 
             var dashApp = DashApp
                 .initDefault()
@@ -274,7 +272,7 @@ namespace Dash.Giraffe.CSharp.Example.Tests
                 hostName: "localhost",
                 logLevel: LogLevel.Debug,
                 ipAddress: "*",
-                port: 49246,
+                port: 8000,
                 errorHandler: (Exception err) => Core.text(err.Message)
             );
 
