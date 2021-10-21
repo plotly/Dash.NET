@@ -8,7 +8,6 @@ using Dash.NET.CSharp.DCC;
 using static Dash.NET.CSharp.Dsl;
 using Plotly.NET;
 using Microsoft.Extensions.Logging;
-using Giraffe;
 
 namespace Documentation.Examples
 {

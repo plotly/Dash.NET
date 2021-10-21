@@ -1,7 +1,6 @@
 ﻿using System;
 using Dash.NET.CSharp.DCC;
 using Plotly.NET;
-using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
@@ -142,7 +141,7 @@ namespace Dash.Giraffe.CSharp.Example
                 logLevel: LogLevel.Debug,
                 ipAddress: "*",
                 port: 8000,
-                errorHandler: (Exception err) => Core.text(err.Message)
+                errorHandler: (Exception err) => err.Message
             );
 
             dashApp.run(

@@ -1,6 +1,5 @@
 ﻿using Dash.NET.CSharp.DCC;
 using Dash.NET.CSharp.Giraffe;
-using Giraffe;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,7 +34,7 @@ namespace Documentation.Examples
                 logLevel: LogLevel.Debug,
                 ipAddress: "*",
                 port: 8000,
-                errorHandler: (Exception err) => Core.text(err.Message)
+                errorHandler: (Exception err) => err.Message
             );
 
             dashApp.run(
