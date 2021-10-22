@@ -35,32 +35,32 @@ namespace Documentation.Examples
 
                         Html.label(Attr.children("Multi-Select Dropdown")),
                         Dropdown.dropdown("multi-select-dropdown",
-                            Dropdown.Attr.options(new DropdownOption[] {
+                            Dropdown.Attr.options(
                                 DropdownOption.Init(label: "New York City", value: "NYC", disabled: false, title: "New York City"),
                                 DropdownOption.Init(label: "Montréal", value: "MTL", disabled: false, title: "Montréal"),
                                 DropdownOption.Init(label: "San Francisco", value: "SF", disabled: false, title: "San Francisco")
-                            }),
+                            ),
                             Dropdown.Attr.value("MTL"),
                             Dropdown.Attr.multi(true)
                         ),
 
                         Html.label(Attr.children("Radio Items")),
                         RadioItems.radioItems("radioitems",
-                            RadioItems.Attr.options(new RadioItemsOption[] {
+                            RadioItems.Attr.options(
                                 RadioItemsOption.Init(label: "New York City", value: "NYC", disabled: false),
                                 RadioItemsOption.Init(label: "Montréal", value: "MTL", disabled: false),
                                 RadioItemsOption.Init(label: "San Francisco", value: "SF", disabled: false)
-                            }),
+                            ),
                             RadioItems.Attr.value("MLT")
                         ),
 
                         Html.label(Attr.children("Checkboxes")),
                         Checklist.checklist("checkboxes",
-                            Checklist.Attr.options(new ChecklistOption[] {
+                            Checklist.Attr.options(
                                 ChecklistOption.Init(label: "New York City", value: "NYC", disabled: false),
                                 ChecklistOption.Init(label: "Montréal", value: "MTL", disabled: false),
                                 ChecklistOption.Init(label: "San Francisco", value: "SF", disabled: false)
-                            })
+                            )
                         ),
 
                         Html.label(Attr.children("Text Input")),
