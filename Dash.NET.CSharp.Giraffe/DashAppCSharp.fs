@@ -14,7 +14,8 @@ type DashGiraffeConfig =
     {
         HostName : string
         LogLevel : LogLevel
-        ErrorHandler : System.Func<System.Exception,HttpHandler> // TODO : HttpHandler type from C# is not very usable
+        // NOTE (giraffe HttpHandler) : The F# version takes a function that returns an HttpHandler type (a type from the Giraffe library). For new we decided to keep C# simpler and just return strings on error, since giraffe stuff is awkward to use from C#.
+        ErrorHandler : System.Func<System.Exception,string>
         IpAddress: string
         Port : int
     }
@@ -22,7 +23,7 @@ type DashGiraffeConfig =
         {
             Dash.NET.Giraffe.DashGiraffeConfig.HostName = config.HostName
             LogLevel = config.LogLevel
-            ErrorHandler = FuncConvert.FromFunc(config.ErrorHandler)
+            ErrorHandler = fun ex -> ex |> FuncConvert.FromFunc(config.ErrorHandler) |> Core.text // See: NOTE (giraffe HttpHandler)
             IpAddress = config.IpAddress
             Port = config.Port
         }

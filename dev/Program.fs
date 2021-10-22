@@ -97,58 +97,6 @@ let callbackArrayInput =
         ]
     )
 
-(* ---- START :  TEMP TEST ---- *)
-
-// TODO : Can't resolve overloads based on 'just' tuples. Need to wrap arguments in 'Input' single case DU.
-//   // Test 2 inputs : 
-//let callbackArrayInputV2 =
-//    {
-//        Inputs = CallbackDependency.Create<float array, float>(("testInput1", Value), ("testInput2", N_Clicks))
-//        Outputs = CallbackDependency.Create<float, float>(("output-1", Children), ("output-2", Children))
-//        Handler =
-//            CallbackHandler.Create(
-//                fun (inputs, clicks) ->
-//                    let nclicks = 10.
-//                    CallbackResult.Create(
-//                        ((Array.last inputs) * nclicks * 1.),
-//                        ((Array.last inputs) * nclicks * 2.)
-//                    )
-//            )
-                
-//    }
-
-     // WORKS : 
-let callbackArrayInputV2 =
-    {
-        Inputs = CallbackDependency.Create<float array>(("testInput1", Value))
-        Outputs = CallbackDependency.Create<float, float>(("output-1", Children), ("output-2", Children))
-        Handler =
-            CallbackHandler.Create(
-                fun inputs ->
-                    let nclicks = 10.
-                    CallbackResult.Create(
-                        ((Array.last inputs) * nclicks * 1.),
-                        ((Array.last inputs) * nclicks * 2.)
-                    )
-            )
-                
-    }
-
-//let callbackArrayInputV2 =
-//    {
-//        Inputs = CallbackDependency.Create<float array>(("testInput1", Value))
-//        Outputs = CallbackDependency.Create<float, float>(("output-1", Children), ("output-2", Children))
-//        Handler =
-//            fun (inputs) ->
-//                let nclicks = 10.
-//                CallbackResult.Create(
-//                    ((Array.last inputs) * nclicks * 1.),
-//                    ((Array.last inputs) * nclicks * 1.)
-//                )
-//    }
-
-(* ---- END :  TEMP TEST ---- *)
-
 // usage of the new operators:
 let clickInput =
     Callback.singleOut (
@@ -171,8 +119,7 @@ let myDashApp =
         "main.css" // serve your custom css
         "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.1/css/bulma.min.css" // register bulma as an external css dependency
     ]
-    //|> DashApp.addCallback callbackArrayInput // register the callback that will update the map
-    |> DashApp.addCallback (CallbackV2.ToCallback callbackArrayInputV2) // register the callback that will update the map
+    |> DashApp.addCallback callbackArrayInput // register the callback that will update the map
     |> DashApp.addCallback clickInput // register the callback that will update the map
     
 

@@ -3,7 +3,6 @@
 open System
 open Dash.NET.CSharp.ComponentStyle
 open System.Runtime.InteropServices
-open ComponentPropTypes
 open System.Collections.Generic
 
 ///<summary>

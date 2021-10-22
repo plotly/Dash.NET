@@ -1,7 +1,6 @@
 ﻿namespace Dash.NET.CSharp.DCC
 
 open System
-open ComponentPropTypes
 open Dash.NET.CSharp.ComponentStyle
 ///<summary>
 ///Upload components allow your app to accept user-uploaded files via drag'n'drop

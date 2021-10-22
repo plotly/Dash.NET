@@ -1,7 +1,6 @@
 ﻿using System;
 using Dash.NET.CSharp.DCC;
 using Plotly.NET;
-using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
@@ -12,45 +11,29 @@ using System.IO;
 using System.Linq;
 using System.Globalization;
 using Microsoft.FSharp.Core;
-using Dash.NET.DCC;
+using System.Net.Http;
+using CsvHelper;
 
 namespace Dash.Giraffe.CSharp.Example
 {
+    class Iris
+    {
+        public decimal sepal_length { get; set; }
+        public decimal sepal_width { get; set; }
+        public decimal petal_length { get; set; }
+        public decimal petal_width { get; set; }
+        public string species { get; set; }
+        public int species_id { get; set; }
+    }
+
     class Program
     {
-        static string GetCSV(string url)
-        {
-            var req = (HttpWebRequest)WebRequest.Create(url);
-            var resp = (HttpWebResponse)req.GetResponse();
-
-            var sr = new StreamReader(resp.GetResponseStream());
-            var results = sr.ReadToEnd();
-            sr.Close();
-
-            return results;
-        }
-
         static void Main(string[] args)
         {
             // Read and parse CSV
 
-            var csv = GetCSV("https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv");
-            var rows = csv
-                .Split("\r\n")
-                .Skip(1) // Skip header
-                .SkipLast(1) // Skip empty line after split
-                .Select(x => x.Split(","))
-                .Select(x =>
-                    new {
-                        sepal_length = decimal.Parse(x[0], CultureInfo.InvariantCulture.NumberFormat),
-                        sepal_width = decimal.Parse(x[1], CultureInfo.InvariantCulture.NumberFormat),
-                        petal_length = decimal.Parse(x[2], CultureInfo.InvariantCulture.NumberFormat),
-                        petal_width = decimal.Parse(x[3], CultureInfo.InvariantCulture.NumberFormat),
-                        species = x[4],
-                        species_id = int.Parse(x[5], CultureInfo.InvariantCulture.NumberFormat),
-                    }
-                )
-                .ToList();
+            var csv = new StreamReader(new HttpClient().GetStreamAsync("https://raw.githubusercontent.com/plotly/datasets/master/iris-id.csv").Result);
+            var rows = new CsvReader(csv, CultureInfo.InvariantCulture).GetRecords<Iris>().ToList();
 
             // Use plotly charts
 
@@ -143,7 +126,7 @@ namespace Dash.Giraffe.CSharp.Example
                 logLevel: LogLevel.Debug,
                 ipAddress: "*",
                 port: 8000,
-                errorHandler: (Exception err) => Core.text(err.Message)
+                errorHandler: (Exception err) => err.Message
             );
 
             dashApp.run(

@@ -508,56 +508,58 @@ type CallbackMap() =
 
 
 
-(* ************** WIP Experiment: ************** *)
+(* ************** WIP alternative Callbacks API Experiment: ************** *)
 
+(*
+    This is demo code to show off some ideas for a possible alternative, more strongly typed, Callbacks API. Commented out because not in active use.
+*)
 
-type DependencyV2 = string * ComponentProperty
-type CallbackDependency<'ghost> = private CallbackDependency of DependencyV2 list with
-    static member Create<'a> (v1 : DependencyV2): CallbackDependency<'a> = CallbackDependency [v1]
-    static member Create<'a, 'b> (v1 : DependencyV2, v2 : DependencyV2): CallbackDependency<'a * 'b> = CallbackDependency [v1; v2]    
-    static member Create<'a, 'b, 'c> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2): CallbackDependency<'a * 'b * 'c> = CallbackDependency [v1; v2; v3]    
-    static member Create<'a, 'b, 'c, 'd> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2, v4 : DependencyV2): CallbackDependency<'a * 'b * 'c * 'd> = CallbackDependency [v1; v2; v3; v4]
-    static member Create<'a, 'b, 'c, 'd, 'e> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2, v4 : DependencyV2, v5 : DependencyV2): CallbackDependency<'a * 'b * 'c * 'd * 'e> = CallbackDependency [v1; v2; v3; v4; v5]
-    static member Create<'a, 'b, 'c, 'd, 'e, 'f> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2, v4 : DependencyV2, v5 : DependencyV2, v6 : DependencyV2): CallbackDependency<'a * 'b * 'c * 'd * 'e * 'f> = CallbackDependency [v1; v2; v3; v4; v5; v6]
-    // TODO : Add more overloads
+//type DependencyV2 = string * ComponentProperty
+//type CallbackDependency<'ghost> = private CallbackDependency of DependencyV2 list with
+//    static member Create<'a> (v1 : DependencyV2): CallbackDependency<'a> = CallbackDependency [v1]
+//    static member Create<'a, 'b> (v1 : DependencyV2, v2 : DependencyV2): CallbackDependency<'a * 'b> = CallbackDependency [v1; v2]    
+//    static member Create<'a, 'b, 'c> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2): CallbackDependency<'a * 'b * 'c> = CallbackDependency [v1; v2; v3]    
+//    static member Create<'a, 'b, 'c, 'd> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2, v4 : DependencyV2): CallbackDependency<'a * 'b * 'c * 'd> = CallbackDependency [v1; v2; v3; v4]
+//    static member Create<'a, 'b, 'c, 'd, 'e> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2, v4 : DependencyV2, v5 : DependencyV2): CallbackDependency<'a * 'b * 'c * 'd * 'e> = CallbackDependency [v1; v2; v3; v4; v5]
+//    static member Create<'a, 'b, 'c, 'd, 'e, 'f> (v1 : DependencyV2, v2 : DependencyV2, v3 : DependencyV2, v4 : DependencyV2, v5 : DependencyV2, v6 : DependencyV2): CallbackDependency<'a * 'b * 'c * 'd * 'e * 'f> = CallbackDependency [v1; v2; v3; v4; v5; v6]
+//    // TODO : Add more overloads
 
-// https://stackoverflow.com/questions/64423238/how-do-i-get-warning-fs1125-the-instantiation-of-the-generic-type-xxx-is-miss
+//// https://stackoverflow.com/questions/64423238/how-do-i-get-warning-fs1125-the-instantiation-of-the-generic-type-xxx-is-miss
 
-type CallbackResult<'ghost> = private CallbackResult of obj list
+//type CallbackResult<'ghost> = private CallbackResult of obj list
 
-type CallbackResult =
-    static member Create<'a> (v1 : 'a): CallbackResult<'a> = CallbackResult.CallbackResult [v1]
-    static member Create<'a, 'b> (v1 : 'a, v2 : 'b): CallbackResult<'a * 'b> = CallbackResult.CallbackResult [v1; v2]    
-    static member Create<'a, 'b, 'c> (v1 : 'a, v2 : 'b, v3 : 'c): CallbackResult<'a * 'b * 'c> = CallbackResult.CallbackResult [v1; v2; v3]    
-    static member Create<'a, 'b, 'c, 'd> (v1 : 'a, v2 : 'b, v3 : 'c, v4 : 'd): CallbackResult<'a * 'b * 'c * 'd> = CallbackResult.CallbackResult [v1; v2; v3; v4]
-    static member Create<'a, 'b, 'c, 'd, 'e> (v1 : 'a, v2 : 'b, v3 : 'c, v4 : 'd, v5 : 'e): CallbackResult<'a * 'b * 'c * 'd * 'e> = CallbackResult.CallbackResult [v1; v2; v3; v4; v5]
-    static member Create<'a, 'b, 'c, 'd, 'e, 'f> (v1 : 'a, v2 : 'b, v3 : 'c, v4 : 'd, v5 : 'e, v6 : 'f): CallbackResult<'a * 'b * 'c * 'd * 'e * 'f> = CallbackResult.CallbackResult [v1; v2; v3; v4; v5; v6]
+//type CallbackResult =
+//    static member Create<'a> (v1 : 'a): CallbackResult<'a> = CallbackResult.CallbackResult [v1]
+//    static member Create<'a, 'b> (v1 : 'a, v2 : 'b): CallbackResult<'a * 'b> = CallbackResult.CallbackResult [v1; v2]    
+//    static member Create<'a, 'b, 'c> (v1 : 'a, v2 : 'b, v3 : 'c): CallbackResult<'a * 'b * 'c> = CallbackResult.CallbackResult [v1; v2; v3]    
+//    static member Create<'a, 'b, 'c, 'd> (v1 : 'a, v2 : 'b, v3 : 'c, v4 : 'd): CallbackResult<'a * 'b * 'c * 'd> = CallbackResult.CallbackResult [v1; v2; v3; v4]
+//    static member Create<'a, 'b, 'c, 'd, 'e> (v1 : 'a, v2 : 'b, v3 : 'c, v4 : 'd, v5 : 'e): CallbackResult<'a * 'b * 'c * 'd * 'e> = CallbackResult.CallbackResult [v1; v2; v3; v4; v5]
+//    static member Create<'a, 'b, 'c, 'd, 'e, 'f> (v1 : 'a, v2 : 'b, v3 : 'c, v4 : 'd, v5 : 'e, v6 : 'f): CallbackResult<'a * 'b * 'c * 'd * 'e * 'f> = CallbackResult.CallbackResult [v1; v2; v3; v4; v5; v6]
 
-//type Callbackhandler<'a, 'result> = private CallbackHandler of ('a -> CallbackResult<'result>)
-type CallbackHandler<'a, 'result> = private CallbackHandler of (Dependency list -> obj)
+//type CallbackHandler<'a, 'result> = private CallbackHandler of (Dependency list -> obj)
 
-type CallbackHandler =
-    static member AfterHandler outputs output = match output with | CallbackResult results -> results |> List.zip outputs |> List.map (fun (d, v) -> CallbackResultBinding.create d v)
+//type CallbackHandler =
+//    static member AfterHandler outputs output = match output with | CallbackResult results -> results |> List.zip outputs |> List.map (fun (d, v) -> CallbackResultBinding.create d v)
     
-    static member Create<'a, 'b, 'c, 'result> (handler : ('a * 'b * 'c) -> CallbackResult<'result>) : CallbackHandler<'a * 'b * 'c, 'result> = CallbackHandler.CallbackHandler (fun outputs -> handler >> CallbackHandler.AfterHandler outputs |> FuncConvert.FuncFromTupled |> box)
-    static member Create<'a, 'b, 'result> (handler : ('a * 'b) -> CallbackResult<'result>) : CallbackHandler<'a * 'b, 'result> = CallbackHandler.CallbackHandler (fun outputs -> handler >> CallbackHandler.AfterHandler outputs |> FuncConvert.FuncFromTupled |> box)
-    static member Create<'a, 'result> (handler : 'a -> CallbackResult<'result>) : CallbackHandler<'a, 'result> = CallbackHandler.CallbackHandler (fun outputs -> handler >> CallbackHandler.AfterHandler outputs |> box)
+//    static member Create<'a, 'b, 'c, 'result> (handler : ('a * 'b * 'c) -> CallbackResult<'result>) : CallbackHandler<'a * 'b * 'c, 'result> = CallbackHandler.CallbackHandler (fun outputs -> handler >> CallbackHandler.AfterHandler outputs |> FuncConvert.FuncFromTupled |> box)
+//    static member Create<'a, 'b, 'result> (handler : ('a * 'b) -> CallbackResult<'result>) : CallbackHandler<'a * 'b, 'result> = CallbackHandler.CallbackHandler (fun outputs -> handler >> CallbackHandler.AfterHandler outputs |> FuncConvert.FuncFromTupled |> box)
+//    static member Create<'a, 'result> (handler : 'a -> CallbackResult<'result>) : CallbackHandler<'a, 'result> = CallbackHandler.CallbackHandler (fun outputs -> handler >> CallbackHandler.AfterHandler outputs |> box)
 
-type CallbackV2<'a,'b> =
-    {
-        Inputs : CallbackDependency<'a>
-        Outputs : CallbackDependency<'b>
-        //Handler : 'a -> CallbackResult<'b>
-        Handler : CallbackHandler<'a,'b>
-    }
-    static member ToCallback (cb : CallbackV2<'a,'b>) =
-        let inputs = match cb.Inputs with | CallbackDependency v -> v |> List.map Dependency.create
-        let outputs = match cb.Outputs with | CallbackDependency v -> v |> List.map Dependency.create
-        let handler = match cb.Handler with | CallbackHandler v -> v
+//type CallbackV2<'a,'b> =
+//    {
+//        Inputs : CallbackDependency<'a>
+//        Outputs : CallbackDependency<'b>
+//        //Handler : 'a -> CallbackResult<'b>
+//        Handler : CallbackHandler<'a,'b>
+//    }
+//    static member ToCallback (cb : CallbackV2<'a,'b>) =
+//        let inputs = match cb.Inputs with | CallbackDependency v -> v |> List.map Dependency.create
+//        let outputs = match cb.Outputs with | CallbackDependency v -> v |> List.map Dependency.create
+//        let handler = match cb.Handler with | CallbackHandler v -> v
         
-        Callback.multiOut(
-            inputs,
-            outputs,
-            handler outputs
-            //(fun parms -> match (cb.Handler parms) with | CallbackResult results -> results |> List.zip outputs |> List.map (fun (d, v) -> CallbackResultBinding.create d v)) |> FuncConvert.FuncFromTupled
-        )
+//        Callback.multiOut(
+//            inputs,
+//            outputs,
+//            handler outputs
+//            //(fun parms -> match (cb.Handler parms) with | CallbackResult results -> results |> List.zip outputs |> List.map (fun (d, v) -> CallbackResultBinding.create d v)) |> FuncConvert.FuncFromTupled
+//        )

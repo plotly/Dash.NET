@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Dash.NET.CSharp.DCC;
 using static Dash.NET.CSharp.Dsl;
-using static Dash.NET.CSharp.DCC.ComponentPropTypes; // TODO : Annoying that we need to open this as static as well?
 using Dash.NET.CSharp;
 using Plotly.NET;
 using Dash.NET.CSharp.Giraffe;
