@@ -21,8 +21,8 @@ namespace Documentation.Examples
             //Layout_MoreAboutHtmlComponents.RunExample();
             //Layout_Markdown.RunExample();
             //Layout_ReusableComponents.RunExample();
-            //Layout_Viz.RunExample(); //Not working at the moment
-            Layout_CoreComponents.RunExample();
+            Layout_Viz.RunExample(); //Not working at the moment
+            //Layout_CoreComponents.RunExample();
         }
     }
 }
