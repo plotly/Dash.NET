@@ -40,7 +40,7 @@ type InputMode = private WrappedInputMode of Dash.NET.ComponentPropTypes.InputMo
 
 type LoadingState = private WrappedLoadingState of Dash.NET.ComponentPropTypes.LoadingState with
     static member internal Convert (v : LoadingState) : Dash.NET.ComponentPropTypes.LoadingState = match v with WrappedLoadingState v -> v
-    static member public Init (isLoading : bool, [<Optional>] propName : string, [<Optional>] componentName : string) =
+    static member Init (isLoading : bool, [<Optional>] propName : string, [<Optional>] componentName : string) =
         guardAgainstNull "isLoading" isLoading
         Dash.NET.ComponentPropTypes.LoadingState.init (isLoading, ?propName = Option.ofObj propName, ?componentName = Option.ofObj componentName) |> WrappedLoadingState
 
@@ -55,26 +55,26 @@ type PersistenceTypeOptions = private WrappedPersistenceTypeOptions of Dash.NET.
         
 type DropdownOption = private WrappedDropdownOption of Dash.NET.ComponentPropTypes.DropdownOption with
     static member internal Convert (v : DropdownOption) = match v with WrappedDropdownOption v -> v
-    static member public Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>, [<Optional>] title : string) =
+    static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>, [<Optional>] title : string) =
         guardAgainstNull "label" label
         guardAgainstNull "value" value
         Dash.NET.ComponentPropTypes.DropdownOption.init (label, value, ?disabled = Option.ofNullable disabled, ?title = Option.ofObj title) |> WrappedDropdownOption
 
 type RadioItemsOption = private WrappedRadioItemsOption of Dash.NET.ComponentPropTypes.RadioItemsOption with
     static member internal Convert (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = match v with WrappedRadioItemsOption v -> v
-    static member public Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
+    static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
         guardAgainstNull "label" label
         guardAgainstNull "value" value
         Dash.NET.ComponentPropTypes.RadioItemsOption.init (label, value, ?disabled = Option.ofNullable disabled) |> WrappedRadioItemsOption
         
 type TabColors = private WrappedTabColors of Dash.NET.ComponentPropTypes.TabColors with
     static member internal Convert (v : TabColors) : Dash.NET.ComponentPropTypes.TabColors = match v with WrappedTabColors v -> v
-    static member internal Init ([<Optional>] border : string, [<Optional>] primary : string, [<Optional>] background : string) : Dash.NET.ComponentPropTypes.TabColors =
-        Dash.NET.ComponentPropTypes.TabColors.init (?border = Option.ofObj border, ?primary = Option.ofObj primary, ?background = Option.ofObj background)
+    static member Init ([<Optional>] border : string, [<Optional>] primary : string, [<Optional>] background : string) =
+        Dash.NET.ComponentPropTypes.TabColors.init (?border = Option.ofObj border, ?primary = Option.ofObj primary, ?background = Option.ofObj background) |> WrappedTabColors
 
 type ChecklistOption = private WrappedChecklistOption of Dash.NET.ComponentPropTypes.ChecklistOption with
     static member internal Convert (v : ChecklistOption) : Dash.NET.ComponentPropTypes.ChecklistOption = match v with WrappedChecklistOption v -> v
-    static member internal Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
+    static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
         guardAgainstNull "label" label
         guardAgainstNull "value" value
-        Dash.NET.ComponentPropTypes.ChecklistOption.init (label, value, ?disabled = Option.ofNullable disabled)
+        Dash.NET.ComponentPropTypes.ChecklistOption.init (label, value, ?disabled = Option.ofNullable disabled) |> WrappedChecklistOption

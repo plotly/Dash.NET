@@ -57,7 +57,9 @@ namespace Documentation.Examples
                         Html.label(Attr.children("Checkboxes")),
                         Checklist.checklist("checkboxes",
                             Checklist.Attr.options(new ChecklistOption[] {
-                                //ChecklistOption.Init() //Is the Checklist not fully implemented?
+                                ChecklistOption.Init(label: "New York City", value: "NYC", disabled: false),
+                                ChecklistOption.Init(label: "Montréal", value: "MTL", disabled: false),
+                                ChecklistOption.Init(label: "San Francisco", value: "SF", disabled: false)
                             })
                         ),
 
