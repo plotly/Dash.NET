@@ -17,11 +17,11 @@ namespace Documentation.Examples
     {
         static void Main(string[] args)
         {
-            //Layout_FirstExample.RunExample();
+            Layout_FirstExample.RunExample();
             //Layout_MoreAboutHtmlComponents.RunExample();
             //Layout_Markdown.RunExample();
             //Layout_ReusableComponents.RunExample();
-            Layout_Viz.RunExample(); //Not working at the moment
+            //Layout_Viz.RunExample(); //Not fully working at the moment
             //Layout_CoreComponents.RunExample();
         }
     }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dash.NET.CSharp.Giraffe;
 using Dash.NET.CSharp.DCC;
 using static Dash.NET.CSharp.Dsl;
@@ -21,14 +18,12 @@ namespace Documentation.Examples
             var figSF = Chart2D.Chart.Column<string, int, int, int, int>(dataSF, "SF", true);
             var figMontreal = Chart2D.Chart.Column<string, int, int, int, int>(dataMontreal, "Montreal", true);
 
-            var figList = new List<GenericChart.GenericChart>() { figSF, figMontreal };
-
-            var fig = Chart.Combine(figList);
+            var fig = Chart.Combine(new List<GenericChart.GenericChart>() { figSF, figMontreal });
 
             var layout =
                 Html.div(
                     Attr.children(
-                        Html.h1(Attr.children("Hello Dash!")),
+                        Html.h1(Attr.children("Hello Dash")),
                         Html.div(Attr.children("Dash: A web application framework for your data")),
                         Graph.graph(
                             "my-graph",
@@ -43,7 +38,7 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "*",
                 port: 8000,
                 errorHandler: (Exception err) => err.Message

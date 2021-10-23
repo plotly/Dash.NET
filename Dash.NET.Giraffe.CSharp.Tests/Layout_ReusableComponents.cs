@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
 using System.Linq;
 using Dash.NET.CSharp.Giraffe;
-using System.IO;
 using System.Net.Http;
-using CsvHelper;
-using System.Globalization;
 
 namespace Documentation.Examples
 {
@@ -47,7 +43,7 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "*",
                 port: 8000,
                 errorHandler: (Exception err) => err.Message

@@ -2,10 +2,6 @@
 using Dash.NET.CSharp.Giraffe;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Documentation.Examples
 {
@@ -31,7 +27,7 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "*",
                 port: 8000,
                 errorHandler: (Exception err) => err.Message

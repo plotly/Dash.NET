@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dash.NET.CSharp.Giraffe;
 using Dash.NET.CSharp.DCC;
 using static Dash.NET.CSharp.Dsl;
@@ -26,9 +23,7 @@ namespace Documentation.Examples
             var figSF = Plotly.NET.Chart2D.Chart.Column<String, int, int, int, int>(dataSF, "SF", true);
             var figMontreal = Plotly.NET.Chart2D.Chart.Column<String, int, int, int, int>(dataMontreal, "Montreal", true);
 
-            var figList = new List<GenericChart.GenericChart>() { figSF, figMontreal };
-
-            var fig = Chart.Combine(figList).WithLayout(
+            var fig = Chart.Combine(new List<GenericChart.GenericChart>() { figSF, figMontreal }).WithLayout(
                 Layout.init<bool>(
                     PlotBGColor: Color.fromHex(colors["background"]),
                     PaperBGColor: Color.fromHex(colors["background"]),
@@ -66,9 +61,9 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "*",
-                port: 49246,
+                port: 8000,
                 errorHandler: (Exception err) => err.Message
             );
 
