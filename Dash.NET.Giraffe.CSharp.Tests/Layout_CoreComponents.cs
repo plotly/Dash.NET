@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Net;
-using System.IO;
 using Dash.NET.CSharp.DCC;
-using Plotly.NET;
-using Giraffe;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
 using Dash.NET.CSharp.Giraffe;
-using System.Linq;
-using System.Globalization;
-using System.Net.Http;
-using CsvHelper;
-using CsvHelper.Configuration.Attributes;
+
 
 namespace Documentation.Examples
 {
