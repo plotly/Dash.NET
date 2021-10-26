@@ -17,11 +17,11 @@ namespace Documentation.Examples
                     Attr.children(
                         Html.label(Attr.children("Dropdown")),
                         Dropdown.dropdown("dropdown",
-                            Dropdown.Attr.options(new DropdownOption[] {
+                            Dropdown.Attr.options(
                                 DropdownOption.Init(label: "New York City", value: "NYC", disabled: false, title: "New York City"),
                                 DropdownOption.Init(label: "Montréal", value: "MTL", disabled: false, title: "Montréal"),
                                 DropdownOption.Init(label: "San Francisco", value: "SF", disabled: false, title: "San Francisco")
-                            }),
+                            ),
                             Dropdown.Attr.value("MTL")
                         ),
 
@@ -81,7 +81,7 @@ namespace Documentation.Examples
                             }
                         )
                     ),
-                    Attr.style(new Style[] {Style.StyleProperty("columnCount", "2") })
+                    Attr.style(Style.StyleProperty("columnCount", "2"))
                 );
 
             var dashApp = DashApp
