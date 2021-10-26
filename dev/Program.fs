@@ -40,7 +40,7 @@ let dslLayout =
                 Dropdown.Attr.multi true
             ]
             Html.br []
-            Html.label [ Attr.children (Html.text "Selected values :") ]
+            Html.label [ Attr.children (Html.text "Selected values (multiplied by number of clicks) :") ]
             Html.br []
             Html.div [ Attr.id "output-1" ]
             Html.div [ Attr.id "output-2" ]
@@ -81,10 +81,10 @@ open Dash.NET.Giraffe
 
 let callbackArrayInput =
     Callback.multiOut(
-        ["testInput1" @.Value],
+        ["testInput1" @. Value],
         [
-            "output-1" @.Children
-            "output-2" @.Children
+            "output-1" @. Children
+            "output-2" @. Children
         ],
         (fun (inputs:float []) (nclicks:float) ->
             [

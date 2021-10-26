@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Interop.fs" />
+    <Compile Include="Map.fs" />
+    <Compile Include="ComponentPropTypes.fs" />
+    <Compile Include="Html.fs" />
+    <Compile Include="ComponentStyle.fs" />
+    <Compile Include="Callback.fs" />
+    <Compile Include="CoreComponents\Checklist.fs" />
+    <Compile Include="CoreComponents\Markdown.fs" />
+    <Compile Include="CoreComponents\Dropdown.fs" />
+    <Compile Include="CoreComponents\Input.fs" />
+    <Compile Include="CoreComponents\Interval.fs" />
+    <Compile Include="CoreComponents\Location.fs" />
+    <Compile Include="CoreComponents\Graph.fs" />
+    <Compile Include="CoreComponents\RadioItems.fs" />
+    <Compile Include="CoreComponents\RangeSlider.fs" />
+    <Compile Include="CoreComponents\Store.fs" />
+    <Compile Include="CoreComponents\Tab.fs" />
+    <Compile Include="CoreComponents\Tabs.fs" />
+    <Compile Include="CoreComponents\Upload.fs" />
+    <Compile Include="CoreComponents\Slider.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Dash.NET\Dash.NET.fsproj" />
+  </ItemGroup>
+
+</Project>

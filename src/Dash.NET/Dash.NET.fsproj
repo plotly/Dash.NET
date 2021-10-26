@@ -44,7 +44,6 @@
     <Compile Include="DashComponents\CoreComponents\Markdown.fs" />
     <Compile Include="DashComponents\CoreComponents\DatePickerRange.fs" />
     <Compile Include="DashComponents\CoreComponents\DatePickerSingle.fs" />
-    <Compile Include="DashComponents\CoreComponents\Download.fs" />
     <Compile Include="DashComponents\CoreComponents\Dropdown.fs" />
     <Compile Include="DashComponents\CoreComponents\Input.fs" />
     <Compile Include="DashComponents\CoreComponents\Interval.fs" />

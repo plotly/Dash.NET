@@ -3,6 +3,7 @@ namespace Dash.NET
 open Dash.NET
 open DynamicObj
 open Plotly.NET
+open System
 
 /// The html components have been adopted from
 /// https://github.com/alfonsogarciacaro/Feliz.Engine
@@ -20,7 +21,7 @@ module Css =
 module Html =
     open Css
 
-    type internal HtmlText = Text of string
+    type HtmlText = Text of string // NOTE : Has been made public so it can be used by the C# facing API
 
     type private HtmlString() =
         inherit DashComponent()
@@ -55,7 +56,7 @@ module Html =
         | Prop of (string * obj)
         | Children' of List<DashComponent>
 
-        static member internal toDashComponent(tag, props) =
+        static member toDashComponent(tag : string, props) = // NOTE : Has been made public so it can be used by the C# facing API
 
             //seperate and extract children and other attributes
             let (props_: List<string * obj>, children_: List<DashComponent>) = 
@@ -85,7 +86,7 @@ module Html =
             componentProps |> DynObj.setValue el "props"
             el :> DashComponent
 
-        static member internal toDashComponent(htmlText: HtmlText) =
+        static member toDashComponent(htmlText: HtmlText) = // NOTE : Has been made public so it can be used by the C# facing API
             match htmlText with
             | Text value -> HtmlString.init (value)
 
@@ -286,3 +287,4 @@ module Html =
         member _.custom(key: string, value: string) = (key, box value) |> Prop
 
     let Attr = DashAttrEngine()
+
