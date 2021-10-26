@@ -1,11 +1,12 @@
 ﻿module Dash.NET.ComponentGeneration.ASTGeneration
 
+open System
+open System.IO
 open FsAst.AstCreate
 open FsAst.AstRcd
 open FSharp.Compiler.SyntaxTree
 open Fantomas
-open System
-open System.IO
+open Humanizer
 open Serilog
 open Prelude
 open ASTHelpers
@@ -13,17 +14,88 @@ open ComponentParameters
 open ReactMetadata
 open DocumentationGeneration
 
+open System.Collections.Generic
+
 let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
 
     log.Information("Creating component bindings")
 
     let componentPropertyTypeDeclarations =
         let rec generatePropTypes (name: string) (ptype: SafeReactPropType) =
-
             let propTypeName = name |> String.toPascalCase
 
-            match ptype with
-            | SafeReactPropType.Enum (_, Some cases) ->
+            let toFieldsList : IDictionary<string, SafeReactPropType> -> _ =
+                Seq.map(|KeyValue|)
+                >> Seq.toList
+
+            let mkRT mkName =
+                List.choose (fun (pname: string, ptype: SafeReactPropType) -> 
+                    let typename = mkName ptype pname 
+                    let propTypes = generatePropTypes typename ptype
+                    propTypes
+                    )
+                >> List.concat
+
+            let mkRecursiveTypes mkTypeName =
+                List.choose (fun (pname: string, ptype: SafeReactPropType) -> 
+                    let typename = mkTypeName propTypeName pname
+                    let propTypes = generatePropTypes typename ptype
+                    propTypes
+                    )
+                >> List.concat
+
+            let mkFieldTypeNames (pname, ptype) =
+                ptype
+                |> SafeReactPropType.tryGetFSharpTypeName
+                |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
+
+            // { AField: bool
+            //   BField: string
+            //   CField: string }
+            let mkFieldDefinitions =
+                List.map (fun (pname, ptype) ->
+                    (pname, ptype)
+                    |> mkFieldTypeNames
+                    |> simpleAppField (pname |> String.toPascalCase)
+                )
+
+            let mkString =
+                List.map (fun (pname, ptype) -> 
+                    let jsonConversion =
+                        let converted =
+                            if SafeReactPropType.needsConvert ptype then 
+                                let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
+                                application
+                                  [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; pname |> String.toPascalCase])
+                                    SynExpr.CreateIdentString "|>" 
+                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
+                                |> SynExpr.CreateParen
+                            else
+                                SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
+
+                        converted
+                            
+                    ( Ident.Create pname, jsonConversion ))
+                >> anonRecord
+                >> List.singleton
+                >> List.append [ SynExpr.CreateIdentString "box" ]
+                >> application
+
+            // member this.Convert() =
+            //     box
+            //         {| aField = this.AField.Convert()
+            //            bField = this.BField.Convert()
+            //            cField = this.CField |}
+            //
+            /// Define the json conversion
+            let mkStringDefinition fields =
+                functionPatternNoArgTypes "convert" ["this"]
+                |> (fields |> mkString |> memberBinding)
+                |> SynMemberDefn.CreateStaticMember
+
+            ////////////////////////////////////////////////////////////
+
+            let mkUnvaluedDu (cases: SafeReactPropType list) =
                 // | ACase
                 // | BCase
                 // | CCase
@@ -89,13 +161,17 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     log.Error("Enum property {PropertyName} contained no cases, a type could not be created", name)
                     None
 
-            | SafeReactPropType.Union (_, Some utypes) 
-            | SafeReactPropType.FlowUnion (_, Some utypes) -> 
+            let mkValuedDu (utypes: SafeReactPropType list)=
                 let recursiveTypes = 
                     utypes
                     |> List.indexed
                     |> List.choose (fun (i, case) -> 
-                        generatePropTypes (sprintf "%sCase%dType" propTypeName i) case)
+                        let pt = ptype
+                        let ss = sprintf "%A" pt
+                        let pn = sprintf "%sCase%dType" propTypeName i
+                        //generatePropTypes (sprintf "%sCase%dType" propTypeName i) case)
+                        generatePropTypes pn case
+                    )
                     |> List.concat
 
                 let cases =
@@ -107,11 +183,21 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             |> SafeReactPropType.tryGetFSharpTypeName
                             |> Option.defaultValue ([sprintf "%sCase%dType" propTypeName i])
 
-                        let caseName = 
-                            caseTypeName 
-                            |> List.rev
-                            |> List.map String.toPascalCase
-                            |> List.reduce (sprintf "%s%s")
+                        // Matches metadata name:
+                        let caseName =
+                            case
+                            |> sprintf "%A"
+                            |> fun s -> s.Split(' ')
+                            |> Array.head
+                            |> fun s -> s.Replace('\n',' ').Trim()
+
+                        // Matches type name:
+
+                        //let caseName = 
+                        //    caseTypeName 
+                        //    |> List.rev
+                        //    |> List.map String.toPascalCase
+                        //    |> List.reduce (sprintf "%s%s")
 
                         (i, case, caseTypeName, caseName))
 
@@ -174,8 +260,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     log.Error("Union property {PropertyName} contained no cases, a type could not be created", name)
                     None
 
-            | SafeReactPropType.ArrayOf (_, Some utype) 
-            | SafeReactPropType.FlowArray (_, Some utype) -> 
+            let mkSingleCaseDu (utype: SafeReactPropType) =
                 let recursiveTypes = 
                     generatePropTypes (sprintf "%sType" propTypeName) utype
                     |> Option.defaultValue []
@@ -244,7 +329,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 (unionDefinition :: recursiveTypes)
                 |> Some
 
-            | SafeReactPropType.ObjectOf (_, Some utype) -> //TODO
+            let mkAlias (utype: SafeReactPropType) =
                 let recursiveTypes = 
                     generatePropTypes (sprintf "%sValue" propTypeName) utype
                     |> Option.defaultValue []
@@ -317,9 +402,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 (aliasDefinition :: recursiveTypes)
                 |> Some
 
-            | SafeReactPropType.Shape (_, Some values) 
-            | SafeReactPropType.Exact (_, Some values) 
-            | SafeReactPropType.FlowObject (_, Some values) -> 
+            let mkRecord (values: IDictionary<string, SafeReactPropType>) =
                 let fields =
                     (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
                     ||> List.zip 
@@ -328,7 +411,9 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     let recursiveTypes =
                         fields
                         |> List.choose (fun (pname, ptype) -> 
-                            generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype)
+                            let propTypes = generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype
+                            propTypes
+                            )
                         |> List.concat
                 
                     // { AField: bool
@@ -339,8 +424,9 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     let fieldDefinitions =
                         fields
                         |> List.map (fun (pname, ptype) -> 
+                            let maybeFieldTypeName = SafeReactPropType.tryGetFSharpTypeName ptype
                             let fieldTypeName =
-                                SafeReactPropType.tryGetFSharpTypeName ptype
+                                maybeFieldTypeName
                                 |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
                             simpleAppField (pname |> String.toPascalCase) fieldTypeName)
 
@@ -397,19 +483,183 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
                     None
 
-            // Other types dont need definitions
-            | _ -> None
+            let mkRecType fields =
+                // { AField: bool
+                //   BField: string
+                //   CField: string }
+                //
+                /// Define the fields for the record
+                let fieldDefinitions = mkFieldDefinitions fields
 
-        (parameters.PropertyTypeNames, parameters.PropertyTypes)
-        ||> List.zip 
-        |> List.choose (fun (ptname, ptype) -> 
-            ptype.propType
-            |> Option.bind (generatePropTypes ptname))
+                // member this.Convert() =
+                //     box
+                //         {| aField = this.AField.Convert()
+                //            bField = this.BField.Convert()
+                //            cField = this.CField |}
+                //
+                /// Define the json conversion
+                let toStringDefinition = mkStringDefinition fields
+
+                // type BProp =
+                // 
+                /// Create the record definition
+                propTypeName
+                |> componentInfo
+                |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
+                |> simpleTypeDeclaration 
+                        (fieldDefinitions |> recordDefinition)
+                        [ toStringDefinition ]
+
+            let mkRecordNew (values: IDictionary<string, SafeReactPropType>) =
+                values
+                |> toFieldsList
+                |> function
+                | [] ->
+                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+                    None
+                | fields ->
+                    let record = fields |> mkRecType
+                    let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
+                    let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
+                    Some (record::recursiveTypes)
+
+            ///////////////////////////////////////////////////////////
+            let mkMethodArgs =
+                List.map(fun (pname, ptype) ->
+                    let camelCaseName = pname |> String.toPascalCase |> String.decapitalize
+                    let fieldTypeName = (pname, ptype) |> mkFieldTypeNames |> appType
+                    let vprops = ptype |> SafeReactPropType.getProps
+                    let isRequired = vprops.required |> Option.defaultValue false
+                    (camelCaseName, fieldTypeName, isRequired)
+                )
+
+            let setDynObjValue (tName, prop, maybePType, ptname) =
+                let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                let convertInfo, setInfo =
+                    maybePType
+                    |> Option.map (fun ptype ->
+                        match SafeReactPropType.needsConvert ptype, (SafeReactPropType.getProps ptype).required with
+                        | true, Some true ->
+                            [
+                                SynExpr.CreateIdentString "|>" 
+                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"])
+                            ]
+                            , ""
+                        | true, _ ->
+                            [
+                                SynExpr.CreateIdentString "|>" 
+                                SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
+                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"])
+                            ]
+                            , "Opt"
+                        | false, Some true ->
+                            []
+                            , ""
+                        | false, _ ->
+                            []
+                            , "Opt"
+                    )
+                    |> Option.defaultValue ([], "Opt")
+
+                [
+                    yield SynExpr.CreateIdentString camelCaseName
+                    yield! convertInfo
+                    yield SynExpr.CreateIdentString "|>" 
+                    yield SynExpr.CreateLongIdent (LongIdentWithDots.CreateString (sprintf "DynObj.setValue%s" setInfo))
+                    yield SynExpr.CreateIdentString tName
+                    yield SynExpr.CreateConstString prop
+                ]
+                |> application
+                |> Expression
+
+            /// Define the static method
+            let defineStaticMethod methodName fields =
+                // static member init
+                // (
+                //     ?aProp: string,
+                //     ?bProp: BProp,
+                //     ?cProp: bool
+                // ) =
+                fields
+                |> mkMethodArgs
+                |> memberFunctionPattern methodName
+                |> binding (
+                    [
+                        // let t = Name()
+                        yield patternNamed "t" |> binding (application [SynExpr.CreateIdentString name; SynExpr.CreateUnit]) |> Let
+                        
+                        // DynObj.setValueOpt t "aProp" (aProp |> Option.map box)
+                        // DynObj.setValueOpt t "bProp" (bProp |> Option.map BProp.convert)
+                        // DynObj.setValueOpt t "cProp" (cProp |> Option.map box)
+                        yield! 
+                            fields
+                            |> List.map (fun (pname, ptype) -> setDynObjValue ("t", pname, Some ptype, (pname, ptype) |> mkFieldTypeNames |> List.head))
+                        
+                        // t
+                        yield SynExpr.CreateIdentString "t" |> Expression
+                    ]
+                    |> expressionSequence
+                )
+                |> SynMemberDefn.CreateStaticMember
+
+            let defineDynamicObjType fields =
+                // Create the type definition
+                name
+                |> componentInfo
+                |> typeDeclaration 
+                  [ SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
+                    typeInherit (application [SynExpr.CreateIdentString "DynamicObj"; SynExpr.CreateUnit]) 
+                    fields |> defineStaticMethod "init"
+                  ]
+
+            let mkDynamicObj (values: IDictionary<string, SafeReactPropType>) =
+                if values.Count = 0 then
+                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+                    None
+                else
+                    let fields = values |> toFieldsList
+                    let dynObjDef = fields |> defineDynamicObjType
+                    let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
+                    let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
+
+                    (dynObjDef::recursiveTypes)
+                    |> Some
+
+            let mkDynamicObjs (values: IDictionary<string, SafeReactPropType>) =
+                if values.Count = 0 then
+                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+                    None
+                else
+                    values
+                    |> toFieldsList
+                    |> mkRecursiveTypes (fun _ propName -> propName)
+                    |> Some
+
+            match ptype with
+            | SafeReactPropType.Enum (_, Some cases) -> mkUnvaluedDu cases
+            | SafeReactPropType.Union (_, Some utypes) 
+            | SafeReactPropType.FlowUnion (_, Some utypes) -> mkValuedDu utypes
+            | SafeReactPropType.ArrayOf (_, Some utype) 
+            //| SafeReactPropType.FlowArray (_, Some utype) -> mkSingleCaseDu utype
+            | SafeReactPropType.FlowArray (_, Some utype) -> [ name, utype ] |> dict |> mkDynamicObjs
+            | SafeReactPropType.ObjectOf (_, Some utype) -> mkAlias utype
+            | SafeReactPropType.Shape (_, Some values) 
+            | SafeReactPropType.Exact (_, Some values) 
+            //| SafeReactPropType.FlowObject (_, Some values) -> mkRecord values
+            //| SafeReactPropType.FlowObject (_, Some values) -> mkRecordNew values
+            | SafeReactPropType.FlowObject (_, Some values) -> mkDynamicObj values
+            | _ -> None // Other types dont need definitions
+
+        //(parameters.PropertyTypeNames, parameters.PropertyTypes)
+        //||> List.zip 
+        parameters.Properties
+        |> Map.toList
+        |> List.choose (snd >> fun paramProp -> paramProp.Info.propType |> Option.bind (generatePropTypes paramProp.TypeName))
         |> List.concat
         |> List.rev
 
     /// Define the component property descriminated union
-    let componentPropertyDUDeclaration =
+    let mkComponentPropertyDUDeclaration () =
 
         // | AProp of string
         // | BProp of int
@@ -417,14 +667,30 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         //
         /// Define the cases for the descriminated union
         let componentPropertyDUCases =
-            List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-            |> List.choose (fun (psafe, pname, prop, ptname) -> 
-                prop.propType
+            //List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+            //|> List.choose (fun (psafe, pname, prop, ptname) -> 
+            //    prop.propType
+            //    |> Option.map (fun ptype ->
+            //        let propTypeName =
+            //            SafeReactPropType.tryGetFSharpTypeName ptype
+            //            |> Option.map (function
+            //            | [ "list"; "obj" ] -> [ "list"; ptname ]
+            //            | names -> names)
+            //            |> Option.defaultValue ([ptname])
+            //        simpleUnionCase psafe [anonAppField propTypeName]))
+            //|> unionDefinition
+            parameters.Properties
+            |> Map.toList
+            |> List.choose (snd >> fun paramProp -> 
+                paramProp.Info.propType
                 |> Option.map (fun ptype ->
                     let propTypeName =
                         SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue ([ptname])
-                    simpleUnionCase psafe [anonAppField propTypeName]))
+                        |> Option.map (function
+                        | [ "list"; "obj" ] -> [ "list"; paramProp.TypeName ]
+                        | names -> names)
+                        |> Option.defaultValue ([paramProp.TypeName])
+                    simpleUnionCase paramProp.DuSafeName [anonAppField propTypeName]))
             |> unionDefinition
 
         // static member toDynamicMemberDef(prop: TestComponentProps) =
@@ -439,20 +705,38 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             |> binding  
               ( SynExpr.CreateIdentString "prop"
                     |> matchStatement 
-                      ( List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                        |> List.map (fun (psafe, pname, prop, ptname) -> 
+                      //( List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                      //  |> List.map (fun (psafe, pname, prop, ptname) -> 
+                      //      let pConvert =
+                      //          if prop.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
+                      //              application
+                      //                [ SynExpr.CreateIdentString "p"
+                      //                  SynExpr.CreateIdentString "|>" 
+                      //                  SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"]) ]
+                      //          else
+                      //              application [ SynExpr.CreateIdentString "box"; SynExpr.CreateIdentString "p" ]
+                      //      simpleMatchClause psafe ["p"] None 
+                      //        ( SynExpr.CreateTuple 
+                      //              [ SynExpr.CreateConstString pname
+                      //                pConvert ] )) )
+                      (
+                        parameters.Properties
+                        |> Map.toList
+                        |> List.map (snd >> fun paramProp ->
                             let pConvert =
-                                if prop.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
+                                if paramProp.Info.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
                                     application
                                       [ SynExpr.CreateIdentString "p"
                                         SynExpr.CreateIdentString "|>" 
-                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"]) ]
+                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [paramProp.TypeName; "convert"]) ]
                                 else
                                     application [ SynExpr.CreateIdentString "box"; SynExpr.CreateIdentString "p" ]
-                            simpleMatchClause psafe ["p"] None 
+                            simpleMatchClause paramProp.DuSafeName ["p"] None 
                               ( SynExpr.CreateTuple 
-                                    [ SynExpr.CreateConstString pname
-                                      pConvert ] )) ) )
+                                    [ SynExpr.CreateConstString paramProp.Name
+                                      pConvert ] ))
+                      )
+              )
             
             |> SynMemberDefn.CreateStaticMember
 
@@ -464,10 +748,10 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation false |> toXMLDoc)
         |> simpleTypeDeclaration 
             componentPropertyDUCases
-            [ componentPropertyToDynamicMemberDefDeclaration ] 
+            [ componentPropertyToDynamicMemberDefDeclaration ]
 
     /// Define the component property descriminated union
-    let componentAttributeDUDeclaration =
+    let mkComponentAttributeDUDeclaration () =
         // | Prop of SampleDashComponentProps
         // | Children of DashComponent list
         //
@@ -483,8 +767,14 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         //
         /// Create Feliz style attribute constructors for properties
         let componentPropertyConstructorDeclarations =
-            List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-            |> List.choose (fun (psafe, pname, prop, ptname) ->
+            //List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+            parameters.Properties
+            |> Map.toList
+            |> List.choose (snd >> fun paramProp ->
+                let psafe = paramProp.DuSafeName
+                let pname = paramProp.Name
+                let prop = paramProp.Info
+                let ptname = paramProp.TypeName
                 prop.propType
                 |> Option.map (fun ptype ->
                     let propTypeName =
@@ -563,7 +853,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
               yield! componentChildrenConstructorDeclarations ] 
 
     /// Define the component class
-    let componentTypeDeclaration =
+    let mkComponentTypeDeclaration () =
         
         /// Define the static method "applyMembers"
         let componentTypeApplyMembersDeclaration =
@@ -580,13 +870,16 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 [ yield ("id", SynType.Create "string", true)
                   yield ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true) 
                   yield! 
-                      List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                      |> List.map (fun (prop, ptype, ptname) -> 
-                          let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                      //List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                      //|> List.map (fun (prop, ptype, ptname) -> 
+                      parameters.Properties
+                      |> Map.toList
+                      |> List.map (snd >> fun paramProp ->
+                          let camelCaseName = paramProp.Name.Camelize()
                           let propTypeName = 
-                              ptype.propType
+                              paramProp.Info.propType
                               |> Option.bind SafeReactPropType.tryGetFSharpTypeName
-                              |> Option.defaultValue ([ptname])
+                              |> Option.defaultValue ([paramProp.TypeName])
                           camelCaseName, appType propTypeName, false) ]
             |> binding  
               ( expressionSequence
@@ -601,8 +894,14 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                       // DynObj.setValueOpt props "bProp" (bProp |> Option.map BProp.convert)
                       // DynObj.setValueOpt props "cProp" (cProp |> Option.map box)
                       yield! 
-                          List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                          |> List.map (fun (prop, ptype, ptname) -> 
+                          //List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                          //|> List.map (fun (prop, ptype, ptname) -> 
+                          parameters.Properties
+                          |> Map.toList
+                          |> List.map (snd >> fun paramProp ->
+                              let prop = paramProp.Name
+                              let ptype = paramProp.Info
+                              let ptname = paramProp.TypeName
                               let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
                               let pConvert =
                                   if ptype.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
@@ -646,13 +945,16 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 [ ("id", SynType.Create "string", true)
                   ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true)
                   yield! 
-                      List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                      |> List.map (fun (prop, ptype, ptname) -> 
-                          let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                      //List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+                      //|> List.map (fun (prop, ptype, ptname) -> 
+                      parameters.Properties
+                      |> Map.toList
+                      |> List.map (snd >> fun paramProp ->
+                          let camelCaseName = paramProp.Name.Camelize()
                           let propTypeName = 
-                              ptype.propType
+                              paramProp.Info.propType
                               |> Option.bind SafeReactPropType.tryGetFSharpTypeName
-                              |> Option.defaultValue ([ptname])
+                              |> Option.defaultValue ([paramProp.TypeName])
                           camelCaseName, appType propTypeName, false) ]
             |> binding
               ( application
@@ -660,9 +962,11 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                       SynExpr.CreateParenedTuple 
                         [ yield SynExpr.CreateIdentString "id"
                           yield SynExpr.CreateIdentString "children"
-                          yield! parameters.PropertyNames 
-                                 |> List.map (fun prop -> 
-                                    let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                          //yield! parameters.PropertyNames 
+                          yield! parameters.Properties
+                                 |> Map.toList
+                                 |> List.map (snd >> fun paramProp -> 
+                                    let camelCaseName = paramProp.Name.Camelize()
                                     application [SynExpr.CreateLongIdent (true, LongIdentWithDots.CreateString camelCaseName, None); SynExpr.CreateIdentString "="; SynExpr.CreateIdentString camelCaseName]) ]
                       application [SynExpr.CreateIdentString parameters.ComponentName; SynExpr.CreateUnit] |> SynExpr.CreateParen ] )
 
@@ -709,7 +1013,7 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
             componentTypeDefinitionDeclaration ]
 
     /// Define the component DSL function (used when creating the DOM tree)
-    let componentLetDeclaration =
+    let mkComponentLetDeclaration () =
 
         /// Define the inner expression
         let componentDeclaration =
@@ -791,30 +1095,33 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         parameters.ComponentName
         |> componentInfo
         |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
-        |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
-        |> nestedModule
-            [ yield! componentPropertyTypeDeclarations
-              yield componentPropertyDUDeclaration
-              yield componentAttributeDUDeclaration
-              yield componentTypeDeclaration
-              yield componentLetDeclaration ]
+        |> if not parameters.IsHelper then withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
+           else id
+        |> nestedModule [
+            yield! componentPropertyTypeDeclarations
+            if not parameters.IsHelper then
+                if not <| String.IsNullOrWhiteSpace parameters.ComponentPropsName then
+                    yield mkComponentPropertyDUDeclaration ()
+                    yield mkComponentAttributeDUDeclaration ()
+                yield mkComponentTypeDeclaration ()
+                yield mkComponentLetDeclaration ()
+        ]
 
     //  namespace TestNamespace
-    //  open Dash.NET
     //  open System
-    //  open Plotly.NET
     //  open DynamicObj
+    //  open Dash.NET
+    //  open ComponentBase
     //
     /// Define the component namespace
     let namespaceDeclaration =
         parameters.LibraryNamespace
         |> namespaceInfo
         |> withNamespaceDeclarations
-            [ SynModuleDecl.CreateOpen "Dash.NET" 
-              SynModuleDecl.CreateOpen "System"
-              SynModuleDecl.CreateOpen "Plotly.NET"
+            [ SynModuleDecl.CreateOpen "System"
               SynModuleDecl.CreateOpen "DynamicObj"
-              SynModuleDecl.CreateOpen "Newtonsoft.Json"
+              SynModuleDecl.CreateOpen "Dash.NET" 
+              if not parameters.IsHelper then SynModuleDecl.CreateOpen "ComponentBase" 
               moduleDeclaration ] 
 
     // Create the file

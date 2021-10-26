@@ -1,7 +1,8 @@
 ﻿module Dash.NET.ComponentGeneration.ReactMetadata
 
-open System.Text.Json
 open System
+open System.Text.Json
+open System.Linq
 open System.Collections.Generic
 open Serilog
 open Prelude
@@ -74,18 +75,33 @@ type ReactComponent =
     //methods - we dont care about methods
     props: Dictionary<string, ReactProp> }
 
-let toSafeDict (converter: 'a -> 'b) (dict: Dictionary<string, 'a>): Dictionary<string, 'b> =
-    let newDict = Dictionary<string, 'b>()
-    (dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
-    ||> List.zip 
-    |> List.iter (fun (key, maybeV) -> 
-        maybeV
-        |> optional
-        |> Option.iter (fun v -> 
-            newDict.Add(key, v |> converter)
-        )
-    )
-    newDict
+//let toSafeDict (converter: 'a -> 'b) (dict: Dictionary<string, 'a>): Dictionary<string, 'b> =
+    //let newDict = Dictionary<string, 'b>()
+    //(dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
+    //||> List.zip 
+    //|> List.iter (fun (key, maybeV) -> 
+    //    maybeV
+    //    |> optional
+    //    |> Option.iter (fun v -> 
+    //        newDict.Add(key, v |> converter)
+    //    )
+    //)
+    //newDict
+let toSafeMap (converter: 'a -> 'b) : Dictionary<string, 'a> -> Map<string, 'b> =
+    Seq.map (|KeyValue|)
+    >> Map.ofSeq
+    >> Map.map (fun _ -> optional >> Option.map converter)
+    >> Map.filter (fun _ -> Option.isSome)
+    >> Map.map (fun _ -> Option.get)
+    //source
+    //|> Map.map (fun _ maybeV ->
+    //    let target =
+    //        maybeV
+    //        |> optional
+    //        |> Option.map (fun a -> converter a)
+    //    target
+    //)
+    //|> Map.filter (fun _ maybeT -> maybeT |> Option.isSome)
 
 let jsonToList (json: string): string list =
     JsonSerializer.Deserialize<seq<JsonElement>>(json, jsonOptions)
@@ -153,17 +169,23 @@ type SafeReactPropType =
         match from with
         | Array _ -> Some ["list"; "obj"]
         | Bool _ -> Some ["bool"]
-        | Number _ -> Some ["IConvertible"]
+        | Number _ -> Some ["double"]
         | String _ -> Some ["string"]
         | Object _ -> Some ["obj"]
         | Any _ -> Some ["obj"]
         | Element _ -> Some ["DashComponent"]
         | Node _ -> Some ["DashComponent"] 
+        // MC
+        | ArrayOf _ -> Some [ "list"; "obj" ]
+
+        //| Union (_, Some [ SafeReactPropType.String _; SafeReactPropType.Number _ ])
+        //| Union (_, Some [ SafeReactPropType.Number _; SafeReactPropType.String _ ]) -> Some [ "IConvertible" ]
 
         // Special cases, each type will have a unique name
         | Enum _
         | Union _
-        | ArrayOf _
+        // MC
+        //| ArrayOf _
         | ObjectOf _
         | Shape _
         | Exact _
@@ -400,6 +422,41 @@ type SafeReactPropType =
             ( props, maybeStringVal )
             |> SafeReactPropType.Any
 
+    static member equalsValue (x: SafeReactPropType) (y: SafeReactPropType) =
+        let equalsContent (source1: 'a list) (source2: 'a list) =
+            source1 |> List.except source2 |> List.isEmpty
+            && source2 |> List.except source1 |> List.isEmpty
+
+        match x, y with
+        | Array (_, maybeXValue), Array (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Bool (_, maybeXValue), Bool (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Number (_, maybeXValue), Number (_, maybeYValue) -> maybeXValue = maybeYValue
+        | String (_, maybeXValue), String (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Object (_, maybeXValue), Object (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Any (_, maybeXValue), Any (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Element (_, maybeXValue), Element (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Node (_, maybeXValue), Node (_, maybeYValue) -> maybeXValue = maybeYValue
+        | ArrayOf (_, maybeXValue), ArrayOf (_, maybeYValue) -> maybeXValue = maybeYValue
+        | ObjectOf (_, maybeXValue), ObjectOf (_, maybeYValue) -> maybeXValue = maybeYValue
+        | FlowArray (_, maybeXValue), FlowArray (_, maybeYValue) -> maybeXValue = maybeYValue
+        | Other (_, _, maybeXValue), Other (_, _, maybeYValue) -> maybeXValue = maybeYValue
+        | FlowUnion (_, maybeXValues), FlowUnion (_, maybeYValues)
+        | Union (_, maybeXValues), Union (_, maybeYValues)
+        | Enum (_, maybeXValues), Enum (_, maybeYValues) ->
+            match maybeXValues, maybeYValues with
+            | Some xValues, Some yValues -> xValues |> equalsContent yValues
+            | None, None -> true
+            | _ -> false
+        | FlowObject (_, maybeXValues), FlowObject (_, maybeYValues)
+        | Shape (_, maybeXValues), Shape (_, maybeYValues)
+        | Exact (_, maybeXValues), Exact (_, maybeYValues) ->
+            match maybeXValues, maybeYValues with
+            | Some xValues, Some yValues -> xValues |> Seq.map(|KeyValue|) |> Seq.toList |> equalsContent (yValues |> Seq.map(|KeyValue|) |> Seq.toList)
+            | None, None -> true
+            | _ -> false
+        | _ -> false
+
+
 type SafeReactProp = 
   { propType: SafeReactPropType option
     required: bool option
@@ -432,38 +489,56 @@ type SafeReactProp =
 type SafeReactComponent =
   { description: string option
     displayName: string option
-    props: Dictionary<string, SafeReactProp> }
+    //props: Dictionary<string, SafeReactProp> }
+    props: Map<string, SafeReactProp> }
 
     static member fromReactComponent (comp: ReactComponent): SafeReactComponent =
         
-        let removeUnrepresentableProps (dict: Dictionary<string, SafeReactProp>) =
-            let newDict = Dictionary()
-            (dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
-            ||> List.zip
-            |> List.filter (snd >> (fun p -> p.propType) >> function | Some (Other _) | None -> false | _ -> true)
-            |> List.iter newDict.Add
-            newDict
+        //let removeUnrepresentableProps (dict: Dictionary<string, SafeReactProp>) =
+        let removeUnrepresentableProps =
+            //let newDict = Dictionary()
+            //(dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
+            //||> List.zip
+            //|> List.filter (snd >> (fun p -> p.propType) >> function | Some (Other _) | None -> false | _ -> true)
+            //|> List.iter newDict.Add
+            //newDict
+
+            Map.filter (fun _ (p: SafeReactProp) -> match p.propType with Some (Other _) | None -> false | _ -> true)
 
         { description = comp.description |> optional
           displayName = comp.displayName |> optional 
-          props = 
-            comp.props 
-            |> optional 
-            |> Option.map (toSafeDict SafeReactProp.fromReactProp)
-            |> Option.defaultValue (Dictionary())
+          props =
+            comp.props
+            |> optional
+            |> Option.map (toSafeMap SafeReactProp.fromReactProp)
+            |> Option.defaultValue (Map.empty)
             |> removeUnrepresentableProps }
+            //comp.props 
+            ////|> Seq.map (|KeyValue|)  
+            ////|> Map.ofSeq
+            //|> optional 
+            //|> Option.map (toSafeDict SafeReactProp.fromReactProp)
+            ////|> Option.defaultValue (Dictionary())
+            //|> Option.defaultValue (Map.empty)
+            //|> removeUnrepresentableProps }
 
-type ReactMetadata = Dictionary<string, SafeReactComponent>
+//let toSafe (meta: Dictionary<string, ReactComponent>): Dictionary<string, SafeReactComponent> =
+    //meta 
+    //|> optional 
+    //|> Option.map (toSafeDict SafeReactComponent.fromReactComponent)
+    //|> Option.defaultValue (Dictionary())
 
-let toSafe (meta: Dictionary<string, ReactComponent>): ReactMetadata =
+let toSafe (meta: Dictionary<string, ReactComponent>) =
     meta 
     |> optional 
-    |> Option.map (toSafeDict SafeReactComponent.fromReactComponent)
-    |> Option.defaultValue (Dictionary())
+    |> Option.map (toSafeMap SafeReactComponent.fromReactComponent)
+    |> Option.defaultValue (Map.empty)
 
 let jsonDeserialize (json: string) = 
     try
-        JsonSerializer.Deserialize<Dictionary<string, ReactComponent>>(json, jsonOptions) |> toSafe |> Ok
+        JsonSerializer.Deserialize<Dictionary<string, ReactComponent>>(json, jsonOptions)
+        |> toSafe
+        |> Ok
     with 
     | e -> 
         Error e

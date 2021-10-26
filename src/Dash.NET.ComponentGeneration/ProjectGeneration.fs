@@ -64,7 +64,7 @@ let runCommandWithOutputAsync (log: Core.Logger) (workingDir: string) (fileName:
                 log.Debug("Error: {Error}", error)
                 return true, output, error
             else
-                log.Error("Failed to run process \"{Process}\"", fileName)
+                log.Error("Failed to run process \"{WorkingDir}\" \"{Process}\" \"{Arguments}\"", workingDir, fileName, argString)
                 log.Error("Output: {ProcessOutput}", output)
                 log.Error("Error: {Error}", error)
                 return false, output, error
@@ -101,20 +101,24 @@ let createProject
     runCommandAsync log "." "dotnet" ["new"; "-i"; Path.Combine(thisPath, "template")]
     |@!> async {
         let outputPath = Path.Combine (outputFolder, name)
-        let localFilesDirPath = Path.Combine (outputPath,"WebRoot","components",name)
+        let localFilesDirPath = Path.Combine (outputPath,"WebRoot","components")
+        let generatedCodeDirPath = Path.Combine (outputPath,"Generated")
+
+        let tryCreateDirectory logDesc path =
+            try
+                path |> Directory.CreateDirectory |> ignore
+                log.Debug(sprintf "Created directory {%s}" logDesc, path)
+                true
+            with | ex ->
+                log.Error(ex, sprintf "Failed to create directory {%s}" logDesc, path)
+                false
 
         log.Information("Creating project {ComponentName}", name)
         return!
             //Create project folder
             runFunctionAsync (fun () ->
-                try
-                    let _ = Directory.CreateDirectory(outputPath)
-                    log.Debug("Created directory {ComponentProjectFolder}", outputPath)
-                    true
-                with | ex ->
-                    log.Error(ex, "Failed to create directory {ComponentProjectFolder}", outputPath)
-                    false)
-
+                outputPath |> tryCreateDirectory "ComponentProjectFolder"
+            )
             //Create project
             |@> runCommandAsync log outputPath "dotnet" 
                 [ yield! [ "new"; "dashcomponent" ] 
@@ -130,15 +134,14 @@ let createProject
                       | [auth] -> [ "--authors"; auth |> sprintf "\"%s\"" ]
                       | auths -> [ "--authors"; auths |> List.reduce (sprintf "%s;%s") |> sprintf "\"%s\"" ] ]
 
-            //Create project folder
+            //Create local files folder
             |@> runFunctionAsync (fun () ->
-                try
-                    let _ = Directory.CreateDirectory(localFilesDirPath)
-                    log.Debug("Created directory {LocalFilesFolder}", localFilesDirPath)
-                    true
-                with | ex ->
-                    log.Error(ex, "Failed to create directory {LocalFilesFolder}", localFilesDirPath)
-                    false)
+                localFilesDirPath |> tryCreateDirectory "LocalFilesFolder"
+            )
+            //Create generated code files folder
+            |@> runFunctionAsync (fun () ->
+                generatedCodeDirPath |> tryCreateDirectory "GeneratedCodeFolder"
+            )
 
             //Copy local files
             |@> runFunctionAsync (fun () ->

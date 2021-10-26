@@ -99,6 +99,7 @@ let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
 let recordDefinition (cases: SynFieldRcd list) =
     cases |> SynTypeDefnSimpleReprRecordRcd.Create |> SynTypeDefnSimpleReprRcd.Record
 
+
 let simpleField (fname:string) (ftype: string) =
     SynFieldRcd.Create (fname, LongIdentWithDots.CreateString ftype) 
 let anonSimpleField (ftype: string) =
@@ -127,7 +128,9 @@ let functionPatternNoArgTypes (fname: string) (args: (string) list) =
         args
         |> List.map (fun pname -> 
             patternNamed pname
-            |> SynPatRcd.CreateParen )
+            // MC
+            //|> SynPatRcd.CreateParen )
+        )
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
 let functionPatternThunk (fname: string) =
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, [SynPatRcd.Const {Const = SynConst.Unit; Range = range.Zero}])

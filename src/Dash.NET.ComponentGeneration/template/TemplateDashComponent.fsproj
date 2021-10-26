@@ -1,29 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<WarnOn>3390;$(WarnOn)</WarnOn>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <WarnOn>3390;$(WarnOn)</WarnOn>
 
-		<PackageId>TemplateDashComponent</PackageId>
-		<Version>ComponentVersionPlaceholder</Version>
-		
-		<Description>OptionalDescriptionPlaceholder</Description>
-		<Authors>OptionalAuthorsPlaceholder</Authors>
-		<Company>OptionalCompanyPlaceholder</Company>
-	</PropertyGroup>
+        <PackageId>TemplateDashComponent</PackageId>
+        <Version>ComponentVersionPlaceholder</Version>
 
-	<ItemGroup>
-		<Compile Include="*.fs" />
-		<None Include="WebRoot/components/TemplateDashComponent/*" >
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
+        <Description>OptionalDescriptionPlaceholder</Description>
+        <Authors>OptionalAuthorsPlaceholder</Authors>
+        <Company>OptionalCompanyPlaceholder</Company>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<!--<PackageReference Include="Dash.Net" Version="DashVersionPlaceholder" />-->
-		<ProjectReference Include="..\..\Dash.NET\src\Dash.NET\Dash.NET.fsproj" /> <!--TODO: temporary for build testing-->
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="WebRoot/components/*" >
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <Compile Include="Generated/ComponentBase.fs" />
+        <Compile Include="Generated/*.fs" />
+    </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DynamicObj" Version="0.2.1" />
+      <PackageReference Include="Dash.Net" Version="DashVersionPlaceholder" />
+    </ItemGroup>
 </Project>
 

@@ -16,7 +16,7 @@ REQUIRED:
 OPTIONS:
     --metadata, -m <meta>                   React docgen metadata.json file, defaults to '<component_folder>/metadata.json'
     --version, -v <version>                 The version of the compenent, defaults to 1.0.0
-    --dashversion, -vd <version>            The version of Dash.NET to use, defaults to '0.1.0-alpha9'
+    --dashversion, -vd <version>            The version of Dash.NET to use, defaults to '0.2.0-alpha.5'
     --outputdirectory, -o <folder>          Directory to create the F# project folder in, defaults to ./
     --addfile, -f <source>                  Additional local source file to include, there can be more than one of these, 
                                             defaults to none

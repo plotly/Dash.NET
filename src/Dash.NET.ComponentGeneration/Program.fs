@@ -8,7 +8,7 @@ open Serilog
 
 // Hardcoded defaults
 let defaultVersion = "1.0.0"
-let defaultDashVersion = "0.1.0-alpha9"
+let defaultDashVersion = "0.2.0-alpha.5"
 let defaultIgnore = [ "__pycache__"; ".*\.py" ]
 
 // Command line arguments
@@ -77,7 +77,7 @@ let performGeneration
 
         match maybeComponentMetadata with
         | Ok componentMetadata ->
-            let parametersList = ComponentParameters.fromReactMetadata log componentShortName localJavascript componentMetadata
+            let parametersList = ComponentParameters.fromReactMetadata componentShortName componentProjectName localJavascript componentMetadata
 
             // Create the F# project
             let projectCreate =
@@ -103,7 +103,7 @@ let performGeneration
                     state
                     |@> (parameters
                             |> ASTGeneration.createComponentAST log
-                            |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, parameters.ComponentFSharp)) ))
+                            |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, "Generated", parameters.ComponentFSharp)) ))
                     projectCreate
 
                 // Build the project
@@ -283,12 +283,12 @@ let main argv =
             log.Error("Component generation failed!")
             1
 
-    | Error error, _, _, _, _, _ 
-    | _, Error error, _, _, _, _ 
-    | _, _, Error error, _, _, _ 
+    | Error error, _, _, _, _, _
+    | _, Error error, _, _, _, _
+    | _, _, Error error, _, _, _
     | _, _, _, Error error, _, _
     | _, _, _, _, Error error, _
-    | _, _, _, _, _, Error error -> 
+    | _, _, _, _, _, Error error ->
         log.Error("Error: {Error}", error)
         log.Information("")
         log.Error("Component generation failed!")
