@@ -16,6 +16,13 @@ open DocumentationGeneration
 
 open System.Collections.Generic
 
+let private mkCaseTypeName =
+    sprintf "%s%s"
+
+let private toCaseTypeName propTypeName =
+    SafeReactPropType.toName
+    >> mkCaseTypeName propTypeName
+
 let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
 
     log.Information("Creating component bindings")
@@ -24,17 +31,11 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
         let rec generatePropTypes (name: string) (ptype: SafeReactPropType) =
             let propTypeName = name |> String.toPascalCase
 
+            let toCaseTypeName = toCaseTypeName propTypeName
+
             let toFieldsList : IDictionary<string, SafeReactPropType> -> _ =
                 Seq.map(|KeyValue|)
                 >> Seq.toList
-
-            let mkRT mkName =
-                List.choose (fun (pname: string, ptype: SafeReactPropType) -> 
-                    let typename = mkName ptype pname 
-                    let propTypes = generatePropTypes typename ptype
-                    propTypes
-                    )
-                >> List.concat
 
             let mkRecursiveTypes mkTypeName =
                 List.choose (fun (pname: string, ptype: SafeReactPropType) -> 
@@ -44,10 +45,12 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     )
                 >> List.concat
 
-            let mkFieldTypeNames (pname, ptype) =
+            let mkFieldTypeNames (pname: string, ptype) =
                 ptype
                 |> SafeReactPropType.tryGetFSharpTypeName
-                |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
+                // MC
+                //|> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
+                |> Option.defaultValue ([sprintf "%s%s" propTypeName (pname.Pascalize())])
 
             // { AField: bool
             //   BField: string
@@ -60,22 +63,22 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 )
 
             let mkString =
-                List.map (fun (pname, ptype) -> 
+                List.map (fun (pname: string, ptype) -> 
                     let jsonConversion =
-                        let converted =
-                            if SafeReactPropType.needsConvert ptype then 
-                                let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
-                                application
-                                  [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; pname |> String.toPascalCase])
-                                    SynExpr.CreateIdentString "|>" 
-                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
-                                |> SynExpr.CreateParen
-                            else
-                                SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
-
-                        converted
-                            
-                    ( Ident.Create pname, jsonConversion ))
+                        let instanceType = pname.Pascalize()
+                        if SafeReactPropType.needsConvert ptype then 
+                            // MC
+                            //let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
+                            //let caseTypeName = sprintf "%s%s" propTypeName (pname.Pascalize())
+                            let caseTypeName = ptype |> toCaseTypeName
+                            application
+                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; instanceType])
+                                SynExpr.CreateIdentString "|>" 
+                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
+                            |> SynExpr.CreateParen
+                        else
+                            SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; instanceType] )
+                    ( Ident.Create pname, jsonConversion))
                 >> anonRecord
                 >> List.singleton
                 >> List.append [ SynExpr.CreateIdentString "box" ]
@@ -93,155 +96,112 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 |> (fields |> mkString |> memberBinding)
                 |> SynMemberDefn.CreateStaticMember
 
-            ////////////////////////////////////////////////////////////
+            let mkDiscriminatedUnion (propTypes: SafeReactPropType list) =
+                let mkValuedUnion propType =
+                    let maybeRecursiveTypes = propType |> generatePropTypes (propType |> toCaseTypeName)
 
-            let mkUnvaluedDu (cases: SafeReactPropType list) =
-                // | ACase
-                // | BCase
-                // | CCase
-                //
-                /// Define the cases for the descriminated union
-                let duCases =
-                    cases
-                    |> List.choose (fun case -> 
-                        match case with 
-                        | Any (_, Some value) -> 
-                            let cleanValue = value
-                            let duSafeCleanValue = cleanValue |> String.toValidDULabel
-                            simpleUnionCase duSafeCleanValue []
-                            |> Some
-                        | _ -> 
-                            log.Warning("Enum property {PropertyName} contained an invalid case, it was ignored", name)
-                            None)
-                
-                // | ACase -> "aCase"
-                // | BCase -> "bCase"
-                // | CCase -> "cCase"
-                //
-                /// Define the values for the cases
-                let caseValues =
-                    cases
-                    |> List.choose (fun case -> 
-                        match case with 
-                        | Any (_, Some value) -> 
-                            let cleanValue = value
-                            let duSafeCleanValue = cleanValue |> String.toValidDULabel
-                            simpleMatchClause duSafeCleanValue [] None (SynExpr.CreateConstString cleanValue)
-                            |> Some
-                        | _ -> 
-                            log.Warning("Enum property {PropertyName} contained an invalid case, it was ignored", name)
-                            None)
+                    let caseName = SafeReactPropType.toName propType
 
-                if duCases.Length > 0 then
-                    // override this.Convert() =
+                    let caseTypeNames = 
+                        propType 
+                        |> SafeReactPropType.tryGetFSharpTypeName
+                        |> Option.defaultValue ([propType |> toCaseTypeName])
+
+                    let duCase = simpleUnionCase caseName [anonAppField caseTypeNames]
+
+                    let caseValue =
+                        let valueName = "v"
+                        let boxable =
+                            if SafeReactPropType.needsConvert propType then 
+                                application [
+                                    SynExpr.CreateIdentString valueName
+                                    SynExpr.CreateIdentString "|>" 
+                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeNames.[0]; "convert"])
+                                ]
+                            else
+                                SynExpr.CreateIdentString valueName
+
+                        simpleMatchClause caseName [valueName] None (
+                            application [
+                                boxable
+                                SynExpr.CreateIdentString "|>" 
+                                SynExpr.CreateIdentString "box" 
+                            ]
+                        )
+
+                    caseName, duCase, caseValue, maybeRecursiveTypes
+
+                let mkUnvaluedUnion v =
+                    let caseName = v |> String.toValidDULabel
+                    let duCase = simpleUnionCase caseName []
+                    let caseValue = 
+                        simpleMatchClause caseName [] None (
+                            application [
+                                SynExpr.CreateIdentString "box" 
+                                SynExpr.CreateConstString v
+                            ]
+                        )
+
+                    caseName, duCase, caseValue, None
+
+                let caseDetails =
+                    propTypes
+                    |> List.choose (fun propType ->
+                        match propType with
+                        | Array (_, Some v)
+                        | String (_, Some v)
+                        | Object (_, Some v)
+                        | Any (_, Some v)
+                        | Element (_, Some v)
+                        | Node (_, Some v) -> v |> mkUnvaluedUnion |> Some
+                        | Bool (_, Some v) -> v |> string |> mkUnvaluedUnion |> Some
+                        | Number (_, Some v) -> v |> string |> mkUnvaluedUnion |> Some
+                        | Array (_, None)
+                        | Bool (_, None)
+                        | Number (_, None)
+                        | String (_, None)
+                        | Object (_, None)
+                        | Any (_, None)
+                        | Element (_, None)
+                        | Node (_, None)
+                        | Enum (_, _)
+                        | Union (_, _)
+                        | ArrayOf (_, _)
+                        | ObjectOf (_, _)
+                        | Shape (_, _)
+                        | Exact (_, _)
+                        | FlowUnion (_, _)
+                        | FlowArray (_, _)
+                        | FlowObject (_, _) -> propType |> mkValuedUnion |> Some
+                        | Other (_, _, _) -> None
+                    )
+                    |> List.distinctBy (fun (caseName: string, _, _, _) -> caseName.ToLowerInvariant())
+
+                match caseDetails with
+                | [] ->
+                    log.Warning("Property {PropertyName} contained no cases, a type could not be created", name)
+                    None
+                | cases ->
+                    let duCases, caseValues, maybeRecursiveTypes =
+                        cases
+                        |> List.map (fun (_, duCase, convertCase, maybeRecursiveTypes) -> duCase, convertCase, maybeRecursiveTypes)
+                        |> List.unzip3
+                    let recursiveTypes =
+                        maybeRecursiveTypes
+                        |> List.choose id
+                        |> List.concat
+
+                    // member this.Convert() =
                     //     match this with
                     //
                     /// Define the json conversion
                     let toCaseValueDefinition =
                         functionPatternNoArgTypes "convert" ["this"]
-                        |> binding  
-                          ( application 
-                              [ SynExpr.CreateIdentString "box"
-                                SynExpr.CreateIdentString "this" |> matchStatement caseValues |> SynExpr.CreateParen ] )
+                        |> memberBinding  
+                            ( SynExpr.CreateIdentString "this"
+                            |> matchStatement caseValues )
                         |> SynMemberDefn.CreateStaticMember
-                 
-                    // type CPropCase0Type =
-                    //
-                    /// Create the union definition
-                    propTypeName
-                    |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                    |> simpleTypeDeclaration 
-                         (duCases |> unionDefinition)
-                         [ toCaseValueDefinition ] 
-                    |> List.singleton
-                    |> Some
 
-                else
-                    log.Error("Enum property {PropertyName} contained no cases, a type could not be created", name)
-                    None
-
-            let mkValuedDu (utypes: SafeReactPropType list)=
-                let recursiveTypes = 
-                    utypes
-                    |> List.indexed
-                    |> List.choose (fun (i, case) -> 
-                        let pt = ptype
-                        let ss = sprintf "%A" pt
-                        let pn = sprintf "%sCase%dType" propTypeName i
-                        //generatePropTypes (sprintf "%sCase%dType" propTypeName i) case)
-                        generatePropTypes pn case
-                    )
-                    |> List.concat
-
-                let cases =
-                    utypes
-                    |> List.indexed
-                    |> List.map (fun (i, case) -> 
-                        let caseTypeName = 
-                            case 
-                            |> SafeReactPropType.tryGetFSharpTypeName
-                            |> Option.defaultValue ([sprintf "%sCase%dType" propTypeName i])
-
-                        // Matches metadata name:
-                        let caseName =
-                            case
-                            |> sprintf "%A"
-                            |> fun s -> s.Split(' ')
-                            |> Array.head
-                            |> fun s -> s.Replace('\n',' ').Trim()
-
-                        // Matches type name:
-
-                        //let caseName = 
-                        //    caseTypeName 
-                        //    |> List.rev
-                        //    |> List.map String.toPascalCase
-                        //    |> List.reduce (sprintf "%s%s")
-
-                        (i, case, caseTypeName, caseName))
-
-                // | CPropCase0 of CPropCase0Type
-                // | CPropCase1 of bool
-                //
-                /// Define the cases for the descriminated union
-                let duCases =
-                    cases
-                    |> List.map (fun (_, _, caseTypeName, caseName) ->
-                        simpleUnionCase caseName [anonAppField caseTypeName])
-
-                // | CPropCase0 (v) -> box v
-                // | CPropCase1 (v) -> box v
-                //
-                /// Define the values for the cases
-                let caseValues =
-                    cases
-                    |> List.map (fun (i, utype, _, caseName) ->
-                        let boxable =
-                            if SafeReactPropType.needsConvert utype then 
-                                let caseTypeName = sprintf "%sCase%dType" propTypeName i
-
-                                application
-                                  [ SynExpr.CreateIdentString "v"
-                                    SynExpr.CreateIdentString "|>" 
-                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
-                                |> SynExpr.CreateParen
-                            else
-                                SynExpr.CreateIdentString "v"
-                        simpleMatchClause caseName ["v"] None ( application [ SynExpr.CreateIdentString "box"; boxable ] ))
-
-                // member this.Convert() =
-                //     match this with
-                //
-                /// Define the json conversion
-                let toCaseValueDefinition =
-                    functionPatternNoArgTypes "convert" ["this"]
-                    |> memberBinding  
-                        ( SynExpr.CreateIdentString "this"
-                        |> matchStatement caseValues )
-                    |> SynMemberDefn.CreateStaticMember
-
-                if duCases.Length > 0 then
                     // type CProp =
                     //
                     /// Create the union definition
@@ -255,79 +215,6 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
 
                     (unionTypeDefinition :: recursiveTypes) 
                     |> Some
-
-                else
-                    log.Error("Union property {PropertyName} contained no cases, a type could not be created", name)
-                    None
-
-            let mkSingleCaseDu (utype: SafeReactPropType) =
-                let recursiveTypes = 
-                    generatePropTypes (sprintf "%sType" propTypeName) utype
-                    |> Option.defaultValue []
-                
-                let caseInnerType = 
-                    utype 
-                    |> SafeReactPropType.tryGetFSharpTypeName
-                    |> Option.defaultValue ([sprintf "%sType" propTypeName])
-
-                // | DProp of list<string>
-                //
-                /// Create single case DU case
-                let singleCaseUnion =
-                    [ anonAppField [ yield "list"; yield! caseInnerType ] ]
-                    |> simpleUnionCase propTypeName
-                    |> List.singleton
-
-                // member this.Convert() =
-                //     match this with
-                //     | DProp (v) -> List.map (fun (i: string) -> box i) v
-                //
-                /// Define the json conversion
-                let toCaseValueDefinition =
-                    let matchResult =
-                        application
-                            [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
-                              application 
-                                [ SynExpr.CreateIdentString "box"
-                                  if SafeReactPropType.needsConvert utype then 
-                                      application
-                                        [ SynExpr.CreateIdentString "i"
-                                          SynExpr.CreateIdentString "|>" 
-                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseInnerType |> List.head; "convert"]) ]
-                                      |> SynExpr.CreateParen
-                                  else
-                                      SynExpr.CreateIdentString "i" ]
-                              |> typedLambdaStatement false [("i", appType caseInnerType)]
-                              |> SynExpr.CreateParen
-                              SynExpr.CreateIdentString "v"]
-
-                    let matchCase =
-                        SynExpr.CreateIdentString "this"
-                        |> matchStatement 
-                            [ simpleMatchClause propTypeName ["v"] None matchResult ]
-
-                    let objectBox =
-                        application 
-                          [ SynExpr.CreateIdentString "box"
-                            matchCase |> SynExpr.CreateParen ]
-
-                    functionPatternNoArgTypes "convert" ["this"]
-                    |> memberBinding objectBox
-                    |> SynMemberDefn.CreateStaticMember
-
-                // type DProp =
-                //
-                /// Create the union definition
-                let unionDefinition =
-                    propTypeName
-                    |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                    |> simpleTypeDeclaration
-                        (singleCaseUnion |> unionDefinition)
-                        [ toCaseValueDefinition ]
-
-                (unionDefinition :: recursiveTypes)
-                |> Some
 
             let mkAlias (utype: SafeReactPropType) =
                 let recursiveTypes = 
@@ -402,86 +289,86 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 (aliasDefinition :: recursiveTypes)
                 |> Some
 
-            let mkRecord (values: IDictionary<string, SafeReactPropType>) =
-                let fields =
-                    (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
-                    ||> List.zip 
+            //let mkRecord (values: IDictionary<string, SafeReactPropType>) =
+            //    let fields =
+            //        (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
+            //        ||> List.zip 
 
-                if fields.Length > 0 then
-                    let recursiveTypes =
-                        fields
-                        |> List.choose (fun (pname, ptype) -> 
-                            let propTypes = generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype
-                            propTypes
-                            )
-                        |> List.concat
+            //    if fields.Length > 0 then
+            //        let recursiveTypes =
+            //            fields
+            //            |> List.choose (fun (pname, ptype) -> 
+            //                let propTypes = generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype
+            //                propTypes
+            //                )
+            //            |> List.concat
                 
-                    // { AField: bool
-                    //   BField: string
-                    //   CField: string }
-                    //
-                    /// Define the fields for the record
-                    let fieldDefinitions =
-                        fields
-                        |> List.map (fun (pname, ptype) -> 
-                            let maybeFieldTypeName = SafeReactPropType.tryGetFSharpTypeName ptype
-                            let fieldTypeName =
-                                maybeFieldTypeName
-                                |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
-                            simpleAppField (pname |> String.toPascalCase) fieldTypeName)
+            //        // { AField: bool
+            //        //   BField: string
+            //        //   CField: string }
+            //        //
+            //        /// Define the fields for the record
+            //        let fieldDefinitions =
+            //            fields
+            //            |> List.map (fun (pname, ptype) -> 
+            //                let maybeFieldTypeName = SafeReactPropType.tryGetFSharpTypeName ptype
+            //                let fieldTypeName =
+            //                    maybeFieldTypeName
+            //                    |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
+            //                simpleAppField (pname |> String.toPascalCase) fieldTypeName)
 
-                    // member this.Convert() =
-                    //     box
-                    //         {| aField = this.AField.Convert()
-                    //            bField = this.BField.Convert()
-                    //            cField = this.CField |}
-                    //
-                    /// Define the json conversion
-                    let toStringDefinition =
-                        let toString =
-                            let serializable =
-                                fields
-                                |> List.map (fun (pname, ptype) -> 
-                                    let jsonConversion =
-                                        let converted =
-                                            if SafeReactPropType.needsConvert ptype then 
-                                                let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
-                                                application
-                                                  [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; pname |> String.toPascalCase])
-                                                    SynExpr.CreateIdentString "|>" 
-                                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
-                                                |> SynExpr.CreateParen
-                                            else
-                                                SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
+            //        // member this.Convert() =
+            //        //     box
+            //        //         {| aField = this.AField.Convert()
+            //        //            bField = this.BField.Convert()
+            //        //            cField = this.CField |}
+            //        //
+            //        /// Define the json conversion
+            //        let toStringDefinition =
+            //            let toString =
+            //                let serializable =
+            //                    fields
+            //                    |> List.map (fun (pname, ptype) -> 
+            //                        let jsonConversion =
+            //                            let converted =
+            //                                if SafeReactPropType.needsConvert ptype then 
+            //                                    let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
+            //                                    application
+            //                                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; pname |> String.toPascalCase])
+            //                                        SynExpr.CreateIdentString "|>" 
+            //                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
+            //                                    |> SynExpr.CreateParen
+            //                                else
+            //                                    SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
 
-                                        converted
+            //                            converted
                                             
-                                    ( Ident.Create pname, jsonConversion ))
-                                |> anonRecord
+            //                        ( Ident.Create pname, jsonConversion ))
+            //                    |> anonRecord
 
-                            application [ SynExpr.CreateIdentString "box"; serializable ]
+            //                application [ SynExpr.CreateIdentString "box"; serializable ]
 
-                        functionPatternNoArgTypes "convert" ["this"]
-                        |> memberBinding toString
-                        |> SynMemberDefn.CreateStaticMember
+            //            functionPatternNoArgTypes "convert" ["this"]
+            //            |> memberBinding toString
+            //            |> SynMemberDefn.CreateStaticMember
 
-                    // type BProp =
-                    // 
-                    /// Create the record definition
-                    let recordTypeDefinition =
-                        propTypeName
-                        |> componentInfo
-                        |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                        |> simpleTypeDeclaration 
-                                (fieldDefinitions |> recordDefinition)
-                                [ toStringDefinition ]
+            //        // type BProp =
+            //        // 
+            //        /// Create the record definition
+            //        let recordTypeDefinition =
+            //            propTypeName
+            //            |> componentInfo
+            //            |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
+            //            |> simpleTypeDeclaration 
+            //                    (fieldDefinitions |> recordDefinition)
+            //                    [ toStringDefinition ]
 
-                    (recordTypeDefinition :: recursiveTypes)
-                    |> Some
+            //        (recordTypeDefinition :: recursiveTypes)
+            //        |> Some
 
-                else
-                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
-                    None
+            //    else
+            //        log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+            //        None
 
             let mkRecType fields =
                 // { AField: bool
@@ -510,18 +397,18 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         (fieldDefinitions |> recordDefinition)
                         [ toStringDefinition ]
 
-            let mkRecordNew (values: IDictionary<string, SafeReactPropType>) =
-                values
-                |> toFieldsList
-                |> function
-                | [] ->
-                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
-                    None
-                | fields ->
-                    let record = fields |> mkRecType
-                    let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
-                    let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
-                    Some (record::recursiveTypes)
+            //let mkRecordNew (values: IDictionary<string, SafeReactPropType>) =
+            //    values
+            //    |> toFieldsList
+            //    |> function
+            //    | [] ->
+            //        log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+            //        None
+            //    | fields ->
+            //        let record = fields |> mkRecType
+            //        let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
+            //        let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
+            //        Some (record::recursiveTypes)
 
             ///////////////////////////////////////////////////////////
             let mkMethodArgs =
@@ -619,7 +506,8 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                 else
                     let fields = values |> toFieldsList
                     let dynObjDef = fields |> defineDynamicObjType
-                    let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
+                    //let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
+                    let mkTypeName typeName (propName: string) = sprintf "%s%s" typeName (propName.Pascalize())
                     let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
 
                     (dynObjDef::recursiveTypes)
@@ -636,17 +524,14 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                     |> Some
 
             match ptype with
-            | SafeReactPropType.Enum (_, Some cases) -> mkUnvaluedDu cases
+            | SafeReactPropType.Enum (_, Some utypes)
             | SafeReactPropType.Union (_, Some utypes) 
-            | SafeReactPropType.FlowUnion (_, Some utypes) -> mkValuedDu utypes
+            | SafeReactPropType.FlowUnion (_, Some utypes) -> mkDiscriminatedUnion utypes
             | SafeReactPropType.ArrayOf (_, Some utype) 
-            //| SafeReactPropType.FlowArray (_, Some utype) -> mkSingleCaseDu utype
             | SafeReactPropType.FlowArray (_, Some utype) -> [ name, utype ] |> dict |> mkDynamicObjs
             | SafeReactPropType.ObjectOf (_, Some utype) -> mkAlias utype
             | SafeReactPropType.Shape (_, Some values) 
             | SafeReactPropType.Exact (_, Some values) 
-            //| SafeReactPropType.FlowObject (_, Some values) -> mkRecord values
-            //| SafeReactPropType.FlowObject (_, Some values) -> mkRecordNew values
             | SafeReactPropType.FlowObject (_, Some values) -> mkDynamicObj values
             | _ -> None // Other types dont need definitions
 
@@ -781,6 +666,9 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                         SafeReactPropType.tryGetFSharpTypeName ptype
                         |> Option.defaultValue ([ptname])
 
+                    let toCaseTypeName = toCaseTypeName pname
+
+
                     match ptype with 
                     | Union (_, Some utypes)
                     | FlowUnion (_, Some utypes) ->
@@ -790,7 +678,9 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
                             let caseTypeName = 
                                 case 
                                 |> SafeReactPropType.tryGetFSharpTypeName
-                                |> Option.defaultValue ([sprintf "%sCase%dType" ptname i])
+                                // MC
+                                //|> Option.defaultValue ([sprintf "%sCase%dType" ptname i])
+                                |> Option.defaultValue ([case |> toCaseTypeName])
 
                             let caseName = 
                                 caseTypeName 

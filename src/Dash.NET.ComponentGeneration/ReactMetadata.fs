@@ -165,8 +165,7 @@ type SafeReactPropType =
 
         | Other _ -> false
     
-    static member tryGetFSharpTypeName (from: SafeReactPropType) =
-        match from with
+    static member tryGetFSharpTypeName = function
         | Array _ -> Some ["list"; "obj"]
         | Bool _ -> Some ["bool"]
         | Number _ -> Some ["double"]
@@ -196,8 +195,7 @@ type SafeReactPropType =
         // A type we can't process
         | Other _ -> Some ["obj"]
 
-    static member getProps (from: SafeReactPropType) =
-        match from with
+    static member getProps = function
         | Array (props, _)
         | Bool (props, _)
         | Number (props, _)
@@ -456,6 +454,28 @@ type SafeReactPropType =
             | _ -> false
         | _ -> false
 
+    static member toName = function
+        | Any _
+        | Enum _
+        | Union _
+        | FlowUnion _
+            -> "Choice"
+        | Array _
+        | FlowArray _
+        | ArrayOf _
+            -> "List"
+        | Object _
+        | ObjectOf _
+        | Shape _
+        | Exact _
+        | FlowObject _ -> "Object"
+
+        | pt ->
+            pt
+            |> sprintf "%A"
+            |> fun s -> s.Split(' ')
+            |> Array.head
+            |> fun s -> s.Replace('\n',' ').Trim()
 
 type SafeReactProp = 
   { propType: SafeReactPropType option

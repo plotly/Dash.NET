@@ -1,9 +1,9 @@
 ﻿module Dash.NET.ComponentGeneration.ComponentParameters
 
-open System
-open System.Collections.Generic
-open System.IO
-open Serilog
+//open System
+//open System.Collections.Generic
+//open System.IO
+//open Serilog
 open Humanizer
 open Prelude
 open ReactMetadata
@@ -153,7 +153,7 @@ type ComponentParameters =
 //        }
 
     static member mkCommon componentNamespace libraryNamespace (comps: ComponentParameters list) =
-        let existingProp (_, prop) (xs: (string * ComponentParametersProperty) list)  =
+        let existingProp (yPropName: string, prop) (xs: (string * ComponentParametersProperty) list)  =
             //Map.exists (snd >> ComponentParametersProperty.structureEquals prop)
             //xs
             //|> Map.exists (fun k v ->
@@ -161,7 +161,8 @@ type ComponentParameters =
             //    areEqual
             //)
             xs
-            |> List.exists (snd >> ComponentParametersProperty.structureEquals prop)
+            //|> List.exists (snd >> ComponentParametersProperty.structureEquals prop)
+            |> List.exists (fun (xPropName, x) -> (yPropName.Contains(xPropName) || xPropName.Contains(yPropName)) && ComponentParametersProperty.structureEquals prop x)
 
 
         //let equals (_, _, _, x) =
@@ -207,20 +208,27 @@ type ComponentParameters =
                 Metadata               = { description = None; displayName = None; props = Map.empty }
                 IsHelper               = true
             }
+
         commonComp
         |> List.singleton
         |> List.append (
             comps
             |> List.map (fun comp ->
-                { comp
-                    with
-                        Properties =
-                            comp.Properties
-                            |> Map.filter (fun propName _ ->
-                                let isInCommon = commonComp.Properties |> Map.containsKey propName
-                                not isInCommon
-                            )
-                }
+                //////////////////////////////////
+                // TODO - working, restore this
+                //{ comp
+                //    with
+                //        Properties =
+                //            comp.Properties
+                //            |> Map.filter (fun propName _ ->
+                //                let isInCommon = commonComp.Properties |> Map.containsKey propName
+                //                not isInCommon
+                //            )
+                //}
+                comp
+
+                //////////////////////////////////
+
                 //let propertyNames = comp.PropertyNames |> List.filter (fun pn -> commonComp.PropertyNames |> List.contains pn |> not)
                 //let dUSafePropertyNames = comp.DUSafePropertyNames |> List.filter (fun dn -> commonComp.DUSafePropertyNames |> List.contains dn |> not)
                 //let propertyTypeNames = comp.PropertyTypeNames |> List.filter (fun tn -> commonComp.PropertyTypeNames |> List.contains tn |> not)

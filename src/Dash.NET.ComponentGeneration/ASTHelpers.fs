@@ -124,14 +124,7 @@ let functionPattern (fname: string) (args: (string*SynType) list) =
             |> SynPatRcd.CreateParen )
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
 let functionPatternNoArgTypes (fname: string) (args: (string) list) =
-    let argumentDeclarations = 
-        args
-        |> List.map (fun pname -> 
-            patternNamed pname
-            // MC
-            //|> SynPatRcd.CreateParen )
-        )
-    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
+    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, args |> List.map patternNamed)
 let functionPatternThunk (fname: string) =
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, [SynPatRcd.Const {Const = SynConst.Unit; Range = range.Zero}])
 
