@@ -29,7 +29,7 @@ namespace Documentation.Examples
             [Index(2)]
             public int year { get; set; }
             [Index(3)]
-            [Default("0")]
+
             [NumberStyles(NumberStyles.Number | NumberStyles.AllowExponent)] //Handle values in scientific notation
             public decimal value { get; set; }
         }
@@ -38,12 +38,13 @@ namespace Documentation.Examples
             var csvUrl = "https://plotly.github.io/datasets/country_indicators.csv";
             var csv= new StreamReader(new HttpClient().GetStreamAsync(csvUrl).Result);
             var rows = new CsvReader(csv, CultureInfo.InvariantCulture).GetRecords<CountryIndicator>().ToList();
+
             var available_indicators = rows.GroupBy(x => x.indicator).Select(x => x.First().indicator).ToList();
 
             Func<string, string, string, string, int, GenericChart.Figure> scatterPlot =
                 (string xaxisColumnName, string yaxisColumnName, string xaxisType, string yaxisType, int year) =>
                 {
-                    var filteredRows = rows.Where(x => x.year == year/* && x.value != 0*/);
+                    var filteredRows = rows.Where(x => x.year == year && x.value != 0);
                     var xData = filteredRows.Where(x => x.indicator == xaxisColumnName).Select(x => x.value);
                     var yData = filteredRows.Where(x => x.indicator == yaxisColumnName).Select(x => x.value);
                     var countryData = filteredRows.Select(x => x.country).ToArray();
@@ -166,7 +167,7 @@ namespace Documentation.Examples
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
                 ipAddress: "*",
-                port: 8000,
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 

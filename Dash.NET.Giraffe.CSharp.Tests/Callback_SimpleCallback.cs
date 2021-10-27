@@ -61,9 +61,9 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "*",
-                port: 8000,
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 

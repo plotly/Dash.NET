@@ -20,10 +20,10 @@ namespace Documentation.Examples
             var dataSF = new List<Tuple<string, int>>() { Tuple.Create("Apples", 4), Tuple.Create("Oranges", 1), Tuple.Create("Bananas", 2) };
             var dataMontreal = new List<Tuple<string, int>>() { Tuple.Create("Apples", 2), Tuple.Create("Oranges", 4), Tuple.Create("Bananas", 5) };
 
-            var figSF = Plotly.NET.Chart2D.Chart.Column<String, int, int, int, int>(dataSF, "SF", true);
-            var figMontreal = Plotly.NET.Chart2D.Chart.Column<String, int, int, int, int>(dataMontreal, "Montreal", true);
+            var chartSF = Chart2D.Chart.Column<String, int, int, int, int>(dataSF, "SF", true);
+            var chartMontreal = Chart2D.Chart.Column<String, int, int, int, int>(dataMontreal, "Montreal", true);
 
-            var fig = Chart.Combine(new List<GenericChart.GenericChart>() { figSF, figMontreal }).WithLayout(
+            var chart = Chart.Combine(new List<GenericChart.GenericChart>() { chartSF, chartMontreal }).WithLayout(
                 Layout.init<bool>(
                     PlotBGColor: Color.fromHex(colors["background"]),
                     PaperBGColor: Color.fromHex(colors["background"]),
@@ -50,7 +50,7 @@ namespace Documentation.Examples
                         ),
                         Graph.graph(
                             "my-graph",
-                            Graph.Attr.figure(GenericChart.toFigure(fig))
+                            Graph.Attr.figure(GenericChart.toFigure(chart))
                         )
                     )
                 );
@@ -63,7 +63,7 @@ namespace Documentation.Examples
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
                 ipAddress: "*",
-                port: 8000,
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 
