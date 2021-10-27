@@ -100,10 +100,14 @@ let performGeneration
                 // Generate the F# bindings
                 parametersList
                 |> List.fold (fun state parameters -> 
-                    state
-                    |@> (parameters
-                            |> ASTGeneration.createComponentAST log
-                            |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, parameters.ComponentFSharp)) ))
+                        state
+                        |@> (parameters
+                                |> ASTGeneration.createComponentAST log
+                                |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, parameters.ComponentFSharp)) )
+                        |@> (parameters
+                                |> ASTGeneration.createCSharpComponentAST log
+                                |> ASTGeneration.generateCodeFromAST log (Path.Combine(projectFolder, parameters.ComponentCSharp)) )
+                    )
                     projectCreate
 
                 // Build the project

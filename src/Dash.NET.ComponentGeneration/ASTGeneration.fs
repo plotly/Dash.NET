@@ -13,7 +13,131 @@ open ComponentParameters
 open ReactMetadata
 open DocumentationGeneration
 
-let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
+let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters) : ParsedInput =
+    /// Define the component DSL function (used when creating the DOM tree)
+    let componentLetDeclaration =
+
+        /// Define the inner expression
+        let componentDeclaration =
+            expressionSequence
+              [ //  let props, children =
+                //      List.fold
+                //          (fun (props, children) (a: SampleDashComponentAttr) ->
+                //                  match a with
+                //                  | Prop prop -> (prop :: props, children)
+                //                  | Children child -> (props, child @ children))
+                //          ([], [])
+                //          attrs
+                patternNamedTuple ["props"; "children"] |> binding 
+                  ( application
+                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "fold"])
+                        
+                        SynExpr.CreateIdentString "a"
+                        |> matchStatement
+                            [ simpleMatchClause "Prop" ["prop"] None ( SynExpr.CreateTuple [ application [ SynExpr.CreateIdentString "prop"; SynExpr.CreateIdentString "::"; SynExpr.CreateIdentString "props" ]; SynExpr.CreateIdentString "children" ] )
+                              simpleMatchClause "Children" ["child"] None ( SynExpr.CreateTuple [ SynExpr.CreateIdentString "props"; application [ SynExpr.CreateIdentString "child"; SynExpr.CreateIdentString "@"; SynExpr.CreateIdentString "children" ] ] ) ]
+                        |> typedLambdaStatement true [ ("a", SynType.Create parameters.ComponentAttrsName) ]
+                        |> simpleLambdaStatement false [ "props"; "children" ]
+                        |> SynExpr.CreateParen
+
+                        SynExpr.CreateTuple [expressionList []; expressionList []] |> SynExpr.CreateParen
+                        SynExpr.CreateIdentString "attrs" ] ) |> Let 
+              
+                //  let t = TestComponent.init (id, children)
+                patternNamed "t" |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]); SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"]]) |> Let
+                
+                //  let componentProps =
+                //      match t.TryGetTypedValue<DashComponentProps> "props" with
+                //      | Some (p) -> p
+                //      | None -> DashComponentProps()
+                patternNamed "componentProps" |> binding
+                  ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.CreateString "t.TryGetTypedValue", [SynType.Create "DashComponentProps"], SynExpr.CreateConstString "props")
+                    |> matchStatement
+                        [ simpleMatchClause "Some" ["p"] None (SynExpr.CreateIdentString "p") 
+                          simpleMatchClause "None" [] None (application [SynExpr.CreateIdentString "DashComponentProps"; SynExpr.CreateUnit]) ]) |> Let 
+                
+                //  Seq.iter
+                //      (fun (prop: TestComponentProps) ->
+                //          let fieldName, boxedProp =
+                //              TestComponentProps.toDynamicMemberDef prop
+                //          DynObj.setValue componentProps fieldName boxedProp)
+                //      props
+                application
+                  [ SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "Seq.iter")
+                    expressionSequence
+                      [ patternNamedTuple ["fieldName"; "boxedProp"] |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentPropsName; "toDynamicMemberDef"]); SynExpr.CreateIdentString "prop"]) |> Let
+                        application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "componentProps"; SynExpr.CreateIdentString "fieldName"; SynExpr.CreateIdentString "boxedProp" ] |> Expression ]
+                    |> typedLambdaStatement false [("prop", SynType.Create parameters.ComponentPropsName)]
+                    |> SynExpr.CreateParen
+                    SynExpr.CreateIdentString "props" ] |> Expression
+                
+                //  DynObj.setValue t "props" componentProps
+                application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "t"; SynExpr.CreateConstString "props"; SynExpr.CreateIdentString "componentProps" ] |> Expression 
+                
+                //  t :> DashComponent
+                SynExpr.CreateIdentString "t" |> expressionUpcast (SynType.Create "DashComponent") |> Expression ]
+
+        //let tup = SynExpr.CreateParenedTuple [ SynExpr.CreateTyped(SynExpr.CreateConstString ("id"), SynType.Create "string"); SynExpr.CreateTyped(SynExpr.CreateConstString("attrs"), SynType.CreateApp(SynType.Create "array", [SynType.Create parameters.ComponentAttrsName])) ]
+
+        // ///This is additional test documentation
+        // let testComponent (id: string) (props: seq<TestComponentProps>) (children: seq<DashComponent>) =
+        //
+        // Create the binding
+        functionPatternTupled parameters.CamelCaseComponentName
+            [ ("id", SynType.Create "string", None)
+              ("attrs", SynType.CreateApp(SynType.Create "array", [SynType.Create parameters.ComponentAttrsName]), Some [ SynAttribute.Create "ParamArray" ]) ]
+        |> binding componentDeclaration
+        |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> toXMLDoc)
+        |> letDeclaration
+    
+    //let tup =
+    //    let v = SynExpr.CreateParenedTuple [ SynExpr.CreateTyped(SynExpr.CreateConstString ("id"), SynType.Create "string"); SynExpr.CreateTyped(SynExpr.CreateConstString("attrs"), SynType.CreateApp(SynType.Create "array", [SynType.Create parameters.ComponentAttrsName])) ]
+    //    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString "fname", v)
+    //    |> binding (SynExpr.CreateConstString "test")
+    //    |> letDeclaration
+
+    //  ///This is additional test documentation
+    //  [<RequireQualifiedAccess>]
+    //  module TestComponent =
+    //
+    /// Define the component module
+    let moduleDeclaration = 
+        parameters.ComponentName
+        |> componentInfo
+        |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
+        |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
+        |> nestedModule [ yield componentLetDeclaration ]
+            //[ yield! componentPropertyTypeDeclarations
+            //  yield componentPropertyDUDeclaration
+            //  yield componentAttributeDUDeclaration
+            //  yield componentTypeDeclaration
+            //  yield componentLetDeclaration ]
+
+    //  namespace TestNamespace
+    //  open Dash.NET
+    //  open System
+    //  open Plotly.NET
+    //  open DynamicObj
+    //
+    /// Define the component namespace
+    let namespaceDeclaration =
+        parameters.LibraryNamespace
+        |> namespaceInfo
+        |> withNamespaceDeclarations
+            [ SynModuleDecl.CreateOpen "Dash.NET" 
+              SynModuleDecl.CreateOpen "System"
+              SynModuleDecl.CreateOpen "Plotly.NET"
+              SynModuleDecl.CreateOpen "DynamicObj"
+              SynModuleDecl.CreateOpen "Newtonsoft.Json"
+              moduleDeclaration ] 
+
+    // Create the file
+    ParsedImplFileInputRcd
+        .CreateFs(parameters.ComponentName)
+        .AddModule(namespaceDeclaration)
+    |> ParsedInput.CreateImplFile
+
+let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) : ParsedInput =
 
     log.Information("Creating component bindings")
 
@@ -848,4 +972,3 @@ let generateCodeFromAST (log: Core.Logger) (path: string) ast =
             log.Error(ex, "Failed to write file {ComponentFSharpFile}",path)
             return false
     }
-            

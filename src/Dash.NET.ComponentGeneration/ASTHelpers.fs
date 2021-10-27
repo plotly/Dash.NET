@@ -122,6 +122,21 @@ let functionPattern (fname: string) (args: (string*SynType) list) =
             |> withPatternType ptype
             |> SynPatRcd.CreateParen )
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
+
+let functionPatternTupled (fname: string) (args: (string*SynType*SynAttribute list option) list) =
+    let argumentDeclarations = 
+        args
+        |> List.map (fun (pname, ptype, attrs) -> 
+            let value =
+                patternNamed pname
+                |> withPatternType ptype
+            match attrs with
+            | Some attrs -> SynPatRcd.CreateAttrib(value, [ SynAttributeList.Create attrs ])
+            | None -> value
+        )
+    let tupled = argumentDeclarations |> SynPatRcd.CreateTuple |> SynPatRcd.CreateParen
+    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, [ tupled ])
+
 let functionPatternNoArgTypes (fname: string) (args: (string) list) =
     let argumentDeclarations = 
         args
@@ -129,6 +144,7 @@ let functionPatternNoArgTypes (fname: string) (args: (string) list) =
             patternNamed pname
             |> SynPatRcd.CreateParen )
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, argumentDeclarations)
+
 let functionPatternThunk (fname: string) =
     SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString fname, [SynPatRcd.Const {Const = SynConst.Unit; Range = range.Zero}])
 

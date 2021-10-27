@@ -17,6 +17,7 @@ type ComponentParameters =
         LibraryNamespace:               string
         ComponentJavascript:            string list
         ComponentFSharp:                string
+        ComponentCSharp:                string
         ComponentDescription:           string option
         PropertyNames:                  string list
         DUSafePropertyNames:            string list
@@ -43,6 +44,7 @@ type ComponentParameters =
             LibraryNamespace                = componentName
             ComponentJavascript             = componentJavascript
             ComponentFSharp                 = sprintf "%s.fs" componentName
+            ComponentCSharp                 = sprintf "%s.csharp.fs" componentName
             ComponentDescription            = componentMetadata.description
             PropertyNames                   = pnames
             DUSafePropertyNames             = pnames |> List.map String.toValidDULabel

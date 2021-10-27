@@ -34,7 +34,7 @@ OPTIONS:
 # Basics of AST (Abstract Syntax Tree) based code generation
 This is a basic overview of AST based code generation. It covers the most commonly used
 concepts in F# syntax and how they are generated using the tools in the `FSharp.Compiler`
-and `FsAst` libraries, as well as a handful of useful-to-know quirks of the system.
+and `FsAst` ([FsAst on github](https://github.com/ionide/FsAst)) libraries, as well as a handful of useful-to-know quirks of the system.
 
 `FsAst` provides useful abstractions for the built-in `FSharp.Compiler` AST elements. 
 `FsAst.Rcd` defines record types that correspond with the classes in `FSharp.Compiler` 
