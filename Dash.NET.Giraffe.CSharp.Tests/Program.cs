@@ -21,12 +21,16 @@ namespace Documentation.Examples
             //Layout_MoreAboutHtmlComponents.RunExample();
             //Layout_Markdown.RunExample();
             //Layout_ReusableComponents.RunExample();
-            Layout_Viz.RunExample();
+            //Layout_Viz.RunExample();
             //Layout_CoreComponents.RunExample();
 
             //Callback_SimpleCallback.RunExample();
             //Callback_SimpleSlider.RunExample();
-            //Callback_MultiInputs.RunExample();
+            //Callback_MultiInputs.RunExample(); //Need to check f# code, the csv might have changed
+            //Callback_MultiOutputs.RunExample();
+            //Callback_CallbackChain.RunExample(); //Doesn't work
+            //Callback_BasicInput.RunExample();
+            Callback_BasicState.RunExample();
         }
     }
 }
