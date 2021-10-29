@@ -36,7 +36,8 @@ namespace Documentation.Examples
                         Html.hr(),
                         RadioItems.radioItems(id: "cities-radio"),
                         Html.hr(),
-                        Html.div(Attr.id("display-selected-values"))
+                        Html.div(Attr.id("display-selected-values")),
+                        Html.div(Attr.id("test"))
                     )
                 );
 
@@ -52,19 +53,40 @@ namespace Documentation.Examples
                     },
                     handler: (string selectedCountry) =>
                     {
-                        var test = new[] { RadioItemsOption.Init(label: "Test", value: "Test") };
+                        var radioItemsOptionArr = countries.Where(x => x.name == selectedCountry).First().cities.Select(x =>
+                        RadioItemsOption.Init(label: x, value: x)).ToArray();
                         return new[]
                         {
-                            CallbackResult.Create(("cities-radio", ComponentProperty.CustomProperty("options")), test)
+                            CallbackResult.Create(("cities-radio", ComponentProperty.CustomProperty("options")), radioItemsOptionArr)
                         };
                     },
                     preventInitialCall: false
                 );
 
+            var setCitiesValue =
+                Callback.Create(
+                    input: new[]
+                    {
+                        ("cities-radio", ComponentProperty.CustomProperty("options"))
+                    },
+                    output: new[]
+                    {
+                        ("test", ComponentProperty.Children)
+                    },
+                    handler: (RadioItemsOption[] a) => //I'm guessing the error happens here
+                    {
+                        return new[]
+                        {
+                            CallbackResult.Create(("test", ComponentProperty.Children), "a") //This is unrelated, I wanted to see if the error is happening elsewhere
+                        };
+                    }
+                );
+
             var dashApp = DashApp
                 .initDefault()
                 .withLayout(layout)
-                .addCallback(setCitiesOption);
+                .addCallback(setCitiesOption)
+                /*.addCallback(setCitiesValue)*/;
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
