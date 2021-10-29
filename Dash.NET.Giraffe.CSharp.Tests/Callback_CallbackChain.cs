@@ -13,30 +13,24 @@ namespace Documentation.Examples
     {
         class Country
         {
-            public Country(string name, string[] cities)
-            {
-                this.name = name;
-                this.cities = cities;
-            }
             public string name { get; set; }
             public string[] cities { get; set; }
         }
+
         public static void RunExample()
         {
             var countries = new List<Country>()
             {
-                new Country("America", new string[] { "New York City", "San Francisco", "Cincinnati"}),
-                new Country("Canada", new string[] { "Montreal", "Toronto", "Ottawa" })
+                new Country() { name = "America", cities = new string[] { "New York City", "San Francisco", "Cincinnati" } },
+                new Country() { name = "Canada", cities = new string[] { "Montreal", "Toronto", "Ottawa" } }
             };
-
-            countries.Where(x => x.name == "America").Select(x => x.cities);
 
             var layout =
                 Html.div(
                     Attr.children(
                         RadioItems.radioItems(
                             id: "countries-radio",
-                            RadioItems.Attr.options(countries.Select(x => RadioItemsOption.Init(label: x.name, value: x.name, disabled: false)).ToArray()),
+                            RadioItems.Attr.options(countries.Select(x => RadioItemsOption.Init(label: x.name, value: x.name, disabled: false))),
                             RadioItems.Attr.value("America")
                         ),
                         Html.hr(),
@@ -58,7 +52,7 @@ namespace Documentation.Examples
                     },
                     handler: (string selectedCountry) =>
                     {
-                        var test = new[] { RadioItemsOption.Init(label: selectedCountry, value: selectedCountry) };
+                        var test = new[] { RadioItemsOption.Init(label: "Test", value: "Test") };
                         return new[]
                         {
                             CallbackResult.Create(("cities-radio", ComponentProperty.CustomProperty("options")), test)

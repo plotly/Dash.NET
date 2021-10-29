@@ -4,6 +4,9 @@ open System
 open System.Runtime.InteropServices
 
 
+type IUnwrap =
+    abstract Unwrap: unit -> obj
+
 //module ComponentPropTypes =
     
 type InputType = private WrappedInputType of Dash.NET.ComponentPropTypes.InputType with
@@ -39,10 +42,12 @@ type InputMode = private WrappedInputMode of Dash.NET.ComponentPropTypes.InputMo
 // SpellCheckOptions can be exposed as a bool
 
 type LoadingState = private WrappedLoadingState of Dash.NET.ComponentPropTypes.LoadingState with
-    static member internal Convert (v : LoadingState) : Dash.NET.ComponentPropTypes.LoadingState = match v with WrappedLoadingState v -> v
+    static member internal Unwrap (v : LoadingState) : Dash.NET.ComponentPropTypes.LoadingState = match v with WrappedLoadingState v -> v
     static member Init (isLoading : bool, [<Optional>] propName : string, [<Optional>] componentName : string) =
         guardAgainstNull "isLoading" isLoading
         Dash.NET.ComponentPropTypes.LoadingState.init (isLoading, ?propName = Option.ofObj propName, ?componentName = Option.ofObj componentName) |> WrappedLoadingState
+    interface IUnwrap with
+        member x.Unwrap () = LoadingState.Unwrap x |> box
 
 
 type PersistenceTypeOptions = private WrappedPersistenceTypeOptions of Dash.NET.ComponentPropTypes.PersistenceTypeOptions with
@@ -52,29 +57,40 @@ type PersistenceTypeOptions = private WrappedPersistenceTypeOptions of Dash.NET.
     static member Local () = Dash.NET.ComponentPropTypes.PersistenceTypeOptions.Local |> PersistenceTypeOptions.Wrap
     static member Session () = Dash.NET.ComponentPropTypes.PersistenceTypeOptions.Session |> PersistenceTypeOptions.Wrap
     static member Memory () = Dash.NET.ComponentPropTypes.PersistenceTypeOptions.Memory |> PersistenceTypeOptions.Wrap
+
+    interface IUnwrap with
+        member x.Unwrap () = PersistenceTypeOptions.Unwrap x |> box
         
 type DropdownOption = private WrappedDropdownOption of Dash.NET.ComponentPropTypes.DropdownOption with
-    static member internal Convert (v : DropdownOption) = match v with WrappedDropdownOption v -> v
+    static member internal Unwrap (v : DropdownOption) = match v with WrappedDropdownOption v -> v
     static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>, [<Optional>] title : string) =
         guardAgainstNull "label" label
         guardAgainstNull "value" value
         Dash.NET.ComponentPropTypes.DropdownOption.init (label, value, ?disabled = Option.ofNullable disabled, ?title = Option.ofObj title) |> WrappedDropdownOption
+    interface IUnwrap with
+        member x.Unwrap () = DropdownOption.Unwrap x |> box
 
 type RadioItemsOption = private WrappedRadioItemsOption of Dash.NET.ComponentPropTypes.RadioItemsOption with
-    static member internal Convert (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = match v with WrappedRadioItemsOption v -> v
+    static member Unwrap (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = match v with WrappedRadioItemsOption v -> v
     static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
         guardAgainstNull "label" label
         guardAgainstNull "value" value
         Dash.NET.ComponentPropTypes.RadioItemsOption.init (label, value, ?disabled = Option.ofNullable disabled) |> WrappedRadioItemsOption
+    interface IUnwrap with
+        member x.Unwrap () = RadioItemsOption.Unwrap x |> box
         
 type TabColors = private WrappedTabColors of Dash.NET.ComponentPropTypes.TabColors with
-    static member internal Convert (v : TabColors) : Dash.NET.ComponentPropTypes.TabColors = match v with WrappedTabColors v -> v
+    static member internal Unwrap (v : TabColors) : Dash.NET.ComponentPropTypes.TabColors = match v with WrappedTabColors v -> v
     static member Init ([<Optional>] border : string, [<Optional>] primary : string, [<Optional>] background : string) =
         Dash.NET.ComponentPropTypes.TabColors.init (?border = Option.ofObj border, ?primary = Option.ofObj primary, ?background = Option.ofObj background) |> WrappedTabColors
+    interface IUnwrap with
+        member x.Unwrap () = TabColors.Unwrap x |> box
 
 type ChecklistOption = private WrappedChecklistOption of Dash.NET.ComponentPropTypes.ChecklistOption with
-    static member internal Convert (v : ChecklistOption) : Dash.NET.ComponentPropTypes.ChecklistOption = match v with WrappedChecklistOption v -> v
+    static member internal Unwrap (v : ChecklistOption) : Dash.NET.ComponentPropTypes.ChecklistOption = match v with WrappedChecklistOption v -> v
     static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
         guardAgainstNull "label" label
         guardAgainstNull "value" value
         Dash.NET.ComponentPropTypes.ChecklistOption.init (label, value, ?disabled = Option.ofNullable disabled) |> WrappedChecklistOption
+    interface IUnwrap with
+        member x.Unwrap () = ChecklistOption.Unwrap x |> box

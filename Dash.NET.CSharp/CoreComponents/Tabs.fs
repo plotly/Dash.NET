@@ -89,13 +89,13 @@ module Tabs =
         ///</summary>
         static member colors(p: TabColors) = 
             guardAgainstNull "p" p
-            OAttr.colors (p |> TabColors.Convert)
+            OAttr.colors (p |> TabColors.Unwrap)
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert)
+            OAttr.loadingState (p |> LoadingState.Unwrap)
 
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when

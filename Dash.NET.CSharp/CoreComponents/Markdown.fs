@@ -78,7 +78,7 @@ module Markdown =
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+            OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>

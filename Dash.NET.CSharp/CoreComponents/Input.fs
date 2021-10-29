@@ -170,7 +170,7 @@ module Input =
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
-        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+        static member loadingState(p: LoadingState) = OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
