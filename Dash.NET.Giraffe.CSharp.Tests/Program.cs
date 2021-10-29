@@ -26,11 +26,11 @@ namespace Documentation.Examples
 
             //Callback_SimpleCallback.RunExample();
             //Callback_SimpleSlider.RunExample();
-            //Callback_MultiInputs.RunExample(); //Need to check f# code, the csv might have changed
+            Callback_MultiInputs.RunExample(); //Need to check f# code, the csv might have changed
             //Callback_MultiOutputs.RunExample();
             //Callback_CallbackChain.RunExample(); //Doesn't work
             //Callback_BasicInput.RunExample();
-            Callback_BasicState.RunExample();
+            //Callback_BasicState.RunExample();
         }
     }
 }

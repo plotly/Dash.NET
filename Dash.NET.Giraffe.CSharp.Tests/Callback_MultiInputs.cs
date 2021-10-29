@@ -29,7 +29,7 @@ namespace Documentation.Examples
             [Index(2)]
             public int year { get; set; }
             [Index(3)]
-
+            [Default("0")]
             [NumberStyles(NumberStyles.Number | NumberStyles.AllowExponent)] //Handle values in scientific notation
             public decimal value { get; set; }
         }
@@ -44,7 +44,7 @@ namespace Documentation.Examples
             Func<string, string, string, string, int, GenericChart.Figure> scatterPlot =
                 (string xaxisColumnName, string yaxisColumnName, string xaxisType, string yaxisType, int year) =>
                 {
-                    var filteredRows = rows.Where(x => x.year == year && x.value != 0);
+                    var filteredRows = rows.Where(x => x.year == year /*&& x.value != 0*/);
                     var xData = filteredRows.Where(x => x.indicator == xaxisColumnName).Select(x => x.value);
                     var yData = filteredRows.Where(x => x.indicator == yaxisColumnName).Select(x => x.value);
                     var countryData = filteredRows.Select(x => x.country).ToArray();
