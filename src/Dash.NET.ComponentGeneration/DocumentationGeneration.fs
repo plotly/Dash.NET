@@ -137,8 +137,10 @@ let generateComponentPropDocumentation (pname: string) (prop: SafeReactProp) =
     |> Option.map (fun tdoc -> sprintf "• %s (%s%s)%s" pname tdoc optionalDoc descriptionDoc)
 
 let generateComponentPropsDocumentation (keepId: bool) (comp: SafeReactComponent) = 
-    (comp.props.Keys |> List.ofSeq, comp.props.Values |> List.ofSeq)
-    ||> List.zip
+    //(comp.props.Keys |> List.ofSeq, comp.props.Values |> List.ofSeq)
+    //||> List.zip
+    comp.props
+    |> Map.toList
     |> (if not keepId then List.filter (fun (k,_) -> k.ToLowerInvariant() = "id" |> not) else id)
     |> List.choose (fun (k,v) -> generateComponentPropDocumentation k v)
 
