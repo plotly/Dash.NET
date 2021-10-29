@@ -31,6 +31,13 @@ module RadioItems =
             p |> Array.iter (guardAgainstNull "p")
             OAttr.options (p |> Array.map RadioItemsOption.Convert) |> Attr.Wrap
         ///<summary>
+        ///An sequence of options
+        ///</summary>
+        static member options(p: seq<RadioItemsOption>) = 
+            guardAgainstNull "p" p
+            p |> Seq.iter (guardAgainstNull "p")
+            OAttr.options (p |> Seq.map RadioItemsOption.Convert) |> Attr.Wrap
+        ///<summary>
         ///The currently selected value
         ///</summary>
         static member value(p: IConvertible) = 
