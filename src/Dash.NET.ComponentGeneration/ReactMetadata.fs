@@ -151,22 +151,22 @@ type SafeReactPropType =
         | Object _ 
         | Any _
         | Element _ 
+        | ArrayOf _
+        | FlowArray _
+        | Shape _
+        | Exact _
+        | FlowObject _
         | Node _ -> false
 
         | Enum _
         | Union _
-        | ArrayOf _
         | ObjectOf _
-        | Shape _
-        | Exact _
-        | FlowUnion _
-        | FlowArray _
-        | FlowObject _ -> true
+        | FlowUnion _ -> true
 
         | Other _ -> false
     
     static member tryGetFSharpTypeName = function
-        | Array _ -> Some ["list"; "obj"]
+        | Array _ -> Some ["seq"; "obj"]
         | Bool _ -> Some ["bool"]
         | Number _ -> Some ["double"]
         | String _ -> Some ["string"]
@@ -175,7 +175,7 @@ type SafeReactPropType =
         | Element _ -> Some ["DashComponent"]
         | Node _ -> Some ["DashComponent"] 
         // MC
-        | ArrayOf _ -> Some [ "list"; "obj" ]
+        | ArrayOf _ -> Some [ "seq"; "obj" ]
 
         //| Union (_, Some [ SafeReactPropType.String _; SafeReactPropType.Number _ ])
         //| Union (_, Some [ SafeReactPropType.Number _; SafeReactPropType.String _ ]) -> Some [ "IConvertible" ]
@@ -420,7 +420,46 @@ type SafeReactPropType =
             ( props, maybeStringVal )
             |> SafeReactPropType.Any
 
-    static member equalsValue (x: SafeReactPropType) (y: SafeReactPropType) =
+    //static member compareValues (x: SafeReactPropType) (y: SafeReactPropType) =
+    //    let equalsContent (source1: 'a list) (source2: 'a list) =
+    //        source1 |> List.except source2 |> List.isEmpty
+    //        && source2 |> List.except source1 |> List.isEmpty
+
+    //    let format
+
+    //    match x, y with
+    //    | Array (_, maybeXValue), Array (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Bool (_, maybeXValue), Bool (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Number (_, None), Number (_, None) -> 0
+    //    | Number (_, Some _), Number (_, None) -> 1
+    //    | Number (_, None), Number (_, Some _) -> -1
+    //    | Number (_, Some xValue), Number (_, Some yValue) -> compare (xValue.ToDouble()) (double yValue)
+    //    | String (_, maybeXValue), String (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Object (_, maybeXValue), Object (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Any (_, maybeXValue), Any (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Element (_, maybeXValue), Element (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Node (_, maybeXValue), Node (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | ArrayOf (_, maybeXValue), ArrayOf (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | ObjectOf (_, maybeXValue), ObjectOf (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | FlowArray (_, maybeXValue), FlowArray (_, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | Other (_, _, maybeXValue), Other (_, _, maybeYValue) -> compare maybeXValue maybeYValue
+    //    | FlowUnion (_, maybeXValues), FlowUnion (_, maybeYValues)
+    //    | Union (_, maybeXValues), Union (_, maybeYValues)
+    //    | Enum (_, maybeXValues), Enum (_, maybeYValues) ->
+    //        match maybeXValues, maybeYValues with
+    //        | Some xValues, Some yValues -> xValues |> equalsContent yValues
+    //        | None, None -> true
+    //        | _ -> false
+    //    | FlowObject (_, maybeXValues), FlowObject (_, maybeYValues)
+    //    | Shape (_, maybeXValues), Shape (_, maybeYValues)
+    //    | Exact (_, maybeXValues), Exact (_, maybeYValues) ->
+    //        match maybeXValues, maybeYValues with
+    //        | Some xValues, Some yValues -> xValues |> Seq.map(|KeyValue|) |> Seq.toList |> equalsContent (yValues |> Seq.map(|KeyValue|) |> Seq.toList)
+    //        | None, None -> true
+    //        | _ -> false
+    //    | _ -> false
+
+    static member valueEquals (x: SafeReactPropType) (y: SafeReactPropType) =
         let equalsContent (source1: 'a list) (source2: 'a list) =
             source1 |> List.except source2 |> List.isEmpty
             && source2 |> List.except source1 |> List.isEmpty
@@ -506,23 +545,15 @@ type SafeReactProp =
           description = prop.description  |> optional
           defaultValue = prop.defaultValue |> optional |> Option.map (SafeReactPropType.fromReactPropType false)}
 
+
 type SafeReactComponent =
   { description: string option
     displayName: string option
-    //props: Dictionary<string, SafeReactProp> }
     props: Map<string, SafeReactProp> }
 
     static member fromReactComponent (comp: ReactComponent): SafeReactComponent =
         
-        //let removeUnrepresentableProps (dict: Dictionary<string, SafeReactProp>) =
         let removeUnrepresentableProps =
-            //let newDict = Dictionary()
-            //(dict.Keys |> List.ofSeq, dict.Values |> List.ofSeq)
-            //||> List.zip
-            //|> List.filter (snd >> (fun p -> p.propType) >> function | Some (Other _) | None -> false | _ -> true)
-            //|> List.iter newDict.Add
-            //newDict
-
             Map.filter (fun _ (p: SafeReactProp) -> match p.propType with Some (Other _) | None -> false | _ -> true)
 
         { description = comp.description |> optional
@@ -531,22 +562,8 @@ type SafeReactComponent =
             comp.props
             |> optional
             |> Option.map (toSafeMap SafeReactProp.fromReactProp)
-            |> Option.defaultValue (Map.empty)
+            |> Option.defaultValue Map.empty
             |> removeUnrepresentableProps }
-            //comp.props 
-            ////|> Seq.map (|KeyValue|)  
-            ////|> Map.ofSeq
-            //|> optional 
-            //|> Option.map (toSafeDict SafeReactProp.fromReactProp)
-            ////|> Option.defaultValue (Dictionary())
-            //|> Option.defaultValue (Map.empty)
-            //|> removeUnrepresentableProps }
-
-//let toSafe (meta: Dictionary<string, ReactComponent>): Dictionary<string, SafeReactComponent> =
-    //meta 
-    //|> optional 
-    //|> Option.map (toSafeDict SafeReactComponent.fromReactComponent)
-    //|> Option.defaultValue (Dictionary())
 
 let toSafe (meta: Dictionary<string, ReactComponent>) =
     meta 

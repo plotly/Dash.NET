@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open System.Collections.Generic
 open FsAst.AstCreate
 open FsAst.AstRcd
 open FSharp.Compiler.SyntaxTree
@@ -14,7 +15,10 @@ open ComponentParameters
 open ReactMetadata
 open DocumentationGeneration
 
-open System.Collections.Generic
+module Dict =
+    let toList =
+        Seq.map(|KeyValue|)
+        >> Seq.toList
 
 let private mkCaseTypeName =
     sprintf "%s%s"
@@ -23,701 +27,427 @@ let private toCaseTypeName propTypeName =
     SafeReactPropType.toName
     >> mkCaseTypeName propTypeName
 
-let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
+let private mkFieldTypeNames propTypeName (pname: string) =
+    SafeReactPropType.tryGetFSharpTypeName
+    >> Option.defaultValue [ sprintf "%s%s" propTypeName (pname.Pascalize()) ]
 
-    log.Information("Creating component bindings")
+let private mkMemberFunctionPatternArgs propTypeName (name: string, propType) =
+    let fieldTypeName = propType |> mkFieldTypeNames propTypeName name |> appType
+    let vprops = propType |> SafeReactPropType.getProps
+    let isRequired = vprops.required |> Option.defaultValue false
+    name.Camelize(), fieldTypeName, isRequired
 
-    let componentPropertyTypeDeclarations =
-        let rec generatePropTypes (name: string) (ptype: SafeReactPropType) =
-            let propTypeName = name |> String.toPascalCase
+let private defineDynObjSetValueExpression propTypeName valueName (prop: string, ptype) =
+    let ptname = ptype |> mkFieldTypeNames propTypeName prop |> List.head
+    let convertInfo, setInfo =
+        let optionSuffix = "Opt"
+        match SafeReactPropType.needsConvert ptype, (SafeReactPropType.getProps ptype).required with
+        | true, Some true ->
+            [
+                SynExpr.CreateIdentString "|>" 
+                SynExpr.CreateLongIdent (LongIdentWithDots.Create [ ptname; "convert" ])
+            ]
+            , ""
+        | true, _ ->
+            [
+                SynExpr.CreateIdentString "|>" 
+                SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
+                SynExpr.CreateLongIdent (LongIdentWithDots.Create [ ptname; "convert" ])
+            ]
+            , optionSuffix
+        | false, Some true -> [], ""
+        | false, _ -> [], optionSuffix
 
-            let toCaseTypeName = toCaseTypeName propTypeName
+    [
+        yield SynExpr.CreateIdentString (prop.Camelize())
+        yield! convertInfo
+        yield SynExpr.CreateIdentString "|>" 
+        yield SynExpr.CreateLongIdent (LongIdentWithDots.CreateString (sprintf "DynObj.setValue%s" setInfo))
+        yield SynExpr.CreateIdentString valueName
+        yield SynExpr.CreateConstString prop
+    ]
+    |> application
+    |> Expression
 
-            let toFieldsList : IDictionary<string, SafeReactPropType> -> _ =
-                Seq.map(|KeyValue|)
-                >> Seq.toList
+let private defineStaticMethod name propTypeName methodName fields =
+    let valueName = "t"
+    fields
+    |> List.map (mkMemberFunctionPatternArgs propTypeName)
+    |> memberFunctionPattern methodName
+    |> binding (
+        [
+            yield patternNamed valueName |> binding (application [SynExpr.CreateIdentString name; SynExpr.CreateUnit]) |> Let
+            yield! fields |> List.map (defineDynObjSetValueExpression propTypeName valueName)
+            yield SynExpr.CreateIdentString valueName |> Expression
+        ]
+        |> expressionSequence
+    )
+    |> SynMemberDefn.CreateStaticMember
 
-            let mkRecursiveTypes mkTypeName =
-                List.choose (fun (pname: string, ptype: SafeReactPropType) -> 
-                    let typename = mkTypeName propTypeName pname
-                    let propTypes = generatePropTypes typename ptype
-                    propTypes
-                    )
-                >> List.concat
+let private defineDynamicObjType name propTypeName fields =
+    name
+    |> componentInfo
+    |> typeDeclaration [
+        SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
+        typeInherit (application [ SynExpr.CreateIdentString "DynamicObj"; SynExpr.CreateUnit ]) 
+        fields |> defineStaticMethod name propTypeName "init"
+      ]
 
-            let mkFieldTypeNames (pname: string, ptype) =
-                ptype
+let rec private generatePropTypes (name: string) (ptype: SafeReactPropType) =
+    let propTypeName = name.Pascalize()
+
+    let toCaseTypeName = toCaseTypeName propTypeName
+
+    let mkRecursiveTypes mkTypeName =
+        List.choose (fun (name: string, propType: SafeReactPropType) -> 
+            generatePropTypes (mkTypeName propTypeName name) propType
+        )
+
+    let mkDiscriminatedUnion (propTypes: SafeReactPropType list) =
+        let mkValuedUnion propType =
+            let childCaseTypeName = propType |> toCaseTypeName
+            let maybeChildRecursiveTypes = propType |> generatePropTypes childCaseTypeName
+            let childCaseName = SafeReactPropType.toName propType
+            let childTypeNameArgs = 
+                propType 
                 |> SafeReactPropType.tryGetFSharpTypeName
-                // MC
-                //|> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
-                |> Option.defaultValue ([sprintf "%s%s" propTypeName (pname.Pascalize())])
+                |> Option.defaultValue [ childCaseTypeName ]
+            let childCase = simpleUnionCase childCaseName [ anonAppField childTypeNameArgs ]
+            let childConvertCase =
+                let valueName = "v"
+                let boxable =
+                    if SafeReactPropType.needsConvert propType then 
+                        application [
+                            SynExpr.CreateIdentString valueName
+                            SynExpr.CreateIdentString "|>" 
+                            SynExpr.CreateLongIdent (LongIdentWithDots.Create [ childTypeNameArgs.[0]; "convert" ])
+                        ]
+                    else
+                        SynExpr.CreateIdentString valueName
 
-            // { AField: bool
-            //   BField: string
-            //   CField: string }
-            let mkFieldDefinitions =
-                List.map (fun (pname, ptype) ->
-                    (pname, ptype)
-                    |> mkFieldTypeNames
-                    |> simpleAppField (pname |> String.toPascalCase)
+                simpleMatchClause childCaseName [valueName] None (
+                    application [
+                        boxable
+                        SynExpr.CreateIdentString "|>" 
+                        SynExpr.CreateIdentString "box" 
+                    ]
                 )
 
-            let mkString =
-                List.map (fun (pname: string, ptype) -> 
-                    let jsonConversion =
-                        let instanceType = pname.Pascalize()
-                        if SafeReactPropType.needsConvert ptype then 
-                            // MC
-                            //let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
-                            //let caseTypeName = sprintf "%s%s" propTypeName (pname.Pascalize())
-                            let caseTypeName = ptype |> toCaseTypeName
-                            application
-                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; instanceType])
-                                SynExpr.CreateIdentString "|>" 
-                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
-                            |> SynExpr.CreateParen
-                        else
-                            SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; instanceType] )
-                    ( Ident.Create pname, jsonConversion))
-                >> anonRecord
-                >> List.singleton
-                >> List.append [ SynExpr.CreateIdentString "box" ]
-                >> application
+            (childCase, childConvertCase, maybeChildRecursiveTypes), (childCaseName, childTypeNameArgs)
 
-            // member this.Convert() =
-            //     box
-            //         {| aField = this.AField.Convert()
-            //            bField = this.BField.Convert()
-            //            cField = this.CField |}
-            //
-            /// Define the json conversion
-            let mkStringDefinition fields =
-                functionPatternNoArgTypes "convert" ["this"]
-                |> (fields |> mkString |> memberBinding)
+        let mkUnvaluedUnion v =
+            let childCaseName = v |> String.toValidDULabel
+            let childCase = simpleUnionCase childCaseName []
+            let childConvertCase = 
+                simpleMatchClause childCaseName [] None (
+                    application [
+                        SynExpr.CreateIdentString "box" 
+                        SynExpr.CreateConstString v
+                    ]
+                )
+
+            (childCase, childConvertCase, None), (childCaseName, [])
+
+        let childDetails =
+            propTypes
+            |> List.choose (fun propType ->
+                match propType with
+                | Array (_, Some v)
+                | String (_, Some v)
+                | Object (_, Some v)
+                | Any (_, Some v)
+                | Element (_, Some v)
+                | Node (_, Some v) -> v |> mkUnvaluedUnion |> Some
+                | Bool (_, Some v) -> v |> string |> mkUnvaluedUnion |> Some
+                | Number (_, Some v) -> v |> string |> mkUnvaluedUnion |> Some
+                | Array (_, None)
+                | Bool (_, None)
+                | Number (_, None)
+                | String (_, None)
+                | Object (_, None)
+                | Any (_, None)
+                | Element (_, None)
+                | Node (_, None)
+                | Enum (_, _)
+                | Union (_, _)
+                | ArrayOf (_, _)
+                | ObjectOf (_, _)
+                | Shape (_, _)
+                | Exact (_, _)
+                | FlowUnion (_, _)
+                | FlowArray (_, _)
+                | FlowObject (_, _) -> propType |> mkValuedUnion |> Some
+                | Other (_, _, _) -> None
+            )
+            |> List.distinctBy (snd >> fun (childCaseName: string, _) -> childCaseName.ToLowerInvariant())
+
+        match childDetails with
+        | [] ->
+            Log.Warning("Property {PropertyName} contained no cases, a type could not be created", name)
+            None
+        | children ->
+            let childCases, childCaseValues, maybeChildRecursiveTypes, nameDetails =
+                children
+                |> List.unzip
+                |> fun (typeDetails, nameDetails) ->
+                    let childCases, childCaseValues, maybeChildRecursiveTypes = typeDetails |> List.unzip3
+                    childCases, childCaseValues, maybeChildRecursiveTypes, nameDetails
+
+            let childRecursiveTypesDefinition =
+                maybeChildRecursiveTypes
+                |> List.choose id
+                |> List.map fst
+                |> List.concat
+
+            let childConvertMethodDefinition =
+                let valueName = "t"
+                functionPatternNoArgTypes "convert" [ valueName ]
+                |> memberBinding  
+                    ( SynExpr.CreateIdentString valueName
+                    |> matchStatement childCaseValues )
                 |> SynMemberDefn.CreateStaticMember
 
-            let mkDiscriminatedUnion (propTypes: SafeReactPropType list) =
-                let mkValuedUnion propType =
-                    let maybeRecursiveTypes = propType |> generatePropTypes (propType |> toCaseTypeName)
-
-                    let caseName = SafeReactPropType.toName propType
-
-                    let caseTypeNames = 
-                        propType 
-                        |> SafeReactPropType.tryGetFSharpTypeName
-                        |> Option.defaultValue ([propType |> toCaseTypeName])
-
-                    let duCase = simpleUnionCase caseName [anonAppField caseTypeNames]
-
-                    let caseValue =
-                        let valueName = "v"
-                        let boxable =
-                            if SafeReactPropType.needsConvert propType then 
-                                application [
-                                    SynExpr.CreateIdentString valueName
-                                    SynExpr.CreateIdentString "|>" 
-                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeNames.[0]; "convert"])
-                                ]
-                            else
-                                SynExpr.CreateIdentString valueName
-
-                        simpleMatchClause caseName [valueName] None (
-                            application [
-                                boxable
-                                SynExpr.CreateIdentString "|>" 
-                                SynExpr.CreateIdentString "box" 
-                            ]
-                        )
-
-                    caseName, duCase, caseValue, maybeRecursiveTypes
-
-                let mkUnvaluedUnion v =
-                    let caseName = v |> String.toValidDULabel
-                    let duCase = simpleUnionCase caseName []
-                    let caseValue = 
-                        simpleMatchClause caseName [] None (
-                            application [
-                                SynExpr.CreateIdentString "box" 
-                                SynExpr.CreateConstString v
-                            ]
-                        )
-
-                    caseName, duCase, caseValue, None
-
-                let caseDetails =
-                    propTypes
-                    |> List.choose (fun propType ->
-                        match propType with
-                        | Array (_, Some v)
-                        | String (_, Some v)
-                        | Object (_, Some v)
-                        | Any (_, Some v)
-                        | Element (_, Some v)
-                        | Node (_, Some v) -> v |> mkUnvaluedUnion |> Some
-                        | Bool (_, Some v) -> v |> string |> mkUnvaluedUnion |> Some
-                        | Number (_, Some v) -> v |> string |> mkUnvaluedUnion |> Some
-                        | Array (_, None)
-                        | Bool (_, None)
-                        | Number (_, None)
-                        | String (_, None)
-                        | Object (_, None)
-                        | Any (_, None)
-                        | Element (_, None)
-                        | Node (_, None)
-                        | Enum (_, _)
-                        | Union (_, _)
-                        | ArrayOf (_, _)
-                        | ObjectOf (_, _)
-                        | Shape (_, _)
-                        | Exact (_, _)
-                        | FlowUnion (_, _)
-                        | FlowArray (_, _)
-                        | FlowObject (_, _) -> propType |> mkValuedUnion |> Some
-                        | Other (_, _, _) -> None
-                    )
-                    |> List.distinctBy (fun (caseName: string, _, _, _) -> caseName.ToLowerInvariant())
-
-                match caseDetails with
-                | [] ->
-                    log.Warning("Property {PropertyName} contained no cases, a type could not be created", name)
-                    None
-                | cases ->
-                    let duCases, caseValues, maybeRecursiveTypes =
-                        cases
-                        |> List.map (fun (_, duCase, convertCase, maybeRecursiveTypes) -> duCase, convertCase, maybeRecursiveTypes)
-                        |> List.unzip3
-                    let recursiveTypes =
-                        maybeRecursiveTypes
-                        |> List.choose id
-                        |> List.concat
-
-                    // member this.Convert() =
-                    //     match this with
-                    //
-                    /// Define the json conversion
-                    let toCaseValueDefinition =
-                        functionPatternNoArgTypes "convert" ["this"]
-                        |> memberBinding  
-                            ( SynExpr.CreateIdentString "this"
-                            |> matchStatement caseValues )
-                        |> SynMemberDefn.CreateStaticMember
-
-                    // type CProp =
-                    //
-                    /// Create the union definition
-                    let unionTypeDefinition =
-                        propTypeName
-                        |> componentInfo
-                        |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                        |> simpleTypeDeclaration 
-                                (duCases |> unionDefinition)
-                                [ toCaseValueDefinition ]
-
-                    (unionTypeDefinition :: recursiveTypes) 
-                    |> Some
-
-            let mkAlias (utype: SafeReactPropType) =
-                let recursiveTypes = 
-                    generatePropTypes (sprintf "%sValue" propTypeName) utype
-                    |> Option.defaultValue []
-                
-                let caseInnerType = 
-                    utype 
-                    |> SafeReactPropType.tryGetFSharpTypeName
-                    |> Option.defaultValue ([sprintf "%sValue" propTypeName])
-
-                //  | MarksType (v) ->
-                //      (v.Keys, v.Values |> Seq.map (fun p -> box (p.Convert()))) ||> Seq.zip |> Map.ofSeq
-                //
-                /// Define the values for the cases
-                let caseValue =
-                    let boxable =
-                        if SafeReactPropType.needsConvert utype then 
-                            application
-                              [ SynExpr.CreateIdentString "p"
-                                SynExpr.CreateIdentString "|>" 
-                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseInnerType |> List.head; "convert"]) ]
-                            |> SynExpr.CreateParen
-                        else
-                            SynExpr.CreateIdentString "p"
-
-                    let valueConvert =
-                        application [ SynExpr.CreateIdentString "box"; boxable ]
-                        |> simpleLambdaStatement true ["p"]
-                        |> simpleLambdaStatement false ["k"]
-                        |> SynExpr.CreateParen
-
-                    let convertDict =
-                        application
-                          [ SynExpr.CreateIdentString "v"
-                            SynExpr.CreateIdentString "|>"
-                            application
-                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Map"; "map"]) 
-                                valueConvert ] ]
-
-                    simpleMatchClause propTypeName ["v"] None convertDict
-
-                // member this.Convert() =
-                //     match this with
-                //
-                /// Define the json conversion
-                let toCaseValueDefinition =
-                    functionPatternNoArgTypes "convert" ["this"]
-                    |> memberBinding  
-                      ( application 
-                          [ SynExpr.CreateIdentString "box"
-                            SynExpr.CreateIdentString "this" |> matchStatement [caseValue] |> SynExpr.CreateParen ] )
-                    |> SynMemberDefn.CreateStaticMember
-
-                // type MarksType = 
-                //    | MarksType of Map<string, MarksTypeType>
-                //
-                /// Create the alias definition
-                let aliasDefinition =
-                    propTypeName
-                    |> componentInfo
-                    |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                    |> simpleTypeDeclaration
-                      ( SynType.CreateApp (SynType.Create "Map", [SynType.Create "string"; appType caseInnerType]) 
-                        |> anonTypeField 
-                        |> List.singleton
-                        |> simpleUnionCase propTypeName
-                        |> List.singleton
-                        |> unionDefinition )
-                        [ toCaseValueDefinition ]
-
-                (aliasDefinition :: recursiveTypes)
-                |> Some
-
-            //let mkRecord (values: IDictionary<string, SafeReactPropType>) =
-            //    let fields =
-            //        (values.Keys |> List.ofSeq, values.Values |> List.ofSeq)
-            //        ||> List.zip 
-
-            //    if fields.Length > 0 then
-            //        let recursiveTypes =
-            //            fields
-            //            |> List.choose (fun (pname, ptype) -> 
-            //                let propTypes = generatePropTypes (sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)) ptype
-            //                propTypes
-            //                )
-            //            |> List.concat
-                
-            //        // { AField: bool
-            //        //   BField: string
-            //        //   CField: string }
-            //        //
-            //        /// Define the fields for the record
-            //        let fieldDefinitions =
-            //            fields
-            //            |> List.map (fun (pname, ptype) -> 
-            //                let maybeFieldTypeName = SafeReactPropType.tryGetFSharpTypeName ptype
-            //                let fieldTypeName =
-            //                    maybeFieldTypeName
-            //                    |> Option.defaultValue ([sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)])
-            //                simpleAppField (pname |> String.toPascalCase) fieldTypeName)
-
-            //        // member this.Convert() =
-            //        //     box
-            //        //         {| aField = this.AField.Convert()
-            //        //            bField = this.BField.Convert()
-            //        //            cField = this.CField |}
-            //        //
-            //        /// Define the json conversion
-            //        let toStringDefinition =
-            //            let toString =
-            //                let serializable =
-            //                    fields
-            //                    |> List.map (fun (pname, ptype) -> 
-            //                        let jsonConversion =
-            //                            let converted =
-            //                                if SafeReactPropType.needsConvert ptype then 
-            //                                    let caseTypeName = sprintf "%s%sType" propTypeName (pname |> String.toPascalCase)
-            //                                    application
-            //                                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["this"; pname |> String.toPascalCase])
-            //                                        SynExpr.CreateIdentString "|>" 
-            //                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [caseTypeName; "convert"]) ]
-            //                                    |> SynExpr.CreateParen
-            //                                else
-            //                                    SynExpr.CreateLongIdent( LongIdentWithDots.Create ["this"; pname |> String.toPascalCase] )
-
-            //                            converted
-                                            
-            //                        ( Ident.Create pname, jsonConversion ))
-            //                    |> anonRecord
-
-            //                application [ SynExpr.CreateIdentString "box"; serializable ]
-
-            //            functionPatternNoArgTypes "convert" ["this"]
-            //            |> memberBinding toString
-            //            |> SynMemberDefn.CreateStaticMember
-
-            //        // type BProp =
-            //        // 
-            //        /// Create the record definition
-            //        let recordTypeDefinition =
-            //            propTypeName
-            //            |> componentInfo
-            //            |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-            //            |> simpleTypeDeclaration 
-            //                    (fieldDefinitions |> recordDefinition)
-            //                    [ toStringDefinition ]
-
-            //        (recordTypeDefinition :: recursiveTypes)
-            //        |> Some
-
-            //    else
-            //        log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
-            //        None
-
-            let mkRecType fields =
-                // { AField: bool
-                //   BField: string
-                //   CField: string }
-                //
-                /// Define the fields for the record
-                let fieldDefinitions = mkFieldDefinitions fields
-
-                // member this.Convert() =
-                //     box
-                //         {| aField = this.AField.Convert()
-                //            bField = this.BField.Convert()
-                //            cField = this.CField |}
-                //
-                /// Define the json conversion
-                let toStringDefinition = mkStringDefinition fields
-
-                // type BProp =
-                // 
-                /// Create the record definition
+            let childUnionTypeDefinition =
                 propTypeName
                 |> componentInfo
                 |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
-                |> simpleTypeDeclaration 
-                        (fieldDefinitions |> recordDefinition)
-                        [ toStringDefinition ]
+                |> simpleTypeDeclaration (childCases |> unionDefinition) [ childConvertMethodDefinition ]
 
-            //let mkRecordNew (values: IDictionary<string, SafeReactPropType>) =
-            //    values
-            //    |> toFieldsList
-            //    |> function
-            //    | [] ->
-            //        log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
-            //        None
-            //    | fields ->
-            //        let record = fields |> mkRecType
-            //        let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
-            //        let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
-            //        Some (record::recursiveTypes)
+            Some (childUnionTypeDefinition :: childRecursiveTypesDefinition, nameDetails)
 
-            ///////////////////////////////////////////////////////////
-            let mkMethodArgs =
-                List.map(fun (pname, ptype) ->
-                    let camelCaseName = pname |> String.toPascalCase |> String.decapitalize
-                    let fieldTypeName = (pname, ptype) |> mkFieldTypeNames |> appType
-                    let vprops = ptype |> SafeReactPropType.getProps
-                    let isRequired = vprops.required |> Option.defaultValue false
-                    (camelCaseName, fieldTypeName, isRequired)
-                )
+    let mkAlias (utype: SafeReactPropType) =
+        let valueName = "p"
 
-            let setDynObjValue (tName, prop, maybePType, ptname) =
-                let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
-                let convertInfo, setInfo =
-                    maybePType
-                    |> Option.map (fun ptype ->
-                        match SafeReactPropType.needsConvert ptype, (SafeReactPropType.getProps ptype).required with
-                        | true, Some true ->
-                            [
-                                SynExpr.CreateIdentString "|>" 
-                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"])
-                            ]
-                            , ""
-                        | true, _ ->
-                            [
-                                SynExpr.CreateIdentString "|>" 
-                                SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
-                                SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"])
-                            ]
-                            , "Opt"
-                        | false, Some true ->
-                            []
-                            , ""
-                        | false, _ ->
-                            []
-                            , "Opt"
-                    )
-                    |> Option.defaultValue ([], "Opt")
+        let recursiveTypes = 
+            generatePropTypes (sprintf "%sValue" propTypeName) utype
+            |> Option.map fst
+            |> Option.defaultValue []
+        
+        let childTypeNameArgs = 
+            utype 
+            |> SafeReactPropType.tryGetFSharpTypeName
+            |> Option.defaultValue ([sprintf "%sValue" propTypeName])
 
-                [
-                    yield SynExpr.CreateIdentString camelCaseName
-                    yield! convertInfo
-                    yield SynExpr.CreateIdentString "|>" 
-                    yield SynExpr.CreateLongIdent (LongIdentWithDots.CreateString (sprintf "DynObj.setValue%s" setInfo))
-                    yield SynExpr.CreateIdentString tName
-                    yield SynExpr.CreateConstString prop
+        let caseValue =
+            let boxable =
+                if SafeReactPropType.needsConvert utype then 
+                    application
+                      [ SynExpr.CreateIdentString valueName
+                        SynExpr.CreateIdentString "|>" 
+                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [ childTypeNameArgs.[0]; "convert" ]) ]
+                    |> SynExpr.CreateParen
+                else
+                    SynExpr.CreateIdentString valueName
+
+            let valueConvert =
+                application [ SynExpr.CreateIdentString "box"; boxable ]
+                |> simpleLambdaStatement true [ valueName ]
+                |> simpleLambdaStatement false ["k"]
+                |> SynExpr.CreateParen
+
+            let convertDict =
+                application [
+                    SynExpr.CreateIdentString "v"
+                    SynExpr.CreateIdentString "|>"
+                    application [
+                        SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Map"; "map"]) 
+                        valueConvert
+                      ]
                 ]
-                |> application
-                |> Expression
 
-            /// Define the static method
-            let defineStaticMethod methodName fields =
-                // static member init
-                // (
-                //     ?aProp: string,
-                //     ?bProp: BProp,
-                //     ?cProp: bool
-                // ) =
+            simpleMatchClause propTypeName ["v"] None convertDict
+
+        let toCaseValueDefinition =
+            functionPatternNoArgTypes "convert" ["this"]
+            |> memberBinding (
+                application [
+                    SynExpr.CreateIdentString "box"
+                    SynExpr.CreateIdentString "this" |> matchStatement [ caseValue ] |> SynExpr.CreateParen
+                ]
+            )
+            |> SynMemberDefn.CreateStaticMember
+
+        let aliasDefinition =
+            propTypeName
+            |> componentInfo
+            |> withXMLDoc (ptype |> generatePropDocumentation |> Option.defaultValue [] |> toXMLDoc)
+            |> simpleTypeDeclaration (
+                SynType.CreateApp (SynType.Create "Map", [SynType.Create "string"; appType childTypeNameArgs]) 
+                |> anonTypeField 
+                |> List.singleton
+                |> simpleUnionCase propTypeName
+                |> List.singleton
+                |> unionDefinition
+            ) [ toCaseValueDefinition ]
+
+        Some (aliasDefinition :: recursiveTypes, [ propTypeName, childTypeNameArgs ])
+
+    let mkDynamicObj (values: IDictionary<string, SafeReactPropType>) =
+        if values.Count = 0 then
+            Log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+            None
+        else
+            let fields = values |> Dict.toList
+            let dynObjDef = fields |> defineDynamicObjType name propTypeName
+            let mkTypeName typeName (propName: string) = sprintf "%s%s" typeName (propName.Pascalize())
+            let recursiveTypes =
                 fields
-                |> mkMethodArgs
-                |> memberFunctionPattern methodName
-                |> binding (
-                    [
-                        // let t = Name()
-                        yield patternNamed "t" |> binding (application [SynExpr.CreateIdentString name; SynExpr.CreateUnit]) |> Let
-                        
-                        // DynObj.setValueOpt t "aProp" (aProp |> Option.map box)
-                        // DynObj.setValueOpt t "bProp" (bProp |> Option.map BProp.convert)
-                        // DynObj.setValueOpt t "cProp" (cProp |> Option.map box)
-                        yield! 
-                            fields
-                            |> List.map (fun (pname, ptype) -> setDynObjValue ("t", pname, Some ptype, (pname, ptype) |> mkFieldTypeNames |> List.head))
-                        
-                        // t
-                        yield SynExpr.CreateIdentString "t" |> Expression
-                    ]
-                    |> expressionSequence
-                )
-                |> SynMemberDefn.CreateStaticMember
+                |> mkRecursiveTypes mkTypeName
+                |> List.map fst
+                |> List.concat
 
-            let defineDynamicObjType fields =
-                // Create the type definition
-                name
-                |> componentInfo
-                |> typeDeclaration 
-                  [ SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
-                    typeInherit (application [SynExpr.CreateIdentString "DynamicObj"; SynExpr.CreateUnit]) 
-                    fields |> defineStaticMethod "init"
-                  ]
+            Some (dynObjDef::recursiveTypes, [ name, [ propTypeName ] ] )
 
-            let mkDynamicObj (values: IDictionary<string, SafeReactPropType>) =
-                if values.Count = 0 then
-                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
-                    None
-                else
-                    let fields = values |> toFieldsList
-                    let dynObjDef = fields |> defineDynamicObjType
-                    //let mkTypeName typeName propName = sprintf "%s%sType" typeName (propName |> String.toPascalCase)
-                    let mkTypeName typeName (propName: string) = sprintf "%s%s" typeName (propName.Pascalize())
-                    let recursiveTypes = fields |> mkRecursiveTypes mkTypeName
+    let mkDynamicObjs (values: IDictionary<string, SafeReactPropType>) =
+        if values.Count = 0 then
+            Log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
+            None
+        else
+            let recursiveTypes =
+                values
+                |> Dict.toList
+                |> mkRecursiveTypes (fun _ propName -> propName)
+                |> List.map fst
+                |> List.concat
+            Some (recursiveTypes, [ name, [] ])
 
-                    (dynObjDef::recursiveTypes)
-                    |> Some
+    match ptype with
+    | Enum (_, Some utypes)
+    | Union (_, Some utypes) 
+    | FlowUnion (_, Some utypes) -> mkDiscriminatedUnion utypes
+    | ArrayOf (_, Some utype) 
+    | FlowArray (_, Some utype) -> [ name, utype ] |> dict |> mkDynamicObjs
+    | ObjectOf (_, Some utype) -> mkAlias utype
+    | Shape (_, Some values) 
+    | Exact (_, Some values) 
+    | FlowObject (_, Some values) -> mkDynamicObj values
+    | _ -> None
 
-            let mkDynamicObjs (values: IDictionary<string, SafeReactPropType>) =
-                if values.Count = 0 then
-                    log.Error("Object, shape or exact property {PropertyName} contained no properties, a type could not be created", name)
-                    None
-                else
-                    values
-                    |> toFieldsList
-                    |> mkRecursiveTypes (fun _ propName -> propName)
-                    |> Some
+let createComponentAST (parameters: ComponentParameters) =
+    Log.Information("Creating component bindings")
 
-            match ptype with
-            | SafeReactPropType.Enum (_, Some utypes)
-            | SafeReactPropType.Union (_, Some utypes) 
-            | SafeReactPropType.FlowUnion (_, Some utypes) -> mkDiscriminatedUnion utypes
-            | SafeReactPropType.ArrayOf (_, Some utype) 
-            | SafeReactPropType.FlowArray (_, Some utype) -> [ name, utype ] |> dict |> mkDynamicObjs
-            | SafeReactPropType.ObjectOf (_, Some utype) -> mkAlias utype
-            | SafeReactPropType.Shape (_, Some values) 
-            | SafeReactPropType.Exact (_, Some values) 
-            | SafeReactPropType.FlowObject (_, Some values) -> mkDynamicObj values
-            | _ -> None // Other types dont need definitions
-
-        //(parameters.PropertyTypeNames, parameters.PropertyTypes)
-        //||> List.zip 
+    let typesDeclaration =
         parameters.Properties
-        |> Map.toList
-        |> List.choose (snd >> fun paramProp -> paramProp.Info.propType |> Option.bind (generatePropTypes paramProp.TypeName))
+        |> List.choose (fun paramProp -> paramProp.Info.propType |> Option.bind (generatePropTypes paramProp.TypeName))
+        |> List.map fst
         |> List.concat
         |> List.rev
 
-    /// Define the component property descriminated union
-    let mkComponentPropertyDUDeclaration () =
-
-        // | AProp of string
-        // | BProp of int
-        // | CProp of CProp
-        //
-        /// Define the cases for the descriminated union
-        let componentPropertyDUCases =
-            //List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-            //|> List.choose (fun (psafe, pname, prop, ptname) -> 
-            //    prop.propType
-            //    |> Option.map (fun ptype ->
-            //        let propTypeName =
-            //            SafeReactPropType.tryGetFSharpTypeName ptype
-            //            |> Option.map (function
-            //            | [ "list"; "obj" ] -> [ "list"; ptname ]
-            //            | names -> names)
-            //            |> Option.defaultValue ([ptname])
-            //        simpleUnionCase psafe [anonAppField propTypeName]))
-            //|> unionDefinition
-            parameters.Properties
-            |> Map.toList
-            |> List.choose (snd >> fun paramProp -> 
-                paramProp.Info.propType
-                |> Option.map (fun ptype ->
-                    let propTypeName =
-                        SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.map (function
-                        | [ "list"; "obj" ] -> [ "list"; paramProp.TypeName ]
-                        | names -> names)
-                        |> Option.defaultValue ([paramProp.TypeName])
-                    simpleUnionCase paramProp.DuSafeName [anonAppField propTypeName]))
+    let mkPropertyDuDeclaration () =
+        let duCasesDefinition =
+            let props = parameters.Properties
+            props
+            |> List.choose (fun paramProp -> 
+                let ll =
+                    paramProp
+                    |> ComponentParametersProperty.tryTypeNameArgs
+                    |> Option.map (fun propTypeName -> simpleUnionCase paramProp.CaseName [anonAppField propTypeName])
+                ll
+            )
             |> unionDefinition
 
-        // static member toDynamicMemberDef(prop: TestComponentProps) =
-        //     match prop with
-        //     | AProp (p) -> "aProp", box p
-        //     | BProp (p) -> "bProp", box p
-        //     | CProp (p) -> "cProp", box (p.ToString())
-        //
-        /// Define the static method "toMemberDef"
-        let componentPropertyToDynamicMemberDefDeclaration =
+        let toDynamicMemberDefMethodDefinition =
             functionPattern "toDynamicMemberDef" [("prop", SynType.Create parameters.ComponentPropsName)]
-            |> binding  
-              ( SynExpr.CreateIdentString "prop"
-                    |> matchStatement 
-                      //( List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                      //  |> List.map (fun (psafe, pname, prop, ptname) -> 
-                      //      let pConvert =
-                      //          if prop.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
-                      //              application
-                      //                [ SynExpr.CreateIdentString "p"
-                      //                  SynExpr.CreateIdentString "|>" 
-                      //                  SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"]) ]
-                      //          else
-                      //              application [ SynExpr.CreateIdentString "box"; SynExpr.CreateIdentString "p" ]
-                      //      simpleMatchClause psafe ["p"] None 
-                      //        ( SynExpr.CreateTuple 
-                      //              [ SynExpr.CreateConstString pname
-                      //                pConvert ] )) )
-                      (
-                        parameters.Properties
-                        |> Map.toList
-                        |> List.map (snd >> fun paramProp ->
-                            let pConvert =
-                                if paramProp.Info.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
-                                    application
-                                      [ SynExpr.CreateIdentString "p"
-                                        SynExpr.CreateIdentString "|>" 
-                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [paramProp.TypeName; "convert"]) ]
-                                else
-                                    application [ SynExpr.CreateIdentString "box"; SynExpr.CreateIdentString "p" ]
-                            simpleMatchClause paramProp.DuSafeName ["p"] None 
-                              ( SynExpr.CreateTuple 
-                                    [ SynExpr.CreateConstString paramProp.Name
-                                      pConvert ] ))
-                      )
-              )
-            
+            |> binding (
+                "prop"
+                |> SynExpr.CreateIdentString
+                |> matchStatement (
+                    parameters.Properties
+                    |> List.map (fun paramProp ->
+                        let valueName = "p"
+                        let pConvert =
+                            match paramProp |> ComponentParametersProperty.valueConvArgs with
+                            | [ arg ] -> [ SynExpr.CreateIdentString arg; SynExpr.CreateIdentString valueName ]
+                            | args ->
+                                [
+                                    SynExpr.CreateIdentString valueName
+                                    SynExpr.CreateIdentString "|>" 
+                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create args)
+                                ]
+                            |> application
+                        simpleMatchClause paramProp.CaseName [ valueName ] None (
+                            SynExpr.CreateTuple [
+                                SynExpr.CreateConstString paramProp.Name
+                                pConvert
+                            ]
+                        )
+                    )
+                )
+            )
             |> SynMemberDefn.CreateStaticMember
 
-        // type TestComponentProps =
-        //
-        // Create the type definition
         parameters.ComponentPropsName
         |> componentInfo
         |> withXMLDoc (parameters.Metadata |> generateComponentPropsDocumentation false |> toXMLDoc)
         |> simpleTypeDeclaration 
-            componentPropertyDUCases
-            [ componentPropertyToDynamicMemberDefDeclaration ]
+            duCasesDefinition
+            [ toDynamicMemberDefMethodDefinition ]
 
-    /// Define the component property descriminated union
-    let mkComponentAttributeDUDeclaration () =
-        // | Prop of SampleDashComponentProps
-        // | Children of DashComponent list
-        //
-        /// Define the cases for the descriminated union
-        let componentAttributeDUCases =
-            [ simpleUnionCase "Prop" [anonSimpleField parameters.ComponentPropsName]
-              simpleUnionCase "Children" [anonAppField ["list"; "DashComponent"]] ]
+    let mkAttributeDuDeclaration () =
+        let duCasesDefinition =
+            [
+                simpleUnionCase "Prop" [ anonSimpleField parameters.ComponentPropsName ]
+                simpleUnionCase "Children" [ anonAppField [ "list"; "DashComponent" ] ]
+            ]
             |> unionDefinition
 
-        //  static member AProp(p: string) = Prop(AProp p)
-        //  static member BProp(p: int) = Prop(BProp p)
-        //  static member CProp(p: CProp) = Prop(CProp p)
-        //
-        /// Create Feliz style attribute constructors for properties
-        let componentPropertyConstructorDeclarations =
-            //List.zip4 parameters.DUSafePropertyNames parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
+        let constructorsDeclarations =
+            let valueName = "p"
             parameters.Properties
-            |> Map.toList
-            |> List.choose (snd >> fun paramProp ->
-                let psafe = paramProp.DuSafeName
-                let pname = paramProp.Name
-                let prop = paramProp.Info
-                let ptname = paramProp.TypeName
-                prop.propType
+            |> List.choose (fun paramProp ->
+                let toCaseTypeName = toCaseTypeName paramProp.Name
+                let setFunctionName = paramProp |> ComponentParametersProperty.mkSetFunctionName
+                paramProp.Info.propType
                 |> Option.map (fun ptype ->
-                    let propTypeName =
-                        SafeReactPropType.tryGetFSharpTypeName ptype
-                        |> Option.defaultValue ([ptname])
-
-                    let toCaseTypeName = toCaseTypeName pname
-
-
                     match ptype with 
-                    | Union (_, Some utypes)
-                    | FlowUnion (_, Some utypes) ->
-                        utypes
-                        |> List.indexed
-                        |> List.map (fun (i, case) -> 
-                            let caseTypeName = 
-                                case 
-                                |> SafeReactPropType.tryGetFSharpTypeName
-                                // MC
-                                //|> Option.defaultValue ([sprintf "%sCase%dType" ptname i])
-                                |> Option.defaultValue ([case |> toCaseTypeName])
+                    | Union (_, Some _)
+                    | FlowUnion (_, Some _) ->
+                        ptype
+                        |> generatePropTypes paramProp.Name
+                        |> Option.map (snd >> fun xs ->
+                                xs
+                                |> List.map (fun (innerCaseName, innerPropTypeName) ->
+                                    functionPattern setFunctionName [ valueName, appType innerPropTypeName ]
+                                    |> binding (
+                                        application [
+                                            SynExpr.CreateIdentString "Prop"
+                                            application [
+                                                SynExpr.CreateIdentString paramProp.CaseName
+                                                application [
+                                                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [ paramProp.TypeName; innerCaseName ])
+                                                    SynExpr.CreateIdentString valueName
+                                                ] |> SynExpr.CreateParen
+                                            ] |> SynExpr.CreateParen
+                                          ]
+                                      )
+                                    |> withXMLDocLet (paramProp.Info |> generateComponentPropDescription |> toXMLDoc)
+                                    |> SynMemberDefn.CreateStaticMember
 
-                            let caseName = 
-                                caseTypeName 
-                                |> List.rev
-                                |> List.map String.toPascalCase
-                                |> List.reduce (sprintf "%s%s")
 
-                            functionPattern (pname |> String.toPascalCase |> String.decapitalize) [("p", appType caseTypeName)]
-                            |> binding
-                              ( application
-                                  [ SynExpr.CreateIdentString "Prop"
-                                    application
-                                        [ SynExpr.CreateIdentString psafe
-                                          application
-                                              [ SynExpr.CreateLongIdent (LongIdentWithDots.Create [ ptname; caseName ])
-                                                SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen ] |> SynExpr.CreateParen ])
-                            |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
-                            |> SynMemberDefn.CreateStaticMember)
-                        
+                                )
+                        )
+                        |> Option.defaultValue []
+
                     | _ ->
-                        functionPattern (pname |> String.toPascalCase |> String.decapitalize) [("p", appType propTypeName)]
-                        |> binding (application [ SynExpr.CreateIdentString "Prop"; application [SynExpr.CreateIdentString psafe; SynExpr.CreateIdentString "p"] |> SynExpr.CreateParen ])
-                        |> withXMLDocLet (prop |> generateComponentPropDescription |> toXMLDoc)
+                        let propTypeName = ptype |> ComponentParametersProperty.typeNameArgs paramProp
+                        functionPattern setFunctionName [ valueName, appType propTypeName ]
+                        |> binding (
+                            application [
+                                SynExpr.CreateIdentString "Prop"
+                                application [
+                                    SynExpr.CreateIdentString paramProp.CaseName
+                                    SynExpr.CreateIdentString valueName
+                                ] |> SynExpr.CreateParen
+                            ]
+                        )
+                        |> withXMLDocLet (paramProp.Info |> generateComponentPropDescription |> toXMLDoc)
                         |> SynMemberDefn.CreateStaticMember
-                        |> List.singleton))
+                        |> List.singleton
+                )
+            )
             |> List.concat
 
-        //  static member children(value: int) = Children([ Html.text value ])
-        //  static member children(value: string) = Children([ Html.text value ])
-        //  static member children(value: float) = Children([ Html.text value ])
-        //  static member children(value: System.Guid) = Children([ Html.text value ])
-        //  static member children(value: DashComponent) = Children([ value ])
-        //  static member children(value: list<DashComponent>) = Children(value)
-        //  static member children(value: seq<DashComponent>) = Children(List.ofSeq value)
-        //
-        /// Create Feliz style attribute constructors for children
-        let componentChildrenConstructorDeclarations =
+        let childrenConstructorDeclarations =
             let createCon ty app =
                 functionPattern "children" [("value", ty)]
                 |> binding (application [SynExpr.CreateIdentString "Children"; app |> SynExpr.CreateParen])
@@ -731,296 +461,313 @@ let createComponentAST (log: Core.Logger) (parameters: ComponentParameters) =
               createCon (appType ["list"; "DashComponent"]) (SynExpr.CreateIdentString "value")
               createCon (appType ["seq"; "DashComponent"]) (application [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "ofSeq"]); SynExpr.CreateIdentString "value" ]) ]
 
-        // type SampleDashComponentAttr =
-        //
-        // Create the type definition
         parameters.ComponentAttrsName
         |> componentInfo
         |> withXMLDoc (["A list of children or a property for this dash component"] |> toXMLDoc)
         |> simpleTypeDeclaration 
-            componentAttributeDUCases
-            [ yield! componentPropertyConstructorDeclarations
-              yield! componentChildrenConstructorDeclarations ] 
+            duCasesDefinition
+            [ yield! constructorsDeclarations
+              yield! childrenConstructorDeclarations ] 
 
-    /// Define the component class
-    let mkComponentTypeDeclaration () =
-        
-        /// Define the static method "applyMembers"
-        let componentTypeApplyMembersDeclaration =
-
-            // static member applyMembers
-            // (
-            //     id: string,
-            //     children: seq<DashComponent>,
-            //     ?aProp: string,
-            //     ?bProp: BProp,
-            //     ?cProp: bool
-            // ) =
+    let mkTypeDeclaration () =
+        let applyMembersStaticMethodDefinition =
+            let valueName = "t"
             memberFunctionPattern "applyMembers" 
                 [ yield ("id", SynType.Create "string", true)
                   yield ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true) 
                   yield! 
-                      //List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                      //|> List.map (fun (prop, ptype, ptname) -> 
                       parameters.Properties
-                      |> Map.toList
-                      |> List.map (snd >> fun paramProp ->
+                      |> List.map (fun paramProp ->
                           let camelCaseName = paramProp.Name.Camelize()
                           let propTypeName = 
                               paramProp.Info.propType
                               |> Option.bind SafeReactPropType.tryGetFSharpTypeName
                               |> Option.defaultValue ([paramProp.TypeName])
                           camelCaseName, appType propTypeName, false) ]
-            |> binding  
-              ( expressionSequence
-                    [ // let props = DashComponentProps()
-                      // DynObj.setValue props "id" id
-                      // DynObj.setValue props "children" children
-                      yield patternNamed "props" |> binding (application [SynExpr.CreateIdentString "DashComponentProps"; SynExpr.CreateUnit]) |> Let
-                      yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString "id"; SynExpr.CreateIdentString "id"] |> Expression
-                      yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString "children"; SynExpr.CreateIdentString "children"] |> Expression
-                      
-                      // DynObj.setValueOpt props "aProp" (aProp |> Option.map box)
-                      // DynObj.setValueOpt props "bProp" (bProp |> Option.map BProp.convert)
-                      // DynObj.setValueOpt props "cProp" (cProp |> Option.map box)
-                      yield! 
-                          //List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                          //|> List.map (fun (prop, ptype, ptname) -> 
-                          parameters.Properties
-                          |> Map.toList
-                          |> List.map (snd >> fun paramProp ->
-                              let prop = paramProp.Name
-                              let ptype = paramProp.Info
-                              let ptname = paramProp.TypeName
-                              let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
-                              let pConvert =
-                                  if ptype.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
-                                      application
-                                        [ SynExpr.CreateIdentString camelCaseName
-                                          SynExpr.CreateIdentString "|>" 
-                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
-                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create [ptname; "convert"]) ]
-                                  else
-                                      application 
-                                        [ SynExpr.CreateIdentString camelCaseName
-                                          SynExpr.CreateIdentString "|>"
-                                          SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
-                                          SynExpr.CreateIdentString "box" ]
-                                  |> SynExpr.CreateParen
+            |> binding (
+                expressionSequence [
+                    yield
+                        patternNamed "props"
+                        |> binding (
+                            application [
+                                SynExpr.CreateIdentString "DashComponentProps"
+                                SynExpr.CreateUnit
+                            ]
+                        ) |> Let
 
-                              application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValueOpt"); SynExpr.CreateIdentString "props"; SynExpr.CreateConstString camelCaseName; pConvert] |> Expression)
+                    yield
+                        application [
+                            SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue")
+                            SynExpr.CreateIdentString "props"
+                            SynExpr.CreateConstString "id"
+                            SynExpr.CreateIdentString "id"
+                        ] |> Expression
+
+                    yield
+                        application [
+                            SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue")
+                            SynExpr.CreateIdentString "props"
+                            SynExpr.CreateConstString "children"
+                            SynExpr.CreateIdentString "children"
+                        ] |> Expression
+
+                    yield! 
+                        parameters.Properties
+                        |> List.map (fun paramProp ->
+                            let prop = paramProp.Name
+                            let ptype = paramProp.Info
+                            let ptname = paramProp.TypeName
+                            let camelCaseName = prop |> String.toPascalCase |> String.decapitalize
+                            let pConvert =
+                                if ptype.propType |> Option.map SafeReactPropType.needsConvert = Some true then 
+                                    application
+                                      [ SynExpr.CreateIdentString camelCaseName
+                                        SynExpr.CreateIdentString "|>" 
+                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
+                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create [ ptname; "convert" ]) ]
+                                else
+                                    application 
+                                      [ SynExpr.CreateIdentString camelCaseName
+                                        SynExpr.CreateIdentString "|>"
+                                        SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Option"; "map"])
+                                        SynExpr.CreateIdentString "box" ]
+                                |> SynExpr.CreateParen
+
+                            application [
+                                SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValueOpt")
+                                SynExpr.CreateIdentString "props"
+                                SynExpr.CreateConstString camelCaseName
+                                pConvert
+                            ] |> Expression
+                        )
                     
-                      // DynObj.setValue t "namespace" "TestNamespace"
-                      // DynObj.setValue t "props" props
-                      // DynObj.setValue t "type" "TestType"
-                      yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "t"; SynExpr.CreateConstString "namespace"; SynExpr.CreateConstString parameters.ComponentNamespace] |> Expression
-                      yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "t"; SynExpr.CreateConstString "props"; SynExpr.CreateIdentString "props"] |> Expression
-                      yield application [SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "t"; SynExpr.CreateConstString "type"; SynExpr.CreateConstString parameters.ComponentType] |> Expression
-                      
-                      // t
-                      yield SynExpr.CreateIdentString "t" |> Expression ]
-
-                // fun (t: TestComponent) ->
-                |> typedLambdaStatement false [("t", SynType.Create parameters.ComponentName)]
-                |> SynExpr.CreateParen )
+                    yield
+                        application [
+                            SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue")
+                            SynExpr.CreateIdentString valueName
+                            SynExpr.CreateConstString "namespace"
+                            SynExpr.CreateConstString parameters.ComponentNamespace
+                        ] |> Expression
+                    yield
+                        application [
+                            SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue")
+                            SynExpr.CreateIdentString valueName
+                            SynExpr.CreateConstString "props"
+                            SynExpr.CreateIdentString "props"
+                        ] |> Expression
+                    yield
+                        application [
+                            SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "DynObj.setValue")
+                            SynExpr.CreateIdentString valueName
+                            SynExpr.CreateConstString "type"
+                            SynExpr.CreateConstString parameters.ComponentType
+                        ] |> Expression
+                    
+                    yield SynExpr.CreateIdentString valueName |> Expression
+                ]
+                |> typedLambdaStatement false [ valueName, SynType.Create parameters.ComponentName ]
+                |> SynExpr.CreateParen
+            )
             
             |> SynMemberDefn.CreateStaticMember
 
-        //  static member init(id: string, children: seq<DashComponent>, ?aProp: string, ?bProp: string, ?cProp: string) =
-        //      TestComponent.applyMembers (id, children, ?aProp = aProp, ?bProp = bProp, ?cProp = cProp) (TestComponent())
-        //
-        /// Define the static method "init"
-        let componentTypeInitDeclaration =
-            memberFunctionPattern "init" 
-                [ ("id", SynType.Create "string", true)
-                  ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true)
-                  yield! 
-                      //List.zip3 parameters.PropertyNames parameters.PropertyTypes parameters.PropertyTypeNames
-                      //|> List.map (fun (prop, ptype, ptname) -> 
-                      parameters.Properties
-                      |> Map.toList
-                      |> List.map (snd >> fun paramProp ->
-                          let camelCaseName = paramProp.Name.Camelize()
-                          let propTypeName = 
-                              paramProp.Info.propType
-                              |> Option.bind SafeReactPropType.tryGetFSharpTypeName
-                              |> Option.defaultValue ([paramProp.TypeName])
-                          camelCaseName, appType propTypeName, false) ]
-            |> binding
-              ( application
-                    [ SynExpr.CreateLongIdent (LongIdentWithDots.Create [parameters.ComponentName; "applyMembers"])
-                      SynExpr.CreateParenedTuple 
-                        [ yield SynExpr.CreateIdentString "id"
-                          yield SynExpr.CreateIdentString "children"
-                          //yield! parameters.PropertyNames 
-                          yield! parameters.Properties
-                                 |> Map.toList
-                                 |> List.map (snd >> fun paramProp -> 
-                                    let camelCaseName = paramProp.Name.Camelize()
-                                    application [SynExpr.CreateLongIdent (true, LongIdentWithDots.CreateString camelCaseName, None); SynExpr.CreateIdentString "="; SynExpr.CreateIdentString camelCaseName]) ]
-                      application [SynExpr.CreateIdentString parameters.ComponentName; SynExpr.CreateUnit] |> SynExpr.CreateParen ] )
-
+        let initStaticMethodDefinition =
+            memberFunctionPattern "init" [
+                ("id", SynType.Create "string", true)
+                ("children", SynType.CreateApp(SynType.Create "seq", [SynType.Create "DashComponent"]), true)
+                yield! 
+                    parameters.Properties
+                    |> List.map (fun paramProp ->
+                        let camelCaseName = paramProp.Name.Camelize()
+                        let propTypeName = 
+                            paramProp.Info.propType
+                            |> Option.bind SafeReactPropType.tryGetFSharpTypeName
+                            |> Option.defaultValue ([paramProp.TypeName])
+                        camelCaseName, appType propTypeName, false)
+            ]
+            |> binding (
+                application [
+                    SynExpr.CreateLongIdent (LongIdentWithDots.Create [parameters.ComponentName; "applyMembers"])
+                    SynExpr.CreateParenedTuple [
+                        yield SynExpr.CreateIdentString "id"
+                        yield SynExpr.CreateIdentString "children"
+                        yield! parameters.Properties
+                               |> List.map (fun paramProp -> 
+                                  let camelCaseName = paramProp.Name.Camelize()
+                                  application [
+                                    SynExpr.CreateLongIdent (true, LongIdentWithDots.CreateString camelCaseName, None)
+                                    SynExpr.CreateIdentString "="
+                                    SynExpr.CreateIdentString camelCaseName
+                                  ]
+                               )
+                    ]
+                    application [
+                        SynExpr.CreateIdentString parameters.ComponentName
+                        SynExpr.CreateUnit
+                    ] |> SynExpr.CreateParen
+                ]
+            )
             |> SynMemberDefn.CreateStaticMember
 
-        // [ "TestNamespace.min.js"
-        //   "supplimentary.min.js" ]
-        //
-        /// Define the list of javascript files to include
-        let componentJavascriptList =
+        let defineIncludedJavaScriptFiles =
             parameters.ComponentJavascript
             |> List.map String.escape
             |> List.map SynExpr.CreateConstString
             |> expressionList
 
-        //  static member definition: LoadableComponentDefinition =
-        //      { ComponentName = "TestComponent"
-        //        ComponentJavascript = ... }
-        //
-        /// Define the static member "definition"
-        let componentTypeDefinitionDeclaration =
+        let definitionStaticMethodDefinitioin =
             patternNamed "definition"
             |> withPatternType (SynType.Create "LoadableComponentDefinition")
-            |> binding
-              ( SynExpr.CreateRecord 
-                    [ ((LongIdentWithDots.CreateString "ComponentName",true), Some (SynExpr.CreateConstString parameters.ComponentName)) 
-                      ((LongIdentWithDots.CreateString "ComponentJavascript",true), Some componentJavascriptList) ] )
-
+            |> binding (
+                SynExpr.CreateRecord [
+                    (LongIdentWithDots.CreateString "ComponentName",true), Some (SynExpr.CreateConstString parameters.ComponentName)
+                    (LongIdentWithDots.CreateString "ComponentJavascript",true), Some defineIncludedJavaScriptFiles
+                ]
+            )
             |> SynMemberDefn.CreateStaticMember
 
-        // ///This is additional test documentation
-        // type TestComponent() =
-        //     inherit DashComponent()
-        //
-        // Create the type definition
         parameters.ComponentName
         |> componentInfo
         |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
-        |> typeDeclaration 
-          [ SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
+        |> typeDeclaration [
+            SynMemberDefn.CreateImplicitCtor() //adds the "()" to the type name
             typeInherit (application [SynExpr.CreateIdentString "DashComponent"; SynExpr.CreateUnit]) 
-            componentTypeApplyMembersDeclaration
-            componentTypeInitDeclaration
-            componentTypeDefinitionDeclaration ]
+            applyMembersStaticMethodDefinition
+            initStaticMethodDefinition
+            definitionStaticMethodDefinitioin
+        ]
 
-    /// Define the component DSL function (used when creating the DOM tree)
-    let mkComponentLetDeclaration () =
-
-        /// Define the inner expression
-        let componentDeclaration =
-            expressionSequence
-              [ //  let props, children =
-                //      List.fold
-                //          (fun (props, children) (a: SampleDashComponentAttr) ->
-                //                  match a with
-                //                  | Prop prop -> (prop :: props, children)
-                //                  | Children child -> (props, child @ children))
-                //          ([], [])
-                //          attrs
-                patternNamedTuple ["props"; "children"] |> binding 
-                  ( application
-                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "fold"])
-                        
+    let mkLetDeclaration () =
+        let innerExpressionDefinition =
+            expressionSequence [
+                patternNamedTuple ["props"; "children"]
+                |> binding (
+                    application [
+                        SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "fold"])
                         SynExpr.CreateIdentString "a"
-                        |> matchStatement
-                            [ simpleMatchClause "Prop" ["prop"] None ( SynExpr.CreateTuple [ application [ SynExpr.CreateIdentString "prop"; SynExpr.CreateIdentString "::"; SynExpr.CreateIdentString "props" ]; SynExpr.CreateIdentString "children" ] )
-                              simpleMatchClause "Children" ["child"] None ( SynExpr.CreateTuple [ SynExpr.CreateIdentString "props"; application [ SynExpr.CreateIdentString "child"; SynExpr.CreateIdentString "@"; SynExpr.CreateIdentString "children" ] ] ) ]
-                        |> typedLambdaStatement true [ ("a", SynType.Create parameters.ComponentAttrsName) ]
+                        |> matchStatement [
+                            simpleMatchClause "Prop" ["prop"] None (
+                                SynExpr.CreateTuple [
+                                    application [
+                                        SynExpr.CreateIdentString "prop"
+                                        SynExpr.CreateIdentString "::"
+                                        SynExpr.CreateIdentString "props"
+                                    ]
+                                    SynExpr.CreateIdentString "children"
+                                ]
+                            )
+                            simpleMatchClause "Children" ["child"] None (
+                                SynExpr.CreateTuple [
+                                    SynExpr.CreateIdentString "props"
+                                    application [
+                                        SynExpr.CreateIdentString "child"
+                                        SynExpr.CreateIdentString "@"
+                                        SynExpr.CreateIdentString "children"
+                                    ]
+                                ]
+                            )
+                        ]
+                        |> typedLambdaStatement true [ "a", SynType.Create parameters.ComponentAttrsName ]
                         |> simpleLambdaStatement false [ "props"; "children" ]
                         |> SynExpr.CreateParen
 
                         SynExpr.CreateTuple [expressionList []; expressionList []] |> SynExpr.CreateParen
-                        SynExpr.CreateIdentString "attrs" ] ) |> Let 
+                        SynExpr.CreateIdentString "attrs"
+                    ]
+                ) |> Let 
               
-                //  let t = TestComponent.init (id, children)
-                patternNamed "t" |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]); SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"]]) |> Let
+                patternNamed "t" 
+                |> binding (
+                    application [
+                        SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"])
+                        SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children" ]
+                    ]
+                ) |> Let
                 
-                //  let componentProps =
-                //      match t.TryGetTypedValue<DashComponentProps> "props" with
-                //      | Some (p) -> p
-                //      | None -> DashComponentProps()
-                patternNamed "componentProps" |> binding
-                  ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.CreateString "t.TryGetTypedValue", [SynType.Create "DashComponentProps"], SynExpr.CreateConstString "props")
-                    |> matchStatement
-                        [ simpleMatchClause "Some" ["p"] None (SynExpr.CreateIdentString "p") 
-                          simpleMatchClause "None" [] None (application [SynExpr.CreateIdentString "DashComponentProps"; SynExpr.CreateUnit]) ]) |> Let 
+                patternNamed "componentProps"
+                |> binding (
+                    SynExpr.CreateInstanceMethodCall(
+                        LongIdentWithDots.CreateString "t.TryGetTypedValue"
+                        , [SynType.Create "DashComponentProps"]
+                        , SynExpr.CreateConstString "props"
+                    )
+                    |> matchStatement [
+                        simpleMatchClause "Some" ["p"] None (SynExpr.CreateIdentString "p") 
+                        simpleMatchClause "None" [] None (application [SynExpr.CreateIdentString "DashComponentProps"; SynExpr.CreateUnit])
+                    ]
+                ) |> Let 
                 
-                //  Seq.iter
-                //      (fun (prop: TestComponentProps) ->
-                //          let fieldName, boxedProp =
-                //              TestComponentProps.toDynamicMemberDef prop
-                //          DynObj.setValue componentProps fieldName boxedProp)
-                //      props
-                application
-                  [ SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "Seq.iter")
-                    expressionSequence
-                      [ patternNamedTuple ["fieldName"; "boxedProp"] |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentPropsName; "toDynamicMemberDef"]); SynExpr.CreateIdentString "prop"]) |> Let
-                        application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "componentProps"; SynExpr.CreateIdentString "fieldName"; SynExpr.CreateIdentString "boxedProp" ] |> Expression ]
-                    |> typedLambdaStatement false [("prop", SynType.Create parameters.ComponentPropsName)]
+                application [
+                    SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "Seq.iter")
+                    expressionSequence [
+                        patternNamedTuple ["fieldName"; "boxedProp"]
+                        |> binding (
+                            application [
+                                SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentPropsName; "toDynamicMemberDef"])
+                                SynExpr.CreateIdentString "prop"
+                            ]
+                        ) |> Let
+                        application [
+                            SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue")
+                            SynExpr.CreateIdentString "componentProps"
+                            SynExpr.CreateIdentString "fieldName"
+                            SynExpr.CreateIdentString "boxedProp"
+                        ] |> Expression
+                    ]
+                    |> typedLambdaStatement false [ "prop", SynType.Create parameters.ComponentPropsName ]
                     |> SynExpr.CreateParen
-                    SynExpr.CreateIdentString "props" ] |> Expression
+                    SynExpr.CreateIdentString "props"
+                ] |> Expression
                 
-                //  DynObj.setValue t "props" componentProps
-                application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "t"; SynExpr.CreateConstString "props"; SynExpr.CreateIdentString "componentProps" ] |> Expression 
+                application [
+                    SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue")
+                    SynExpr.CreateIdentString "t"
+                    SynExpr.CreateConstString "props"
+                    SynExpr.CreateIdentString "componentProps"
+                ] |> Expression 
                 
-                //  t :> DashComponent
-                SynExpr.CreateIdentString "t" |> expressionUpcast (SynType.Create "DashComponent") |> Expression ]
+                SynExpr.CreateIdentString "t" |> expressionUpcast (SynType.Create "DashComponent") |> Expression
+            ]
 
-        // ///This is additional test documentation
-        // let testComponent (id: string) (props: seq<TestComponentProps>) (children: seq<DashComponent>) =
-        //
-        // Create the binding
         functionPattern parameters.CamelCaseComponentName
             [ ("id", SynType.Create "string")
               ("attrs", SynType.CreateApp(SynType.Create "list", [SynType.Create parameters.ComponentAttrsName])) ]
-        |> binding componentDeclaration
+        |> binding innerExpressionDefinition
         |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> toXMLDoc)
         |> letDeclaration
 
-    //  ///This is additional test documentation
-    //  [<RequireQualifiedAccess>]
-    //  module TestComponent =
-    //
-    /// Define the component module
-    let moduleDeclaration = 
+    let moduleContentDeclaration = 
         parameters.ComponentName
         |> componentInfo
         |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
         |> if not parameters.IsHelper then withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
            else id
         |> nestedModule [
-            yield! componentPropertyTypeDeclarations
+            yield! typesDeclaration
             if not parameters.IsHelper then
                 if not <| String.IsNullOrWhiteSpace parameters.ComponentPropsName then
-                    yield mkComponentPropertyDUDeclaration ()
-                    yield mkComponentAttributeDUDeclaration ()
-                yield mkComponentTypeDeclaration ()
-                yield mkComponentLetDeclaration ()
+                    yield mkPropertyDuDeclaration ()
+                    yield mkAttributeDuDeclaration ()
+                yield mkTypeDeclaration ()
+                yield mkLetDeclaration ()
         ]
 
-    //  namespace TestNamespace
-    //  open System
-    //  open DynamicObj
-    //  open Dash.NET
-    //  open ComponentBase
-    //
-    /// Define the component namespace
-    let namespaceDeclaration =
+    let moduleDeclaration =
         parameters.LibraryNamespace
         |> namespaceInfo
-        |> withNamespaceDeclarations
-            [ SynModuleDecl.CreateOpen "System"
+        |> withNamespaceDeclarations [
+              SynModuleDecl.CreateOpen "System"
               SynModuleDecl.CreateOpen "DynamicObj"
               SynModuleDecl.CreateOpen "Dash.NET" 
-              if not parameters.IsHelper then SynModuleDecl.CreateOpen "ComponentBase" 
-              moduleDeclaration ] 
+              if not parameters.IsHelper then SynModuleDecl.CreateOpen "Common" 
+              moduleContentDeclaration ] 
 
-    // Create the file
     ParsedImplFileInputRcd
         .CreateFs(parameters.ComponentName)
-        .AddModule(namespaceDeclaration)
+        .AddModule(moduleDeclaration)
     |> ParsedInput.CreateImplFile
 
-let generateCodeStringFromAST (log: Core.Logger) (path: string) ast =
+let generateCodeStringFromAST (path: string) ast =
     async {
         let cfg = { FormatConfig.FormatConfig.Default with StrictMode = true }
         let! formattedCode = CodeFormatter.FormatASTAsync(ast, Path.GetFileName path, [], None, cfg)
@@ -1034,15 +781,15 @@ let generateCodeStringFromAST (log: Core.Logger) (path: string) ast =
             |> String.concat Environment.NewLine
     }
 
-let generateCodeFromAST (log: Core.Logger) (path: string) ast =
+let generateCodeFromAST (path: string) ast =
     async {
-        let! formattedCode = generateCodeStringFromAST log path ast
+        let! formattedCode = generateCodeStringFromAST path ast
         try
             File.WriteAllText(path,formattedCode)
-            log.Debug("Created file {ComponentFSharpFile}",path)
+            Log.Debug("Created file {ComponentFSharpFile}",path)
             return true
         with | ex -> 
-            log.Error(ex, "Failed to write file {ComponentFSharpFile}",path)
+            Log.Error(ex, "Failed to write file {ComponentFSharpFile}",path)
             return false
     }
             

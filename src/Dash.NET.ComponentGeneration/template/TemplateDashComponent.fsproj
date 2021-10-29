@@ -17,8 +17,8 @@
         <None Include="WebRoot/components/*" >
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <Compile Include="Generated/ComponentBase.fs" />
-        <Compile Include="Generated/*.fs" />
+        <!--<Compile Include="Generated/Common.fs" />-->
+        <Compile Include="Generated/*.fs" Exclude="Generated/Common.fs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,9 +1,6 @@
 ﻿module Dash.NET.ComponentGeneration.ComponentParameters
 
-//open System
-//open System.Collections.Generic
-//open System.IO
-//open Serilog
+open System
 open Humanizer
 open Prelude
 open ReactMetadata
@@ -17,47 +14,83 @@ let rec private findDuplicatesBy comp cs = function
             else n::cs
         )
 
-//type ClassParameters = 
-//    {
-//        Name: string
-//        Namespace: string
-//        Filename: string
-//        Description: string option
-//        ReferenceNames: string list
-//    }
-
-//    static member create (name: string, ``namespace``: string, ?filename: string, ?description: string, ?referenceNames: string list) =
-//        {
-//            Name = name
-//            Namespace = ``namespace``
-//            Filename = filename |> function Some fn -> fn | None -> sprintf "%s.fs" name
-//            Description = description |> function Some desc -> desc | None -> ""
-//            ReferenceNames = referenceNames |> function Some rns -> rns | None -> List.empty
-//        }
-
 type ComponentParametersProperty =
     {
-        Name:       string
-        DuSafeName: string
-        TypeName:   string
-        Info:       SafeReactProp
+        Name: string
+        CaseName: string
+        TypeName: string
+        Info: SafeReactProp
     }
 
     static member create (propName: string) (prop: SafeReactProp) =
         {
-            Name       = propName
-            DuSafeName = propName |> String.toValidDULabel
-            //TypeName   = propName |> String.toPascalCase |> sprintf "%sType"
-            // MC
-            TypeName   = propName.Singularize().Pascalize()
-            Info       = prop
+            Name = propName
+            CaseName = propName |> String.toValidDULabel
+            TypeName =
+                propName
+                |> fun n ->
+                    if n.ToLower().EndsWith("focus") then n
+                    else n.Singularize()
+                |> fun n -> n.Pascalize()
+            Info = prop
         }
 
     static member structureEquals (x: ComponentParametersProperty) (y: ComponentParametersProperty) =
         match x.Info.propType, y.Info.propType with
-        | Some xpt, Some ypt -> SafeReactPropType.equalsValue xpt ypt
+        | Some xpt, Some ypt -> SafeReactPropType.valueEquals xpt ypt
         | None, None -> true
         | _ -> false
+
+    static member typeNameArgs paramProp propType =
+        SafeReactPropType.tryGetFSharpTypeName propType
+        |> Option.map (function
+            | [ "seq" as t; "obj" ] -> [ t; paramProp.TypeName ]
+            | names -> names
+        )
+        |> Option.defaultValue [ paramProp.TypeName ]
+
+    static member tryTypeNameArgs paramProp =
+        paramProp.Info.propType
+        |> Option.map (ComponentParametersProperty.typeNameArgs paramProp)
+
+    static member valueConvArgs paramProp =
+        paramProp.Info.propType
+        |> Option.bind (fun propType ->
+            if propType |> SafeReactPropType.needsConvert then Some [ paramProp.TypeName; "convert" ]
+            else None
+        )
+        |> Option.defaultValue [ "box" ]
+
+    static member mkSetFunctionName paramProp = paramProp.Name.Camelize()
+
+    static member mkArgName paramProp = paramProp.Name.Camelize()
+
+
+    //override this.Equals other =
+    //    match other with
+    //    | :? ComponentParametersProperty as otherProp ->
+    //        match this.Info.propType, otherProp.Info.propType with
+    //        | Some xpt, Some ypt -> SafeReactPropType.equalsValue xpt ypt
+    //        | None, None -> true
+    //        | _ -> false
+    //    | _ -> false
+
+    //interface IComparable with
+    //    member this.CompareTo other =
+    //        match other with
+    //        | :? ComponentParametersProperty as otherProp ->
+    //            let ll =
+    //                match this.Info.propType, otherProp.Info.propType with
+    //                | Some xpt, Some ypt -> SafeReactPropType.equalsValue xpt ypt
+    //                | None, None -> true
+    //                | _ -> false
+    //            -1
+    //        | _ -> -1
+
+
+
+    //interface IComparable<ComponentParametersProperty> with
+    //    member this.CompareTo other = 0
 
 type ComponentParameters = 
     {
@@ -71,22 +104,16 @@ type ComponentParameters =
         ComponentJavascript:            string list
         ComponentFSharp:                string
         ComponentDescription:           string option
-        Properties:                     Map<string, ComponentParametersProperty>
+        Properties:                     ComponentParametersProperty list
         Metadata:                       SafeReactComponent
         IsHelper:                       bool
     }
 
     static member create (componentName: string) (componentNamespace: string) (libraryNamespace: string) (componentJavascript: string list) (componentMetadata: SafeReactComponent) =
-        let props =
-            componentMetadata.props
-            // we handle the id property differently
-            // we handle the children property differently
-            |> Map.filter (fun propName _ -> propName <> "id" && propName <> "children")
-            |> Map.map (fun propName -> ComponentParametersProperty.create propName)
         {
             ComponentName           = componentName
-            ComponentPropsName      = "Prop"//sprintf "%sProp" componentName
-            ComponentAttrsName      = "Attr"//sprintf "%sAttr" componentName
+            ComponentPropsName      = "Prop"
+            ComponentAttrsName      = "Attr"
             CamelCaseComponentName  = componentName |> String.decapitalize
             ComponentNamespace      = componentNamespace
             ComponentType           = componentName
@@ -96,163 +123,68 @@ type ComponentParameters =
             ComponentDescription    = componentMetadata.description
             Properties              = 
                 componentMetadata.props
-                // we handle the id property differently
-                // we handle the children property differently
-                |> Map.filter (fun propName _ -> propName <> "id" && propName <> "children")
-                |> Map.map (fun propName -> ComponentParametersProperty.create propName)
+                |> Map.toList
+                |> List.choose (fun (propName, prop) ->
+                    // we handle the id property differently
+                    // we handle the children property differently
+                    if propName = "id" || propName = "children" then None
+                    else prop |> ComponentParametersProperty.create propName |> Some
+                )
+                |> List.distinct
             Metadata                = componentMetadata
             IsHelper                = false
         }
 
-//type ComponentParameters = 
-//    {
-//        ComponentName:                  string
-//        ComponentPropsName:             string
-//        ComponentAttrsName:             string
-//        CamelCaseComponentName:         string
-//        ComponentNamespace:             string
-//        ComponentType:                  string
-//        LibraryNamespace:               string
-//        ComponentJavascript:            string list
-//        ComponentFSharp:                string
-//        ComponentDescription:           string option
-//        PropertyNames:                  string list
-//        DUSafePropertyNames:            string list
-//        PropertyTypeNames:              string list
-//        PropertyTypes:                  SafeReactProp list
-//        Metadata:                       SafeReactComponent
-//    }
-
-//    static member create (componentName: string) (componentNamespace: string) (componentJavascript: string list) (componentMetadata: SafeReactComponent) =
-//        let pnames, pvals =
-//            //(componentMetadata.props.Values |> List.ofSeq)
-//            //|> List.zip (componentMetadata.props.Keys |> List.ofSeq)
-//            componentMetadata.props
-//            |> Map.toList
-//            |> List.filter (fst >> (not << (=) "id")) // we handle the id property differently
-//            |> List.filter (fst >> (not << (=) "children")) // we handle the children property differently
-//            |> List.unzip
-//        {
-//            ComponentName                   = componentName
-//            ComponentPropsName              = "Prop"//sprintf "%sProp" componentName
-//            ComponentAttrsName              = "Attr"//sprintf "%sAttr" componentName
-//            CamelCaseComponentName          = componentName |> String.decapitalize
-//            ComponentNamespace              = componentNamespace
-//            ComponentType                   = componentName
-//            LibraryNamespace                = componentName
-//            ComponentJavascript             = componentJavascript
-//            ComponentFSharp                 = sprintf "%s.fs" componentName
-//            ComponentDescription            = componentMetadata.description
-//            PropertyNames                   = pnames
-//            DUSafePropertyNames             = pnames |> List.map String.toValidDULabel
-//            //PropertyTypeNames               = pnames |> List.map String.toPascalCase |> List.map (sprintf "%sType")
-//            // MC
-//            PropertyTypeNames               = pnames |> List.map (fun (pname:string) -> pname.Singularize().Pascalize())
-//            PropertyTypes                   = pvals
-//            Metadata                        = componentMetadata
-//        }
-
     static member mkCommon componentNamespace libraryNamespace (comps: ComponentParameters list) =
-        let existingProp (yPropName: string, prop) (xs: (string * ComponentParametersProperty) list)  =
-            //Map.exists (snd >> ComponentParametersProperty.structureEquals prop)
-            //xs
-            //|> Map.exists (fun k v ->
-            //    let areEqual = ComponentParametersProperty.structureEquals prop v
-            //    areEqual
-            //)
-            xs
-            //|> List.exists (snd >> ComponentParametersProperty.structureEquals prop)
-            |> List.exists (fun (xPropName, x) -> (yPropName.Contains(xPropName) || xPropName.Contains(yPropName)) && ComponentParametersProperty.structureEquals prop x)
+        let existingProp (x: ComponentParametersProperty) =
+            List.exists (fun (y: ComponentParametersProperty) ->
+                //(x.Name.Contains(y.Name) || y.Name.Contains(x.Name)) && ComponentParametersProperty.structureEquals x y
+                let xName = x.Name.ToLowerInvariant()
+                let yName = y.Name.ToLowerInvariant()
+                let xisy = xName.Contains(yName)
+                let yisx = yName.Contains(xName)
+                let e = ComponentParametersProperty.structureEquals x y
+                let s = (xisy || yisx) && e
+                s
 
+            )
 
-        //let equals (_, _, _, x) =
-        //    List.exists (fun (_, _, _, prop) ->
-        //        match prop.propType, x.propType with
-        //        | Some ppt, Some xpt -> SafeReactPropType.equalsValue ppt xpt
-        //        | None, None -> true
-        //        | _ -> false
-        //    )
         let commonComp =
-            let componentName = "ComponentBase"
-            //let commonPropertyNames, commonDuSafePropertyNames, commonPropertyTypeNames, commonPropertyTypes =
-                //comps
-                //|> List.collect (fun comp ->
-                //    List.zip4 comp.PropertyNames comp.DUSafePropertyNames comp.PropertyTypeNames comp.PropertyTypes
-                //)
-                //|> findDuplicatesBy equals []
-                //|> List.unzip4
-
-
-            let commonProperties =
-                comps
-                |> List.collect (fun comp -> comp.Properties |> Map.toList)
-                |> findDuplicatesBy existingProp []
-                |> Map.ofList
-
-            {
-                ComponentName          = componentName
-                ComponentPropsName     = ""
-                ComponentAttrsName     = ""
-                CamelCaseComponentName = componentName.Camelize()
-                ComponentNamespace     = componentNamespace
-                ComponentType          = componentName
-                LibraryNamespace       = libraryNamespace
-                ComponentJavascript    = List.empty
-                ComponentFSharp        = sprintf "%s.fs" componentName
-                ComponentDescription   = Some "Common components"
-                //PropertyNames          = commonPropertyNames
-                //DUSafePropertyNames    = commonDuSafePropertyNames |> List.map String.toValidDULabel
-                //PropertyTypeNames      = commonPropertyTypeNames |> List.map (fun (pname:string) -> pname.Singularize().Pascalize())
-                //PropertyTypes          = commonPropertyTypes
-                Properties             = commonProperties
-                Metadata               = { description = None; displayName = None; props = Map.empty }
-                IsHelper               = true
+            let componentName = "Common"
+            { ComponentParameters.create
+                    componentName
+                    componentNamespace
+                    libraryNamespace
+                    []
+                    { description = Some "Common components"; displayName = None; props = Map.empty }
+                    with
+                        Properties = comps |> List.collect (fun comp -> comp.Properties) |> findDuplicatesBy existingProp []
+                        IsHelper = true
             }
 
         commonComp
         |> List.singleton
         |> List.append (
             comps
+            |> List.filter (fun comp -> comp.ComponentName = "Checklist")
             |> List.map (fun comp ->
-                //////////////////////////////////
-                // TODO - working, restore this
-                //{ comp
-                //    with
-                //        Properties =
-                //            comp.Properties
-                //            |> Map.filter (fun propName _ ->
-                //                let isInCommon = commonComp.Properties |> Map.containsKey propName
-                //                not isInCommon
-                //            )
-                //}
-                comp
-
-                //////////////////////////////////
-
-                //let propertyNames = comp.PropertyNames |> List.filter (fun pn -> commonComp.PropertyNames |> List.contains pn |> not)
-                //let dUSafePropertyNames = comp.DUSafePropertyNames |> List.filter (fun dn -> commonComp.DUSafePropertyNames |> List.contains dn |> not)
-                //let propertyTypeNames = comp.PropertyTypeNames |> List.filter (fun tn -> commonComp.PropertyTypeNames |> List.contains tn |> not)
-                //let propertyTypes = comp.PropertyTypes |> List.filter (fun pt -> commonComp.PropertyTypes |> List.contains pt |> not)
-                //{ comp
-                //    with
-                //        PropertyNames = comp.PropertyNames |> List.filter (fun pn -> commonComp.PropertyNames |> List.contains pn |> not)
-                //        DUSafePropertyNames = comp.DUSafePropertyNames |> List.filter (fun dn -> commonComp.DUSafePropertyNames |> List.contains dn |> not)
-                //        PropertyTypeNames = comp.PropertyTypeNames |> List.filter (fun tn -> commonComp.PropertyTypeNames |> List.contains tn |> not)
-                //        PropertyTypes = comp.PropertyTypes |> List.filter (fun pt -> commonComp.PropertyTypes |> List.contains pt |> not)
-                //}
+                let ps = 
+                    comp.Properties
+                let p =
+                    comp.Properties
+                    |> List.filter (fun prop -> not (commonComp.Properties |> List.exists (fun cp -> cp.Name = prop.Name)))
+                    |> List.distinct
+                { comp
+                    with
+                        Properties =
+                            comp.Properties
+                            |> List.filter (fun prop -> not (commonComp.Properties |> List.exists (fun cp -> cp.Name = prop.Name)))
+                            |> List.distinct
+                }
             )
         )
 
     static member parse (componentShortName: string) libraryNamespace (javascriptFiles: string list) (meta: Map<string, SafeReactComponent>) =
-        //(meta.Values |> List.ofSeq)
-        //|> List.zip (meta.Keys |> List.ofSeq)
-        //|> List.choose (fun (_, comp) ->
-        //    let maybeCName = comp.displayName
-        //    match maybeCName with
-        //    | Some cName -> ComponentParameters.create cName componentShortName javascriptFiles comp |> Some
-        //    | None -> None
-        //)
-
         meta
         |> Map.toList
         |> List.choose (
@@ -266,6 +198,7 @@ type ComponentParameters =
 
     static member fromReactMetadata componentShortName libraryNamespace javascriptFiles =
         ComponentParameters.parse componentShortName libraryNamespace javascriptFiles
-        >> ComponentParameters.mkCommon componentShortName libraryNamespace
+        // TODO: Extract common elements
+        //>> ComponentParameters.mkCommon componentShortName libraryNamespace
 
 
