@@ -39,7 +39,7 @@ module Dropdown =
         static member options([<ParamArray>] p: DropdownOption array) = 
             guardAgainstNull "p" p
             p |> Seq.iter (guardAgainstNull "p")
-            OAttr.options (p |> Seq.map DropdownOption.Convert) |> Attr.Wrap
+            OAttr.options (p |> Seq.map DropdownOption.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The value of the input. If &#96;multi&#96; is false (the default)
         ///then value is just a string that corresponds to the values
@@ -127,7 +127,7 @@ module Dropdown =
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+            OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and

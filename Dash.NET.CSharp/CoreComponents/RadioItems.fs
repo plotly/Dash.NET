@@ -29,7 +29,14 @@ module RadioItems =
         static member options([<ParamArray>] p: array<RadioItemsOption>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
-            OAttr.options (p |> Array.map RadioItemsOption.Convert) |> Attr.Wrap
+            OAttr.options (p |> Array.map RadioItemsOption.Unwrap) |> Attr.Wrap
+        ///<summary>
+        ///An sequence of options
+        ///</summary>
+        static member options(p: seq<RadioItemsOption>) = 
+            guardAgainstNull "p" p
+            p |> Seq.iter (guardAgainstNull "p")
+            OAttr.options (p |> Seq.map RadioItemsOption.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The currently selected value
         ///</summary>
@@ -83,7 +90,7 @@ module RadioItems =
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+            OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
