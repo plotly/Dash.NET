@@ -105,8 +105,8 @@ module Graph =
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
     ///</summary>
     type Prop =
-        | Figure of Plotly.NET.GenericChart.Figure
-        | Config of Plotly.NET.Config
+        | Figure of obj
+        | Config of Config
         | ClickData of obj
         | ClickAnnotationData of obj
         | HoverData of obj
@@ -216,7 +216,13 @@ module Graph =
         ///https://plotly.com/javascript/reference
         ///&#96;config&#96; is set separately by the &#96;config&#96; property
         ///</summary>
-        static member figure(p: Plotly.NET.GenericChart.Figure) = Prop(Figure p)
+        static member figure(p: GenericChart.Figure) = Prop(Figure p)
+        ///<summary>
+        ///Plotly &#96;figure&#96; object. See schema:
+        ///https://plotly.com/javascript/reference
+        ///&#96;config&#96; is set separately by the &#96;config&#96; property
+        ///</summary>
+        static member figure(p: obj) = Prop(Figure p)
         ///<summary>
         ///Generic style overrides on the plot div
         ///</summary>
