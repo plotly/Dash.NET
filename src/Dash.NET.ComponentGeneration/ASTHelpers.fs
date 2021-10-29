@@ -216,5 +216,8 @@ let application (expers: SynExpr list) =
     | funExpr::argExprs -> argExprs |> List.fold (fun expr newExpr -> SynExpr.CreateApp(expr, newExpr)) funExpr
     | [] -> SynExpr.CreateUnit
 
+let applicationNest (expers: SynExpr list) =
+    application expers |> SynExpr.CreateParen
+
 let expressionList (expers: SynExpr list) =
     SynExpr.ArrayOrList (false, expers, range.Zero)

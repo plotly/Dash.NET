@@ -14,70 +14,45 @@ open ReactMetadata
 open DocumentationGeneration
 
 let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters) : ParsedInput =
+
+    /// Original attribute name alias
+    let originalAttribute =
+        let typeAbbrev =
+            { 
+                SynTypeDefnSimpleReprTypeAbbrevRcd.ParseDetail = ParserDetail.Ok
+                SynTypeDefnSimpleReprTypeAbbrevRcd.Type = SynType.Create $"Dash.NET.DCC.{parameters.ComponentName}.Attr"
+                SynTypeDefnSimpleReprTypeAbbrevRcd.Range = FSharp.Compiler.Range.range.Zero
+            }
+
+        SynModuleDecl.CreateSimpleType (
+            { SynComponentInfoRcd.Create [Ident.Create "OAttr"] with Access = Some SynAccess.Internal },
+            SynTypeDefnSimpleReprRcd.TypeAbbrev typeAbbrev
+        )
+
     /// Define the component DSL function (used when creating the DOM tree)
     let componentLetDeclaration =
+        let gListMap = SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
+        let gListOfArray = SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "ofArray"])
+        let gAttrUnwrap = SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Attr"; "Unwrap"])
+        let gPipe = SynExpr.CreateIdentString "|>"
+        let gComponentWrap = SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "Dash.NET.CSharp.Dsl.DashComponent.Wrap")
 
         /// Define the inner expression
         let componentDeclaration =
-            expressionSequence
-              [ //  let props, children =
-                //      List.fold
-                //          (fun (props, children) (a: SampleDashComponentAttr) ->
-                //                  match a with
-                //                  | Prop prop -> (prop :: props, children)
-                //                  | Children child -> (props, child @ children))
-                //          ([], [])
-                //          attrs
-                patternNamedTuple ["props"; "children"] |> binding 
-                  ( application
-                      [ SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "fold"])
-                        
-                        SynExpr.CreateIdentString "a"
-                        |> matchStatement
-                            [ simpleMatchClause "Prop" ["prop"] None ( SynExpr.CreateTuple [ application [ SynExpr.CreateIdentString "prop"; SynExpr.CreateIdentString "::"; SynExpr.CreateIdentString "props" ]; SynExpr.CreateIdentString "children" ] )
-                              simpleMatchClause "Children" ["child"] None ( SynExpr.CreateTuple [ SynExpr.CreateIdentString "props"; application [ SynExpr.CreateIdentString "child"; SynExpr.CreateIdentString "@"; SynExpr.CreateIdentString "children" ] ] ) ]
-                        |> typedLambdaStatement true [ ("a", SynType.Create parameters.ComponentAttrsName) ]
-                        |> simpleLambdaStatement false [ "props"; "children" ]
-                        |> SynExpr.CreateParen
-
-                        SynExpr.CreateTuple [expressionList []; expressionList []] |> SynExpr.CreateParen
-                        SynExpr.CreateIdentString "attrs" ] ) |> Let 
-              
-                //  let t = TestComponent.init (id, children)
-                patternNamed "t" |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentName; "init"]); SynExpr.CreateParenedTuple [SynExpr.CreateIdentString "id"; SynExpr.CreateIdentString "children"]]) |> Let
-                
-                //  let componentProps =
-                //      match t.TryGetTypedValue<DashComponentProps> "props" with
-                //      | Some (p) -> p
-                //      | None -> DashComponentProps()
-                patternNamed "componentProps" |> binding
-                  ( SynExpr.CreateInstanceMethodCall(LongIdentWithDots.CreateString "t.TryGetTypedValue", [SynType.Create "DashComponentProps"], SynExpr.CreateConstString "props")
-                    |> matchStatement
-                        [ simpleMatchClause "Some" ["p"] None (SynExpr.CreateIdentString "p") 
-                          simpleMatchClause "None" [] None (application [SynExpr.CreateIdentString "DashComponentProps"; SynExpr.CreateUnit]) ]) |> Let 
-                
-                //  Seq.iter
-                //      (fun (prop: TestComponentProps) ->
-                //          let fieldName, boxedProp =
-                //              TestComponentProps.toDynamicMemberDef prop
-                //          DynObj.setValue componentProps fieldName boxedProp)
-                //      props
-                application
-                  [ SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "Seq.iter")
-                    expressionSequence
-                      [ patternNamedTuple ["fieldName"; "boxedProp"] |> binding (application [SynExpr.CreateLongIdent(LongIdentWithDots.Create [parameters.ComponentPropsName; "toDynamicMemberDef"]); SynExpr.CreateIdentString "prop"]) |> Let
-                        application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "componentProps"; SynExpr.CreateIdentString "fieldName"; SynExpr.CreateIdentString "boxedProp" ] |> Expression ]
-                    |> typedLambdaStatement false [("prop", SynType.Create parameters.ComponentPropsName)]
-                    |> SynExpr.CreateParen
-                    SynExpr.CreateIdentString "props" ] |> Expression
-                
-                //  DynObj.setValue t "props" componentProps
-                application [SynExpr.CreateLongIdent(LongIdentWithDots.CreateString "DynObj.setValue"); SynExpr.CreateIdentString "t"; SynExpr.CreateConstString "props"; SynExpr.CreateIdentString "componentProps" ] |> Expression 
-                
-                //  t :> DashComponent
-                SynExpr.CreateIdentString "t" |> expressionUpcast (SynType.Create "DashComponent") |> Expression ]
-
-        //let tup = SynExpr.CreateParenedTuple [ SynExpr.CreateTyped(SynExpr.CreateConstString ("id"), SynType.Create "string"); SynExpr.CreateTyped(SynExpr.CreateConstString("attrs"), SynType.CreateApp(SynType.Create "array", [SynType.Create parameters.ComponentAttrsName])) ]
+            application [
+                SynExpr.CreateLongIdent (LongIdentWithDots.CreateString $"{parameters.LibraryNamespace}.{parameters.ComponentName}.{parameters.CamelCaseComponentName}")
+                SynExpr.CreateIdentString "id"
+                applicationNest [
+                    SynExpr.CreateIdentString "attrs"
+                    gPipe
+                    gListOfArray
+                    gPipe
+                    gListMap
+                    gAttrUnwrap
+                ]
+                gPipe
+                gComponentWrap
+            ]
 
         // ///This is additional test documentation
         // let testComponent (id: string) (props: seq<TestComponentProps>) (children: seq<DashComponent>) =
@@ -106,7 +81,10 @@ let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters
         |> componentInfo
         |> withXMLDoc (parameters.Metadata |> generateComponentDescription |> toXMLDoc)
         |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
-        |> nestedModule [ yield componentLetDeclaration ]
+        |> nestedModule [
+            yield originalAttribute
+            yield componentLetDeclaration 
+        ]
             //[ yield! componentPropertyTypeDeclarations
             //  yield componentPropertyDUDeclaration
             //  yield componentAttributeDUDeclaration
