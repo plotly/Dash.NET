@@ -70,14 +70,90 @@ type DropdownOption = private WrappedDropdownOption of Dash.NET.ComponentPropTyp
     interface IUnwrap with
         member x.Unwrap () = DropdownOption.Unwrap x |> box
 
-type RadioItemsOption = private WrappedRadioItemsOption of Dash.NET.ComponentPropTypes.RadioItemsOption with
-    static member Unwrap (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = match v with WrappedRadioItemsOption v -> v
-    static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
-        guardAgainstNull "label" label
-        guardAgainstNull "value" value
-        Dash.NET.ComponentPropTypes.RadioItemsOption.init (label, value, ?disabled = Option.ofNullable disabled) |> WrappedRadioItemsOption
-    interface IUnwrap with
-        member x.Unwrap () = RadioItemsOption.Unwrap x |> box
+//type RadioItemsOption = private WrappedRadioItemsOption of Dash.NET.ComponentPropTypes.RadioItemsOption with
+//    static member Unwrap (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = match v with WrappedRadioItemsOption v -> v
+//    static member Init (label : IConvertible, value : IConvertible, [<Optional>] disabled : Nullable<bool>) =
+//        guardAgainstNull "label" label
+//        guardAgainstNull "value" value
+//        Dash.NET.ComponentPropTypes.RadioItemsOption.init (label, value, ?disabled = Option.ofNullable disabled) |> WrappedRadioItemsOption
+//    interface IUnwrap with
+//        member x.Unwrap () = RadioItemsOption.Unwrap x |> box
+
+open DynamicObj
+
+[<CLIMutable>] 
+type RadioItemsOption<'a, 'b when 'a :> IConvertible and 'b :> IConvertible> =
+    {
+        label : 'a
+        value : 'b
+        disabled : Nullable<bool>
+    }
+    with
+    //static member Init(label:'a, value:'b, [<Optional>]disabled:Nullable<bool>) = { label = label; value = value; disabled = disabled}
+    static member Unwrap  (v : RadioItemsOption<'a, 'b>) : Dash.NET.ComponentPropTypes.RadioItemsOption = Dash.NET.ComponentPropTypes.RadioItemsOption.init (v.label, v.value, ?disabled = Option.ofNullable v.disabled) // TODO : Add disabled properly
+
+module RadioItemsOption =
+    let Init<'a, 'b when 'a :> IConvertible and 'b :> IConvertible> (label:'a, value:'b, [<Optional>]disabled:Nullable<bool>) : RadioItemsOption<'a, 'b> = { label = label; value = value; disabled = disabled }
+
+//type RadioItemsOption<'a, 'b when 'a :> IConvertible and 'b :> IConvertible> (label:'a, value:'b, [<Optional>]disabled:Nullable<bool>) as this =
+//    inherit DynamicObj()
+//    do
+//        label   |> DynObj.setValue this "label"
+//        value   |> DynObj.setValue this "value"
+//        disabled |> Option.ofNullable |> DynObj.setValueOpt this "disabled"
+
+//    member val Label = label with get, set
+//    member val Value = value with get, set
+
+//    static member Unwrap (v : RadioItemsOption<'a, 'b>) : Dash.NET.ComponentPropTypes.RadioItemsOption = Dash.NET.ComponentPropTypes.RadioItemsOption.init (v?label :?> IConvertible, v?value :?> IConvertible) // TODO : Add disabled properly
+    
+
+//module RadioItemsOption =
+//    let Init<'a, 'b when 'a :> IConvertible and 'b :> IConvertible>
+//        (
+//            label:'a,
+//            value:'b,
+//            [<Optional>]disabled:Nullable<bool>
+//        ) =
+//            new RadioItemsOption<'a, 'b> (label, value, disabled)
+
+
+
+//type RadioItemsOption<'a, 'b when 'a :> IConvertible and 'b :> IConvertible> () =
+//    inherit DynamicObj()
+//    static member Init<'a, 'b when 'a :> IConvertible and 'b :> IConvertible>
+//        (
+//            label:'a,
+//            value:'b,
+//            [<Optional>]disabled:Nullable<bool>
+//        ) =
+//            let dro = RadioItemsOption()
+
+//            label   |> DynObj.setValue dro "label"
+//            value   |> DynObj.setValue dro "value"
+//            disabled |> Option.ofNullable |> DynObj.setValueOpt dro "disabled"
+
+//            dro
+//    //static member Unwrap (v : RadioItemsOption) : Dash.NET.ComponentPropTypes.RadioItemsOption = Dash.NET.ComponentPropTypes.RadioItemsOption.init (v?label :?> IConvertible, v?value :?> IConvertible, v?disabled :?> bool)
+//    static member Unwrap (v : RadioItemsOption<'a, 'b>) : Dash.NET.ComponentPropTypes.RadioItemsOption = Dash.NET.ComponentPropTypes.RadioItemsOption.init (v?label :?> IConvertible, v?value :?> IConvertible) // TODO : Add disabled properly
+    
+//    member x.Label () : 'a = x?label :?> 'a
+//    member x.Value () : 'b = x?value :?> 'b
+
+//    //interface IUnwrap with
+//    //    member x.Unwrap () = RadioItemsOption.Unwrap x |> box
+
+//module RadioItemsOption =
+//    let Init<'a, 'b when 'a :> IConvertible and 'b :> IConvertible>
+//        (
+//            label:'a,
+//            value:'b,
+//            [<Optional>]disabled:Nullable<bool>
+//        ) =
+//            RadioItemsOption<'a, 'b>.Init (label, value, disabled)
+
+
+
         
 type TabColors = private WrappedTabColors of Dash.NET.ComponentPropTypes.TabColors with
     static member internal Unwrap (v : TabColors) : Dash.NET.ComponentPropTypes.TabColors = match v with WrappedTabColors v -> v

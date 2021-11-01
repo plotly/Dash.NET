@@ -26,14 +26,14 @@ module RadioItems =
         ///<summary>
         ///An array of options
         ///</summary>
-        static member options([<ParamArray>] p: array<RadioItemsOption>) = 
+        static member options([<ParamArray>] p: array<RadioItemsOption<'a,'b>>) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
             OAttr.options (p |> Array.map RadioItemsOption.Unwrap) |> Attr.Wrap
         ///<summary>
         ///An sequence of options
         ///</summary>
-        static member options(p: seq<RadioItemsOption>) = 
+        static member options(p: seq<RadioItemsOption<'a,'b>>) = 
             guardAgainstNull "p" p
             p |> Seq.iter (guardAgainstNull "p")
             OAttr.options (p |> Seq.map RadioItemsOption.Unwrap) |> Attr.Wrap
