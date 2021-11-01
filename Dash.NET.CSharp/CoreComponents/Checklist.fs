@@ -21,7 +21,7 @@ module Checklist =
         ///<summary>
         ///An array of options
         ///</summary>
-        static member options([<ParamArray>] p : ChecklistOption array) = 
+        static member options([<ParamArray>] p : ChecklistOption<'a,'b> array) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
             OAttr.options (p |> Array.map ChecklistOption.Unwrap) |> Attr.Wrap

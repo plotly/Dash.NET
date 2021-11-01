@@ -62,9 +62,9 @@ namespace Dash.Giraffe.CSharp.Example
                         Dropdown.dropdown(
                             "testInput1", 
                             Dropdown.Attr.options(
-                                DropdownOption.Init("1", "1"),
-                                DropdownOption.Init(2, 2),
-                                DropdownOption.Init(3L, 3L),
+                                DropdownOption.Init(1.0, 1.0),
+                                DropdownOption.Init(2.0, 2.0),
+                                DropdownOption.Init(3.0, 3.0),
                                 DropdownOption.Init(4.1, 4.1)
                             ),
                             Dropdown.Attr.multi(true)

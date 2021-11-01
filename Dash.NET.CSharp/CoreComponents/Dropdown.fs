@@ -36,7 +36,7 @@ module Dropdown =
         ///An array of options {label: [string|number], value: [string|number]},
         ///an optional disabled field can be used for each option
         ///</summary>
-        static member options([<ParamArray>] p: DropdownOption array) = 
+        static member options([<ParamArray>] p: DropdownOption<'a,'b> array) = 
             guardAgainstNull "p" p
             p |> Seq.iter (guardAgainstNull "p")
             OAttr.options (p |> Seq.map DropdownOption.Unwrap) |> Attr.Wrap

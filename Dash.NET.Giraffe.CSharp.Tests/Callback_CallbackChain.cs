@@ -80,10 +80,9 @@ namespace Documentation.Examples
                     },
                     handler: (RadioItemsOption<string, string>[] a) =>
                     {
-                        string val = a[0].value;
                         return new[]
                         {
-                            CallbackResult.Create(("test", ComponentProperty.Children), val)
+                            CallbackResult.Create(("test", ComponentProperty.Children), a[0].value)
                         };
                     }
                 );
