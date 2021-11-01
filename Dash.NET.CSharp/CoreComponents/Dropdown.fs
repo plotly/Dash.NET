@@ -211,7 +211,7 @@ module Dropdown =
     ///Use a dropdown when you have many options (more than 5) or when you are
     ///constrained for space. Otherwise, you can use RadioItems or a Checklist,
     ///which have the benefit of showing the users all of the items at once.
-    ///&#10;
+    ///<para>&#160;</para> 
     ///Properties:
     ///&#10;
     ///• id (string) - The ID of this component, used to identify dash components

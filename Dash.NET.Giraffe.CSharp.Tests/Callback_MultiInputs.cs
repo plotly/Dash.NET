@@ -7,7 +7,6 @@ using Plotly.NET;
 using Dash.NET.CSharp;
 using CsvHelper.Configuration.Attributes;
 using CsvHelper;
-using CsvHelper.TypeConversion;
 using System.IO;
 using System.Net.Http;
 using System.Globalization;
@@ -29,8 +28,8 @@ namespace Documentation.Examples
             [Index(2)]
             public int year { get; set; }
             [Index(3)]
-            [Default("0")]
-            [NumberStyles(NumberStyles.Number | NumberStyles.AllowExponent)] //Handle values in scientific notation
+            [Default(0)]
+            [NumberStyles(NumberStyles.Number | NumberStyles.AllowExponent)]
             public decimal value { get; set; }
         }
         public static void RunExample()
@@ -44,7 +43,7 @@ namespace Documentation.Examples
             Func<string, string, string, string, int, GenericChart.Figure> scatterPlot =
                 (string xaxisColumnName, string yaxisColumnName, string xaxisType, string yaxisType, int year) =>
                 {
-                    var filteredRows = rows.Where(x => x.year == year /*&& x.value != 0*/);
+                    var filteredRows = rows.Where(x => x.year == year);
                     var xData = filteredRows.Where(x => x.indicator == xaxisColumnName).Select(x => x.value);
                     var yData = filteredRows.Where(x => x.indicator == yaxisColumnName).Select(x => x.value);
                     var countryData = filteredRows.Select(x => x.country).ToArray();
@@ -166,7 +165,7 @@ namespace Documentation.Examples
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
-                ipAddress: "*",
+                ipAddress: "127.0.0.1",
                 port: 8050,
                 errorHandler: (Exception err) => err.Message
             );

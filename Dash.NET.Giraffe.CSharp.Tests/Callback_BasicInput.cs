@@ -27,7 +27,6 @@ namespace Documentation.Examples
                         Html.div(Attr.id("output-state"))
                     )
                 );
-
             var setOutputDivValue =
                 Callback.Create(
                     input: new[]

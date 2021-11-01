@@ -16,7 +16,8 @@ namespace Documentation.Examples
                 Html.div(
                     Attr.children(
                         Html.label(Attr.children("Dropdown")),
-                        Dropdown.dropdown("dropdown",
+                        Dropdown.dropdown(
+                            id: "dropdown",
                             Dropdown.Attr.options(
                                 DropdownOption.Init(label: "New York City", value: "NYC", disabled: false, title: "New York City"),
                                 DropdownOption.Init(label: "Montréal", value: "MTL", disabled: false, title: "Montréal"),
@@ -26,7 +27,8 @@ namespace Documentation.Examples
                         ),
 
                         Html.label(Attr.children("Multi-Select Dropdown")),
-                        Dropdown.dropdown("multi-select-dropdown",
+                        Dropdown.dropdown(
+                            id: "multi-select-dropdown",
                             Dropdown.Attr.options(
                                 DropdownOption.Init(label: "New York City", value: "NYC", disabled: false, title: "New York City"),
                                 DropdownOption.Init(label: "Montréal", value: "MTL", disabled: false, title: "Montréal"),
@@ -37,7 +39,8 @@ namespace Documentation.Examples
                         ),
 
                         Html.label(Attr.children("Radio Items")),
-                        RadioItems.radioItems("radioitems",
+                        RadioItems.radioItems(
+                            id: "radioitems",
                             RadioItems.Attr.options(
                                 RadioItemsOption.Init(label: "New York City", value: "NYC", disabled: false),
                                 RadioItemsOption.Init(label: "Montréal", value: "MTL", disabled: false),
@@ -47,7 +50,8 @@ namespace Documentation.Examples
                         ),
 
                         Html.label(Attr.children("Checkboxes")),
-                        Checklist.checklist("checkboxes",
+                        Checklist.checklist(
+                            id: "checkboxes",
                             Checklist.Attr.options(
                                 ChecklistOption.Init(label: "New York City", value: "NYC", disabled: false),
                                 ChecklistOption.Init(label: "Montréal", value: "MTL", disabled: false),
@@ -56,29 +60,26 @@ namespace Documentation.Examples
                         ),
 
                         Html.label(Attr.children("Text Input")),
-                        Input.input("text-input",
-                            new Input.Attr[] {
-                                Input.Attr.inputType(InputType.Text()),
-                                Input.Attr.value("MLT")
-                            }
+                        Input.input(
+                            id: "text-input",
+                            Input.Attr.inputType(InputType.Text()),
+                            Input.Attr.value("MLT")
                         ),
 
                         Html.label(Attr.children("Slider")),
                         Slider.slider("slider",
-                            new Slider.Attr[] {
-                                Slider.Attr.min(0),
-                                Slider.Attr.max(9),
-                                Slider.Attr.marks(
-                                        new Dictionary<double, Slider.Mark>()
-                                        {
-                                            {1.0, Slider.Mark.Value("Label 1")},
-                                            {2.0, Slider.Mark.Value("2")},
-                                            {3.0, Slider.Mark.Value("3")},
-                                            {4.0, Slider.Mark.Value("4")},
-                                            {5.0, Slider.Mark.Value("5")}
-                                        }
-                                )
-                            }
+                            Slider.Attr.min(0),
+                            Slider.Attr.max(9),
+                            Slider.Attr.marks(
+                                new Dictionary<double, Slider.Mark>()
+                                {
+                                    {1.0, Slider.Mark.Value("Label 1")},
+                                    {2.0, Slider.Mark.Value("2")},
+                                    {3.0, Slider.Mark.Value("3")},
+                                    {4.0, Slider.Mark.Value("4")},
+                                    {5.0, Slider.Mark.Value("5")}
+                                }
+                            )
                         )
                     ),
                     Attr.style(Style.StyleProperty("columnCount", "2"))
@@ -91,7 +92,7 @@ namespace Documentation.Examples
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
-                ipAddress: "*",
+                ipAddress: "127.0.0.1",
                 port: 8050,
                 errorHandler: (Exception err) => err.Message
             );

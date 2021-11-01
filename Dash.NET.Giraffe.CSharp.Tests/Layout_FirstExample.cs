@@ -39,7 +39,7 @@ namespace Documentation.Examples
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
-                ipAddress: "*",
+                ipAddress: "127.0.0.1",
                 port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
