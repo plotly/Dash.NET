@@ -36,8 +36,7 @@ namespace Documentation.Examples
                         Html.hr(),
                         RadioItems.radioItems(id: "cities-radio"),
                         Html.hr(),
-                        Html.div(Attr.id("display-selected-values")),
-                        Html.div(Attr.id("test"))
+                        Html.div(Attr.id("display-selected-values"))
                     )
                 );
 
@@ -53,8 +52,13 @@ namespace Documentation.Examples
                     },
                     handler: (string selectedCountry) =>
                     {
-                        var radioItemsOptionArr = countries.Where(x => x.name == selectedCountry).First().cities.Select(x =>
-                        RadioItemsOption.Init(label: x, value: x)).ToArray();
+                        var radioItemsOptionArr = countries
+                            .Where(x => x.name == selectedCountry)
+                            .First()
+                            .cities
+                            .Select(x => RadioItemsOption.Init(label: x, value: x))
+                            .ToArray();
+
                         return new[]
                         {
                             CallbackResult.Create(("cities-radio", ComponentProperty.CustomProperty("options")), radioItemsOptionArr)
@@ -67,17 +71,37 @@ namespace Documentation.Examples
                 Callback.Create(
                     input: new[]
                     {
-                        ("cities-radio", ComponentProperty.CustomProperty("options"))
+                        ("cities-radio", ComponentProperty.CustomProperty("options")),
                     },
                     output: new[]
                     {
-                        ("test", ComponentProperty.Children)
+                        ("cities-radio", ComponentProperty.Value)
                     },
-                    handler: (RadioItemsOption[] a) => //I'm guessing the error happens here
+                    handler: (RadioItemsOption<string, string>[] a) =>
                     {
                         return new[]
                         {
-                            CallbackResult.Create(("test", ComponentProperty.Children), "a") //This is unrelated, I wanted to see if the error is happening elsewhere
+                            CallbackResult.Create(("cities-radio", ComponentProperty.Value), a[0].value)
+                        };
+                    }
+                );
+
+            var setDisplayChildren =
+                Callback.Create(
+                    input: new[]
+                    {
+                        ("countries-radio", ComponentProperty.Value),
+                        ("cities-radio", ComponentProperty.Value)
+                    },
+                    output: new[]
+                    {
+                        ("display-selected-values", ComponentProperty.Children)
+                    },
+                    handler: (string selectedCountry, string selectedCity) =>
+                    {
+                        return new[]
+                        {
+                            CallbackResult.Create(("display-selected-values", ComponentProperty.Children), $"{selectedCity} is a city in {selectedCountry}")
                         };
                     }
                 );
@@ -86,7 +110,8 @@ namespace Documentation.Examples
                 .initDefault()
                 .withLayout(layout)
                 .addCallback(setCitiesOption)
-                /*.addCallback(setCitiesValue)*/;
+                .addCallback(setCitiesValue)
+                .addCallback(setDisplayChildren);
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",

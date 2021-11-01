@@ -21,16 +21,16 @@ namespace Documentation.Examples
             //Layout_MoreAboutHtmlComponents.RunExample();
             //Layout_Markdown.RunExample();
             //Layout_ReusableComponents.RunExample();
-            //Layout_Viz.RunExample(); //The F# and C# outputs are the same, but different from the online example output
+            //Layout_Viz.RunExample();
             //Layout_CoreComponents.RunExample();
 
             //Callback_SimpleCallback.RunExample();
             //Callback_SimpleSlider.RunExample();
-            Callback_MultiInputs.RunExample(); //The F# and C# outputs are the same, but different from the online example output
+            //Callback_MultiInputs.RunExample();
             //Callback_MultiOutputs.RunExample();
-            //Callback_CallbackChain.RunExample(); // TODO : Finish
+            //Callback_CallbackChain.RunExample();
             //Callback_BasicInput.RunExample();
-            //Callback_BasicState.RunExample();
+            Callback_BasicState.RunExample();
         }
     }
 }

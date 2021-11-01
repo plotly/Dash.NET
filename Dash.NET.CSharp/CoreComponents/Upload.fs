@@ -225,24 +225,24 @@ module Upload =
 
     ///<summary>
     ///Upload components allow your app to accept user-uploaded files via drag'n'drop
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• contents (string | list with values of type: string) - The contents of the uploaded file as a binary string
-    ///&#10;
+    ///<para>&#160;</para>
     ///• filename (string | list with values of type: string) - The name of the file(s) that was(were) uploaded.
     ///Note that this does not include the path of the file
     ///(for security reasons).
-    ///&#10;
+    ///<para>&#160;</para>
     ///• last_modified (number | list with values of type: number) - The last modified date of the file that was uploaded in unix time
     ///(seconds since 1970).
-    ///&#10;
+    ///<para>&#160;</para>
     ///• children (a list of or a singular dash component, string or number | string) - Contents of the upload component
-    ///&#10;
+    ///<para>&#160;</para>
     ///• accept (string) - Allow specific types of files.
     ///See https://github.com/okonet/attr-accept for more information.
     ///Keep in mind that mime type determination is not reliable across
@@ -250,43 +250,43 @@ module Upload =
     ///under macOS but as application/vnd.ms-excel under Windows.
     ///In some cases there might not be a mime type set at all.
     ///See: https://github.com/react-dropzone/react-dropzone/issues/276
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disabled (boolean; default false) - Enable/disable the upload component entirely
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disable_click (boolean; default false) - Disallow clicking on the component to open the file dialog
-    ///&#10;
+    ///<para>&#160;</para>
     ///• max_size (number; default -1) - Maximum file size in bytes. If &#96;-1&#96;, then infinite
-    ///&#10;
+    ///<para>&#160;</para>
     ///• min_size (number; default 0) - Minimum file size in bytes
-    ///&#10;
+    ///<para>&#160;</para>
     ///• multiple (boolean; default false) - Allow dropping multiple files
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className (string) - HTML class name of the component
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className_active (string) - HTML class name of the component while active
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className_reject (string) - HTML class name of the component if rejected
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className_disabled (string) - HTML class name of the component if disabled
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style (record; default {}) - CSS styles to apply
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style_active (record; default {
     ///    borderStyle: 'solid',
     ///    borderColor: '#6c6',
     ///    backgroundColor: '#eee',
     ///}) - CSS styles to apply while active
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style_reject (record; default {
     ///    borderStyle: 'solid',
     ///    borderColor: '#c66',
     ///    backgroundColor: '#eee',
     ///}) - CSS styles if rejected
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style_disabled (record; default {
     ///    opacity: 0.5,
     ///}) - CSS styles if disabled
-    ///&#10;
+    ///<para>&#160;</para>
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
     ///</summary>
     let upload (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Upload.upload id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

@@ -10,36 +10,36 @@ type internal Helpers =
     static member internal ConvertDependency ((id, prop) : System.ValueTuple<string, ComponentProperty>) = Dash.NET.Dependency.create (id, prop |> ComponentProperty.Unwrap)
 
 type CallbackResult = internal WrappedCallbackResult of Dash.NET.CallbackResultBinding with
-    static member Create(target : Dependency, results : obj array) =
-        {
-            Dash.NET.CallbackResultBinding.Target = target |> Helpers.ConvertDependency
-            Dash.NET.CallbackResultBinding.BoxedResult =
-                [
-                    for result in results do
-                        match result with
-                        | :? IUnwrap as result -> result.Unwrap()
-                        | _ -> result
-                ]
-                |> box
-        }
-        |> WrappedCallbackResult
-
-    static member Create(target : Dependency, result : obj) =
-        {
-            Dash.NET.CallbackResultBinding.Target = target |> Helpers.ConvertDependency
-            Dash.NET.CallbackResultBinding.BoxedResult =
-                match result with
-                | :? IUnwrap as result -> result.Unwrap() |> box
-                | _ -> result |> box
-        }
-        |> WrappedCallbackResult
-
-    //static member Create<'a>(target : Dependency, result : 'a) =
+    //static member Create(target : Dependency, results : obj array) =
     //    {
     //        Dash.NET.CallbackResultBinding.Target = target |> Helpers.ConvertDependency
-    //        Dash.NET.CallbackResultBinding.BoxedResult = box result
+    //        Dash.NET.CallbackResultBinding.BoxedResult =
+    //            [
+    //                for result in results do
+    //                    match result with
+    //                    | :? IUnwrap as result -> result.Unwrap()
+    //                    | _ -> result
+    //            ]
+    //            |> box
     //    }
     //    |> WrappedCallbackResult
+
+    //static member Create(target : Dependency, result : obj) =
+    //    {
+    //        Dash.NET.CallbackResultBinding.Target = target |> Helpers.ConvertDependency
+    //        Dash.NET.CallbackResultBinding.BoxedResult =
+    //            match result with
+    //            | :? IUnwrap as result -> result.Unwrap() |> box
+    //            | _ -> result |> box
+    //    }
+    //    |> WrappedCallbackResult
+
+    static member Create<'a>(target : Dependency, result : 'a) =
+        {
+            Dash.NET.CallbackResultBinding.Target = target |> Helpers.ConvertDependency
+            Dash.NET.CallbackResultBinding.BoxedResult = box result
+        }
+        |> WrappedCallbackResult
 
     static member internal Unwrap (value : CallbackResult) : Dash.NET.CallbackResultBinding = match value with | WrappedCallbackResult v -> v
 

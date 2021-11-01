@@ -21,7 +21,7 @@ module Checklist =
         ///<summary>
         ///An array of options
         ///</summary>
-        static member options([<ParamArray>] p : ChecklistOption array) = 
+        static member options([<ParamArray>] p : ChecklistOption<'a,'b> array) = 
             guardAgainstNull "p" p
             p |> Array.iter (guardAgainstNull "p")
             OAttr.options (p |> Array.map ChecklistOption.Unwrap) |> Attr.Wrap
@@ -156,44 +156,44 @@ module Checklist =
     ///The values and labels of the checklist are specified in the &#96;options&#96;
     ///property and the checked items are specified with the &#96;value&#96; property.
     ///Each checkbox is rendered as an input with a surrounding label.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• options (list with values of type: record with the fields: 'label: string | number (required)', 'value: string | number (required)', 'disabled: boolean (optional)'; default []) - An array of options
-    ///&#10;
+    ///<para>&#160;</para>
     ///• value (list with values of type: string | number; default []) - The currently selected value
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className (string) - The class of the container (div)
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style (record) - The style of the container (div)
-    ///&#10;
+    ///<para>&#160;</para>
     ///• inputStyle (record; default {}) - The style of the &lt;input&gt; checkbox element
-    ///&#10;
+    ///<para>&#160;</para>
     ///• inputClassName (string; default ) - The class of the &lt;input&gt; checkbox element
-    ///&#10;
+    ///<para>&#160;</para>
     ///• labelStyle (record; default {}) - The style of the &lt;label&gt; that wraps the checkbox input
     /// and the option's label
-    ///&#10;
+    ///<para>&#160;</para>
     ///• labelClassName (string; default ) - The class of the &lt;label&gt; that wraps the checkbox input
     /// and the option's label
-    ///&#10;
+    ///<para>&#160;</para>
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persistence (boolean | string | number) - Used to allow user interactions in this component to be persisted when
     ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
     ///hasn't changed from its previous value, a &#96;value&#96; that the user has
     ///changed while using the app will keep that change, as long as
     ///the new &#96;value&#96; also matches what was given originally.
     ///Used in conjunction with &#96;persistence_type&#96;.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persisted_props (list with values of type: value equal to: 'value'; default ['value']) - Properties whose user interactions will persist after refreshing the
     ///component or the page. Since only &#96;value&#96; is allowed this prop can
     ///normally be ignored.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persistence_type (value equal to: 'local', 'session', 'memory'; default local) - Where persisted user changes will be stored:
     ///memory: only kept in memory, reset on page refresh.
     ///local: window.localStorage, data is kept after the browser quit.
