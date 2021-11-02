@@ -77,11 +77,11 @@ namespace Documentation.Examples
                     {
                         ("cities-radio", ComponentProperty.Value)
                     },
-                    handler: (RadioItemsOption<string, string>[] a) =>
+                    handler: (RadioItemsOption<string, string>[] radioItemOptions) =>
                     {
                         return new[]
                         {
-                            CallbackResult.Create(("cities-radio", ComponentProperty.Value), a[0].value)
+                            CallbackResult.Create(("cities-radio", ComponentProperty.Value), radioItemOptions[0].value)
                         };
                     }
                 );
@@ -115,7 +115,7 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "127.0.0.1",
                 port: 8050,
                 errorHandler: (Exception err) => err.Message
