@@ -15,6 +15,76 @@ open DocumentationGeneration
 
 let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters) : ParsedInput =
 
+    // Helpers
+    let oAttr = Ident.Create "OAttr"
+    //let guardNull name = ...
+    let gListMap = SynExpr.CreateIdentStringWithDots "List.map"
+    let gArrayMap = SynExpr.CreateIdentStringWithDots "Array.map"
+    let gSeqMap = SynExpr.CreateIdentStringWithDots "Seq.map"
+    let gListOfArray = SynExpr.CreateIdentStringWithDots "List.ofArray"
+    let gAttrUnwrap = SynExpr.CreateIdentStringWithDots "Attr.Unwrap"
+    let gPipe = SynExpr.CreateIdentString "|>"
+    let gComponentWrap = SynExpr.CreateIdentStringWithDots "Dash.NET.CSharp.Dsl.DashComponent.Wrap"
+    let gAttrWrap = SynExpr.CreateIdentStringWithDots "Attr.Wrap"
+    let gDashComponent = SynType.CreateIdentStringWithDots "Dash.NET.CSharp.Dsl.DashComponent"
+    let gDashComponentUnwrap = SynExpr.CreateIdentStringWithDots "Dash.NET.CSharp.Dsl.DashComponent.Unwrap"
+
+
+    let attrDeclaration =
+
+        /// Create Feliz style attribute constructors for children
+        let componentChildrenConstructorDeclarations =
+            let createCon ty args app =
+                functionPatternTupled "children" [("value", ty, args)]
+                |> binding app
+                |> withXMLDocLet (["The child or children of this dash component"] |> toXMLDoc)
+                |> SynMemberDefn.CreateStaticMember
+
+            [
+                createCon (appType ["int"]) None (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; SynExpr.CreateIdentString "value"; gPipe; gAttrWrap ]) 
+                createCon (appType ["string"]) None (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; SynExpr.CreateIdentString "value"; gPipe; gAttrWrap ])
+                createCon (appType ["float"]) None (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; SynExpr.CreateIdentString "value"; gPipe; gAttrWrap ])
+                createCon (SynType.CreateIdentStringWithDots "System.Guid") None (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; SynExpr.CreateIdentString "value"; gPipe; gAttrWrap ])
+                createCon (gDashComponent) None (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; applicationNest [ SynExpr.CreateIdentString "value"; gPipe; gDashComponentUnwrap ]; gPipe; gAttrWrap ])
+                createCon (appType ["array"; "Dash.NET.CSharp.Dsl.DashComponent"]) (Some [ SynAttribute.Create "ParamArray" ]) (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; applicationNest [ SynExpr.CreateIdentString "value"; gPipe; gArrayMap; gDashComponentUnwrap ]; gPipe; gAttrWrap ])
+                createCon (appType ["seq"; "Dash.NET.CSharp.Dsl.DashComponent"]) None (application [ SynExpr.CreateIdentStringWithDots "OAttr.children"; applicationNest [ SynExpr.CreateIdentString "value"; gPipe; gSeqMap; gDashComponentUnwrap ]; gPipe; gAttrWrap ])
+            ]
+
+        let createMemberWrap () =
+            functionPattern "Wrap" []
+            |> binding (application [SynExpr.CreateIdentStringWithDots "Attr.WrappedAttr"])
+            |> SynMemberDefn.CreateStaticMember
+
+        let createMemberUnwrap () =
+            //functionPattern "Unwrap" [("attr", SynType.Create "Attr")]
+            SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString "Unwrap", [ SynPatRcd.CreateLongIdent (LongIdentWithDots.CreateString "Attr.WrappedAttr", [ (SynPatRcd.CreateLongIdent (LongIdentWithDots.CreateString "attr", [])) ] ) |> SynPatRcd.CreateParen ])
+            |> binding (application [SynExpr.CreateIdentString "attr"])
+            |> SynMemberDefn.CreateStaticMember
+
+        // private WrappedAttr of OAttr
+        //
+        /// Attribute declaration
+        let componentPropertyDUCase =
+            [
+                simpleUnionCase "WrappedAttr" [ anonSimpleField "OAttr" ]
+            ]
+            |> SynTypeDefnSimpleReprUnionRcd.Create
+            |> fun x -> { x with Access = Some SynAccess.Private }
+            |> SynTypeDefnSimpleReprRcd.Union
+
+        // type Attr =
+        //
+        // Create the type definition
+        "Attr"
+        |> componentInfo
+        |> simpleTypeDeclaration
+            componentPropertyDUCase
+            [
+                createMemberWrap ()
+                createMemberUnwrap ()
+                yield! componentChildrenConstructorDeclarations
+            ]
+
     /// Original attribute name alias
     let originalAttribute =
         let typeAbbrev =
@@ -25,22 +95,17 @@ let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters
             }
 
         SynModuleDecl.CreateSimpleType (
-            { SynComponentInfoRcd.Create [Ident.Create "OAttr"] with Access = Some SynAccess.Internal },
+            { SynComponentInfoRcd.Create [ oAttr ] with Access = Some SynAccess.Internal },
             SynTypeDefnSimpleReprRcd.TypeAbbrev typeAbbrev
         )
 
     /// Define the component DSL function (used when creating the DOM tree)
     let componentLetDeclaration =
-        let gListMap = SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "map"])
-        let gListOfArray = SynExpr.CreateLongIdent (LongIdentWithDots.Create ["List"; "ofArray"])
-        let gAttrUnwrap = SynExpr.CreateLongIdent (LongIdentWithDots.Create ["Attr"; "Unwrap"])
-        let gPipe = SynExpr.CreateIdentString "|>"
-        let gComponentWrap = SynExpr.CreateLongIdent (LongIdentWithDots.CreateString "Dash.NET.CSharp.Dsl.DashComponent.Wrap")
 
         /// Define the inner expression
         let componentDeclaration =
             application [
-                SynExpr.CreateLongIdent (LongIdentWithDots.CreateString $"{parameters.LibraryNamespace}.{parameters.ComponentName}.{parameters.CamelCaseComponentName}")
+                SynExpr.CreateIdentStringWithDots $"{parameters.LibraryNamespace}.{parameters.ComponentName}.{parameters.CamelCaseComponentName}"
                 SynExpr.CreateIdentString "id"
                 applicationNest [
                     SynExpr.CreateIdentString "attrs"
@@ -64,12 +129,6 @@ let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters
         |> binding componentDeclaration
         |> withXMLDocLet (parameters.Metadata |> generateComponentDocumentation |> toXMLDoc)
         |> letDeclaration
-    
-    //let tup =
-    //    let v = SynExpr.CreateParenedTuple [ SynExpr.CreateTyped(SynExpr.CreateConstString ("id"), SynType.Create "string"); SynExpr.CreateTyped(SynExpr.CreateConstString("attrs"), SynType.CreateApp(SynType.Create "array", [SynType.Create parameters.ComponentAttrsName])) ]
-    //    SynPatRcd.CreateLongIdent(LongIdentWithDots.CreateString "fname", v)
-    //    |> binding (SynExpr.CreateConstString "test")
-    //    |> letDeclaration
 
     //  ///This is additional test documentation
     //  [<RequireQualifiedAccess>]
@@ -83,6 +142,7 @@ let createCSharpComponentAST (log: Core.Logger) (parameters: ComponentParameters
         |> withModuleAttribute (SynAttribute.Create "RequireQualifiedAccess")
         |> nestedModule [
             yield originalAttribute
+            yield attrDeclaration
             yield componentLetDeclaration 
         ]
             //[ yield! componentPropertyTypeDeclarations

@@ -17,6 +17,7 @@ let patternNamedOptional (pname: string) = SynPatRcd.OptionalVal {Id = Ident.Cre
 let patternNamed (pname: string) = SynPatRcd.CreateNamed(Ident.Create pname, SynPatRcd.CreateWild)
 let patternNamedTuple (pnames: string list) = pnames |> List.map patternNamed |> SynPatRcd.CreateTuple
 let withPatternType (ptype: SynType) (pat: SynPatRcd) = SynPatRcd.CreateTyped(pat, ptype)
+let patternNamedFromIdent (pname: Ident) = SynPatRcd.CreateNamed(pname, SynPatRcd.CreateWild)
 
 // Documentation
 // ------------------------------------------
@@ -89,7 +90,7 @@ let typeAbbreviationDefinition (atype: SynType) =
 
 // Union
 // ------------------------------------------
-let unionDefinition (cases: SynUnionCaseRcd list) =
+let unionDefinition (cases: SynUnionCaseRcd list) : SynTypeDefnSimpleReprRcd =
     cases |> SynTypeDefnSimpleReprUnionRcd.Create |> SynTypeDefnSimpleReprRcd.Union
 let simpleUnionCase (label: string) (utype: SynFieldRcd list) =
     SynUnionCaseRcd.Create ((Ident.Create label), (SynUnionCaseType.Create utype))
@@ -221,3 +222,12 @@ let applicationNest (expers: SynExpr list) =
 
 let expressionList (expers: SynExpr list) =
     SynExpr.ArrayOrList (false, expers, range.Zero)
+
+// Simplify API
+// ------------------------------------
+type SynExpr =
+    static member CreateIdentStringWithDots v = SynExpr.CreateLongIdent (LongIdentWithDots.CreateString v)
+
+type SynType =
+    static member CreateIdentStringWithDots v = SynType.CreateLongIdent (LongIdentWithDots.CreateString v)
+

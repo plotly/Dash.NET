@@ -14,9 +14,11 @@ module Checklist =
     // Original attr
     type internal OAttr = Dash.NET.DCC.Checklist.Attr
 
-    type Attr = private WrappedAttr of Dash.NET.DCC.Checklist.Attr with
-        static member internal Wrap (attr : Dash.NET.DCC.Checklist.Attr) = Attr.WrappedAttr attr
-        static member internal Unwrap (attr : Attr) = match attr with | Attr.WrappedAttr attr -> attr
+    type Attr = private WrappedAttr of OAttr with
+        //static member internal Wrap (attr : OAttr) = Attr.WrappedAttr attr
+        //static member internal Unwrap (attr : Attr) = match attr with | Attr.WrappedAttr attr -> attr
+        static member internal Wrap = Attr.WrappedAttr
+        static member internal Unwrap (Attr.WrappedAttr attr) = attr
 
         ///<summary>
         ///An array of options
