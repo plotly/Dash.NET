@@ -100,20 +100,20 @@ module Interval =
     ///with a fixed time delay between each increment.
     ///Interval is good for triggering a component on a recurring basis.
     ///The time delay is set with the property "interval" in milliseconds.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• interval (number; default 1000) - This component will increment the counter &#96;n_intervals&#96; every
     ///&#96;interval&#96; milliseconds
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disabled (boolean) - If True, the counter will no longer update
-    ///&#10;
+    ///<para>&#160;</para>
     ///• n_intervals (number; default 0) - Number of times the interval has passed
-    ///&#10;
+    ///<para>&#160;</para>
     ///• max_intervals (number; default -1) - Number of times the interval will be fired.
     ///If -1, then the interval has no limit (the default)
     ///and if 0 then the interval stops running.

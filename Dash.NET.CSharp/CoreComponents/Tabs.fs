@@ -89,13 +89,13 @@ module Tabs =
         ///</summary>
         static member colors(p: TabColors) = 
             guardAgainstNull "p" p
-            OAttr.colors (p |> TabColors.Convert)
+            OAttr.colors (p |> TabColors.Unwrap)
         ///<summary>
         ///Object that holds the loading state object coming from dash-renderer
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert)
+            OAttr.loadingState (p |> LoadingState.Unwrap)
 
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
@@ -177,33 +177,33 @@ module Tabs =
     ///A Dash component that lets you render pages with tabs - the Tabs component's children
     ///can be dcc.Tab components, which can hold a label that will be displayed as a tab, and can in turn hold
     ///children components that will be that tab's content.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• value (string) - The value of the currently selected Tab
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className (string) - Appends a class to the Tabs container holding the individual Tab components.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• content_className (string) - Appends a class to the Tab content container holding the children of the Tab that is selected.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• parent_className (string) - Appends a class to the top-level parent container holding both the Tabs container and the content container.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style (record) - Appends (inline) styles to the Tabs container holding the individual Tab components.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• parent_style (record) - Appends (inline) styles to the top-level parent container holding both the Tabs container and the content container.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• content_style (record) - Appends (inline) styles to the tab content container holding the children of the Tab that is selected.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• vertical (boolean; default false) - Renders the tabs vertically (on the side)
-    ///&#10;
+    ///<para>&#160;</para>
     ///• mobile_breakpoint (number; default 800) - Breakpoint at which tabs are rendered full width (can be 0 if you don't want full width tabs on mobile)
-    ///&#10;
+    ///<para>&#160;</para>
     ///• children (list with values of type: a list of or a singular dash component, string or number | a list of or a singular dash component, string or number) - Array that holds Tab components
-    ///&#10;
+    ///<para>&#160;</para>
     ///• colors (record with the fields: 'border: string (optional)', 'primary: string (optional)', 'background: string (optional)'; default {
     ///    border: '#d6d6d6',
     ///    primary: '#1975FA',
@@ -214,20 +214,20 @@ module Tabs =
     ///   primary: '#1975FA',
     ///   background: '#f9f9f9'
     /// }
-    ///&#10;
+    ///<para>&#160;</para>
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persistence (boolean | string | number) - Used to allow user interactions in this component to be persisted when
     ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
     ///hasn't changed from its previous value, a &#96;value&#96; that the user has
     ///changed while using the app will keep that change, as long as
     ///the new &#96;value&#96; also matches what was given originally.
     ///Used in conjunction with &#96;persistence_type&#96;.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persisted_props (list with values of type: value equal to: 'value'; default ['value']) - Properties whose user interactions will persist after refreshing the
     ///component or the page. Since only &#96;value&#96; is allowed this prop can
     ///normally be ignored.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persistence_type (value equal to: 'local', 'session', 'memory'; default local) - Where persisted user changes will be stored:
     ///memory: only kept in memory, reset on page refresh.
     ///local: window.localStorage, data is kept after the browser quit.

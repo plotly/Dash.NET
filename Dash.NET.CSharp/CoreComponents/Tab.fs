@@ -82,7 +82,7 @@ module Tab =
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+            OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>
@@ -131,35 +131,35 @@ module Tab =
     ///<summary>
     ///Part of dcc.Tabs - this is the child Tab component used to render a tabbed page.
     ///Its children will be set as the content of that tab, which if clicked will become visible.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• label (string) - The tab's label
-    ///&#10;
+    ///<para>&#160;</para>
     ///• children (a list of or a singular dash component, string or number) - The content of the tab - will only be displayed if this tab is selected
-    ///&#10;
+    ///<para>&#160;</para>
     ///• value (string) - Value for determining which Tab is currently selected
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disabled (boolean; default false) - Determines if tab is disabled or not - defaults to false
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disabled_style (record; default {
     ///    color: '#d6d6d6',
     ///}) - Overrides the default (inline) styles when disabled
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disabled_className (string) - Appends a class to the Tab component when it is disabled.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className (string) - Appends a class to the Tab component.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• selected_className (string) - Appends a class to the Tab component when it is selected.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style (record) - Overrides the default (inline) styles for the Tab component.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• selected_style (record) - Overrides the default (inline) styles for the Tab component when it is selected.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
     ///</summary>
     let tab (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Tab.tab id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

@@ -1,17 +1,4 @@
-﻿using System;
-using System.Net;
-using System.IO;
-using Dash.NET.CSharp.DCC;
-using Plotly.NET;
-using Giraffe;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using static Dash.NET.CSharp.Dsl;
-using Dash.NET.CSharp.Giraffe;
-using System.Linq;
-using System.Globalization;
-
-namespace Documentation.Examples
+﻿namespace Documentation.Examples
 {
     class Program
     {
@@ -26,7 +13,19 @@ namespace Documentation.Examples
 
             //Callback_SimpleCallback.RunExample();
             //Callback_SimpleSlider.RunExample();
-            Callback_MultiInputs.RunExample();
+            //Callback_MultiInputs.RunExample();
+            //Callback_MultiOutputs.RunExample();
+            //Callback_CallbackChain.RunExample();
+            //Callback_BasicInput.RunExample();
+            //Callback_BasicState.RunExample();
+
+            //Dropdown_Dropdown.RunExample();
+            //Dropdown_DropdownMultiValue.RunExample();
+            //Dropdown_DropdownDisableSearch.RunExample();
+            //Dropdown_DropdownClearable.RunExample();
+            //Dropdown_DropdownPlaceholder.RunExample();
+            //Dropdown_DropdownDisableOptions.RunExample();
+            Dropdown_DropdownDynamicOptions.RunExample();
         }
     }
 }
