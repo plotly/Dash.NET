@@ -152,7 +152,7 @@ module Graph =
         ///</summary>
         static member loadingState(p: Dash.NET.CSharp.DCC.LoadingState) = 
             guardAgainstNull "p" p
-            Dash.NET.DCC.Graph.Attr.loadingState (p |> Dash.NET.CSharp.DCC.LoadingState.Convert) |> Attr.Wrap
+            Dash.NET.DCC.Graph.Attr.loadingState (p |> Dash.NET.CSharp.DCC.LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///The child or children of this dash component
         ///</summary>

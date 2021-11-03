@@ -7,48 +7,42 @@ using Dash.NET.CSharp;
 
 namespace Documentation.Examples
 {
-    class Callback_SimpleCallback
+    class Callback_BasicInput
     {
         public static void RunExample()
         {
             var layout =
                 Html.div(
                     Attr.children(
-                        Html.h6(
-                            Attr.children("Change the value in the text box to see callbacks in action!")
+                        Input.input(
+                            id: "input-1",
+                            Input.Attr.inputType(InputType.Text()),
+                            Input.Attr.value("Montreal")
                         ),
-                        Html.div(
-                            Attr.children(
-                                Html.text("Input: "),
-                                Input.input(
-                                    id: "my-input",
-                                    Input.Attr.value("Initual value"),
-                                    Input.Attr.inputType(InputType.Text())
-                                )
-                            )
+                        Input.input(
+                            id: "input-2",
+                            Input.Attr.inputType(InputType.Text()),
+                            Input.Attr.value("Canada")
                         ),
-                        Html.br(),
-                        Html.div(
-                            Attr.id("my-output")
-                        )
+                        Html.div(Attr.id("output-state"))
                     )
                 );
-
-            var updateOutputDivCallback =
+            var setOutputDivValue =
                 Callback.Create(
                     input: new[]
                     {
-                        ("my-input", ComponentProperty.Value)
+                        ("input-1", ComponentProperty.Value),
+                        ("input-2", ComponentProperty.Value)
                     },
                     output: new[]
                     {
-                        ("my-output", ComponentProperty.Children)
+                        ("output-state", ComponentProperty.Children)
                     },
-                    handler: (string x) =>
+                    handler: (string input1, string input2) =>
                     {
                         return new[]
                         {
-                            CallbackResult.Create(("my-output", ComponentProperty.Children), ("Output: " + x))
+                            CallbackResult.Create(("output-state", ComponentProperty.Children), ("Input 1 is " + input1 + ", Input 2 is " + input2))
                         };
                     },
                     preventInitialCall: false
@@ -57,13 +51,13 @@ namespace Documentation.Examples
             var dashApp = DashApp
                 .initDefault()
                 .withLayout(layout)
-                .addCallback(updateOutputDivCallback);
+                .addCallback(setOutputDivValue);
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
+                logLevel: LogLevel.Information,
                 ipAddress: "*",
-                port: 8000,
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 

@@ -41,6 +41,7 @@ namespace Documentation.Examples
                 (int year) =>
                 {
                     var filteredRows = rows.Where(x => x.year == year);
+
                     var labels =
                         filteredRows.Select(x =>
                             "<br>continent=" + x.continent +
@@ -62,8 +63,10 @@ namespace Documentation.Examples
                         )
                         .WithYAxis(
                             Plotly.NET.LayoutObjects.LinearAxis.init<int, int, int, int, int, int>(Title: Title.init("Life expectancy"))
-                            );
+                        );
+
                     var fig = GenericChart.toFigure(chart);
+
                     return fig;
                 };
 
@@ -77,8 +80,10 @@ namespace Documentation.Examples
                             Slider.Attr.max(rows.Select(x => x.year).Max()),
                             Slider.Attr.value(rows.Select(x => x.year).Min()),
                             Slider.Attr.marks(
-                                rows.GroupBy(x => x.year).Select(x => x.First()).ToDictionary(
-                                    x => Convert.ToDouble(x.year), x => Slider.Mark.Value(x.year.ToString())
+                                rows
+                                    .GroupBy(x => x.year)
+                                    .Select(x => x.First())
+                                    .ToDictionary(x => Convert.ToDouble(x.year), x => Slider.Mark.Value(x.year.ToString())
                                 )
                             ),
                             Slider.Attr.step(5)
@@ -104,7 +109,7 @@ namespace Documentation.Examples
                             CallbackResult.Create(("graph-with-slider", ComponentProperty.CustomProperty("figure")), bubbleChart(inputYear))
                         };
                     },
-                    preventInitialCall: false //I added this so when the page is loaded for the first time, there's a loaded chart displayed. For some reason this line isn't on the F# docs
+                    preventInitialCall: false
                 );
 
             var dashApp = DashApp
@@ -114,9 +119,9 @@ namespace Documentation.Examples
 
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
-                logLevel: LogLevel.Debug,
-                ipAddress: "*",
-                port: 8000,
+                logLevel: LogLevel.Information,
+                ipAddress: "127.0.0.1",
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 

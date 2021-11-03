@@ -26,7 +26,7 @@ module Slider =
 
     ///<summary>
     ///value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'
-    ///&#10;
+    ///<para>&#160;</para>
     ///Determines the placement of tooltips
     ///See https://github.com/react-component/tooltip#api
     ///top/bottom{*} sets the _origin_ of the tooltip, so e.g. &#96;topLeft&#96;
@@ -192,7 +192,7 @@ module Slider =
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+            OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Used to allow user interactions in this component to be persisted when
         ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
@@ -269,47 +269,47 @@ module Slider =
 
     ///<summary>
     ///A slider component with a single handle.
-    ///&#10;
+    ///<para>&#160;</para> 
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para> 
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• marks (dict with values of type: string | record with the fields: 'label: string (optional)', 'style: record (optional)') - Marks on the slider.
     ///The key determines the position (a number),
     ///and the value determines what will show.
     ///If you want to set the style of a specific mark point,
     ///the value should be an object which
     ///contains style and label properties.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• value (number) - The value of the input
-    ///&#10;
+    ///<para>&#160;</para>
     ///• drag_value (number) - The value of the input during a drag
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className (string) - Additional CSS class for the root DOM node
-    ///&#10;
+    ///<para>&#160;</para>
     ///• disabled (boolean) - If true, the handles can't be moved.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• dots (boolean) - When the step value is greater than 1,
     ///you can set the dots to true if you want to
     ///render the slider with dots.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• included (boolean) - If the value is true, it means a continuous
     ///value is included. Otherwise, it is an independent value.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• min (number) - Minimum allowed value of the slider
-    ///&#10;
+    ///<para>&#160;</para>
     ///• max (number) - Maximum allowed value of the slider
-    ///&#10;
+    ///<para>&#160;</para>
     ///• tooltip (record with the fields: 'always_visible: boolean (optional)', 'placement: value equal to: 'left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight' (optional)') - Configuration for tooltips describing the current slider value
-    ///&#10;
+    ///<para>&#160;</para>
     ///• step (number) - Value by which increments or decrements are made
-    ///&#10;
+    ///<para>&#160;</para>
     ///• vertical (boolean) - If true, the slider will be vertical
-    ///&#10;
+    ///<para>&#160;</para>
     ///• verticalHeight (number; default 400) - The height, in px, of the slider if it is vertical.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• updatemode (value equal to: 'mouseup', 'drag'; default mouseup) - Determines when the component should update its &#96;value&#96;
     ///property. If &#96;mouseup&#96; (the default) then the slider
     ///will only trigger its value when the user has finished
@@ -318,20 +318,20 @@ module Slider =
     ///If you want different actions during and after drag,
     ///leave &#96;updatemode&#96; as &#96;mouseup&#96; and use &#96;drag_value&#96;
     ///for the continuously updating value.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persistence (boolean | string | number) - Used to allow user interactions in this component to be persisted when
     ///the component - or the page - is refreshed. If &#96;persisted&#96; is truthy and
     ///hasn't changed from its previous value, a &#96;value&#96; that the user has
     ///changed while using the app will keep that change, as long as
     ///the new &#96;value&#96; also matches what was given originally.
     ///Used in conjunction with &#96;persistence_type&#96;.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persisted_props (list with values of type: value equal to: 'value'; default ['value']) - Properties whose user interactions will persist after refreshing the
     ///component or the page. Since only &#96;value&#96; is allowed this prop can
     ///normally be ignored.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• persistence_type (value equal to: 'local', 'session', 'memory'; default local) - Where persisted user changes will be stored:
     ///memory: only kept in memory, reset on page refresh.
     ///local: window.localStorage, data is kept after the browser quit.
