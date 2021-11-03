@@ -19,13 +19,19 @@
             //Callback_BasicInput.RunExample();
             //Callback_BasicState.RunExample();
 
+            //CORE COMPONENTS
+
             //Dropdown_Dropdown.RunExample();
             //Dropdown_DropdownMultiValue.RunExample();
             //Dropdown_DropdownDisableSearch.RunExample();
             //Dropdown_DropdownClearable.RunExample();
             //Dropdown_DropdownPlaceholder.RunExample();
             //Dropdown_DropdownDisableOptions.RunExample();
-            Dropdown_DropdownDynamicOptions.RunExample();
+            //Dropdown_DropdownDynamicOptions.RunExample();
+
+            Input_InputAllTypes.RunExample();
+            //Input_InputBasic.RunExample();
+            //Input_InputNumberType.RunExample();
         }
     }
 }
