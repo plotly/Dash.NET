@@ -3,6 +3,7 @@
 open Microsoft.DotNet.Interactive
 open Microsoft.DotNet.Interactive.Formatting
 open Dash.NET.Suave
+open System
 open System.Threading
 open System.Net
 open System.IO
@@ -38,13 +39,12 @@ module Util =
     let html = new HtmlString(str) :> IHtmlContent
     html.WriteTo(writer, HtmlEncoder.Default)
 
+
 type DashInteractiveExtension () = 
 
   interface IKernelExtension with
-    member x.OnLoadAsync(kernel:Kernel) : Task = 
-      Formatter.Register<DashApp>(Util.formatter, HtmlFormatter.MimeType)
+    member _.OnLoadAsync _ =
 
-      let ctx = KernelInvocationContext.Current
-      if ctx <> null then
-        ctx.Display("Dash extension has been loaded. Enjoy!","text/html") |> ignore;
+      Formatter.Register<DashApp>(Action<_, _>(Util.formatter), "text/html")
+
       Task.CompletedTask
