@@ -2,6 +2,12 @@
 
 [![](https://img.shields.io/nuget/vpre/Dash.NET)](https://www.nuget.org/packages/Dash.NET/)
 
+<div align="center">
+  <a href="https://dash.plotly.com/project-maintenance">
+    <img src="https://dash.plotly.com/assets/images/maintained-by-community.png" width="400px" alt="Maintained by the Plotly Community">
+  </a>
+</div>
+
 Dash.NET is a .NET interface to [Dash](https://plotly.com/dash/) - the most downloaded framework for building ML &amp; data science web apps - written in F#. Built on top of [Plotly.NET](https://github.com/plotly/Plotly.NET), React and asp.netcore (via Giraffe), Dash.NET ties modern UI elements like dropdowns, sliders, and graphs directly to your analytical .NET code.
 
 This library is under heavy development. Things might break. However, Dash.NET has a stable core and has already been used for non trivial applications ([example1](https://github.com/CSBiology/TMEA), [example2](https://github.com/TRR175/ExploreKinetics)). The current development goal is to implement all targets set in the [beta roadmap](https://github.com/plotly/Dash.NET/issues/4), where you can also see a summary of the state of the project.
