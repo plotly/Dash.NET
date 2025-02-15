@@ -17,7 +17,7 @@ module Markdown =
 
     ///<summary>
     ///value equal to: 'dark', 'light'
-    ///&#10;
+    ///<para>&#160;</para>
     ///Color scheme; default 'light'
     ///</summary>
     type HighlightConfigTheme = private WrappedHighlightConfigTheme of Dash.NET.DCC.Markdown.HighlightConfigTheme with
@@ -78,7 +78,7 @@ module Markdown =
         ///</summary>
         static member loadingState(p: LoadingState) = 
             guardAgainstNull "p" p
-            OAttr.loadingState (p |> LoadingState.Convert) |> Attr.Wrap
+            OAttr.loadingState (p |> LoadingState.Unwrap) |> Attr.Wrap
         ///<summary>
         ///Defines CSS styles which will override styles previously set.
         ///</summary>
@@ -115,31 +115,31 @@ module Markdown =
     ///A component that renders Markdown text as specified by the
     ///GitHub Markdown spec. These component uses
     ///[react-markdown](https://remarkjs.github.io/react-markdown/) under the hood.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• className (string) - Class name of the container element
-    ///&#10;
+    ///<para>&#160;</para>
     ///• dangerously_allow_html (boolean; default false) - A boolean to control raw HTML escaping.
     ///Setting HTML from code is risky because it's easy to
     ///inadvertently expose your users to a cross-site scripting (XSS)
     ///(https://en.wikipedia.org/wiki/Cross-site_scripting) attack.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• children (string | list with values of type: string) - A markdown string (or array of strings) that adhreres to the CommonMark spec
-    ///&#10;
+    ///<para>&#160;</para>
     ///• dedent (boolean; default true) - Remove matching leading whitespace from all lines.
     ///Lines that are empty, or contain *only* whitespace, are ignored.
     ///Both spaces and tab characters are removed, but only if they match;
     ///we will not convert tabs to spaces or vice versa.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• highlight_config (record with the field: 'theme: value equal to: 'dark', 'light' (optional)'; default {}) - Config options for syntax highlighting.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• loading_state (record with the fields: 'is_loading: boolean (optional)', 'prop_name: string (optional)', 'component_name: string (optional)') - Object that holds the loading state object coming from dash-renderer
-    ///&#10;
+    ///<para>&#160;</para>
     ///• style (record) - User-defined inline styles for the rendered Markdown
     ///</summary>
     let markdown (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Markdown.markdown id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

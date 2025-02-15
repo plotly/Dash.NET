@@ -100,22 +100,22 @@ module Store =
     ///The data is not inserted in the DOM.
     ///Data can be in memory, localStorage or sessionStorage.
     ///The data will be kept with the id as key.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• storage_type (value equal to: 'local', 'session', 'memory'; default memory) - The type of the web storage.
     ///memory: only kept in memory, reset on page refresh.
     ///local: window.localStorage, data is kept after the browser quit.
     ///session: window.sessionStorage, data is cleared once the browser quit.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• data (record | list | number | string | boolean) - The stored data for the id.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• clear_data (boolean; default false) - Set to true to remove the data contained in &#96;data_key&#96;.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• modified_timestamp (number; default -1) - The last time the storage was modified.
     ///</summary>
     let radioItems (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Store.store id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

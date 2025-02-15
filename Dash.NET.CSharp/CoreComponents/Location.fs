@@ -98,21 +98,21 @@ module Location =
     ///<summary>
     ///Update and track the current window.location object through the window.history state.
     ///Use in conjunction with the &#96;dash_core_components.Link&#96; component to make apps with multiple pages.
-    ///&#10;
+    ///<para>&#160;</para>
     ///Properties:
-    ///&#10;
+    ///<para>&#160;</para>
     ///• id (string) - The ID of this component, used to identify dash components
     ///in callbacks. The ID needs to be unique across all of the
     ///components in an app.
-    ///&#10;
+    ///<para>&#160;</para>
     ///• pathname (string) - pathname in window.location - e.g., "/my/full/pathname"
-    ///&#10;
+    ///<para>&#160;</para>
     ///• search (string) - search in window.location - e.g., "?myargument=1"
-    ///&#10;
+    ///<para>&#160;</para>
     ///• hash (string) - hash in window.location - e.g., "#myhash"
-    ///&#10;
+    ///<para>&#160;</para>
     ///• href (string) - href in window.location - e.g., "/my/full/pathname?myargument=1#myhash"
-    ///&#10;
+    ///<para>&#160;</para>
     ///• refresh (boolean; default true) - Refresh the page when the location is updated?
     ///</summary>
     let location (id: string, [<ParamArray>] attrs: array<Attr>) = Dash.NET.DCC.Location.location id (attrs |> List.ofArray |> List.map Attr.Unwrap) |> Dash.NET.CSharp.Dsl.DashComponent.Wrap

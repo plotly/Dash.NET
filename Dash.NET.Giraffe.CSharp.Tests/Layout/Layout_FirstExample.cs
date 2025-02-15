@@ -15,10 +15,10 @@ namespace Documentation.Examples
             var dataSF = new List<Tuple<string, int>>() { Tuple.Create("Apples", 4), Tuple.Create("Oranges", 1), Tuple.Create("Bananas", 2) };
             var dataMontreal = new List<Tuple<string, int>>() { Tuple.Create("Apples", 2), Tuple.Create("Oranges", 4), Tuple.Create("Bananas", 5) };
 
-            var figSF = Chart2D.Chart.Column<string, int, int, int, int>(dataSF, "SF", true);
-            var figMontreal = Chart2D.Chart.Column<string, int, int, int, int>(dataMontreal, "Montreal", true);
+            var chartSF = Chart2D.Chart.Column<string, int, int, int, int>(dataSF, "SF", true);
+            var chartMontreal = Chart2D.Chart.Column<string, int, int, int, int>(dataMontreal, "Montreal", true);
 
-            var fig = Chart.Combine(new List<GenericChart.GenericChart>() { figSF, figMontreal });
+            var chart = Chart.Combine(new List<GenericChart.GenericChart>() { chartSF, chartMontreal });
 
             var layout =
                 Html.div(
@@ -27,7 +27,7 @@ namespace Documentation.Examples
                         Html.div(Attr.children("Dash: A web application framework for your data")),
                         Graph.graph(
                             "my-graph",
-                            Graph.Attr.figure(GenericChart.toFigure(fig))
+                            Graph.Attr.figure(GenericChart.toFigure(chart))
                         )
                     )
                 );
@@ -39,8 +39,8 @@ namespace Documentation.Examples
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
-                ipAddress: "*",
-                port: 8000,
+                ipAddress: "127.0.0.1",
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 

@@ -3,8 +3,6 @@ using System.Net;
 using System.IO;
 using Dash.NET.CSharp.DCC;
 using Plotly.NET;
-using Giraffe;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using static Dash.NET.CSharp.Dsl;
 using Dash.NET.CSharp.Giraffe;
@@ -13,6 +11,7 @@ using System.Globalization;
 using System.Net.Http;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
+using Plotly.NET.LayoutObjects;
 
 namespace Documentation.Examples
 {
@@ -55,10 +54,10 @@ namespace Documentation.Examples
                     Labels: labels.ToList()
                 )
                 .WithXAxis(
-                    Plotly.NET.LayoutObjects.LinearAxis.init<int, int, int, int, int, int>(AxisType: StyleParam.AxisType.Log, Title: Plotly.NET.Title.init("Gdp per capita"))
+                    LinearAxis.init<int, int, int, int, int, int>(AxisType: StyleParam.AxisType.Log, Title: Title.init("Gdp per capita"))
                 )
                 .WithYAxis(
-                    Plotly.NET.LayoutObjects.LinearAxis.init<int, int, int, int, int, int>(Title: Plotly.NET.Title.init("Life expectancy"))
+                    LinearAxis.init<int, int, int, int, int, int>(Title: Title.init("Life expectancy"))
                 );
             var fig = GenericChart.toFigure(chart);
 
@@ -76,8 +75,8 @@ namespace Documentation.Examples
             var config = new DashGiraffeConfig(
                 hostName: "localhost",
                 logLevel: LogLevel.Information,
-                ipAddress: "*",
-                port: 8000,
+                ipAddress: "127.0.0.1",
+                port: 8050,
                 errorHandler: (Exception err) => err.Message
             );
 
