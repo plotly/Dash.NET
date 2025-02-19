@@ -36,8 +36,8 @@ module String =
     let write path (s: string) = File.WriteAllText(path,s)
 
     let firstLetter (s: string) = s.ToLower().Substring(0,1)
-    let decapitalize (s: string) = (sprintf "%c%s" (Char.ToLowerInvariant(s.[0])) (s.Substring(1)))
-    let capitalize (s: string) = (sprintf "%c%s" (Char.ToUpperInvariant(s.[0])) (s.Substring(1)))
+    let decapitalize (s: string) = if s.Length = 0 then "" else (sprintf "%c%s" (Char.ToLowerInvariant(s.[0])) (s.Substring(1)))
+    let capitalize (s: string) = if s.Length = 0 then "" else (sprintf "%c%s" (Char.ToUpperInvariant(s.[0])) (s.Substring(1)))
 
     let toPascalCase (s:string) =
         s
@@ -75,5 +75,15 @@ module List =
         (List.zip l1 l2, List.zip l3 l4)
         ||> List.zip
         |> List.map (fun ((a1,a2),(a3,a4)) -> (a1,a2,a3,a4))
+
+    let unzip4 (z: ('a * 'b * 'c * 'd) list) =
+        let a, b, cd =
+            z
+            |> List.map (fun (a, b, c, d) -> a, b, (c, d))
+            |> List.unzip3
+        let c, d = cd |> List.unzip
+        a, b, c, d
+            
+
 
 
